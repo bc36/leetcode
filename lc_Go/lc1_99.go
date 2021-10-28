@@ -34,7 +34,7 @@ type Node struct {
 }
 
 // 50 - Pow(x, n) - MEDIUM
-// Iteration / exponent: decimal -> binary
+// Iteration / let exponent: decimal -> binary
 func myPow(x float64, n int) float64 {
 	if n == 0 {
 		return 1
@@ -102,16 +102,16 @@ func quickMul3(x float64, n int) float64 {
 }
 
 // 53 - Maximum Subarray - EASY
-func maxSubArray(nums []int) (ans int) {
+func maxSubArray(nums []int) int {
 	length := len(nums)
 	if length == 1 {
 		return nums[0]
 	}
-	// dp[i]: 当前下标结尾的最大子序列
-	dp := make([]int, length)
+	// dp[i]: Maximum subsequence that ends with the current index
+	ans, dp := nums[0], make([]int, length)
 	dp[0] = nums[0]
 	for i := 1; i < length; i++ {
-		dp[i] = max(dp[i-1]+nums[i], dp[i])
+		dp[i] = max(dp[i-1]+nums[i], nums[i])
 	}
 	for i := range dp {
 		if dp[i] > ans {

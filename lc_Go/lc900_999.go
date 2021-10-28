@@ -17,7 +17,7 @@ func maxSubarraySumCircular(nums []int) int {
 		ansmin = min(ansmin, dpi)
 	}
 
-	if sum-ansmin == 0 { // 说明全是负数
+	if sum-ansmin == 0 { // indicate that all are negative number
 		return ansmax
 	}
 	return max(ansmax, sum-ansmin)

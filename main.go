@@ -9,6 +9,8 @@ import (
 func main() {
 	// 23, 1249, 236, 371, 437, 146, 600, 47, 430, 994, 460,
 	// 739 117 215 938 173 88 986
+	// sort.Ints / strconv.Itoa / sort.SearchInts / rand.Intn
+	// [Go, Golang] R: 100ms/51% M: 9.7MB/17%
 	// oa2("abcde", 1, "10101111111111111111111111")   // 3
 	// oa2("abcde", 2, "10101111111111111111111111")   // 5
 	// oa2("giraffe", 2, "01111001111111111011111111") // 3 agfr
@@ -18,12 +20,12 @@ func main() {
 	// fmt.Println(([]int{2, 3, 1, 1, 4})) //2
 	// fmt.Println()
 	// fmt.Println(([]int{2, 3, 0, 1, 4})) //2
-	fmt.Println(sort.SearchInts([]int{1, 2, 5}, 0))
-	fmt.Println(sort.SearchInts([]int{1, 2, 5}, 1))
-	fmt.Println(sort.SearchInts([]int{1, 2, 5}, 2))
-	fmt.Println(sort.SearchInts([]int{1, 2, 5}, 3))
-	fmt.Println(sort.SearchInts([]int{1, 2, 5}, 4))
-	fmt.Println(sort.SearchInts([]int{1, 2, 5}, 5))
+	// fmt.Println(reorderedPowerOf2([]int{1, 2, 5}, 0))
+	// fmt.Println(reorderedPowerOf2(1))
+	// fmt.Println(reorderedPowerOf2(24))
+	// fmt.Println(reorderedPowerOf2(16))
+	// fmt.Println(reorderedPowerOf2(10))
+	// fmt.Println(reorderedPowerOf2()
 }
 
 type Solution struct {
