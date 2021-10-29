@@ -27,6 +27,19 @@ func main() {
 	// fmt.Println(reorderedPowerOf2(10))
 	// fmt.Println(reorderedPowerOf2()
 }
+func kthSmallest(root *TreeNode, k int) int {
+	var res []int
+	var dfs func(r *TreeNode)
+	dfs = func(root *TreeNode) {
+		if root != nil {
+			dfs(root.Left)
+			res = append(res, root.Val)
+			dfs(root.Right)
+		}
+	}
+	dfs(root)
+	return res[k-1]
+}
 
 type Solution struct {
 	pre []int

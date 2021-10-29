@@ -66,6 +66,22 @@ func majorityElement2(nums []int) (ans []int) {
 	return
 }
 
+// 230 - Kth Smallest Element in a BST - MEDIUM
+// inorder / use a slice to save all values / O(n) + O(n)
+func kthSmallest(root *TreeNode, k int) int {
+	var res []int
+	var dfs func(r *TreeNode)
+	dfs = func(root *TreeNode) {
+		if root != nil {
+			dfs(root.Left)
+			res = append(res, root.Val)
+			dfs(root.Right)
+		}
+	}
+	dfs(root)
+	return res[k-1]
+}
+
 // 237 - Delete Node in a Linked List - EASY
 func deleteNode(node *ListNode) {
 	node.Val = node.Next.Val
