@@ -10,35 +10,33 @@ func main() {
 	// 23, 1249, 236, 371, 437, 146, 600, 47, 430, 994, 460,
 	// 739 117 215 938 173 88 986
 	// sort.Ints / strconv.Itoa / sort.SearchInts / rand.Intn
-	// [Go, Golang] R: 100ms/51% M: 9.7MB/17%
-	// oa2("abcde", 1, "10101111111111111111111111")   // 3
-	// oa2("abcde", 2, "10101111111111111111111111")   // 5
-	// oa2("giraffe", 2, "01111001111111111011111111") // 3 agfr
-	// oa4(3, 4, [][]int{{0}, {1, 2}, {0}, {2, 1}, {0}, {1, 1}, {0}})
+	// [Go, Golang] R: 4ms/96% M: 4MB/100%
+
 	// fmt.Println(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4})) //2
 	// fmt.Println()
 	// fmt.Println(([]int{2, 3, 1, 1, 4})) //2
 	// fmt.Println()
 	// fmt.Println(([]int{2, 3, 0, 1, 4})) //2
 	// fmt.Println(reorderedPowerOf2([]int{1, 2, 5}, 0))
-	// fmt.Println(reorderedPowerOf2(1))
-	// fmt.Println(reorderedPowerOf2(24))
-	// fmt.Println(reorderedPowerOf2(16))
-	// fmt.Println(reorderedPowerOf2(10))
 	// fmt.Println(reorderedPowerOf2()
+	// a := 5
+	b := 0
+	// c := 4
+	// fmt.Printf("%b,%b,%b\n", a, b, c)
+	// fmt.Printf("%b, %d\n", a^b^c, a^b^c)
+	a := -0
+	fmt.Printf("%b, %b\n", uint8(b), uint8(a))
+	// d := a ^ a ^ a
+	// fmt.Println(d)
+	// fmt.Println(a &b &c)
 }
-func kthSmallest(root *TreeNode, k int) int {
-	var res []int
-	var dfs func(r *TreeNode)
-	dfs = func(root *TreeNode) {
-		if root != nil {
-			dfs(root.Left)
-			res = append(res, root.Val)
-			dfs(root.Right)
-		}
+
+func singleNumber(nums []int) int {
+	ans := 0
+	for _, e := range nums {
+		ans ^= e
 	}
-	dfs(root)
-	return res[k-1]
+	return ans
 }
 
 type Solution struct {
@@ -69,74 +67,6 @@ func min(a, b int) int {
 	return a
 }
 
-func oa2(s string, k int, charValue string) (ret int) {
-	alphabet := "abcdefghijklmnopqrstuvwxyz"
-	specialMap := make(map[byte]struct{})
-	for i := range charValue {
-		if charValue[i] == '0' {
-			specialMap[alphabet[i]] = struct{}{}
-		}
-	}
-	// fmt.Println(specialMap)
-	// first right position
-	spNum, pos := 0, 0
-	for spNum < k && pos < len(s) {
-		if _, ok := specialMap[s[pos]]; ok {
-			spNum++
-		}
-		pos++
-	}
-	fmt.Println(pos, "pos")
-	ret = pos + 1
-	for i, j := 0, pos+1; j < len(s) && i <= j; {
-		if _, jIn := specialMap[s[j]]; !jIn {
-			ret = max(ret, j-i+1)
-			fmt.Println(s[i:j], i, j, "0.")
-			j++
-			continue
-		}
-		i++
-		if _, iIn := specialMap[s[i]]; !iIn {
-			ret = max(ret, j-i+1)
-			fmt.Println(s[i:j], i, j, "0..")
-			i++
-			continue
-		}
-	}
-	fmt.Println(ret, "ret")
-	return ret
-}
-
-func oa4(n, m int, queries [][]int) (ret []int) {
-	row := make(map[int]struct{})
-	for i := 0; i < n; i++ {
-		row[i] = struct{}{}
-	}
-	column := make(map[int]struct{})
-	for i := 0; i < m; i++ {
-		column[i] = struct{}{}
-	}
-
-	for i := range queries {
-		if len(queries[i]) == 1 {
-			ret = append(ret, (minElement(row)+1)*(minElement(column)+1))
-			// fmt.Println("add: ", (minElement(row)+1)*(minElement(column)+1))
-			continue
-		}
-		if queries[i][0] == 1 {
-			// remove row
-			delete(row, queries[i][1]-1)
-			// fmt.Println(queries[i], "remove row", row)
-			continue
-		}
-		// remove column
-		delete(column, queries[i][1]-1)
-		// fmt.Println(queries[i], "remove column", column)
-		continue
-	}
-	// fmt.Println(ret)
-	return ret
-}
 func minElement(m map[int]struct{}) int {
 	var keys []int
 	for k := range m {

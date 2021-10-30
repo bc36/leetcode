@@ -44,6 +44,16 @@ func maxProfit22(prices []int) (ans int) {
 	return
 }
 
+// 136 - Single Number - EASY
+// XOR operation
+func singleNumber(nums []int) int {
+	ans := 0
+	for _, e := range nums {
+		ans ^= e
+	}
+	return ans
+}
+
 // 166 - Fraction to Recurring Decimal - MEDIUM
 // a / b, max loop section b-1
 func fractionToDecimal(x int, y int) string {

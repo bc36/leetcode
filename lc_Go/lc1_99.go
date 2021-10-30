@@ -2,6 +2,15 @@ package lc_Go
 
 /*
 All type define and basic functions are in the first '.go' file
+
+bit opertion
+&	bitwise AND
+|	bitwise OR
+^	bitwise XOR
+&^	AND NOT
+<<	left shift
+>>	right shift
+
 */
 func max(a, b int) int {
 	if a > b {

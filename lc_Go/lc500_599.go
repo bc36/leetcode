@@ -12,6 +12,9 @@ type Solution struct {
 	presum []int
 }
 
+// Calculate the prefix sum to generate a random number
+// The coordinates of the distribution correspond to the size of the number
+// 计算前缀和，这样可以生成一个随机数，根据数的大小对应分布的坐标
 func Constructor(w []int) Solution {
 	for i := 1; i < len(w); i++ {
 		w[i] += w[i-1]

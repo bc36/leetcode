@@ -131,3 +131,43 @@ func searchMatrix3(matrix [][]int, target int) bool {
 	}
 	return false
 }
+
+// 260 - Single Number III - MEDIUM
+// "lsb" is the last 1 of its binary representation, means that two numbers are different in that bit
+// split nums[] into two lists, one with that bit as 0 and the other with that bit as 1.
+// separately perform XOR operation, find the number that appears once in each list.
+// O(n) + O(1)
+func singleNumber31(nums []int) []int {
+	xorSum := 0
+	for _, num := range nums {
+		xorSum ^= num
+	}
+	lsb := xorSum & -xorSum
+	// lsb := 1
+	// for xorSum&lsb == 0 {
+	// 	lsb <<= 1
+	// }
+	ans1, ans2 := 0, 0
+	for _, num := range nums {
+		if num&lsb > 0 {
+			ans1 ^= num
+		} else {
+			ans2 ^= num
+		}
+	}
+	return []int{ans1, ans2}
+}
+
+// Hash map, O(n) + O(n)
+func singleNumber32(nums []int) (ans []int) {
+	freq := map[int]int{}
+	for _, num := range nums {
+		freq[num]++
+	}
+	for num, occ := range freq {
+		if occ == 1 {
+			ans = append(ans, num)
+		}
+	}
+	return
+}
