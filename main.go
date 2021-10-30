@@ -10,33 +10,18 @@ func main() {
 	// 23, 1249, 236, 371, 437, 146, 600, 47, 430, 994, 460,
 	// 739 117 215 938 173 88 986
 	// sort.Ints / strconv.Itoa / sort.SearchInts / rand.Intn
-	// [Go, Golang] R: 4ms/96% M: 4MB/100%
+	// [Go, Golang] R: 4ms/94% M: 3.4MB/83%
 
 	// fmt.Println(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4})) //2
 	// fmt.Println()
 	// fmt.Println(([]int{2, 3, 1, 1, 4})) //2
 	// fmt.Println()
-	// fmt.Println(([]int{2, 3, 0, 1, 4})) //2
-	// fmt.Println(reorderedPowerOf2([]int{1, 2, 5}, 0))
-	// fmt.Println(reorderedPowerOf2()
-	// a := 5
-	b := 0
-	// c := 4
 	// fmt.Printf("%b,%b,%b\n", a, b, c)
 	// fmt.Printf("%b, %d\n", a^b^c, a^b^c)
-	a := -0
+	a := 5
+	b := -5
 	fmt.Printf("%b, %b\n", uint8(b), uint8(a))
 	// d := a ^ a ^ a
-	// fmt.Println(d)
-	// fmt.Println(a &b &c)
-}
-
-func singleNumber(nums []int) int {
-	ans := 0
-	for _, e := range nums {
-		ans ^= e
-	}
-	return ans
 }
 
 type Solution struct {

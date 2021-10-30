@@ -2,6 +2,7 @@ package lc_Go
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 )
 
@@ -52,6 +53,22 @@ func singleNumber(nums []int) int {
 		ans ^= e
 	}
 	return ans
+}
+
+// 137 - Single Number II - MEDIUM
+// sort, jump 3 element
+// use HashMap also works
+func singleNumber21(nums []int) int {
+	sort.Ints(nums)
+	for i := 0; i < len(nums)-1; i += 3 {
+		if nums[i] != nums[i+1] {
+			return nums[i]
+		}
+	}
+	if len(nums) != 1 && nums[len(nums)-1] != nums[len(nums)-2] {
+		return nums[len(nums)-1]
+	}
+	return nums[0]
 }
 
 // 166 - Fraction to Recurring Decimal - MEDIUM
