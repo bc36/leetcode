@@ -9,8 +9,8 @@ import (
 func main() {
 	// 23, 1249, 236, 371, 437, 146, 600, 47, 430, 994, 460,
 	// 739 117 215 938 173 88 986
-	// sort.Ints / strconv.Itoa / sort.SearchInts / rand.Intn
-	// [Go, Golang] R: 4ms/94% M: 3.4MB/83%
+	// sort.Ints / strconv.Itoa / sort.SearchInts / rand.Intn / strings.ToLower / unicode.ToLower
+	// [Go, Golang] R: 0ms/100% M: 2MB/100%
 
 	// fmt.Println(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4})) //2
 	// fmt.Println()
@@ -22,6 +22,36 @@ func main() {
 	b := -5
 	fmt.Printf("%b, %b\n", uint8(b), uint8(a))
 	// d := a ^ a ^ a
+}
+
+func nodesBetweenCriticalPoints(head *ListNode) []int {
+	nums := []int{}
+	for head != nil {
+		nums = append(nums, head.Val)
+		head = head.Next
+	}
+	pos := []int{}
+	for i := range nums {
+		if i == 0 || i == len(nums)-1 {
+			continue
+		}
+		if nums[i-1] < nums[i] && nums[i] > nums[i+1] {
+			pos = append(pos, i)
+		} else if nums[i-1] > nums[i] && nums[i] < nums[i+1] {
+			pos = append(pos, i)
+		}
+	}
+	if len(pos) < 2 {
+		return []int{-1, -1}
+	}
+	max := pos[len(pos)-1] - pos[0]
+	min := max
+	for i := 1; i < len(pos); i++ {
+		if pos[i]-pos[i-1] < min {
+			min = pos[i] - pos[i-1]
+		}
+	}
+	return []int{min, max}
 }
 
 type Solution struct {
