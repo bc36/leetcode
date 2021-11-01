@@ -10,7 +10,7 @@ func main() {
 	// 23, 1249, 236, 371, 437, 146, 600, 47, 430, 994, 460,
 	// 739 117 215 938 173 88 986
 	// sort.Ints / strconv.Itoa / sort.SearchInts / rand.Intn / strings.ToLower / unicode.ToLower
-	// [Go, Golang] R: 0ms/100% M: 2MB/100%
+	// [Go, Golang] R: 140ms/96% M: 7.4MB/88%
 
 	// fmt.Println(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4})) //2
 	// fmt.Println()
@@ -18,40 +18,42 @@ func main() {
 	// fmt.Println()
 	// fmt.Printf("%b,%b,%b\n", a, b, c)
 	// fmt.Printf("%b, %d\n", a^b^c, a^b^c)
-	a := 5
-	b := -5
-	fmt.Printf("%b, %b\n", uint8(b), uint8(a))
+	// a := 5
+	// b := -5
+	// fmt.Printf("%b, %b\n", uint8(b), uint8(a))
+	s := "abcd"
+	for i := range s[2:] {
+		println(i)
+		// fmt.Println(s[i], string(s[i]), i)
+	}
+	for i := range s[:3] {
+		println(i)
+		// fmt.Println(s[i], string(s[i]), i)
+	}
+	fmt.Println(s[0:])
+	fmt.Println(s[1:])
+	fmt.Println(s[2:])
 	// d := a ^ a ^ a
 }
 
-func nodesBetweenCriticalPoints(head *ListNode) []int {
-	nums := []int{}
-	for head != nil {
-		nums = append(nums, head.Val)
-		head = head.Next
+// 139 - Word Break - MEDIUM
+// dp[i] means s[:i] can be segmented
+// split s[:i] to s[:j] + s[j+1:i]
+func wordBreak(s string, wordDict []string) bool {
+	dp, dic := make([]bool, len(s)+1), make(map[string]bool)
+	dp[0] = true
+	for _, i := range wordDict {
+		dic[i] = true
 	}
-	pos := []int{}
-	for i := range nums {
-		if i == 0 || i == len(nums)-1 {
-			continue
-		}
-		if nums[i-1] < nums[i] && nums[i] > nums[i+1] {
-			pos = append(pos, i)
-		} else if nums[i-1] > nums[i] && nums[i] < nums[i+1] {
-			pos = append(pos, i)
-		}
-	}
-	if len(pos) < 2 {
-		return []int{-1, -1}
-	}
-	max := pos[len(pos)-1] - pos[0]
-	min := max
-	for i := 1; i < len(pos); i++ {
-		if pos[i]-pos[i-1] < min {
-			min = pos[i] - pos[i-1]
+	for i := range s[1:] {
+		for j := range s[:i] {
+			if dp[j] && dic[s[j+1:i]] {
+				dp[i] = true
+				break
+			}
 		}
 	}
-	return []int{min, max}
+	return false
 }
 
 type Solution struct {

@@ -86,3 +86,33 @@ func (so *Solution) PickIndex() int {
 	x := rand.Intn(so.presum[len(so.presum)-1]) + 1
 	return sort.SearchInts(so.presum, x)
 }
+
+// 575 - Distribute Candies - EASY
+// sort / O(nlogn) O(1)
+func distributeCandies(candyType []int) int {
+	max := len(candyType) / 2
+	sort.Ints(candyType)
+	ans := 1
+	for i := 1; i < len(candyType); i++ {
+		if ans == max {
+			return max
+		}
+		if candyType[i] != candyType[i-1] {
+			ans++
+		}
+	}
+	return ans
+}
+
+// hash / O(n) O(n)
+func distributeCandies2(candyType []int) int {
+	m := make(map[int]struct{})
+	for _, i := range candyType {
+		m[i] = struct{}{}
+	}
+	max := len(candyType) / 2
+	if max < len(m) {
+		return max
+	}
+	return len(m)
+}

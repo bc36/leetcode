@@ -1,3 +1,4 @@
+import collections
 import random, bisect, itertools
 from typing import List
 
@@ -27,3 +28,15 @@ class Solution:
     def pickIndex(self) -> int:
         rand = random.randint(1, self.presum[-1])
         return bisect.bisect_left(self.presum, rand)
+
+# 575 - Distribute Candies - EASY
+# counter
+class Solution:
+    def distributeCandies(self, candyType: List[int]) -> int:
+        # len(candyType) // 2
+        return min(len(collections.Counter(candyType)), int(len(candyType) / 2))
+        
+# set
+class Solution:
+    def distributeCandies(self, candyType: List[int]) -> int:
+        return min(len(set(candyType)), len(candyType) // 2)
