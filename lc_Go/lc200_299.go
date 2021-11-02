@@ -83,9 +83,15 @@ func kthSmallest(root *TreeNode, k int) int {
 }
 
 // 237 - Delete Node in a Linked List - EASY
+// copy the value of next to the node to be deleted
+// jump through the next node since the value has been saved
 func deleteNode(node *ListNode) {
 	node.Val = node.Next.Val
 	node.Next = node.Next.Next
+}
+
+func deleteNode2(node *ListNode) {
+	*node = *node.Next
 }
 
 // 240 - Search a 2D Matrix II - MEDIUM

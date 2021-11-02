@@ -42,6 +42,74 @@ type Node struct {
 	Child *Node
 }
 
+// 3 - Longest Substring Without Repeating Characters - MEDIUM
+// sliding window + hashmap
+func lengthOfLongestSubstring(s string) int {
+	// to memory whether the char has been shown. key:char, value:index of char
+	existCh := make(map[byte]int)
+	ans, length := 0, 0
+	for i, j := 0, 0; j < len(s); j++ {
+		// no repeated char
+		if _, ok := existCh[s[j]]; !ok {
+			length++
+			existCh[s[j]] = j
+			if length > ans {
+				ans = length
+			}
+		} else {
+			// find repeated char, remove elements in hashmap
+			// until the index of repeated char(included)
+			// i = (index of repeated char + 1)
+			for i <= existCh[s[j]] {
+				delete(existCh, s[i])
+				i++
+			}
+			length = j - i + 1
+			// the new position of the repeated char
+			existCh[s[j]] = j
+		}
+	}
+	return ans
+}
+
+// byte - 'a' = position -> index !!
+func lengthOfLongestSubstring1(s string) int {
+	if len(s) == 0 {
+		return 0
+	}
+	// 0: not repeated / 1: repeated
+	var exist [256]int
+	result, left, right := 0, 0, 0
+	for left < len(s) {
+		if right < len(s) && exist[s[right]-'a'] == 0 {
+			exist[s[right]-'a']++
+			right++
+		} else {
+			exist[s[left]-'a']--
+			left++
+		}
+		if right-left > result {
+			result = right - left
+		}
+	}
+	return result
+}
+
+// sliding window + hashmap
+func lengthOfLongestSubstring2(s string) int {
+	left, right, res := 0, 0, 0
+	indexes := make(map[byte]int, len(s))
+	for right < len(s) {
+		if idx, ok := indexes[s[right]]; ok && idx >= left {
+			left = idx + 1
+		}
+		indexes[s[right]] = right
+		right++
+		res = max(res, right-left)
+	}
+	return res
+}
+
 // 50 - Pow(x, n) - MEDIUM
 // Iteration / let exponent: decimal -> binary
 func myPow(x float64, n int) float64 {

@@ -10,7 +10,7 @@ func main() {
 	// 23, 1249, 236, 371, 437, 146, 600, 47, 430, 994, 460,
 	// 739 117 215 938 173 88 986
 	// sort.Ints / strconv.Itoa / sort.SearchInts / rand.Intn / strings.ToLower / unicode.ToLower
-	// [Go, Golang] R: 140ms/96% M: 7.4MB/88%
+	// [Go, Golang] R: 8ms/74% M: 2.8MB/80%
 
 	// fmt.Println(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4})) //2
 	// fmt.Println()
