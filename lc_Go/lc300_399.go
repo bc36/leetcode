@@ -35,3 +35,35 @@ func maxProfit51(prices []int) int {
 	}
 	return max(d1, d2)
 }
+
+// 367 - Valid Perfect Square - EASY
+// binary search
+func isPerfectSquare(num int) bool {
+	left, right := 0, num
+	for left <= right {
+		mid := (left + right) / 2
+		prod := mid * mid
+		if prod > num {
+			right = mid - 1
+		} else if prod < num {
+			left = mid + 1
+		} else {
+			return true
+		}
+	}
+	return false
+}
+
+// math: sum of odd -> 1+3+5+7+... = n^2
+// (n+1)^2 - n^2 = 2n+1
+func isPerfectSquare2(num int) bool {
+	odd := 1
+	for num > 0 {
+		num -= odd
+		odd += 2
+	}
+	if num == 0 {
+		return true
+	}
+	return false
+}

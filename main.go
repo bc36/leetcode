@@ -21,18 +21,9 @@ func main() {
 	// a := 5
 	// b := -5
 	// fmt.Printf("%b, %b\n", uint8(b), uint8(a))
-	s := "abcd"
-	for i := range s[2:] {
-		println(i)
-		// fmt.Println(s[i], string(s[i]), i)
-	}
-	for i := range s[:3] {
-		println(i)
-		// fmt.Println(s[i], string(s[i]), i)
-	}
-	fmt.Println(s[0:])
-	fmt.Println(s[1:])
-	fmt.Println(s[2:])
+	// fmt.Println(s[0:])
+	// fmt.Println(s[1:])
+	fmt.Printf("%b, %b, %b, %b\n", 128, 84, 202, 256)
 	// d := a ^ a ^ a
 }
 
