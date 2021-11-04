@@ -1,5 +1,5 @@
 from typing import List
-import collections, functools, operator
+import collections, functools
 
 # 121 - Best Time to Buy and Sell Stock - EASY
 # Dynamic Programming
@@ -10,6 +10,47 @@ class Solution:
             ans = max(ans, price - hisLowPrice)
             hisLowPrice = min(hisLowPrice, price)
         return ans
+
+# 129 - Sum Root to Leaf Numbers - MEDIUM
+# dfs
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+class Solution:
+    def sumNumbers(self, root: TreeNode) -> int:
+        def dfs(root: TreeNode, pre: int) -> int:
+            if not root:
+                return 0
+            cur = pre * 10 + root.val
+            if not root.left and not root.right:
+                return cur
+            return dfs(root.left, cur) + dfs(root.right, cur)
+        return dfs(root, 0)
+# bfs
+class Solution:
+    def sumNumbers(self, root: TreeNode) -> int:
+        total = 0
+        nodes = collections.deque([root])
+        # (vals) can be optimized spatially. before each node put into deque, change the value of node
+        vals = collections.deque([root.val])
+        while nodes:
+            node = nodes.popleft()
+            val = vals.popleft()
+            if not node.left and not node.right:
+                total += val
+            else:
+                if node.left:
+                    nodes.append(node.left) 
+                    vals.append(node.left.val + val * 10)   
+                if node.right:
+                    nodes.append(node.right) 
+                    vals.append(node.right.val + val * 10)  
+
+        return total
+
+
 
 # 136 - Single Number - EASY
 # XOR operation

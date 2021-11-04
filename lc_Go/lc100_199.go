@@ -45,6 +45,22 @@ func maxProfit22(prices []int) (ans int) {
 	return
 }
 
+// 129 - Sum Root to Leaf Numbers - MEDIUM
+func sumNumbers(root *TreeNode) int {
+	var dfs func(root *TreeNode, pre int) int
+	dfs = func(root *TreeNode, pre int) int {
+		if root == nil {
+			return 0
+		}
+		cur := pre*10 + root.Val
+		if root.Left == nil && root.Right == nil {
+			return cur
+		}
+		return dfs(root.Left, cur) + dfs(root.Right, cur)
+	}
+	return dfs(root, 0)
+}
+
 // 136 - Single Number - EASY
 // XOR operation
 func singleNumber(nums []int) int {
