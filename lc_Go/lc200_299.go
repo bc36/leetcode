@@ -82,6 +82,22 @@ func kthSmallest(root *TreeNode, k int) int {
 	return res[k-1]
 }
 
+// 236 - Lowest Common Ancestor of a Binary Tree - MEDIUM
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil || root == p || root == q {
+		return root
+	}
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+	if left == nil {
+		return right
+	}
+	if right == nil {
+		return left
+	}
+	return root
+}
+
 // 237 - Delete Node in a Linked List - EASY
 // copy the value of next to the node to be deleted
 // jump through the next node since the value has been saved
@@ -176,4 +192,36 @@ func singleNumber32(nums []int) (ans []int) {
 		}
 	}
 	return
+}
+
+// 268 - Missing Number - EASY
+// sort
+func missingNumber(nums []int) int {
+	sort.Ints(nums)
+	for i, v := range nums {
+		if i != v {
+			return i
+		}
+	}
+	return len(nums)
+}
+
+// XOR
+func missingNumber2(nums []int) int {
+	ans := len(nums)
+	for i, v := range nums {
+		ans = ans ^ i ^ v
+	}
+	return ans
+}
+
+// math
+func missingNumber3(nums []int) int {
+	n := len(nums)
+	total := (0 + n) * (n + 1) / 2
+	sum := 0
+	for _, v := range nums {
+		sum += v
+	}
+	return total - sum
 }
