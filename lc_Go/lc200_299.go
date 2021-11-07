@@ -1,6 +1,9 @@
 package lc_Go
 
-import "sort"
+import (
+	"sort"
+	"strconv"
+)
 
 // 229 - Majority Element II - MEDIUM
 // similar question: 169 Majority Element
@@ -224,4 +227,24 @@ func missingNumber3(nums []int) int {
 		sum += v
 	}
 	return total - sum
+}
+
+// 299 - Bulls and Cows - MEDIUM
+func getHint(secret, guess string) string {
+	bulls := 0
+	var cntS, cntG [10]int
+	for i := range secret {
+		if secret[i] == guess[i] {
+			bulls++
+		} else {
+			cntS[secret[i]-'0']++
+			cntG[guess[i]-'0']++
+		}
+	}
+	cows := 0
+	for i := 0; i < 10; i++ {
+		cows += min(cntS[i], cntG[i])
+	}
+	// return fmt.Sprintf("%dA%dB", bulls, cows)
+	return strconv.Itoa(bulls) + "A" + strconv.Itoa(cows) + "B"
 }

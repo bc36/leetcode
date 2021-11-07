@@ -111,3 +111,27 @@ class Solution:
         for v in nums:
             sum += v
         return total - sum
+
+
+# 299 - Bulls and Cows - MEDIUM
+class Solution:
+    def getHint(self, secret: str, guess: str) -> str:
+        bull = 0
+        numS, numG = [0] * 10, [0] * 10
+        for k, _ in enumerate(secret):
+            if secret[k] == guess[k]:
+                bull += 1
+            else:
+                numS[int(secret[k])] += 1
+                numG[int(guess[k])] += 1
+        cow = sum([min(numS[k], numG[k]) for k, _ in enumerate(numS)])
+
+        # base = set(guess)
+        # for i in base:
+        #     if i in secret:
+        #         cow += min(guess.count(i),secret.count(i))
+        # cow = cow-bull
+
+        # str(bull) + "A" + str(cow) + "B"
+        # "{}A{}B".format(bull, cow)
+        return f'{bull}A{cow}B'
