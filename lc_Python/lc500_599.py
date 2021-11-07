@@ -2,11 +2,13 @@ import collections
 import random, bisect, itertools
 from typing import List
 
+
 # 500 - Keyboard Row - EASY
 # The '<' and '>' operators are testing for strict subsets
 class Solution:
     def findWords(self, words):
-        line1, line2, line3 = set('qwertyuiop'), set('asdfghjkl'), set('zxcvbnm')
+        line1, line2, line3 = set('qwertyuiop'), set('asdfghjkl'), set(
+            'zxcvbnm')
         ret = []
         for word in words:
             w = set(word.lower())
@@ -29,14 +31,23 @@ class Solution:
         rand = random.randint(1, self.presum[-1])
         return bisect.bisect_left(self.presum, rand)
 
+
 # 575 - Distribute Candies - EASY
 # counter
 class Solution:
     def distributeCandies(self, candyType: List[int]) -> int:
         # len(candyType) // 2
-        return min(len(collections.Counter(candyType)), int(len(candyType) / 2))
-        
+        return min(len(collections.Counter(candyType)),
+                   int(len(candyType) / 2))
+
+
 # set
 class Solution:
     def distributeCandies(self, candyType: List[int]) -> int:
         return min(len(set(candyType)), len(candyType) // 2)
+
+
+# 598 - Range Addition II - EASY
+class Solution:
+    def maxCount(self, m: int, n: int, ops: List[List[int]]) -> int:
+        return 1

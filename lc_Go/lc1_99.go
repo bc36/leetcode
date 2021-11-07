@@ -72,7 +72,7 @@ func lengthOfLongestSubstring(s string) int {
 	return ans
 }
 
-// byte - 'a' = position -> index !!
+// byte - 'a' = position -> index
 func lengthOfLongestSubstring1(s string) int {
 	if len(s) == 0 {
 		return 0
@@ -80,8 +80,8 @@ func lengthOfLongestSubstring1(s string) int {
 	// 0: not repeated / 1: repeated
 	var exist [256]int
 	result, left, right := 0, 0, 0
-	for left < len(s) {
-		if right < len(s) && exist[s[right]-'a'] == 0 {
+	for right < len(s) {
+		if exist[s[right]-'a'] == 0 {
 			exist[s[right]-'a']++
 			right++
 		} else {
