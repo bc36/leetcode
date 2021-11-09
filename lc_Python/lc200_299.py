@@ -3,6 +3,24 @@ from typing import List
 import collections, lc100_199
 
 
+# 206 - Reverse Linked List - EASY
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        pre = None
+        while head:
+            tmp = head.next
+            head.next = pre
+            pre = head
+            head = tmp
+        return pre
+
+
 # 235 - Lowest Common Ancestor of a Binary Search Tree - EASY
 class TreeNode:
     def __init__(self, x):

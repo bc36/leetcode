@@ -1,4 +1,4 @@
-import bisect, collections, functools, random, operator
+import bisect, collections, functools, random, operator, math
 from typing import Iterable
 '''
 Function usually used
@@ -66,3 +66,31 @@ class Solution:
         while len(res) > 1 and res[-1] == 0:
             res.pop()
         return ''.join(map(str, res[::-1]))
+
+
+# 62 - Unique Paths - MEDIUM
+# dp[i][j] peresent the maximum value of paths that can reach this point
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        # dp = [[1] * n] + [[1] + [0] * (n - 1) for _ in range(m - 1)]
+        dp = [[0 for _ in range(n)] for j in range(m)]
+        # initialize
+        for i in range(m):
+            dp[i][0] = 1
+        for j in range(n):
+            dp[0][j] = 1
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+        return dp[m - 1][n - 1]
+
+
+# combination
+# To make the machine get to the corner, the number of steps to the right and the number of steps to the left are fixed
+# m - 1 down && n - 1 right -> m + n - 1 times movement
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        return math.comb(m + n - 2, n - 1)
+
+
+# 96 - Unique Binary Search Trees - MEDIUM
