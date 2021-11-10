@@ -1,4 +1,5 @@
 import bisect
+from typing import List
 
 
 # 1146 - Snapshot Array - MEDIUM
@@ -23,3 +24,26 @@ class SnapshotArray:
         k = list(d.keys())
         i = bisect.bisect_left(k, snap_id)
         return d[k[i - 1]]
+
+
+# 1178 - Number of Valid Words for Each Puzzle - HARD
+# 超时
+class Solution:
+    def findNumOfValidWords(self, words: List[str],
+                            puzzles: List[str]) -> List[int]:
+        puzzleSet = [set(p) for p in puzzles]
+        wordSet = [set(w) for w in words]
+        # firstLetters = set([p[0] for p in puzzles])
+        ans = []
+        for i, puzzle in enumerate(puzzles):
+            num = 0
+            for j in range(len(words)):
+                # contain the first letter of puzzle
+                if puzzle[0] in wordSet[j]:  
+                    # every letter is in puzzle
+                    if wordSet[j] <= puzzleSet[i]:
+                        num +=1
+            # print("--------------")
+            ans.append(num)
+                
+        return ans

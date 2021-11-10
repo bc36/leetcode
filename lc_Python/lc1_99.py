@@ -93,4 +93,31 @@ class Solution:
         return math.comb(m + n - 2, n - 1)
 
 
+# 76 - Minimum Window Substring - HARD
+#
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        needdic = collections.Counter(t)
+        need = len(t)
+        left, right = 0, float("inf")  # record answer
+        i = 0
+        for j, ch in enumerate(s):
+            # ch in needdic
+            if needdic[ch] > 0:
+                need -= 1
+            needdic[ch] -= 1
+            if need == 0:
+                # move left point
+                while i < j and needdic[s[i]] < 0:
+                    needdic[s[i]] += 1
+                    i += 1
+                # update new answer
+                if j - i < right - left:
+                    left, right = i, j
+                i += 1
+                needdic[s[i]] += 1
+                need += 1
+        return "" if right > len(s) else s[left:right + 1]
+
+
 # 96 - Unique Binary Search Trees - MEDIUM
