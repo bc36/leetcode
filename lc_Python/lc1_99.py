@@ -1,5 +1,5 @@
 import bisect, collections, functools, random, operator, math
-from typing import Iterable
+from typing import Iterable, List
 '''
 Function usually used
 
@@ -51,6 +51,61 @@ class Solution:
 
             ans = max(ans, right - left)
         return ans
+
+
+# 31 - Next Permutation - MEDUIM
+# find the first number that is greater than the adjecent number on the right
+# then swap this number with the smallest number among the numbers larger than it on the right.
+# then sort the numbers to the right side of this number in ascending order
+class Solution:
+    def nextPermutation(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        # greater save the number value and position
+        greater = [[nums[-1], -1]]
+        for i in range(len(nums) - 2, -1, -1):
+            # find 'first number'
+            if nums[i] < nums[i + 1]:
+                # find the swap position
+                greater.sort()
+                for pair in greater:
+                    if nums[i] < pair[0]:
+                        # swap
+                        nums[i], nums[pair[1]] = nums[pair[1]], nums[i]
+                        # make the rest number ascending order
+                        rightSide = nums[i + 1:]
+                        rightSide.sort()
+                        nums[i + 1:] = rightSide
+                        return
+
+            # update 'greater'
+            greater.append([nums[i], i])
+
+        # did not find such number
+        nums.reverse()
+        return
+
+
+# better
+class Solution:
+    def nextPermutation(self, nums: List[int]) -> None:
+        i = len(nums) - 2
+        while i >= 0 and nums[i] >= nums[i + 1]:
+            i -= 1
+        # i == -1 means that the whole list is descending order
+        if i >= 0:
+            j = len(nums) - 1
+            # find the smaller number to be swapped
+            while j >= 0 and nums[i] >= nums[j]:
+                j -= 1
+            nums[i], nums[j] = nums[j], nums[i]
+        # swap to make the right list ascending order
+        left, right = i + 1, len(nums) - 1
+        while left < right:
+            nums[left], nums[right] = nums[right], nums[left]
+            left += 1
+            right -= 1
 
 
 # 43 - Multiply Strings - MEDIUM

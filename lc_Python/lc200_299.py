@@ -21,6 +21,13 @@ class Solution:
         return pre
 
 
+# 215 - Kth Largest Element in an Array - MEDIUM
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        return nums[-k]
+
+
 # 235 - Lowest Common Ancestor of a Binary Search Tree - EASY
 class TreeNode:
     def __init__(self, x):
@@ -53,10 +60,12 @@ class Solution:
 
 
 # 236 - Lowest Common Ancestor of a Binary Tree - MEDIUM
+# need to know the status of left and right subtrees
+# then we can proceed to the next step, so we use postorder traversal
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
-        if not root or p == root or q == root:
+        if not root or p.val == root.val or q.val == root.val:
             return root
         left = self.lowestCommonAncestor(root.left, p, q)
         right = self.lowestCommonAncestor(root.right, p, q)
@@ -66,6 +75,55 @@ class Solution:
         if not right:
             return left
         return root
+
+
+# three cases:
+# 1. root == p || root == q
+# 2. p, q are subtree in two sides (p in left, q in right and vice versa)
+# 3. p, q on the same side of subtree, recursive
+
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
+                             q: 'TreeNode') -> 'TreeNode':
+        if not root:
+            return None
+        if root.val == p.val: return root
+        if root.val == q.val: return root
+        leftNode = self.lowestCommonAncestor(root.left, p, q)
+        rightNode = self.lowestCommonAncestor(root.right, p, q)
+        if leftNode and rightNode: return root
+        return leftNode if leftNode else rightNode
+
+
+# iterative solution
+
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
+                             q: 'TreeNode') -> 'TreeNode':
+        stack = [root]
+        parent = {root: None}
+        # find p's and q's parents
+        while p not in parent or q not in parent:
+            node = stack.pop()
+            if node.left:
+                parent[node.left] = node
+                stack.append(node.left)
+            if node.right:
+                parent[node.right] = node
+                stack.append(node.right)
+        ancestors = set()
+        # Backtracking p's all ancestors, until to the root
+        while p:
+            ancestors.add(p)
+            p = parent[p]
+            print(p)
+        print(ancestors)
+        # find q's ancestor, if not, until to the root
+        while q not in ancestors:
+            q = parent[q]
+        return q
 
 
 # 260 - Single Number III - MEDUIM
