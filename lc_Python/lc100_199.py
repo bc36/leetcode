@@ -21,10 +21,31 @@ class Solution:
         return ans
 
 
+# 128 - Longest Consecutive Sequence - MEDIUM
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        nums = set(nums)
+        longest = 0
+        for num in nums:
+            if num - 1 not in nums:
+                curNum = num
+                curLen = 1
+                while curNum + 1 in nums:
+                    curNum += 1
+                    curLen += 1
+                '''
+                'curLen' can be optimized
+                nextOne = num + 1
+                while nextOne in nums:
+                    nextOne += 1
+                longest = max(longest, nextOne - num)
+                '''
+                longest = max(longest, curLen)
+        return longest
+
+
 # 129 - Sum Root to Leaf Numbers - MEDIUM
 # dfs
-
-
 class Solution:
     def sumNumbers(self, root: TreeNode) -> int:
         def dfs(root: TreeNode, pre: int) -> int:

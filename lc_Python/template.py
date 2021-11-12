@@ -57,3 +57,18 @@ class Solution:
 
         dfs(root, 0)
         return res
+
+
+# 单调栈(单调递增或单调递减) 解决 下一个更大元素 等问题
+class Solution:
+    def nextGreaterElement(self, nums: List[int]) -> List[int]:
+        ans = [0] * len()
+        stack = []
+        for i in range(len(nums) - 1, -1, -1):
+            while stack and stack[-1] < nums[i]:
+                stack.pop()
+            ans[i] = -1 if len(stack) == 0 else stack[-1]
+            # 下标入栈泛化性更好
+            stack.append(nums[i])
+
+        return ans

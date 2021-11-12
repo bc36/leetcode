@@ -13,12 +13,16 @@ bit operation
 '''
 
 # For viewing definitions
+
+# LIBRARY FUNCTION
 bisect.bisect_left()
 collections.Counter(dict)
 collections.deque(Iterable)
 random.randint()
 functools.reduce()
 operator.xor()
+# CLASS METHOD
+dict.setdefault()
 
 
 # 3 - Longest Substring Without Repeating Characters - MEDIUM
