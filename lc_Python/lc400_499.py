@@ -83,13 +83,11 @@ class Solution:
                 dic[num] = stack[-1]
             stack.append(num)
         return [dic.get(num, -1) for num in nums1]
-        '''
-        stack, dic = [], {}
-        for n in nums2:
-            while (len(stack) and stack[-1] < n):
-                dic[stack.pop()] = n
-            stack.append(n)
-        for i in range(len(nums1)):
-            nums1[i] = dic.get(nums1[i], -1)
-        return nums1
-        '''
+        # stack, dic = [], {}
+        # for n in nums2:
+        #     while (len(stack) and stack[-1] < n):
+        #         dic[stack.pop()] = n
+        #     stack.append(n)
+        # for i in range(len(nums1)):
+        #     nums1[i] = dic.get(nums1[i], -1)
+        # return nums1

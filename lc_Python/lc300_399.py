@@ -1,6 +1,12 @@
 import math
 
 
+# 301 - Remove Invalid Parentheses - HARD
+class Solution:
+    def removeInvalidParentheses(self, s: str) -> List[str]:
+        return
+
+
 # 367 - Valid Perfect Square - EASY
 # binary search
 class Solution:

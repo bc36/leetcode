@@ -1,6 +1,5 @@
-from operator import le
-from typing import List
-import collections, functools
+from typing import List, Optional
+import collections, functools, copy
 
 
 class TreeNode:
@@ -8,6 +7,46 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
+
+
+# 102 - Binary Tree Level Order Traversal - MEDIUM
+# bfs: breadth-first search
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        ans, values = [], []
+        nodeStack = collections.deque()
+        if root:
+            nodeStack.append(root)
+        while nodeStack:
+            for _ in list(nodeStack):
+                node = nodeStack.popleft()
+                if node.left:
+                    nodeStack.append(node.left)
+                if node.right:
+                    nodeStack.append(node.right)
+                values.append(node.val)
+            ans.append(values)
+            values = []
+        return ans
+
+
+# dfs: depth-first search
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        ans = []
+
+        def dfs(root: TreeNode, level: int):
+            if not root:
+                return
+            if level == len(ans):
+                ans.append([])
+            ans[level].append(root.val)
+            dfs(root.left, level + 1)
+            dfs(root.right, level + 1)
+            return
+
+        dfs(root, 0)
+        return ans
 
 
 # 121 - Best Time to Buy and Sell Stock - EASY
@@ -19,6 +58,19 @@ class Solution:
             ans = max(ans, price - hisLowPrice)
             hisLowPrice = min(hisLowPrice, price)
         return ans
+
+
+# 125 - Valid Palindrome - EASY
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        s = s.lower()
+        s = "".join([
+            ch for ch in s if (97 <= ord(ch) and ord(ch) <= 122) or (
+                48 <= ord(ch) and ord(ch) <= 57)
+        ])
+        # s.isalnum(): alphabet or numeric
+        # s = "".join(ch.lower() for ch in s if ch.isalnum())
+        return s == s[::-1]
 
 
 # 128 - Longest Consecutive Sequence - MEDIUM
@@ -119,6 +171,165 @@ class Solution:  # 没看懂
             # 既不在出现两次的b2里面，也不再出现一次的b1里面(不止一次了)，记录出现两次，第三次则会抵消
             b2 = (b2 ^ n) & ~b1
         return b1
+
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
+
+
+# 138 - Copy List with Random Pointer - MEDIUM
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+
+
+class Solution:
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        return copy.deepcopy(head)
+
+
+class Solution:
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        if not head:
+            return None
+        dic = {}
+        headCP = head
+        # save node value
+        while head:
+            valHead = Node(head.val)
+            dic[head] = valHead
+            head = head.next
+        head = headCP
+        tmp = dic[head]
+        ans = tmp
+        # process random pointer
+        while head:
+            if head.next:
+                tmp.next = dic[head.next]
+            if head.random:
+                tmp.random = dic[head.random]
+            head = head.next
+            tmp = tmp.next
+        return ans
+
+
+# 146 - LRU Cache - MEDIUM
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cap = capacity
+        self.dic = {}
+        self.seq = collections.deque()
+
+    def get(self, key: int) -> int:
+        value = self.dic.get(key, -1)
+        if value != -1:
+            self.seq.remove(key)
+            self.seq.append(key)
+        return value
+
+    def put(self, key: int, value: int) -> None:
+        # have the same key
+        if key in self.dic:
+            self.dic[key] = value
+            self.seq.remove(key)
+            self.seq.append(key)
+            return
+        # whether cache reach to the capacity
+        if len(self.dic) == self.cap:
+            delete = self.seq.popleft()
+            self.dic.pop(delete)
+        # insert
+        self.dic[key] = value
+        self.seq.append(key)
+        return
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = collections.OrderedDict()
+
+    def get(self, key: int) -> int:
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)
+        return self.cache[key]
+
+    def put(self, key: int, value: int) -> None:
+        self.cache[key] = value
+        self.cache.move_to_end(key)
+        # del self.cache[key]
+        # # del is faster, pop() or popitem() used to get the return value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+
+
+# 173 - Binary Search Tree Iterator - MEDIUM
+# save all node.val by inorder traversal
+class BSTIterator:
+    def __init__(self, root: Optional[TreeNode]):
+        self.stack = collections.deque()
+        self.inorder(root)
+
+    def next(self) -> int:
+        return self.stack.popleft()
+
+    def hasNext(self) -> bool:
+        return len(self.stack) > 0
+
+    def inorder(self, root: TreeNode) -> None:
+        if not root:
+            return
+        self.inorder(root.left)
+        self.stack.append(root.val)
+        self.inorder(root.right)
+        return
+
+
+# iterate. save all left nodes while pop each node
+class BSTIterator:
+    def __init__(self, root: TreeNode):
+        self.stack = []
+        while root:
+            self.stack.append(root)
+            root = root.left
+
+    def next(self):
+        cur = self.stack.pop()
+        node = cur.right
+        while node:
+            self.stack.append(node)
+            node = node.left
+        return cur.val
+
+    def hasNext(self) -> bool:
+        return len(self.stack) > 0
+
+
+# Abstract the putting into stack operation into a function
+class BSTIterator:
+    def __init__(self, root: TreeNode):
+        self.stack = []
+        self.pushAllLeftNodes(root)
+
+    def next(self):
+        cur = self.stack.pop()
+        node = cur.right
+        self.pushAllLeftNodes(node)
+        return cur.val
+
+    def hasNext(self) -> bool:
+        return len(self.stack) > 0
+
+    def pushAllLeftNodes(self, root: TreeNode) -> None:
+        while root:
+            self.stack.append(root)
+            root = root.left
+        return
 
 
 # 199 - Binary Tree Right Side View - MEDIUM

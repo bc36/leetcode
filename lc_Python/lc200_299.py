@@ -1,6 +1,100 @@
 from operator import le
-from typing import List
+from typing import List, Optional
 import collections, lc100_199
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+# 203 - Remove Linked List Elements - EASY
+class Solution:
+    def removeElements(self, head: Optional[ListNode],
+                       val: int) -> Optional[ListNode]:
+        dummyHead = ListNode(-1)
+        dummyHead.next = head
+        cur = dummyHead
+        while cur.next != None:
+            if cur.next.val == val:
+                cur.next = cur.next.next
+            else:
+                cur = cur.next
+        return dummyHead.next
+
+
+# recursive
+class Solution:
+    def removeElements(self, head: Optional[ListNode],
+                       val: int) -> Optional[ListNode]:
+        if head == None:
+            return None
+        # head.next = self.removeElements(head.next, val)
+        # return head.next if head.val == val else head
+        next = self.removeElements(head.next, val)
+        if head.val == val:
+            return next
+        head.next = next
+        return head
+
+
+# v1 two pointers
+class Solution:
+    def removeElements(self, head: Optional[ListNode],
+                       val: int) -> Optional[ListNode]:
+        pre = None
+        cur = head
+        while cur:
+            if cur.val == val:
+                if not pre:
+                    head = head.next
+                else:
+                    pre.next = cur.next
+            else:
+                pre = cur
+            cur = cur.next
+        return head
+
+
+# v2 two pointers
+class Solution:
+    def removeElements(self, head: Optional[ListNode],
+                       val: int) -> Optional[ListNode]:
+        dummyHead = ListNode(-1)
+        dummyHead.next = head
+        cur = head
+        pre = dummyHead
+        while cur:
+            if cur.val == val:
+                pre.next = cur.next
+            else:
+                pre = pre.next
+            cur = cur.next
+        return dummyHead.next
+
+
+# v3 NOT WORK!! / input: [7,7,7,7] 7
+# head did not change
+class Solution:
+    def removeElements(self, head: Optional[ListNode],
+                       val: int) -> Optional[ListNode]:
+        pre = ListNode(-1)
+        pre.next = head
+        cur = head
+        '''
+        # is also wrong assigning way, it will create two new objects
+        dummyHead, pre = ListNode(-1), ListNode(-1)
+        dummyHead.next, pre.next = head, head
+        return dummyHead.next
+        '''
+        while cur:
+            if cur.val == val:
+                pre.next = cur.next
+            else:
+                pre = pre.next
+            cur = cur.next
+        return head
 
 
 # 206 - Reverse Linked List - EASY
@@ -124,6 +218,13 @@ class Solution:
         while q not in ancestors:
             q = parent[q]
         return q
+
+
+# 237 - Delete Node in a Linked List - EASY
+class Solution:
+    def deleteNode(self, node: ListNode):
+        node.val = node.next.val
+        node.next = node.next.next
 
 
 # 260 - Single Number III - MEDUIM

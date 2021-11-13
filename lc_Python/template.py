@@ -24,7 +24,10 @@ class Solution:
         while que:
             size = len(que)
             thisLevel = []
+            # for _ in list(nodeStack): list冻结deque, 否则在更改deque的同时迭代报错如下:
+            # RuntimeError: deque mutated during iteration
             for _ in range(size):
+                # 倒序弹出
                 cur = que.popleft()
                 thisLevel.append(cur.val)
                 if cur.left:
@@ -41,13 +44,13 @@ class Solution:
     def levelOrder(self, root: TreeNode) -> List[List[int]]:
         res = []
 
-        def dfs(root, depth):
+        def dfs(root: TreeNode, depth: int):
             if not root:
-                return []
+                return
             if len(res) == depth:
                 # start the current depth
                 res.append([])
-            # fulfil the current depth
+            # fulfil the current depth, do some operation
             res[depth].append(root.val)
             # process child nodes for the next depth
             if root.left:
@@ -72,3 +75,6 @@ class Solution:
             stack.append(nums[i])
 
         return ans
+
+
+# 链表 recursive lc-203

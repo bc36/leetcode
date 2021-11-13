@@ -1,5 +1,5 @@
 import bisect, collections, functools, random, operator, math
-from typing import Iterable, List
+from typing import AnyStr, Iterable, List
 '''
 Function usually used
 
@@ -55,6 +55,28 @@ class Solution:
 
             ans = max(ans, right - left)
         return ans
+
+
+# 20 - Valid Parentheses - EASY
+# stack
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        for ch in s:
+            if len(stack) == 0 and (ch == ")" or ch == "]" or ch == "}"):
+                return False
+            elif ch == "(" or ch == "[" or ch == "{":
+                stack.append(ch)
+            elif ch == ")":
+                if stack.pop() != "(":
+                    return False
+            elif ch == "]":
+                if stack.pop() != "[":
+                    return False
+            elif ch == "}":
+                if stack.pop() != "{":
+                    return False
+        return len(stack) == 0
 
 
 # 31 - Next Permutation - MEDUIM
@@ -127,6 +149,42 @@ class Solution:
         return ''.join(map(str, res[::-1]))
 
 
+# 56 - Merge Intervals - MEDIUM
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        ans = []
+        intervals.sort()
+        i = 0
+        while i < len(intervals):
+            # no need to use 'left', since intervals has been sorted
+            right = intervals[i][1]
+            j = i + 1
+            while j < len(intervals) and right >= intervals[j][0]:
+                right = max(intervals[j][1], right)
+                j += 1
+            ans.append([intervals[i][0], right])
+            i = j
+
+        return ans
+
+
+# two pointers
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        res = []
+        intervals = sorted(intervals, key=lambda x: x[0])
+        left, right = intervals[0][0], intervals[0][1]
+        for i in range(1, len(intervals)):
+            if intervals[i][0] <= right:
+                right = max(right, intervals[i][1])
+            else:
+                res.append([left, right])
+                left = intervals[i][0]
+                right = intervals[i][1]
+        res.append([left, right])
+        return res
+
+
 # 62 - Unique Paths - MEDIUM
 # dp[i][j] peresent the maximum value of paths that can reach this point
 class Solution:
@@ -150,6 +208,34 @@ class Solution:
 class Solution:
     def uniquePaths(self, m: int, n: int) -> int:
         return math.comb(m + n - 2, n - 1)
+
+
+# 71 - Simplify Path - MEDIUM
+class Solution:
+    def simplifyPath(self, path: str) -> str:
+        # places = [p for p in path.split("/") if p != "." and p != ""]
+        sp = path.split("/")
+        stack = []
+        for i in sp:
+            if i == "" or i == ".":
+                continue
+            elif i == "..":
+                if len(stack) > 0:
+                    stack.pop()
+            else:
+                stack.append(i)
+        return "/" + "/".join(stack)
+
+
+class Solution:
+    def simplifyPath(self, path: str) -> str:
+        stack = []
+        for p in path.split("/"):
+            if stack and p == "..":
+                stack.pop()
+            elif p not in "..":
+                stack.append(p)
+        return "/" + "/".join(stack)
 
 
 # 76 - Minimum Window Substring - HARD
@@ -177,6 +263,34 @@ class Solution:
                 needdic[s[i]] += 1
                 need += 1
         return "" if right > len(s) else s[left:right + 1]
+
+
+# 88 - Merge Sorted Array - EASY
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int],
+              n: int) -> None:
+        i, j, insertPos = m - 1, n - 1, m + n - 1
+        while i >= 0 and j >= 0:
+            if nums1[i] > nums2[j]:
+                nums1[insertPos] = nums1[i]
+                i -= 1
+            else:
+                nums1[insertPos] = nums2[j]
+                j -= 1
+            insertPos -= 1
+        while j >= 0:
+            nums1[insertPos] = nums2[j]
+            j -= 1
+            insertPos -= 1
+        return
+
+
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int],
+              n: int) -> None:
+        nums1[m:] = nums2
+        nums1.sort()
+        return
 
 
 # 96 - Unique Binary Search Trees - MEDIUM

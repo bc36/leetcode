@@ -17,6 +17,35 @@ class Solution:
         return ret
 
 
+# 520 - Detect Capital - EASY
+# brutal-force
+class Solution:
+    def detectCapitalUse(self, word: str) -> bool:
+        if ord(word[0]) >= 97 and ord(word[0]) <= 122:
+            for ch in word:
+                if ord(ch) < 97 or ord(ch) > 122:
+                    return False
+        else:
+            if len(word) > 1:
+                if ord(word[1]) >= 65 and ord(word[1]) <= 90:
+                    for ch in word[1:]:
+                        if ord(ch) < 65 or ord(ch) > 90:
+                            return False
+                else:
+                    for ch in word[1:]:
+                        if ord(ch) < 97 or ord(ch) > 122:
+                            return False
+        return True
+
+
+class Solution:
+    def detectCapitalUse(self, word: str) -> bool:
+        # Solution 1: word.istitle()
+        return word.istitle() or word.isupper() or word.islower()
+        # Solution 2:
+        # return word[1:] == word[1:].lower() or word == word.upper()
+
+
 # 523 - Continuous Subarray Sum - MEDUIM
 # brutal-force: Time Limit Exceeded
 class Solution:
