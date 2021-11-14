@@ -1,10 +1,20 @@
-import math
+from typing import List
+import collections
 
 
 # 301 - Remove Invalid Parentheses - HARD
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
         return
+
+
+# 347 - Top K Frequent Elements - MEDIUM
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        cnt = collections.Counter(nums)
+        # sorted by value and get the key
+        return [i[0] for i in sorted(cnt.items(), key=lambda x: x[1])[-k:]]
+        # return [i[0] for i in sorted(cnt.items(), key=lambda x: x[1], reverse=True)[:k]]
 
 
 # 367 - Valid Perfect Square - EASY

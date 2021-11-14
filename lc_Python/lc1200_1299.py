@@ -1,6 +1,6 @@
 from operator import le
-from typing import List
-import collections
+from typing import Iterable, List
+import collections, itertools
 
 
 # 1218 - Longest Arithmetic Subsequence of Given Difference - MEDIUM
@@ -80,3 +80,15 @@ class Solution:
         while stack:
             arr[stack.pop()] = ""
         return ''.join(arr)
+
+
+# 1286 - Iterator for Combination - MEDIUM
+class CombinationIterator:
+    def __init__(self, characters: str, combinationLength: int):
+        self.dq = collections.deque(
+            itertools.combinations(characters, combinationLength))
+    def next(self) -> str:
+        return ''.join(self.dq.popleft())
+
+    def hasNext(self) -> bool:
+        return len(self.dq) > 0

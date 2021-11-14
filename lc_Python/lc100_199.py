@@ -1,5 +1,5 @@
 from typing import List, Optional
-import collections, functools, copy
+import collections, functools, copy, random
 
 
 class TreeNode:
@@ -266,6 +266,41 @@ class LRUCache:
         # # del is faster, pop() or popitem() used to get the return value
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
+
+
+# 162 - Find Peak Element - MEDIUM
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        if len(nums) == 1:
+            return 0
+        if nums[0] > nums[1]:
+            return 0
+        if len(nums) == 2:
+            return 1
+        for i in range(1, len(nums) - 1):
+            if nums[i - 1] < nums[i] and nums[i] > nums[i + 1]:
+                return i
+        return len(nums) - 1
+
+
+# climbing to the greater side
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        idx = random.randint(0, len(nums) - 1)
+
+        # helper function: help to handle boundary situations
+        def getValue(i: int) -> int:
+            if i == -1 or i == len(nums):
+                return float("-inf")
+            return nums[i]
+
+        while not (getValue(idx - 1) < getValue(idx)
+                   and getValue(idx) > getValue(idx + 1)):
+            if getValue(idx) < getValue(idx + 1):
+                idx += 1
+            else:
+                idx -= 1
+        return idx
 
 
 # 173 - Binary Search Tree Iterator - MEDIUM

@@ -84,21 +84,33 @@ class Solution:
 # we return True
 class Solution:
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
-        rmd, presumRmd = {0: -1}, 0
+        rmd, sumRmd = {0: -1}, 0
         # why {0: -1}:
         # -1 is just before you start the index.
         # So if you get the first 2 elements sum to k,
         # your current i is 1. So 1 - (-1) = 2 still satisfies the return True condition.
         for i, num in enumerate(nums):
-            if k != 0:
-                presumRmd = (num + presumRmd) % k
+            sumRmd = (num + sumRmd) % k
+            if sumRmd not in rmd:
+                rmd[sumRmd] = i
             else:
-                presumRmd += num
-            if presumRmd not in rmd:
-                rmd[presumRmd] = i
-            else:
-                if i - rmd[presumRmd] > 1:
+                if i - rmd[sumRmd] > 1:
                     return True
+            # wrong way: when input -> [5, 0, 0, 0] 3
+            # since when 'sumRmd' is in 'rmd',
+            # but 'i - rmd[sumRmd] == 1',
+            # index will be updated rather than keep the old position
+            if sumRmd in rmd and i - rmd[sumRmd] > 1:
+                return True
+            else:
+                rmd[sumRmd] = i
+            # right way:
+            # if sumRmd in rmd and i - rmd[sumRmd] > 1:
+            #     return True
+            # elif sumRmd in rmd and i - rmd[sumRmd] <= 1:
+            #     continue
+            # else:
+            #     rmd[sumRmd] = i
         return False
 
 
@@ -106,15 +118,28 @@ class Solution:
 # so we just need to insert the mod one iteration later.
 class Solution:
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
-        summ, pre = 0, 0
+        numSum, pre = 0, 0
         s = set()
         for num in nums:
-            summ += num
-            mod = summ % k
+            numSum += num
+            mod = numSum % k
             if mod in s:
                 return True
             s.add(pre)
             pre = mod
+        return False
+
+
+class Solution:
+    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
+        preSum = [0]  # length = len(nums) + 1
+        for num in nums:
+            preSum.append(preSum[-1] + num)
+        s = set()
+        for i in range(2, len(preSum)):
+            s.add(preSum[i - 2] % k)
+            if preSum[i] % k in s:
+                return True
         return False
 
 
@@ -125,7 +150,6 @@ class Solution:
     def __init__(self, w: List[int]):
         # Calculate the prefix sum to generate a random number
         # The coordinates of the distribution correspond to the size of the number
-        # 计算前缀和，这样可以生成一个随机数，根据数的大小对应分布的坐标
         self.presum = list(itertools.accumulate(w))
 
     def pickIndex(self) -> int:

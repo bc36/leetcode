@@ -1,3 +1,15 @@
+# 677 - Map Sum Pairs - MEDIUM
+class MapSum:
+    def __init__(self):
+        self.d = {}
+
+    def insert(self, key: str, val: int) -> None:
+        self.d[key] = val
+
+    def sum(self, prefix: str) -> int:
+        return sum(self.d[i] for i in self.d if i.startswith(prefix))
+
+
 # 680 - Valid Palindrome II - EASY
 class Solution:
     def validPalindrome(self, s: str) -> bool:

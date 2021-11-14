@@ -1,6 +1,6 @@
 from operator import le
 from typing import List, Optional
-import collections, lc100_199
+import collections, random, heapq
 
 
 class ListNode:
@@ -120,6 +120,160 @@ class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
         nums.sort()
         return nums[-k]
+
+
+# two stacks, almost TLE(Time Limit Exceeded)
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        ans, tmp = [], []
+        for num in nums:
+            if ans:
+                while ans and num > ans[-1]:
+                    # need put to the right position in stack
+                    tmp.append(ans.pop())
+                if len(ans) == k:
+                    tmp = []
+                    continue
+                # descending order, put into stack directly
+                else:
+                    ans.append(num)
+                    while tmp and len(ans) < k:
+                        ans.append(tmp.pop())
+                    tmp = []
+            else:
+                ans.append(num)
+
+        return ans[-1]
+
+
+# partition: based on quick sort
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        left, right = 0, n - 1
+        while True:
+            i, j = left, right
+            # idx = random.choice(nums[left, right])
+            idx = random.randint(left, right)
+            nums[left], nums[idx] = nums[idx], nums[left]
+            while i < j:
+                while i < j and nums[j] >= nums[left]:
+                    j -= 1
+                while i < j and nums[i] <= nums[left]:
+                    i += 1
+                nums[i], nums[j] = nums[j], nums[i]
+            nums[i], nums[left] = nums[left], nums[i]
+            if i == n - k:
+                return nums[i]
+            elif i > n - k:
+                right = i - 1
+            else:
+                left = i + 1
+
+
+# quick select
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        def partition(left: int, right: int, pivot_idx: int):
+            pivot = nums[pivot_idx]
+            # 1. move pivot to end
+            nums[pivot_idx], nums[right] = nums[right], nums[pivot_idx]
+            # 2. move all smaller elements to the left
+            store_idx = left
+            for i in range(left, right):
+                if nums[i] < pivot:
+                    nums[store_idx], nums[i] = nums[i], nums[store_idx]
+                    store_idx += 1
+            # 3. move pivot to its final place, the correct order position
+            nums[right], nums[store_idx] = nums[store_idx], nums[right]
+            return store_idx
+
+        def select(left: int, right: int, k: int):
+            if left == right:
+                return nums[left]
+            pivotIndex = partition(left, right, random.randint(left, right))
+            if k == pivotIndex:
+                return nums[k]
+            elif k < pivotIndex:
+                return select(left, pivotIndex - 1, k)
+            else:
+                return select(pivotIndex + 1, right, k)
+
+        return select(0, len(nums) - 1, len(nums) - k)
+
+
+class Solution:
+    def findKthLargest(self, nums, k):
+        if not nums:
+            return
+        pivot = random.choice(nums)
+        left = [x for x in nums if x < pivot]
+        mid = [x for x in nums if x == pivot]
+        right = [x for x in nums if x > pivot]
+        if k <= len(right):
+            return self.findKthLargest(right, k)
+        elif k <= len(right) + len(mid):
+            return pivot
+        else:
+            return self.findKthLargest(left, k - len(right) - len(mid))
+
+
+class Solution:
+    def findKthLargest(self, nums, k):
+        if not nums: return
+        pivot = random.choice(nums)
+        left = [x for x in nums if x > pivot]  # different from above
+        mid = [x for x in nums if x == pivot]
+        right = [x for x in nums if x < pivot]
+
+        less, more = len(left), len(mid)
+
+        if k <= less:
+            return self.findKthLargest(left, k)
+        elif k > less + more:
+            return self.findKthLargest(right, k - less - more)
+        else:
+            return mid[0]
+
+
+# heap (a.k.a: priority queue)
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        return heapq.nlargest(k, nums)[-1]
+
+
+# heap
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        heap = []
+        for num in nums:
+            heapq.heappush(heap, num)
+        for _ in range(len(nums) - k):
+            heapq.heappop(heap)
+        return heapq.heappop(heap)
+
+
+# O(nk): selections sort idea, almost TLE(Time Limit Exceeded)
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        for i in range(len(nums), len(nums) - k, -1):
+            tmp_max = 0
+            for j in range(i):
+                if nums[j] > nums[tmp_max]:
+                    tmp_max = j
+            nums[tmp_max], nums[i - 1] = nums[i - 1], nums[tmp_max]
+        return nums[len(nums) - k]
+
+
+# O(nk): bubble sort idea, TLE(Time Limit Exceeded)
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        for i in range(k):
+            for j in range(len(nums) - i - 1):
+                if nums[j] > nums[j + 1]:
+                    # exchange elements, time consuming
+                    nums[j], nums[j + 1] = nums[j + 1], nums[j]
+        return nums[len(nums) - k]
 
 
 # 235 - Lowest Common Ancestor of a Binary Search Tree - EASY
