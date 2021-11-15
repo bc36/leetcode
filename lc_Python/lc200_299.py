@@ -1,4 +1,3 @@
-from operator import le
 from typing import List, Optional
 import collections, random, heapq
 
@@ -7,6 +6,13 @@ class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 203 - Remove Linked List Elements - EASY
@@ -236,6 +242,24 @@ class Solution:
             return mid[0]
 
 
+# 11.14 mock
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        def helper(nums: List[int], k: int):
+            pivot = random.choice(nums)
+            left = [x for x in nums if x < pivot]
+            mid = [x for x in nums if x == pivot]
+            right = [x for x in nums if x > pivot]
+            if k <= len(right):
+                return helper(right, k)
+            elif k > len(right) + len(mid):
+                return helper(left, k - len(right) - len(mid))
+            else:
+                return mid[0]
+
+        return helper(nums, k)
+
+
 # heap (a.k.a: priority queue)
 class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
@@ -274,6 +298,176 @@ class Solution:
                     # exchange elements, time consuming
                     nums[j], nums[j + 1] = nums[j + 1], nums[j]
         return nums[len(nums) - k]
+
+
+# 226 - Invert Binary Tree - EASY
+# breadth-first search
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        stack = []
+        if root:
+            stack = [root]
+        while stack:
+            node = stack.pop()
+            if node.left:
+                stack.append(node.left)
+            if node.right:
+                stack.append(node.right)
+            node.left, node.right = node.right, node.left
+
+        return root
+
+
+# depth-first search
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        def dfs(root: TreeNode):
+            if not root:
+                return
+            dfs(root.left)
+            dfs(root.right)
+            root.left, root.right = root.right, root.left
+            return
+
+        dfs(root)
+        return root
+
+
+# recursively
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root:
+            root.left, root.right = self.invertTree(
+                root.right), self.intertTree(root.left)
+        return root
+
+
+# 227 - Basic Calculator II - MEDIUM
+class Solution:
+    def calculate(self, s: str) -> int:
+        s = s.replace(" ", "")
+        newS = []
+        num = ""
+        for ch in s:
+            if ch == '+' or ch == '-' or ch == '*' or ch == '/':
+                if num != "":
+                    newS.append(num)
+                    num = ""
+                newS.append(ch)
+            else:
+                num = num + ch
+        if num != "":
+            newS.append(num)
+
+        addAndSubs = [int(s[0])]
+        for i in range(1, len(s) - 1):
+            if s[i] != '*' and s[i] != "/":
+                addAndSubs.append(s[i])
+            elif s[i] == '*':
+                addAndSubs[-1] = addAndSubs[-1] * s[i + 1]
+                i += 1
+            else:
+                return
+        return
+
+
+# stack
+class Solution:
+    def calculate(self, s: str) -> int:
+        stack = []
+        s += '$'
+        pre_flag = '+'
+        pre_num = 0
+
+        for ch in s:
+            if ch.isdigit():
+                pre_num = pre_num * 10 + int(ch)
+            elif ch == ' ':
+                continue
+            else:
+                if pre_flag == '+':
+                    stack.append(pre_num)
+                elif pre_flag == '-':
+                    stack.append(-pre_num)
+                elif pre_flag == '*':
+                    stack.append(stack.pop() * pre_num)
+                elif pre_flag == '/':
+                    stack.append(stack.pop() // pre_num)
+                pre_flag = ch
+                pre_num = 0
+
+        return sum(stack)
+
+
+# 228 - Summary Ranges - EASY
+class Solution:
+    def summaryRanges(self, nums: List[int]) -> List[str]:
+        if len(nums) == 0:
+            return []
+        elif len(nums) == 1:
+            return [str(nums[0])]
+        ans, length = [], 1
+        nums.append(float('inf'))  # help to process the last element
+        for i in range(1, len(nums)):
+            if nums[i] != nums[i - 1] + 1:
+                if length == 1:
+                    ans.append("".join([str(nums[i - 1])]))
+                else:
+                    ans.append("->".join(
+                        [str(nums[i - length]),
+                         str(nums[i - 1])]))
+                length = 1
+            else:
+                length += 1
+        return ans
+
+
+# 229 - Majority Element II - MEDIUM
+class Solution:
+    def majorityElement(self, nums: List[int]) -> List[int]:
+        cnt = collections.Counter(nums)
+        ans, n = [], len(nums)
+        for i in cnt:
+            if cnt[i] > n // 3:
+                ans.append(i)
+        return ans
+
+
+# up to two potential number appear more then n/3 times
+# when the first 'num1' appears too many times,
+# the second 'num2' may not get enough votes
+class Solution:
+    def majorityElement(self, nums: List[int]) -> List[int]:
+
+        time1, time2, num1, num2 = 0, 0, 0, 0
+        for num in nums:
+            if time1 > 0 and num == num1:
+                time1 += 1
+            elif time2 > 0 and num == num2:
+                time2 += 1
+            elif time1 == 0:
+                num1 = num
+                time1 = 1
+            elif time2 == 0:
+                num2 = num
+                time2 = 1
+            else:
+                time1 -= 1
+                time2 -= 1
+
+        vote1, vote2 = 0, 0
+        for num in nums:
+            if num == num1:
+                vote1 += 1
+            elif num == num2:
+                vote2 += 1
+
+        ans = []
+        if vote1 > len(nums) // 3:
+            ans.append(num1)
+        if vote2 > len(nums) // 3:
+            ans.append(num2)
+        return ans
 
 
 # 235 - Lowest Common Ancestor of a Binary Search Tree - EASY

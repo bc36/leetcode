@@ -87,6 +87,7 @@ class CombinationIterator:
     def __init__(self, characters: str, combinationLength: int):
         self.dq = collections.deque(
             itertools.combinations(characters, combinationLength))
+
     def next(self) -> str:
         return ''.join(self.dq.popleft())
 

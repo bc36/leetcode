@@ -1,3 +1,20 @@
+# 670 - Maximum Swap - MEDIUM
+# Greedy, O(n)
+# find the last occurrence of each number (guarantee that the rightmost number)
+# enumerate each number from left to right, 
+# swap the number when a larger number is found 
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        s = list(str(num))
+        later = {int(x): i for i, x in enumerate(s)}
+        for i, x in enumerate(s):
+            for d in range(9, int(x), -1):
+                if later.get(d, -1) > i:
+                    s[i], s[later[d]] = s[later[d]], s[i]
+                    return "".join(s)
+        return num
+
+
 # 677 - Map Sum Pairs - MEDIUM
 class MapSum:
     def __init__(self):
@@ -13,13 +30,14 @@ class MapSum:
 # 680 - Valid Palindrome II - EASY
 class Solution:
     def validPalindrome(self, s: str) -> bool:
-        left, right = 0, len(s) - 1
-        while left < right:
-            if s[left] != s[right]:
-                deleteI, deleteJ = s[left:right], s[left + 1:right + 1]
+        i, j = 0, len(s) - 1
+        while i < j:
+            if s[i] != s[j]:
+                deleteJ = s[i:j]
+                deleteI = s[i + 1:j + 1]
                 return deleteI == deleteI[::-1] or deleteJ == deleteJ[::-1]
-            left += 1
-            right -= 1
+            i += 1
+            j -= 1
         return True
 
 

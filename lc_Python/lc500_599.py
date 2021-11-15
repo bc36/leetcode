@@ -1,6 +1,15 @@
 import collections
+from operator import le
+from os import pread
 import random, bisect, itertools
 from typing import List
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 500 - Keyboard Row - EASY
@@ -157,11 +166,69 @@ class Solution:
         return bisect.bisect_left(self.presum, rand)
 
 
+class Solution:
+    def __init__(self, w: List[int]):
+        def pre(w: List[int]) -> List[int]:
+            sum = 0
+            ans = []
+            for i in range(len(w)):
+                ans.append(sum + w[i])
+                sum += w[i]
+            return ans
+
+        self.presum = pre(w)
+
+    def pickIndex(self) -> int:
+        rand = random.randint(1, self.presum[-1])
+        left, right = 0, len(self.presum) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if self.presum[mid] >= rand:
+                right = mid
+            else:
+                left = mid + 1
+        return left
+
+
+# 543 - Diameter of Binary Tree - EASY
+class Solution:
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        self.maxL = 0
+
+        def dfs(root: TreeNode) -> int:
+            if not root:
+                return 0
+            leftL = dfs(root.left)
+            rightL = dfs(root.right)
+            self.maxL = max(self.maxL, leftL + rightL)
+            return max(leftL, rightL) + 1
+
+        dfs(root)
+        return self.maxL
+
+
+# 560 - Subarray Sum Equals K - MEDIUM
+# Why not sliding window?
+# The next element might be negative
+# Moving pointer to the right cannot guarantee the sum will become larger
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        presum, ans = 0, 0
+        # 'dic' used to store the number of occurences of each 'presum'
+        # 'dic[0] = 1' indicating that the successive subarray of sum is 0 occured 1 time
+        dic = collections.defaultdict(int)
+        dic[0] = 1
+        for i in range(len(nums)):
+            presum += nums[i]
+            ans += dic[presum - k]
+            dic[presum] += 1
+        return ans
+
+
 # 575 - Distribute Candies - EASY
 # counter
 class Solution:
     def distributeCandies(self, candyType: List[int]) -> int:
-        # len(candyType) // 2
         return min(len(collections.Counter(candyType)),
                    int(len(candyType) / 2))
 
