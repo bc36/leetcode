@@ -79,3 +79,35 @@ class Solution:
         for emails in indexToEmails.values():
             ans.append([emailToName[emails[0]]] + sorted(emails))
         return ans
+
+
+# 791 - Custom Sort String - MEDIUM
+class Solution:
+    def customSortString(self, order: str, s: str) -> str:
+        cnt = collections.Counter(s)
+        ans = ""
+        for ch in order:
+            while cnt.get(ch, 0) and cnt[ch] > 0:
+                ans += ch
+                cnt[ch] -= 1
+        '''
+        'ch' will have been assigned value and can be called,
+        even if it in the last for loop and for loop ended
+        print(ch)
+        '''
+        for ch in cnt:
+            while cnt[ch] != 0:
+                ans += ch
+                cnt[ch] -= 1
+        return ans
+
+
+class Solution:
+    def customSortString(self, order: str, s: str) -> str:
+        cnt, ans = collections.Counter(s), ""
+        for ch in order:
+            if ch in cnt:
+                ans += ch * cnt[ch]
+                cnt.pop(ch)
+
+        return ans + "".join(ch * cnt[ch] for ch in cnt)

@@ -61,6 +61,58 @@ class Solution:
         return False
 
 
+# 368 - Largest Divisible Subset - MEDIUM
+# dynamic programming
+# dp[i]: considering the first i numbers,
+#        have the largest divisible subset ending with index i
+# since we have to give the final solution,
+# we need extra 'g[]' to record where does each state transfer from
+#
+# For the problem of finding the number of solutions,
+# it is the most common means to use an extra array
+# to record where the state is transferred from.
+class Solution:
+    def largestDivisibleSubset(self, nums: List[int]) -> List[int]:
+        nums.sort()
+        n = len(nums)
+        dp, g = [0] * n, [0] * n
+        for i in range(n):
+            # including number itself, so length start with 1
+            length, prev_idx = 1, i
+            for j in range(i):
+                if nums[i] % nums[j] == 0:
+                    # update the max length and where it come from
+                    if dp[j] + 1 > length:
+                        length = dp[j] + 1
+                        prev_idx = j
+            # record final 'length' and 'come from'
+            dp[i] = length
+            g[i] = prev_idx
+        max_len = idx = -1
+        for i in range(n):
+            if dp[i] > max_len:
+                max_len = dp[i]
+                idx = i
+        ans = []
+        while len(ans) < max_len:
+            ans.append(nums[idx])
+            idx = g[idx]
+        ans.reverse()
+        return ans
+
+
+# greedy
+class Solution:
+    def largestDivisibleSubset(self, nums: List[int]) -> List[int]:
+        nums.sort()
+        f = [[x] for x in nums]  # answer at nums[i]
+        for i in range(len(nums)):
+            for j in range(i):
+                if nums[i] % nums[j] == 0 and len(f[i]) < len(f[j]) + 1:
+                    f[i] = f[j] + [nums[i]]
+        return max(f, key=len)
+
+
 # 374 - Guess Number Higher or Lower - EASY
 # The guess API is already defined for you.
 # @param num, your guess
