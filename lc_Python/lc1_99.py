@@ -1,4 +1,5 @@
 import bisect, collections, functools, random, operator, math
+from posix import X_OK
 from typing import AnyStr, Iterable, List
 '''
 Function usually used
@@ -149,6 +150,44 @@ class Solution:
         return ''.join(map(str, res[::-1]))
 
 
+# 50 - Pow(x, n) - MEDIUM
+'''
+operators '>>', '&' are just used for 'int' and not used for 'float', '%' can be.
+e.g.: 
+>>> 5.00 >> 1
+TypeError: unsupported operand type(s) for >>: 'float' and 'int'
+>>> 5.00 & 1
+TypeError: unsupported operand type(s) for &: 'float' and 'int
+>>> 5.00 % 2
+1.0
+'''
+# iterative
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        if n < 0:
+            n = -n
+            x = 1 / x
+        p = 1
+        while n != 0:
+            if n & 1:
+                p *= x
+            x *= x
+            n >>= 1 # equal to n //= 2
+        return p
+
+
+# recursive
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        if not n:
+            return 1
+        if n < 0:
+            return 1 / self.myPow(x, -n)
+        if n % 2:
+            return x * self.myPow(x, n - 1)
+        return self.myPow(x * x, n / 2)
+
+
 # 56 - Merge Intervals - MEDIUM
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
@@ -196,6 +235,15 @@ class Solution:
             dp[i][0] = 1
         for j in range(n):
             dp[0][j] = 1
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+        return dp[m - 1][n - 1]
+
+
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        dp = [[1] * n] + [[1] + [0] * (n - 1)] * (m - 1)
         for i in range(1, m):
             for j in range(1, n):
                 dp[i][j] = dp[i - 1][j] + dp[i][j - 1]

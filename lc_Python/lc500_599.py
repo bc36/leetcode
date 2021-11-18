@@ -2,7 +2,7 @@ import collections
 from operator import le
 from os import pread
 import random, bisect, itertools
-from typing import List
+from typing import List, Optional
 
 
 class TreeNode:
@@ -223,6 +223,25 @@ class Solution:
             ans += dic[presum - k]
             dic[presum] += 1
         return ans
+
+
+# 563 - Binary Tree Tilt - EAST
+# depth-first search
+class Solution:
+    def findTilt(self, root: Optional[TreeNode]) -> int:
+        self.ans = 0  # ans = []
+
+        # return sum of right subtree and left subtree
+        def dfs(root: TreeNode):
+            if not root:
+                return 0
+            vl = dfs(root.left)
+            vr = dfs(root.right)
+            self.ans += abs(vl - vr)  # ans.append(abs(vl - vr))
+            return vl + vr + root.val
+
+        dfs(root)
+        return self.ans  # sum(ans)
 
 
 # 575 - Distribute Candies - EASY

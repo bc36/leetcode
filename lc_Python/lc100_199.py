@@ -392,20 +392,65 @@ class Solution:
 # FIFO
 class Solution:
     def rightSideView(self, root: TreeNode) -> List[int]:
-        oneLevel = collections.deque()
+        dq = collections.deque()
         if root:
-            oneLevel.append(root)
+            dq.append(root)
         ans = []
-        # queue is not empty
-        while oneLevel:
-            ans.append(oneLevel[-1].val)
-            # val = -1
-            for _ in range(len(oneLevel)):
-                popNode = oneLevel.popleft()
-                val = popNode.val
-                if popNode.left:
-                    oneLevel.append(popNode.left)
-                if popNode.right:
-                    oneLevel.append(popNode.right)
-            # ans.append(val)
+        while dq:
+            # queue is not empty
+            ans.append(dq[-1].val)
+            for _ in range(len(dq)):
+                node = dq.popleft()
+                if node.left:
+                    dq.append(node.left)
+                if node.right:
+                    dq.append(node.right)
+        return ans
+
+
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        # bfs
+        dq = collections.deque()
+        if root:
+            dq.append(root)
+        ans = []
+        level = 0
+        while dq:
+            # process each layer
+            for _ in range(len(dq)):
+                node = dq.pop()
+                # not have node be seen in this layer, add rightmost node first
+                if len(ans) == level:
+                    ans.append(node.val)
+                # right side view, add right node first
+                if node.right:
+                    dq.appendleft(node.right)
+                if node.left:
+                    dq.appendleft(node.left)
+            level += 1
+        return ans
+
+
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        # bfs
+        dq = collections.deque()
+        if root:
+            dq.append(root)
+        ans, level = [], 0
+        while dq:
+            # process each layer
+            for _ in range(len(dq)):
+                node = dq.popleft()
+                # add from left, so need to update
+                if len(ans) == level:
+                    ans.append(node.val)
+                else:
+                    ans[level] = node.val
+                if node.left:
+                    dq.append(node.left)
+                if node.right:
+                    dq.append(node.right)
+            level += 1
         return ans

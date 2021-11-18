@@ -8,6 +8,18 @@ class Solution:
         return
 
 
+# 318 - Maximum Product of Word Lengths - MEDIUM
+class Solution:
+    def maxProduct(self, words: List[str]) -> int:
+        s = [set(x) for x in words]
+        maxL = 0
+        for i in range(len(s)):
+            for j in range(i + 1, len(s)):
+                if len(s[i].intersection(s[j])) == 0:
+                    maxL = max(maxL, len(words[i]) * len(words[j]))
+        return maxL
+
+
 # 319 - Bulb Switcher - MEDIUM
 class Solution:
     def bulbSwitch(self, n: int) -> int:
@@ -30,6 +42,18 @@ class Solution:
         # sorted by value and get the key
         return [i[0] for i in sorted(cnt.items(), key=lambda x: x[1])[-k:]]
         # return [i[0] for i in sorted(cnt.items(), key=lambda x: x[1], reverse=True)[:k]]
+
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        cnt = collections.Counter(nums)
+        # convert to 'tuple' to sort, because 'dict' is unordered
+        times = sorted(cnt.items(), key=lambda k: k[1])
+        ans = []
+        while k != 0 and len(times) > 0:
+            ans.append(times.pop()[0])
+            k -= 1
+        return ans
 
 
 # 367 - Valid Perfect Square - EASY
