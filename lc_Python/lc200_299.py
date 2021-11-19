@@ -511,7 +511,6 @@ class Solution:
             return root
         left = self.lowestCommonAncestor(root.left, p, q)
         right = self.lowestCommonAncestor(root.right, p, q)
-
         if not left:
             return right
         if not right:
@@ -523,8 +522,6 @@ class Solution:
 # 1. root == p || root == q
 # 2. p, q are subtree in two sides (p in left, q in right and vice versa)
 # 3. p, q on the same side of subtree, recursive
-
-
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
@@ -532,15 +529,13 @@ class Solution:
             return None
         if root.val == p.val: return root
         if root.val == q.val: return root
-        leftNode = self.lowestCommonAncestor(root.left, p, q)
-        rightNode = self.lowestCommonAncestor(root.right, p, q)
-        if leftNode and rightNode: return root
-        return leftNode if leftNode else rightNode
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+        if left and right: return root
+        return left if left else right
 
 
 # iterative solution
-
-
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
@@ -560,8 +555,6 @@ class Solution:
         while p:
             ancestors.add(p)
             p = parent[p]
-            print(p)
-        print(ancestors)
         # find q's ancestor, if not, until to the root
         while q not in ancestors:
             q = parent[q]
@@ -573,6 +566,20 @@ class Solution:
     def deleteNode(self, node: ListNode):
         node.val = node.next.val
         node.next = node.next.next
+
+
+# 249 - Group Shifted Strings - MEDIUM
+# tuple + tuple: (1,) + (2,)
+class Solution:
+    def groupStrings(self, strings: List[str]) -> List[List[str]]:
+        dic = {}
+        for s in strings:
+            key = ()
+            for i in range(len(s) - 1):
+                circular_difference = 26 + ord(s[i + 1]) - ord(s[i])
+                key += (circular_difference % 26, )
+            dic[key] = dic.get(key, []) + [s]
+        return list(dic.values())
 
 
 # 260 - Single Number III - MEDUIM

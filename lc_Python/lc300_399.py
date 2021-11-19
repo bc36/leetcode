@@ -1,11 +1,60 @@
-from typing import List
-import collections, math
+from typing import List, Optional
+import collections, math, functools
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 301 - Remove Invalid Parentheses - HARD
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
         return
+
+
+# 314 - Binary Tree Vertical Order Traversal - MEDIUM
+# dfs
+class Solution:
+    def verticalOrder(self, root: TreeNode) -> List[List[int]]:
+        # Use a dict to store our answers, keys will be column idxs.
+        ans = collections.defaultdict(list)
+
+        def dfs(node, row, col):
+            if not node:
+                return
+            # Append node vals to column in our dict.
+            ans[col].append((row, node.val))
+            # Traverse l and r.
+            dfs(node.left, row + 1, col - 1)
+            dfs(node.right, row + 1, col + 1)
+
+        dfs(root, 0, 0)
+        # Sort our dict by keys (column vals)
+        ans = dict(sorted(ans.items()))
+        res = []
+        # Loop through our sorted dict appending vals sorted by height (top down order).
+        for _, v in ans.items():
+            res.append([x[1] for x in sorted(v, key=lambda x: x[0])])
+        return res
+
+
+# bfs
+class Solution:
+    def verticalOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        nodes = collections.defaultdict(list)
+        queue = collections.deque([(root, 0)])
+        while queue:
+            node, pos = queue.popleft()
+            if node:
+                nodes[pos].append(node.val)
+                queue.append((node.left, pos - 1))
+                queue.append((node.right, pos + 1))
+        # sorted the keys of defaultdict
+        return [nodes[i] for i in sorted(nodes)]
 
 
 # 318 - Maximum Product of Word Lengths - MEDIUM
@@ -33,6 +82,89 @@ class Solution:
 class Solution:
     def bulbSwitch(self, n: int) -> int:
         return int(math.sqrt(n))
+
+
+# 339 - Nested List Weight Sum - MEDIUM
+class NestedInteger:
+    def __init__(self, value=None):
+        """
+       If value is not specified, initializes an empty list.
+       Otherwise initializes a single integer equal to value.
+       """
+
+    def isInteger(self):
+        """
+       @return True if this NestedInteger holds a single integer, rather than a nested list.
+       :rtype bool
+       """
+
+    def getInteger(self):
+        """
+       @return the single integer that this NestedInteger holds, if it holds a single integer
+       Return None if this NestedInteger holds a nested list
+       :rtype int
+       """
+
+    def getList(self):
+        """
+       @return the nested list that this NestedInteger holds, if it holds a nested list
+       Return None if this NestedInteger holds a single integer
+       :rtype List[NestedInteger]
+       """
+
+
+# dfs
+class Solution:
+    def depthSum(self, nestedList: List[NestedInteger]) -> int:
+        self.ans = 0
+
+        def dfs(nestedList: List[NestedInteger], depth: int):
+            if not nestedList:
+                return
+            for i in nestedList:
+                if i.isInteger():
+                    self.ans += i.getInteger() * depth
+                else:
+                    dfs(i.getList(), depth + 1)
+
+        dfs(nestedList, 1)
+        return self.ans
+
+
+# bfs
+class Solution:
+    def depthSum(self, nestedList: List[NestedInteger]) -> int:
+        ans, depth = 0, 1
+        stack = collections.deque([nestedList])
+        while stack:
+            for _ in range(len(stack)):
+                n = stack.popleft()
+                for i in n:
+                    if i.isInteger():
+                        ans += i.getInteger() * depth
+                    else:
+                        stack.append(i.getList())
+            depth += 1
+        return ans
+
+
+'''
+flatten trick about a list of lists
+>>> sum([[1, 2], [2, 4]], [])
+[1, 2, 2, 4]
+'''
+
+
+class Solution(object):
+    def depthSum(self, nestedList):
+        depth, ret = 1, 0
+        while nestedList:
+            ret += depth * sum(
+                [x.getInteger() for x in nestedList if x.isInteger()])
+            nestedList = sum(
+                [x.getList() for x in nestedList if not x.isInteger()], [])
+            depth += 1
+        return ret
 
 
 # 347 - Top K Frequent Elements - MEDIUM
@@ -220,3 +352,53 @@ class Solution:
                 dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j])
                                for k in range(i, j))
         return dp[1][n]
+
+
+# 397 - Integer Replacement - MEDIUM
+# memo
+class Solution:
+    def __init__(self):
+        self.cache = collections.defaultdict(int)
+
+    def integerReplacement(self, n: int) -> int:
+        if n == 1:
+            return 0
+        if n in self.cache:
+            return self.cache.get(n)
+        if n % 2 == 0:
+            self.cache[n] = 1 + self.integerReplacement(n // 2)
+        else:
+            self.cache[n] = 2 + min(self.integerReplacement(n // 2),
+                                    self.integerReplacement(n // 2 + 1))
+        return self.cache[n]
+
+
+class Solution:
+    @functools.lru_cache(None)
+    def integerReplacement(self, n: int) -> int:
+        if n == 1:
+            return 0
+        if n % 2 == 0:
+            return 1 + self.integerReplacement(n // 2)
+        return 2 + min(self.integerReplacement(n // 2),
+                       self.integerReplacement(n // 2 + 1))
+
+
+# bfs
+class Solution:
+    def integerReplacement(self, n: int) -> int:
+        dq = collections.deque([n])
+        ans = 0
+        while dq:
+            n = len(dq)
+            for _ in range(n):
+                number = dq.popleft()
+                if number == 1:
+                    return ans
+                if number % 2 == 0:
+                    dq.append(number // 2)
+                else:
+                    dq.append(number + 1)
+                    dq.append(number - 1)
+            ans += 1
+        return ans

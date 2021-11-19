@@ -150,6 +150,22 @@ class Solution:
         return ''.join(map(str, res[::-1]))
 
 
+# 46 - Permutations - MEDIUM
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        res = []
+
+        def backtrack(nums, tmp):
+            if not nums:
+                res.append(tmp)
+                return
+            for i in range(len(nums)):
+                backtrack(nums[:i] + nums[i + 1:], tmp + [nums[i]])
+
+        backtrack(nums, [])
+        return res
+
+
 # 50 - Pow(x, n) - MEDIUM
 '''
 operators '>>', '&' are just used for 'int' and not used for 'float', '%' can be.
@@ -161,19 +177,21 @@ TypeError: unsupported operand type(s) for &: 'float' and 'int
 >>> 5.00 % 2
 1.0
 '''
+
+
 # iterative
 class Solution:
     def myPow(self, x: float, n: int) -> float:
         if n < 0:
             n = -n
             x = 1 / x
-        p = 1
+        ans = 1
         while n != 0:
             if n & 1:
-                p *= x
+                ans *= x
             x *= x
-            n >>= 1 # equal to n //= 2
-        return p
+            n >>= 1  # equal to n //= 2
+        return ans
 
 
 # recursive

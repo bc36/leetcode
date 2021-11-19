@@ -1,4 +1,57 @@
+import collections
 from typing import List
+
+
+# Definition for a Node.
+class Node:
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# 408 - Valid Word Abbreviation - EASY
+class Solution:
+    def validWordAbbreviation(self, word: str, abbr: str) -> bool:
+        i = j = 0
+        while i < len(word) and j < len(abbr):
+            if abbr[j].isalpha():
+                if word[i] != abbr[j]:
+                    return False
+                i += 1
+                j += 1
+            else:
+                if abbr[j] == "0":
+                    return False
+                tmp = ""
+                while j < len(abbr) and abbr[j].isdigit():
+                    tmp = tmp + abbr[j]
+                    j += 1
+                i += int(tmp)
+        return i == len(word) and j == len(abbr)
+
+
+# 426 - Convert Binary Search Tree to Sorted Doubly Linked List - MEDIUM
+# inorder, bfs
+class Solution:
+    def treeToDoublyList(self, root: 'Node') -> 'Node':
+        if not root:
+            return None
+        dummy = Node(-1)
+        pre = dummy
+        stack, node = [], root
+        while stack or node:
+            while node:
+                stack.append(node)
+                node = node.left
+            node = stack.pop()
+            # node.left, prev.right, prev = prev, node, node
+            node.left = pre
+            pre.right = node
+            pre = node
+            node = node.right
+        dummy.right.left, pre.right = pre, dummy.right
+        return dummy.right
 
 
 # 441 - Arranging Coins - EASY
@@ -12,6 +65,28 @@ class Solution:
                 return i
             if n < 0:
                 return i - 1
+
+
+# 448 - Find All Numbers Disappeared in an Array - EASY
+class Solution:
+    def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
+        n = [0] * len(nums)
+        for i in range(len(nums)):
+            n[nums[i] - 1] = 1
+        ans = []
+        for i in range(len(n)):
+            if n[i] == 0:
+                ans.append(i + 1)
+        return ans
+
+
+# marker the scaned number as negative
+class Solution:
+    def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
+        for i in range(len(nums)):
+            index = abs(nums[i]) - 1
+            nums[index] = -abs(nums[index])
+        return [i + 1 for i in range(len(nums)) if nums[i] > 0]
 
 
 # 495 - Teemo Attacking - EASY

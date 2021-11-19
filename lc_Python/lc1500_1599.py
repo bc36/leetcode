@@ -1,8 +1,6 @@
 from typing import List
 
 # 1570 - Dot Product of Two Sparse Vectors - MEDIUM
-
-
 class SparseVector:
     def __init__(self, nums: List[int]):
         self.nums = {k: num for k, num in enumerate(nums) if num != 0}

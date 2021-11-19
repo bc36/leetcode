@@ -172,6 +172,7 @@ class Solution:
 # different coordinates should be returned.
 class Solution:
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+        # [info[0]: square, info[1]: position index]
         info = [[x[0] * x[0] + x[1] * x[1], i] for i, x in enumerate(points)]
         # key: square, value: position index
         distance = {}
@@ -182,8 +183,7 @@ class Solution:
                 distance[i[0]].append(i[1])
         order = list(distance.keys())
         order.sort()
-        ans = []
-        i = 0
+        ans, i = [], 0
         while len(ans) < k:
             if distance[order[i]]:
                 ans.append(points[distance[order[i]].pop()])

@@ -47,7 +47,7 @@ class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
         left = []
         s = list(s)
-        for i in range(0, len(s)):
+        for i in range(len(s)):
             # record the index of each "("
             if s[i] == '(':
                 left.append(i)
