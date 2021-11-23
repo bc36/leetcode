@@ -89,6 +89,26 @@ class Solution:
         return [i + 1 for i in range(len(nums)) if nums[i] > 0]
 
 
+# 461 - Hamming Distance - EASY
+class Solution:
+    def hammingDistance(self, x: int, y: int) -> int:
+        ans = 0
+        while x != 0 and y != 0:
+            if x & 1 != y & 1:
+                ans += 1
+            x >>= 1
+            y >>= 1
+        while x != 0:
+            if x & 1:
+                ans += 1
+            x >>= 1
+        while y != 0:
+            if y & 1:
+                ans += 1
+            y >>= 1
+        return ans
+
+
 # 495 - Teemo Attacking - EASY
 class Solution:
     def findPoisonedDuration(self, timeSeries: List[int],

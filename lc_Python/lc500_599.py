@@ -198,10 +198,10 @@ class Solution:
         def dfs(root: TreeNode) -> int:
             if not root:
                 return 0
-            leftL = dfs(root.left)
-            rightL = dfs(root.right)
-            self.maxL = max(self.maxL, leftL + rightL)
-            return max(leftL, rightL) + 1
+            left = dfs(root.left)
+            right = dfs(root.right)
+            self.maxL = max(self.maxL, left + right)
+            return max(left, right) + 1
 
         dfs(root)
         return self.maxL
@@ -256,6 +256,19 @@ class Solution:
 class Solution:
     def distributeCandies(self, candyType: List[int]) -> int:
         return min(len(set(candyType)), len(candyType) // 2)
+
+
+# 594 - Longest Harmonious Subsequence - EASY
+class Solution:
+    def findLHS(self, nums: List[int]) -> int:
+        nums.sort()
+        i = ans = 0
+        for j in range(len(nums)):
+            while nums[j] - nums[i] > 1:
+                i += 1
+            if nums[j] - nums[i] == 1:
+                ans = max(ans, j - i + 1)
+        return ans
 
 
 # 598 - Range Addition II - EASY

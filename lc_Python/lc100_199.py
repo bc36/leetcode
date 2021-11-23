@@ -49,6 +49,14 @@ class Solution:
         return ans
 
 
+# 104 - Maximum Depth of Binary Tree - EASY
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
+
+
 # 121 - Best Time to Buy and Sell Stock - EASY
 # Dynamic Programming
 class Solution:
@@ -132,6 +140,18 @@ class Solution:
                     vals.append(node.right.val + val * 10)
 
         return total
+
+
+# 134 - Gas Station - MEDIUM
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        total, station, minTotal = 0, 0, float("inf")
+        for i in range(len(gas)):
+            total += gas[i] - cost[i]
+            if total < minTotal:
+                station = i
+                minTotal = total
+        return (station + 1) % len(gas) if total >= 0 else -1
 
 
 # 136 - Single Number - EASY

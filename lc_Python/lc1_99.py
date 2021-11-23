@@ -118,12 +118,14 @@ class Solution:
 class Solution:
     def nextPermutation(self, nums: List[int]) -> None:
         i = len(nums) - 2
+        # nums are in descending order
         while i >= 0 and nums[i] >= nums[i + 1]:
             i -= 1
         # i == -1 means that the whole list is descending order
         if i >= 0:
             j = len(nums) - 1
             # find the smaller number to be swapped
+            # find the last "ascending" position
             while j >= 0 and nums[i] >= nums[j]:
                 j -= 1
             nums[i], nums[j] = nums[j], nums[i]
@@ -133,6 +135,27 @@ class Solution:
             nums[left], nums[right] = nums[right], nums[left]
             left += 1
             right -= 1
+        return
+
+
+# 42 - Trapping Rain Water - HARD
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        n = len(height)
+        left = [0] * n
+        right = [0] * n
+        maxL, maxR = 0, 0
+        for i in range(n):
+            if height[i] > maxL:
+                maxL = height[i]
+            left[i] = maxL
+            if height[n - 1 - i] > maxR:
+                maxR = height[n - 1 - i]
+            right[n - 1 - i] = maxR
+        ans = 0
+        for i in range(n):
+            ans += min(left[i], right[i]) - height[i]
+        return ans
 
 
 # 43 - Multiply Strings - MEDIUM

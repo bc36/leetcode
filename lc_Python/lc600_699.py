@@ -1,8 +1,8 @@
 # 670 - Maximum Swap - MEDIUM
 # Greedy, O(n)
 # find the last occurrence of each number (guarantee that the rightmost number)
-# enumerate each number from left to right, 
-# swap the number when a larger number is found 
+# enumerate each number from left to right,
+# swap the number when a larger number is found
 class Solution:
     def maximumSwap(self, num: int) -> int:
         s = list(str(num))
@@ -48,3 +48,18 @@ class Solution:
             i += 1
         s = s[i:len(s) - i]
         return s[1:] == s[1:][::-1] or s[:-1] == s[:-1][::-1]
+
+
+# 696 - Count Binary Substrings - EASY
+class Solution:
+    def countBinarySubstrings(self, s: str) -> int:
+        ans, prev, cur = 0, 0, 1
+        for i in range(1, len(s)):
+            if s[i] != s[i - 1]:
+                ans += min(prev, cur)
+                prev = cur
+                cur = 1
+            else:
+                cur += 1
+        ans += min(prev, cur)
+        return ans
