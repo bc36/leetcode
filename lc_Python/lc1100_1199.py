@@ -43,7 +43,6 @@ class Solution:
                     # every letter is in puzzle
                     if wordSet[j] <= puzzleSet[i]:
                         num +=1
-            # print("--------------")
             ans.append(num)
                 
         return ans

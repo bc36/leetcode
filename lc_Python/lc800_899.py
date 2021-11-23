@@ -1,4 +1,6 @@
 from typing import List
+import collections
+
 
 # 827 - Making A Large Island - HARD
 # STEP 1: Explore every island using DFS, count its area
@@ -44,3 +46,17 @@ class Solution:
                     # '+1' means grid[x][y] itself
                     res = max(res, sum(areas[index] for index in possible) + 1)
         return res
+
+
+# 859 - Buddy Strings - EASY
+class Solution:
+    def buddyStrings(self, s: str, goal: str) -> bool:
+        if len(s) != len(goal):
+            return False
+        if s == goal:
+            if len(set(s)) < len(s):
+                return True
+            else:
+                return False
+        diff = [(a, b) for a, b in zip(s, goal) if a != b]
+        return len(diff) == 2 and diff[0] == diff[1][::-1]

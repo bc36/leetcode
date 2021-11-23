@@ -12,6 +12,12 @@ class TreeNode:
         self.right = right
 
 
+class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children
+
+
 # 500 - Keyboard Row - EASY
 # The '<' and '>' operators are testing for strict subsets
 class Solution:
@@ -205,6 +211,33 @@ class Solution:
 
         dfs(root)
         return self.maxL
+
+
+# 559 - Maximum Depth of N-ary Tree - EASY
+# root.children is a list
+# bfs
+class Solution:
+    def maxDepth(self, root: 'Node') -> int:
+        if not root:
+            return 0
+        dq = collections.deque([root])
+        ans = 0
+        while dq:
+            for _ in range(len(dq)):
+                node = dq.popleft()
+                for ch in node.children:
+                    dq.append(ch)
+            ans += 1
+        return ans
+
+
+# dfs
+class Solution:
+    def maxDepth(self, root: 'Node') -> int:
+        if not root:
+            return 0
+        return max([self.maxDepth(child) for child in root.children],
+                   default=0) + 1
 
 
 # 560 - Subarray Sum Equals K - MEDIUM

@@ -1,6 +1,6 @@
 import bisect, collections, functools, random, operator, math
 from posix import X_OK
-from typing import AnyStr, Iterable, List
+from typing import AnyStr, Iterable, List, Optional
 '''
 Function usually used
 
@@ -24,6 +24,53 @@ functools.reduce()
 operator.xor()
 # CLASS METHOD
 dict.setdefault()
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+# 1 - Two Sum - EASY
+# [3, 3] 6: nums.index(3) will return 0, not 1
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        dic = {}
+        for i in range(len(nums)):
+            if nums[i] in dic:
+                return [i, dic[nums[i]]]
+            dic[target - nums[i]] = i
+        return None
+
+
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        right = len(nums) - 1
+        while nums:
+            num = nums.pop()
+            if target - num in nums:
+                return [nums.index(target - num), right]
+            right -= 1
+        return None
+
+
+# 2 - Add Two Numbers - MEDIUM
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode],
+                      l2: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode(-1)
+        head = dummy
+        carry = 0
+        while l1 or l2 or carry:
+            v1 = l1.val if l1 else 0
+            v2 = l2.val if l2 else 0
+            head.next = ListNode((v1 + v2 + carry) % 10)
+            head = head.next
+            carry = (v1 + v2 + carry) // 10
+            l1 = l1.next if l1 else None
+            l2 = l2.next if l2 else None
+        return dummy.next
 
 
 # 3 - Longest Substring Without Repeating Characters - MEDIUM
