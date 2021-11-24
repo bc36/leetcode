@@ -15,6 +15,82 @@ class TreeNode:
         self.right = right
 
 
+# 200 - Number of Islands - MEDIUM
+# dfs
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        row = len(grid)
+        col = len(grid[0])
+
+        def move(x: int, y: int):
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                if 0 <= x + i < row and 0 <= y + j < col:
+                    yield x + i, y + j
+
+        def dfs(x: int, y: int, index: int):
+            grid[x][y] = index
+            for i, j in move(x, y):
+                if grid[i][j] == "1":
+                    dfs(i, j, index)
+            return
+
+        index = 2
+        for x in range(row):
+            for y in range(col):
+                if grid[x][y] == "1":
+                    dfs(x, y, index)
+                    index += 1
+        return index - 2
+
+
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        m, n = len(grid), len(grid[0])
+
+        def dfs(i: int, j: int) -> None:
+            if 0 <= i < m and 0 <= j < n and grid[i][j] == '1':
+                grid[i][j] = '#'
+                dfs(i, j + 1)
+                dfs(i, j - 1)
+                dfs(i + 1, j)
+                dfs(i - 1, j)
+            return
+
+        count = 0
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1':
+                    count += 1
+                    dfs(i, j)
+
+        return count
+
+
+# bfs
+class Solution:
+    def numIslands(self, grid: List[List[str]]):
+        def helper(grid: List[List[str]], queue: collections.deque()) -> None:
+            while queue:
+                x, y = queue.popleft()
+                for i, j in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    if 0 <= i < len(grid) and 0 <= j < len(
+                            grid[0]) and grid[i][j] == '1':
+                        queue.append((i, j))
+                        grid[i][j] = 0
+            return
+
+        count = 0
+        queue = collections.deque([])
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] == '1':
+                    grid[i][j] = 0
+                    queue.append((i, j))
+                    helper(grid, queue)  # turn the adjancent '1' to '0'
+                    count += 1
+        return count
+
+
 # 203 - Remove Linked List Elements - EASY
 class Solution:
     def removeElements(self, head: Optional[ListNode],
@@ -119,6 +195,43 @@ class Solution:
             pre = head
             head = tmp
         return pre
+
+
+# 208 - Implement Trie (Prefix Tree) - MEDIUM
+class TrieNode:
+    def __init__(self):
+        # self.children = collections.defaultdict(TrieNode)
+        self.children = {}
+        self.is_word = False
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        current = self.root
+        for letter in word:
+            if letter not in current.children:
+                current.children[letter] = TrieNode()
+            current = current.children[letter]
+        current.is_word = True
+
+    def search(self, word: str):
+        current = self.root
+        for letter in word:
+            if letter not in current.children:
+                return False
+            current = current.children[letter]
+        return current.is_word
+
+    def startsWith(self, prefix: str):
+        current = self.root
+        for letter in prefix:
+            if letter not in current.children:
+                return False
+            current = current.children[letter]
+        return True
 
 
 # 215 - Kth Largest Element in an Array - MEDIUM

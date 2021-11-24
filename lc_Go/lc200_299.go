@@ -72,17 +72,17 @@ func majorityElement2(nums []int) (ans []int) {
 // 230 - Kth Smallest Element in a BST - MEDIUM
 // inorder / use a slice to save all values / O(n) + O(n)
 func kthSmallest(root *TreeNode, k int) int {
-	var res []int
+	var ret []int
 	var dfs func(r *TreeNode)
 	dfs = func(root *TreeNode) {
 		if root != nil {
 			dfs(root.Left)
-			res = append(res, root.Val)
+			ret = append(ret, root.Val)
 			dfs(root.Right)
 		}
 	}
 	dfs(root)
-	return res[k-1]
+	return ret[k-1]
 }
 
 // 236 - Lowest Common Ancestor of a Binary Tree - MEDIUM

@@ -142,6 +142,56 @@ class Solution:
         return total
 
 
+# 130 - Surrounded Regions - MEDIUM
+# search from edge
+# dfs
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        row, col = len(board), len(board[0])
+
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+        def dfs(i: int, j: int):
+            if 0 <= i < row and 0 <= j < col and board[i][j] == "O":
+                board[i][j] = "*"
+                for x, y in directions:
+                    dfs(i + x, j + y)
+            return
+
+        for i in range(row):
+            dfs(i, 0)
+            dfs(i, col - 1)
+        for j in range(col):
+            dfs(0, j)
+            dfs(row - 1, j)
+        for i in range(row):
+            for j in range(col):
+                board[i][j] = "X" if board[i][j] != "*" else "O"
+        return
+
+
+# bfs
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        dq = collections.deque([])
+        row, col = len(board), len(board[0])
+        for r in range(row):
+            for c in range(col):
+                if (r in [0, row - 1]
+                        or c in [0, col - 1]) and board[r][c] == "O":
+                    dq.append((r, c))
+        while dq:
+            r, c = dq.popleft()
+            if 0 <= r < row and 0 <= c < col and board[r][c] == "O":
+                board[r][c] = "*"
+                dq.extend([(r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)])
+
+        for i in range(row):
+            for j in range(col):
+                board[i][j] = "X" if board[i][j] != "*" else "O"
+        return
+
+
 # 134 - Gas Station - MEDIUM
 class Solution:
     def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:

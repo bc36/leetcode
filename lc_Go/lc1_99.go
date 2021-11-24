@@ -97,7 +97,7 @@ func lengthOfLongestSubstring1(s string) int {
 
 // sliding window + hashmap
 func lengthOfLongestSubstring2(s string) int {
-	left, right, res := 0, 0, 0
+	left, right, ret := 0, 0, 0
 	indexes := make(map[byte]int, len(s))
 	for right < len(s) {
 		if idx, ok := indexes[s[right]]; ok && idx >= left {
@@ -105,9 +105,9 @@ func lengthOfLongestSubstring2(s string) int {
 		}
 		indexes[s[right]] = right
 		right++
-		res = max(res, right-left)
+		ret = max(ret, right-left)
 	}
-	return res
+	return ret
 }
 
 // 50 - Pow(x, n) - MEDIUM

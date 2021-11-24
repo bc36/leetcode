@@ -34,6 +34,39 @@ class Solution:
         return left + right
 
 
+# 935 - Knight Dialer - MEDIUM
+# 0         -> 4 6
+# 1 3 7 9   -> 2 8 / 4 6
+# 2 8       -> 1 3 7 9
+# 4 6       -> 0 / 1 3 7 9
+class Solution:
+    def knightDialer(self, n: int) -> int:
+        if n == 1:
+            return 10
+        a, b, c, d, mod = 1, 4, 2, 2, 10**9 + 7
+        for _ in range(n - 1):
+            a, b, c, d = d, (2 * c + 2 * d) % mod, b, (2 * a + b) % mod
+        return (a + b + c + d) % mod
+
+
+class Solution:
+    def knightDialer(self, n: int) -> int:
+        x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x0 = 1
+        for _ in range(n - 1):
+            x1, x2, x3, x4, x5, x6, x7, x8, x9, x0 = \
+                x6 + x8, \
+                x7 + x9, \
+                x4 + x8, \
+                x3 + x9 + x0, \
+                0, \
+                x1 + x7 + x0, \
+                x2 + x6, \
+                x1 + x3, \
+                x2 + x4, \
+                x4 + x6
+        return (x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x0) % (10**9 + 7)
+
+
 # 938 - Range Sum of BST - EASY
 # dfs
 class Solution:

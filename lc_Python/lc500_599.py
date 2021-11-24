@@ -62,21 +62,6 @@ class Solution:
 
 
 # 523 - Continuous Subarray Sum - MEDUIM
-# brutal-force: Time Limit Exceeded
-class Solution:
-    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
-        presumList = []
-        for i in range(len(nums)):
-            presum = [j for j in itertools.accumulate(nums[i:])]
-            if len(presum[1:]) > 0:
-                presumList.append(presum[1:])
-        for presum in presumList:
-            for p in presum:
-                if p % k == 0:
-                    return True
-        return False
-
-
 # 'cur' calculate the prefix sum remainder of input array 'nums'
 # 'seen' will record the first occurrence of the remainder.
 # If we have seen the same remainder before,
@@ -100,10 +85,7 @@ class Solution:
 class Solution:
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
         rmd, sumRmd = {0: -1}, 0
-        # why {0: -1}:
-        # -1 is just before you start the index.
-        # So if you get the first 2 elements sum to k,
-        # your current i is 1. So 1 - (-1) = 2 still satisfies the return True condition.
+        # why {0: -1}: sum(nums) % k == 0
         for i, num in enumerate(nums):
             sumRmd = (num + sumRmd) % k
             if sumRmd not in rmd:
@@ -111,22 +93,21 @@ class Solution:
             else:
                 if i - rmd[sumRmd] > 1:
                     return True
-            # wrong way: when input -> [5, 0, 0, 0] 3
-            # since when 'sumRmd' is in 'rmd',
-            # but 'i - rmd[sumRmd] == 1',
-            # index will be updated rather than keep the old position
-            if sumRmd in rmd and i - rmd[sumRmd] > 1:
-                return True
-            else:
-                rmd[sumRmd] = i
-            # right way:
-            # if sumRmd in rmd and i - rmd[sumRmd] > 1:
-            #     return True
-            # elif sumRmd in rmd and i - rmd[sumRmd] <= 1:
-            #     continue
-            # else:
-            #     rmd[sumRmd] = i
         return False
+
+
+class Solution:
+    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
+        presum = itertools.accumulate(nums)
+        dic = {0: -1}
+        for index, num in enumerate(presum):
+            if num % k in dic:
+                if index - dic[num % k] > 1:
+                    return True
+                # do not update the value in dic, or use 'set()'
+                continue
+            dic[num % k] = index
+        return
 
 
 # the required length is at least 2,
@@ -211,6 +192,65 @@ class Solution:
 
         dfs(root)
         return self.maxL
+
+
+# 547 - Number of Provinces - MEDIUM
+class Solution:
+    def findCircleNum(self, isConnected: List[List[int]]) -> int:
+        seen, circle = set(), 0
+
+        def dfs(person: int):
+            for friend, isFriend in enumerate(isConnected[person]):
+                if isFriend and friend not in seen:
+                    seen.add(friend)
+                    dfs(friend)
+            return
+
+        for person in range(len(isConnected)):
+            if person not in seen:
+                dfs(person)
+                circle += 1
+        return circle
+
+
+# Union—Find
+class UnionFind:
+    def __init__(self):
+        self.father = {}
+        self.num_of_sets = 0
+
+    def find(self, x):
+        root = x
+        while self.father[root] != None:
+            root = self.father[root]
+        while x != root:
+            original_father = self.father[x]
+            self.father[x] = root
+            x = original_father
+        return root
+
+    def merge(self, x, y):
+        root_x, root_y = self.find(x), self.find(y)
+        if root_x != root_y:
+            self.father[root_x] = root_y
+            self.num_of_sets -= 1
+
+    def add(self, x):
+        if x not in self.father:
+            self.father[x] = None
+            self.num_of_sets += 1
+
+
+class Solution:
+    def findCircleNum(self, isConnected: List[List[int]]) -> int:
+        uf = UnionFind()
+        for i in range(len(isConnected)):
+            uf.add(i)
+            for j in range(i):
+                if isConnected[i][j]:
+                    uf.merge(i, j)
+
+        return uf.num_of_sets
 
 
 # 559 - Maximum Depth of N-ary Tree - EASY

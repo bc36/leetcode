@@ -105,6 +105,19 @@ class Solution:
         return ans
 
 
+# 12 - Integer to Roman - MEDIUM
+class Solution:
+    def intToRoman(self, num: int) -> str:
+        pairs = (("M", 1000), ("CM", 900), ("D", 500), ("CD", 400), ("C", 100),
+                 ("XC", 90), ("L", 50), ("XL", 40), ("X", 10), ("IX", 9),
+                 ("V", 5), ("IV", 4), ("I", 1))
+        ret = ""
+        for ch, val in pairs:
+            ret += (num // val) * ch
+            num %= val
+        return ret
+
+
 # 20 - Valid Parentheses - EASY
 # stack
 class Solution:
@@ -133,9 +146,6 @@ class Solution:
 # then sort the numbers to the right side of this number in ascending order
 class Solution:
     def nextPermutation(self, nums: List[int]) -> None:
-        """
-        Do not return anything, modify nums in-place instead.
-        """
         # greater save the number value and position
         greater = [[nums[-1], -1]]
         for i in range(len(nums) - 2, -1, -1):
@@ -185,6 +195,57 @@ class Solution:
         return
 
 
+# 37 - Sudoku Solver - HARD
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        def check(x: int, y: int, n: str) -> bool:
+            for i in range(9):
+                if board[x][i] == n or board[i][y] == n:
+                    return False
+            row = x // 3 * 3
+            col = y // 3 * 3
+            for i in range(row, row + 3):
+                for j in range(col, col + 3):
+                    if board[i][j] == n:
+                        return False
+            return True
+
+        def backtrack(cur: int) -> bool:
+            if cur == 81:
+                return True
+            x, y = cur // 9, cur % 9
+            if board[x][y] != ".":
+                return backtrack(cur + 1)
+            for i in range(1, 10):
+                if check(x, y, str(i)):
+                    board[x][y] = str(i)
+                    # backtrack until 'cur' == 81
+                    if backtrack(cur + 1):
+                        return True
+                    board[x][y] = "."
+            return False
+
+        backtrack(0)
+
+        # def backtrack(board: List[List[str]]) -> bool:
+        #     for i in range(9):
+        #         for j in range(9):
+        #             if board[i][j] != ".":
+        #                 continue
+        #             for k in range(1, 10):
+        #                 if check(i, j, str(k)):
+        #                     board[i][j] = str(k)
+        #                     if backtrack(board):
+        #                         return True
+        #                     board[i][j] = "."
+        #             return False
+        #     return True
+
+        # backtrack(board)
+
+        return
+
+
 # 42 - Trapping Rain Water - HARD
 class Solution:
     def trap(self, height: List[int]) -> int:
@@ -208,32 +269,32 @@ class Solution:
 # 43 - Multiply Strings - MEDIUM
 class Solution:
     def multiply(self, num1, num2):
-        res = [0] * (len(num1) + len(num2))
+        ret = [0] * (len(num1) + len(num2))
         for i, e1 in enumerate(reversed(num1)):
             for j, e2 in enumerate(reversed(num2)):
-                res[i + j] += int(e1) * int(e2)
-                res[i + j + 1] += res[i + j] // 10
-                res[i + j] %= 10
+                ret[i + j] += int(e1) * int(e2)
+                ret[i + j + 1] += ret[i + j] // 10
+                ret[i + j] %= 10
         # reverse, prepare to output
-        while len(res) > 1 and res[-1] == 0:
-            res.pop()
-        return ''.join(map(str, res[::-1]))
+        while len(ret) > 1 and ret[-1] == 0:
+            ret.pop()
+        return ''.join(map(str, ret[::-1]))
 
 
 # 46 - Permutations - MEDIUM
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        res = []
+        ret = []
 
         def backtrack(nums, tmp):
             if not nums:
-                res.append(tmp)
+                ret.append(tmp)
                 return
             for i in range(len(nums)):
                 backtrack(nums[:i] + nums[i + 1:], tmp + [nums[i]])
 
         backtrack(nums, [])
-        return res
+        return ret
 
 
 # 50 - Pow(x, n) - MEDIUM
@@ -298,18 +359,18 @@ class Solution:
 # two pointers
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        res = []
+        ret = []
         intervals = sorted(intervals, key=lambda x: x[0])
         left, right = intervals[0][0], intervals[0][1]
         for i in range(1, len(intervals)):
             if intervals[i][0] <= right:
                 right = max(right, intervals[i][1])
             else:
-                res.append([left, right])
+                ret.append([left, right])
                 left = intervals[i][0]
                 right = intervals[i][1]
-        res.append([left, right])
-        return res
+        ret.append([left, right])
+        return ret
 
 
 # 62 - Unique Paths - MEDIUM
@@ -399,6 +460,40 @@ class Solution:
                 needdic[s[i]] += 1
                 need += 1
         return "" if right > len(s) else s[left:right + 1]
+
+
+# 83 - Remove Duplicates from Sorted List - EASY
+class Solution:
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head:
+            return None
+        '''
+        slower
+        dummy = ListNode(-1,head)
+        faster
+        dummy = ListNode(-1)
+        dummy.next = head
+        '''
+        dummy = ListNode(-1)
+        dummy.next = head
+        while head.next:
+            if head.val == head.next.val:
+                head.next = head.next.next
+            else:
+                head = head.next
+        return dummy.next
+
+
+class Solution:
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        ans = ListNode(-101)
+        dummy = ans
+        while head:
+            if head.val != dummy.val:
+                dummy.next = ListNode(head.val)
+                dummy = dummy.next
+            head = head.next
+        return ans.next
 
 
 # 88 - Merge Sorted Array - EASY

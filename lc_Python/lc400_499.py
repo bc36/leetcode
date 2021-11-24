@@ -31,6 +31,24 @@ class Solution:
         return i == len(word) and j == len(abbr)
 
 
+# 423 - Reconstruct Original Digits from English - MEDIUM
+class Solution:
+    def originalDigits(self, s: str) -> str:
+        n0 = s.count("z")
+        n2 = s.count("w")
+        n4 = s.count("u")
+        n6 = s.count("x")
+        n8 = s.count("g")
+        n1 = s.count("o") - n0 - n2 - n4
+        n3 = s.count("t") - n2 - n8
+        n5 = s.count("f") - n4
+        n7 = s.count("s") - n6
+        n9 = s.count("i") - n5 - n6 - n8
+
+        ns = (n0, n1, n2, n3, n4, n5, n6, n7, n8, n9)
+        return "".join((str(i) * n for i, n in enumerate(ns)))
+
+
 # 426 - Convert Binary Search Tree to Sorted Doubly Linked List - MEDIUM
 # inorder, bfs
 class Solution:
@@ -142,14 +160,14 @@ class Solution:
     def nextGreaterElement(self, nums1: List[int],
                            nums2: List[int]) -> List[int]:
         m, n = len(nums1), len(nums2)
-        res = [0] * m
+        ret = [0] * m
         for i in range(m):
             j = nums2.index(nums1[i])
             k = j + 1
             while k < n and nums2[k] < nums2[j]:
                 k += 1
-            res[i] = nums2[k] if k < n else -1
-        return res
+            ret[i] = nums2[k] if k < n else -1
+        return ret
 
 
 # stack

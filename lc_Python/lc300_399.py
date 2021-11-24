@@ -35,11 +35,11 @@ class Solution:
         dfs(root, 0, 0)
         # Sort our dict by keys (column vals)
         ans = dict(sorted(ans.items()))
-        res = []
+        ret = []
         # Loop through our sorted dict appending vals sorted by height (top down order).
         for _, v in ans.items():
-            res.append([x[1] for x in sorted(v, key=lambda x: x[0])])
-        return res
+            ret.append([x[1] for x in sorted(v, key=lambda x: x[0])])
+        return ret
 
 
 # bfs

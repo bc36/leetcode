@@ -1,3 +1,6 @@
+from typing import List
+
+
 # 670 - Maximum Swap - MEDIUM
 # Greedy, O(n)
 # find the last occurrence of each number (guarantee that the rightmost number)
@@ -13,6 +16,52 @@ class Solution:
                     s[i], s[later[d]] = s[later[d]], s[i]
                     return "".join(s)
         return num
+
+
+# 676 - Implement Magic Dictionary - MEDIUM
+class MagicDictionary:
+    def __init__(self):
+        self.dic = {}
+
+    def buildDict(self, dictionary: List[str]) -> None:
+        for i in dictionary:
+            self.dic[len(i)] = self.dic.get(len(i), []) + [i]
+
+    def search(self, searchWord: str) -> bool:
+        for candi in self.dic.get(len(searchWord), []):
+            diff = 0
+            for j in range(len(searchWord)):
+                if candi[j] != searchWord[j]:
+                    diff += 1
+                if diff > 2:
+                    break
+            if diff == 1:
+                return True
+        return False
+
+
+class MagicDictionary:
+    def __init__(self):
+        self.dic = {}
+
+    def buildDict(self, dictionary: List[str]) -> None:
+        for d in dictionary:
+            self.dic.setdefault(len(d), []).append(d)
+
+    def search(self, searchWord: str) -> bool:
+        l = len(searchWord)
+        for candidate in self.dct.get(l, []):
+            isDifferent = False
+            for idx in range(l):
+                if candidate[idx] != searchWord[idx]:
+                    if isDifferent:
+                        break
+                    else:
+                        isDifferent = True
+            else:
+                if isDifferent:
+                    return True
+        return False
 
 
 # 677 - Map Sum Pairs - MEDIUM

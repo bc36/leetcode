@@ -19,12 +19,12 @@ class Solution:
 
         # Change the value of grid[x][y] to its index so act as an area
         def dfs(x: int, y: int, index: int):
-            res = 0
+            ret = 0
             grid[x][y] = index
             for i, j in move(x, y):
                 if grid[i][j] == 1:
-                    res += dfs(i, j, index)
-            return res + 1
+                    ret += dfs(i, j, index)
+            return ret + 1
 
         # Since the grid has elements 0 or 1.
         # The island index is initialized with 2
@@ -38,14 +38,14 @@ class Solution:
                     index += 1
         # Traverse every 0 cell and count biggest island it can conntect
         # The 'possible' connected island index is stored in a set to remove duplicate index.
-        res = max(areas.values())
+        ret = max(areas.values())
         for x in range(N):
             for y in range(N):
                 if grid[x][y] == 0:
                     possible = set(grid[i][j] for i, j in move(x, y))
                     # '+1' means grid[x][y] itself
-                    res = max(res, sum(areas[index] for index in possible) + 1)
-        return res
+                    ret = max(ret, sum(areas[index] for index in possible) + 1)
+        return ret
 
 
 # 859 - Buddy Strings - EASY

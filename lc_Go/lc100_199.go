@@ -90,29 +90,29 @@ func singleNumber21(nums []int) int {
 // 166 - Fraction to Recurring Decimal - MEDIUM
 // a / b, max loop section b-1
 func fractionToDecimal(x int, y int) string {
-	hash, res := make(map[int]int), ""
+	hash, ret := make(map[int]int), ""
 	if x%y == 0 {
-		res = strconv.Itoa(x / y)
-		return res
+		ret = strconv.Itoa(x / y)
+		return ret
 	}
 	if x*y < 0 {
-		res += "-"
+		ret += "-"
 	}
 	x, y = abs(x), abs(y)
-	res += strconv.Itoa(x/y) + "."
+	ret += strconv.Itoa(x/y) + "."
 	x %= y
 	for x != 0 {
-		hash[x] = len(res)
+		hash[x] = len(ret)
 		x *= 10
-		res += strconv.Itoa(x / y)
+		ret += strconv.Itoa(x / y)
 		x %= y
 		fmt.Println(x, hash)
 		if i, ok := hash[x]; ok {
-			res = res[0:i] + "(" + res[i:] + ")"
+			ret = ret[0:i] + "(" + ret[i:] + ")"
 			break
 		}
 	}
-	return res
+	return ret
 }
 func abs(x int) int {
 	if x < 0 {
