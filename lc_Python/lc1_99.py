@@ -337,6 +337,25 @@ class Solution:
         return self.myPow(x * x, n / 2)
 
 
+# 53 - Maximum Subarray - EASY
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        dp = [nums[0]] + [0] * (len(nums) - 1)
+        for i in range(1, len(nums)):
+            dp[i] = max(dp[i - 1] + nums[i], nums[i])
+        return max(dp)
+
+
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        pre, ans = 0, nums[0]
+        for i in range(len(nums)):
+            pre = max(pre + nums[i], nums[i])
+            if pre > ans:
+                ans = pre
+        return ans
+
+
 # 56 - Merge Intervals - MEDIUM
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:

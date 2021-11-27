@@ -22,7 +22,7 @@ class Solution:
         row = len(grid)
         col = len(grid[0])
 
-        def move(x: int, y: int):
+        def move(x: int, y: int) -> tuple(int, int):
             for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 if 0 <= x + i < row and 0 <= y + j < col:
                     yield x + i, y + j
@@ -677,6 +677,20 @@ class Solution:
     def deleteNode(self, node: ListNode):
         node.val = node.next.val
         node.next = node.next.next
+
+
+# 238 - Product of Array Except Self - MEDIUM
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        pro, ans = 1, []
+        for i in range(len(nums)):
+            ans.append(pro)
+            pro *= nums[i]
+        pro = 1
+        for i in range(len(nums)-1, -1 ,-1):
+            ans[i] *= pro
+            pro *= nums[i]
+        return ans
 
 
 # 249 - Group Shifted Strings - MEDIUM

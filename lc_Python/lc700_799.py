@@ -2,6 +2,26 @@ from typing import List
 import collections
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# 700 - Search in a Binary Search Tree - EASY
+class Solution:
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        while root:
+            if root.val < val:
+                root = root.right
+            elif root.val > val:
+                root = root.left
+            else:
+                return root
+        return None
+
+
 # 721 - Accounts Merge - MEDIUM
 class Solution:
     def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:

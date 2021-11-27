@@ -104,6 +104,24 @@ class Solution:
         return longest
 
 
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        nums, maxlen = set(nums), 0
+        while nums:
+            num = nums.pop()
+            l, r = num - 1, num + 1
+            while l in nums:
+                nums.remove(l)
+                l -= 1
+            while r in nums:
+                nums.remove(r)
+                r += 1
+            l += 1
+            r -= 1
+            maxlen = max(maxlen, r - l + 1)
+        return maxlen
+
+
 # 129 - Sum Root to Leaf Numbers - MEDIUM
 # dfs
 class Solution:

@@ -61,6 +61,65 @@ class Solution:
         # return word[1:] == word[1:].lower() or word == word.upper()
 
 
+# 519 - Random Flip Matrix - MEDIUM
+# TLE
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.zero = [i for i in range(n * m)]
+        self.m = m
+        self.n = n
+        self.total = m * n - 1
+
+    def flip(self) -> List[int]:
+        index = random.randint(0, self.total)
+        self.total -= 1
+        val = self.zero.pop(index)
+        return [val // self.n, val % self.n]
+
+    def reset(self) -> None:
+        self.zero = [i for i in range(self.n * self.m)]
+        self.total = self.m * self.n - 1
+        return
+
+# Single sampling
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.total = n * m - 1
+        self.m = m
+        self.n = n
+        self.map = {}
+
+    def flip(self) -> List[int]:
+        x = random.randint(0, len(self.zero) - 1)
+        self.total -= 1
+        index = self.map.get(x, x)
+        self.map[x] = self.map.get(self.total, self.total)
+        return [index // self.n, index % self.n]
+
+    def reset(self) -> None:
+        self.total = self.m * self.n - 1
+        self.map.clear()
+        return
+
+# Multiple sampling
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.m = m
+        self.n = n
+        self.total = m * n
+        self.flipped = set()
+
+    def flip(self) -> List[int]:
+        while (x := random.randint(0, self.total - 1)) in self.flipped:
+            pass
+        self.flipped.add(x)
+        return [x // self.n, x % self.n]
+
+    def reset(self) -> None:
+        self.total = self.m * self.n
+        self.flipped.clear()
+
+
 # 523 - Continuous Subarray Sum - MEDUIM
 # 'cur' calculate the prefix sum remainder of input array 'nums'
 # 'seen' will record the first occurrence of the remainder.

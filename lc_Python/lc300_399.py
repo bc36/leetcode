@@ -23,7 +23,7 @@ class Solution:
         # Use a dict to store our answers, keys will be column idxs.
         ans = collections.defaultdict(list)
 
-        def dfs(node, row, col):
+        def dfs(node, row, col) -> None:
             if not node:
                 return
             # Append node vals to column in our dict.
@@ -31,6 +31,7 @@ class Solution:
             # Traverse l and r.
             dfs(node.left, row + 1, col - 1)
             dfs(node.right, row + 1, col + 1)
+            return
 
         dfs(root, 0, 0)
         # Sort our dict by keys (column vals)

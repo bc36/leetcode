@@ -18,7 +18,7 @@ class Solution:
                     yield x + i, y + j
 
         # Change the value of grid[x][y] to its index so act as an area
-        def dfs(x: int, y: int, index: int):
+        def dfs(x: int, y: int, index: int) -> int:
             ret = 0
             grid[x][y] = index
             for i, j in move(x, y):
