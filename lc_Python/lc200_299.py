@@ -687,7 +687,7 @@ class Solution:
             ans.append(pro)
             pro *= nums[i]
         pro = 1
-        for i in range(len(nums)-1, -1 ,-1):
+        for i in range(len(nums) - 1, -1, -1):
             ans[i] *= pro
             pro *= nums[i]
         return ans
@@ -768,6 +768,42 @@ class Solution:
         for v in nums:
             sum += v
         return total - sum
+
+
+# 278 - First Bad Version - EASY
+def isBadVersion(n: int) -> bool:
+    pass
+
+
+class Solution:
+    def firstBadVersion(self, n: int) -> int:
+        left, right = 1, n
+        while left < right:
+            # precedence of '>>' is lower than '+'
+            mid = ((right - left) >> 1) + left
+            if isBadVersion(mid):
+                right = mid
+            else:
+                left = mid + 1
+        return left
+
+
+# 283 - Move Zeroes - EASY
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        slow = 0
+        for fast in range(len(nums)):
+            if nums[fast] != 0 and nums[slow] == 0:
+                nums[slow], nums[fast] = nums[fast], nums[slow]
+            if nums[slow] != 0:
+                slow += 1
+        return
+
+
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        nums[:] = [i for i in nums if i != 0] + nums.count(0) * [0]
+        return
 
 
 # 299 - Bulls and Cows - MEDIUM

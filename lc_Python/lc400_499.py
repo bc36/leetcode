@@ -72,6 +72,54 @@ class Solution:
         return dummy.right
 
 
+# 438 - Find All Anagrams in a String - MEDIUM
+# sliding window + list
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        ls, lp, ans = len(s), len(p), []
+        if ls < lp:
+            return ans
+        p_cnt = [0] * 26
+        s_cnt = [0] * 26
+        for i in range(lp):
+            p_cnt[ord(p[i]) - ord('a')] += 1
+            s_cnt[ord(s[i]) - ord('a')] += 1
+        if s_cnt == p_cnt:
+            ans.append(0)
+
+        for i in range(lp, ls):
+            s_cnt[ord(s[i - lp]) - ord('a')] -= 1
+            s_cnt[ord(s[i]) - ord('a')] += 1
+            if s_cnt == p_cnt:
+                ans.append(i - lp + 1)
+        return ans
+
+
+# sliding window + two pointers
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        ls, lp, ans = len(s), len(p), []
+        if ls < lp: 
+            return ans
+        p_cnt = [0] * 26
+        s_cnt = [0] * 26
+        for i in range(lp):
+            p_cnt[ord(p[i]) - ord('a')] += 1
+
+        left = 0
+        for right in range(ls):
+            cur_right = ord(s[right]) - ord('a')
+            s_cnt[cur_right] += 1
+            while s_cnt[cur_right] > p_cnt[cur_right]:
+                # move left pointer to satisfy 's_cnt[cur_right] == p_cnt[cur_right]'
+                cur_left = ord(s[left]) - ord('a')
+                s_cnt[cur_left] -= 1
+                left += 1
+            if right - left + 1 == lp:
+                ans.append(left)
+        return ans
+
+
 # 441 - Arranging Coins - EASY
 # math
 class Solution:

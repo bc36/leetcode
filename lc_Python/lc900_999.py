@@ -255,3 +255,24 @@ class Solution:
             heapq.heappushpop(q, (dist, i))
         ans = [points[identity] for (_, identity) in q]
         return ans
+
+
+# 977 - Squares of a Sorted Array - EASY
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        return sorted([num**2 for num in nums])
+
+
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        left, right = 0, len(nums) - 1
+        ans = [0] * len(nums)
+        while left <= right:
+            al, ar = abs(nums[left]), abs(nums[right])
+            if al > ar:
+                ans[right - left] = al**2
+                left += 1
+            else:
+                ans[right - left] = ar**2
+                right -= 1
+        return ans

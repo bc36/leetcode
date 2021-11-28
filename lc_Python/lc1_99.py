@@ -195,6 +195,35 @@ class Solution:
         return
 
 
+# 35 - Search Insert Position - EASY
+class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = (right + left) >> 1
+            if nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return left
+
+
+class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        while left < right:
+            mid = (right + left) >> 1
+            if nums[mid] > target:
+                right = mid
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                return mid
+        if nums[left] < target:
+            return left + 1
+        return left
+
+
 # 37 - Sudoku Solver - HARD
 class Solution:
     def solveSudoku(self, board: List[List[str]]) -> None:
@@ -226,7 +255,7 @@ class Solution:
             return False
 
         backtrack(0)
-
+        # Another sulotion:
         # def backtrack(board: List[List[str]]) -> bool:
         #     for i in range(9):
         #         for j in range(9):

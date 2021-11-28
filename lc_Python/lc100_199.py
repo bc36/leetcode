@@ -391,6 +391,32 @@ class Solution:
         return idx
 
 
+# 167 - Two Sum II - Input Array Is Sorted - EASY
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        dic = {}
+        for i in range(len(nums)):
+            if nums[i] in dic:
+                return [dic[nums[i]] + 1, i + 1]
+            else:
+                dic[target - nums[i]] = i
+        return [-1, -1]
+
+
+class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        left, right = 0, len(numbers) - 1
+        while left < right:
+            summ = numbers[left] + numbers[right]
+            if summ < target:
+                left += 1
+            elif summ > target:
+                right -= 1
+            else:
+                return [left + 1, right + 1]
+        return [-1, -1]
+
+
 # 173 - Binary Search Tree Iterator - MEDIUM
 # save all node.val by inorder traversal
 class BSTIterator:
@@ -452,6 +478,21 @@ class BSTIterator:
         while root:
             self.stack.append(root)
             root = root.left
+        return
+
+
+# 189 - Rotate Array - MEDIUM
+class Solution:
+    def rotate(self, nums: List[int], k: int) -> None:
+        k %= len(nums)
+        '''
+        Input: [1], 0
+        Wrong: nums[:k], nums[k:] = nums[-k:], nums[:-k]
+        Assignment Visualization: [], [1] = [1], []
+        Conclusion: assignment from left to right
+        '''
+        nums[k:], nums[:k] = nums[:-k], nums[-k:]
+        # nums[:] = nums[-k:] + nums[:-k]
         return
 
 
