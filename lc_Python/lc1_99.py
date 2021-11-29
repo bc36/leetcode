@@ -118,6 +118,43 @@ class Solution:
         return ret
 
 
+# 19 - Remove Nth Node From End of List - MEDIUM
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode],
+                         n: int) -> Optional[ListNode]:
+        self.n = n
+        dummy = ListNode(-1, head)
+
+        def helper(head: Optional[ListNode]):
+            if head:
+                helper(head.next)
+            else:
+                return
+            if self.n == 0:
+                if head.next:
+                    head.next = head.next.next
+                else:
+                    head.next = None
+            self.n -= 1
+
+        helper(dummy)
+        return dummy.next
+
+
+class Solution:
+    def removeNthFromEnd(self, head, n):
+        fast = slow = head
+        for _ in range(n):
+            fast = fast.next
+        if not fast:
+            return head.next
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+        slow.next = slow.next.next
+        return head
+
+
 # 20 - Valid Parentheses - EASY
 # stack
 class Solution:

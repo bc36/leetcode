@@ -1,6 +1,4 @@
-import collections
-from operator import le
-from os import pread
+import collections, timeit
 import random, bisect, itertools
 from typing import List, Optional
 
@@ -32,6 +30,78 @@ class Solution:
         return ret
 
 
+# 509 - Fibonacci Number - EASY
+class Solution:
+    def fib(self, n: int) -> int:
+        if n < 2: return n
+        one, two, ans = 0, 1, 0
+        for _ in range(1, n):
+            ans = one + two
+            one, two = two, ans
+        return ans
+
+
+# 519 - Random Flip Matrix - MEDIUM
+# TLE
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.zero = [i for i in range(n * m)]
+        self.m = m
+        self.n = n
+        self.total = m * n - 1
+
+    def flip(self) -> List[int]:
+        index = random.randint(0, self.total)
+        self.total -= 1
+        val = self.zero.pop(index)
+        return [val // self.n, val % self.n]
+
+    def reset(self) -> None:
+        self.zero = [i for i in range(self.n * self.m)]
+        self.total = self.m * self.n - 1
+        return
+
+
+# Single sampling
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.total = n * m - 1
+        self.m = m
+        self.n = n
+        self.map = {}
+
+    def flip(self) -> List[int]:
+        x = random.randint(0, len(self.zero) - 1)
+        self.total -= 1
+        index = self.map.get(x, x)
+        self.map[x] = self.map.get(self.total, self.total)
+        return [index // self.n, index % self.n]
+
+    def reset(self) -> None:
+        self.total = self.m * self.n - 1
+        self.map.clear()
+        return
+
+
+# Multiple sampling
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.m = m
+        self.n = n
+        self.total = m * n
+        self.flipped = set()
+
+    def flip(self) -> List[int]:
+        while (x := random.randint(0, self.total - 1)) in self.flipped:
+            pass
+        self.flipped.add(x)
+        return [x // self.n, x % self.n]
+
+    def reset(self) -> None:
+        self.total = self.m * self.n
+        self.flipped.clear()
+
+
 # 520 - Detect Capital - EASY
 # brutal-force
 class Solution:
@@ -59,65 +129,6 @@ class Solution:
         return word.istitle() or word.isupper() or word.islower()
         # Solution 2:
         # return word[1:] == word[1:].lower() or word == word.upper()
-
-
-# 519 - Random Flip Matrix - MEDIUM
-# TLE
-class Solution:
-    def __init__(self, m: int, n: int):
-        self.zero = [i for i in range(n * m)]
-        self.m = m
-        self.n = n
-        self.total = m * n - 1
-
-    def flip(self) -> List[int]:
-        index = random.randint(0, self.total)
-        self.total -= 1
-        val = self.zero.pop(index)
-        return [val // self.n, val % self.n]
-
-    def reset(self) -> None:
-        self.zero = [i for i in range(self.n * self.m)]
-        self.total = self.m * self.n - 1
-        return
-
-# Single sampling
-class Solution:
-    def __init__(self, m: int, n: int):
-        self.total = n * m - 1
-        self.m = m
-        self.n = n
-        self.map = {}
-
-    def flip(self) -> List[int]:
-        x = random.randint(0, len(self.zero) - 1)
-        self.total -= 1
-        index = self.map.get(x, x)
-        self.map[x] = self.map.get(self.total, self.total)
-        return [index // self.n, index % self.n]
-
-    def reset(self) -> None:
-        self.total = self.m * self.n - 1
-        self.map.clear()
-        return
-
-# Multiple sampling
-class Solution:
-    def __init__(self, m: int, n: int):
-        self.m = m
-        self.n = n
-        self.total = m * n
-        self.flipped = set()
-
-    def flip(self) -> List[int]:
-        while (x := random.randint(0, self.total - 1)) in self.flipped:
-            pass
-        self.flipped.add(x)
-        return [x // self.n, x % self.n]
-
-    def reset(self) -> None:
-        self.total = self.m * self.n
-        self.flipped.clear()
 
 
 # 523 - Continuous Subarray Sum - MEDUIM
@@ -310,6 +321,20 @@ class Solution:
                     uf.merge(i, j)
 
         return uf.num_of_sets
+
+
+# 557 - Reverse Words in a String III - EASY
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        split = s.split() # default delimiter: " ", whitespace
+        for i in range(len(split)):
+            split[i] = split[i][::-1]
+        return " ".join(split)
+
+        # return ' '.join(x[::-1] for x in s.split())
+        # return ' '.join(s.split()[::-1])[::-1]
+
+# 558
 
 
 # 559 - Maximum Depth of N-ary Tree - EASY

@@ -116,6 +116,49 @@ class Solution:
         return ans
 
 
+# 786 - K-th Smallest Prime Fraction - HARD
+class Solution:
+    def kthSmallestPrimeFraction(self, arr: List[int], k: int) -> List[int]:
+        div = []
+        for i in range(len(arr) - 1):
+            for j in range(i + 1, len(arr)):
+                div.append((arr[i], arr[j]))
+        div.sort(key=lambda x: x[0] / x[1])
+        return div[k - 1]
+
+
+class Solution:
+    def kthSmallestPrimeFraction(self, arr: List[int], k: int) -> List[int]:
+        left, right = 0, 1
+        while True:
+            mid = (left + right) / 2
+            i, count, x, y = -1, 0, 0, 1
+            for j in range(1, len(arr)):
+                while arr[i + 1] / arr[j] < mid:
+                    i += 1
+                    # a/b > c/d => a*d > b*c
+                    # update the max fraction
+                    if arr[i] * y > arr[j] * x:
+                        x, y = arr[i], arr[j]
+                count += i + 1
+
+            if count > k:
+                right = mid
+            if count < k:
+                left = mid
+            else:
+                return [x, y]
+
+
+# 787
+
+# 788
+
+# 789
+
+# 790
+
+
 # 791 - Custom Sort String - MEDIUM
 class Solution:
     def customSortString(self, order: str, s: str) -> str:
@@ -146,3 +189,36 @@ class Solution:
                 cnt.pop(ch)
 
         return ans + "".join(ch * cnt[ch] for ch in cnt)
+
+
+# 797 - All Paths From Source to Target - MEDIUM
+class Solution:
+    def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
+        def dfs(cur: int, path: List[int]):
+            if cur == len(graph) - 1:
+                ret.append(path)
+            else:
+                for i in graph[cur]:
+                    dfs(i, path + [i])
+            return
+
+        ret = []
+        dfs(0, [0])
+        return ret
+
+
+class Solution:
+    def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
+        stack, ret = [(0, [0])], []
+        while stack:
+            cur, path = stack.pop()
+            if cur == len(graph) - 1:
+                ret.append(path)
+            for nei in graph[cur]:
+                stack.append((nei, path + [nei]))
+        return ret
+
+
+# 798
+
+# 799

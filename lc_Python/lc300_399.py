@@ -168,6 +168,21 @@ class Solution(object):
         return ret
 
 
+# 344 - Reverse String - EASY
+class Solution:
+    def reverseString(self, s: List[str]) -> None:
+        for i in range(len(s) // 2):
+            s[i], s[-i - 1] = s[-i - 1], s[i]
+        # s[:] = s[::-1]
+        # s.reverse()
+        return
+
+
+# 345
+
+# 346
+
+
 # 347 - Top K Frequent Elements - MEDIUM
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:

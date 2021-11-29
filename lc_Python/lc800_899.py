@@ -1,5 +1,11 @@
-from typing import List
+from typing import List, Optional
 import collections
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
 
 # 827 - Making A Large Island - HARD
@@ -60,3 +66,54 @@ class Solution:
                 return False
         diff = [(a, b) for a, b in zip(s, goal) if a != b]
         return len(diff) == 2 and diff[0] == diff[1][::-1]
+
+
+# 876 - Middle of the Linked List - EASY
+# recursive. O(n)+ stack space / O(3)
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        self.n = 0
+        self.head = ListNode(-1)
+        dummy = ListNode(-1, head)
+
+        def helper(head: Optional[ListNode]):
+            if head:
+                self.n += 1
+                helper(head.next)
+            else:
+                self.n >>= 1
+                return
+            self.n -= 1
+            if self.n == 0:
+                self.head = head
+                self.n -= 1
+                return
+            return
+
+        helper(dummy)
+        return self.head
+
+
+# compute the length of linked list. O(1.5n) / O(2)
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        n, cp = 0, head
+        while head:
+            head = head.next
+            n += 1
+        head = cp
+        n >>= 1
+        while n:
+            head = head.next
+            n -= 1
+        return head
+
+
+# two pointers. O(n) / O(2)
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
