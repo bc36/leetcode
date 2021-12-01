@@ -496,6 +496,26 @@ class Solution:
         return
 
 
+# 198 - House Robber - MEDIUM
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if len(nums) < 3:
+            return max(nums)
+        dp = [0] * len(nums)
+        dp[0], dp[1] = nums[0], max(nums[0], nums[1])
+        for i in range(2, len(nums)):
+            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
+        return dp[-1]
+
+
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        dp1, dp2 = 0, 0
+        for i in range(len(nums)):
+            dp1, dp2 = dp2, max(dp1 + nums[i], dp2)
+        return dp2
+
+
 # 199 - Binary Tree Right Side View - MEDIUM
 # dfs postorder
 class Solution:

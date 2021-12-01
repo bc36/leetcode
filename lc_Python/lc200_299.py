@@ -779,7 +779,9 @@ class Solution:
     def firstBadVersion(self, n: int) -> int:
         left, right = 1, n
         while left < right:
-            # precedence of '>>' is lower than '+'
+            '''
+            precedence of '>>' is lower than '+'
+            '''
             mid = ((right - left) >> 1) + left
             if isBadVersion(mid):
                 right = mid

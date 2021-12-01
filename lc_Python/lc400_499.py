@@ -10,6 +10,26 @@ class Node:
         self.right = right
 
 
+# 400 - Nth Digit - MEDIUM
+class Solution:
+    def findNthDigit(self, n: int) -> int:
+        k = 1
+        while k * (10**k) < n:
+            n += 10**k
+            k += 1
+        return int(str(n // k)[n % k])
+
+
+class Solution:
+    def findNthDigit(self, n):
+        n -= 1
+        for digits in range(1, 11):
+            first = 10**(digits - 1)
+            if n < 9 * first * digits:
+                return int(str(first + n / digits)[n % digits])
+            n -= 9 * first * digits
+
+
 # 408 - Valid Word Abbreviation - EASY
 class Solution:
     def validWordAbbreviation(self, word: str, abbr: str) -> bool:
@@ -99,7 +119,7 @@ class Solution:
 class Solution:
     def findAnagrams(self, s: str, p: str) -> List[int]:
         ls, lp, ans = len(s), len(p), []
-        if ls < lp: 
+        if ls < lp:
             return ans
         p_cnt = [0] * 26
         s_cnt = [0] * 26

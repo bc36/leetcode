@@ -9,9 +9,9 @@ class TreeNode:
         self.right = right
 
 
-'''
+"""
 Binary tree - 二叉树
-'''
+"""
 
 
 # 二叉树层序遍历 / BFS

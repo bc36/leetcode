@@ -74,17 +74,47 @@ class Solution:
 
 
 # 3 - Longest Substring Without Repeating Characters - MEDIUM
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        res = 0
+        longest_substr = ''
+        for ch in s:
+            if ch not in longest_substr:
+                longest_substr += ch
+                if len(longest_substr) > res:
+                    res += 1
+            else:
+                i = longest_substr.find(ch)
+                longest_substr = longest_substr[i + 1:] + ch
+        return res
+
+
 # sliding window + hashmap
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        left, right, ans = 0, 0, 0
+        slow, fast, ans = 0, 0, 0
         dic = {}
-        while right < len(s):
-            if s[right] in dic and dic[s[right]] >= left:
-                left = dic[s[right]] + 1
-            dic[s[right]] = right
-            right += 1
-            ans = max(ans, right - left)
+        while fast < len(s):
+            if s[fast] in dic and dic[s[fast]] >= slow:
+                slow = dic[s[fast]] + 1
+            dic[s[fast]] = fast
+            fast += 1
+            ans = max(ans, fast - slow)
+        return ans
+
+
+# set
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        st, ans, slow, fast = set(), 0, 0, 0
+        while fast < len(s):
+            if s[fast] not in st:
+                st.add(s[fast])
+                fast += 1
+            else:
+                st.remove(s[slow])
+                slow += 1
+            ans = max(ans, len(st))
         return ans
 
 
@@ -92,16 +122,15 @@ class Solution:
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
         exist = [0 for _ in range(256)]
-        left, right, ans = 0, 0, 0
-        while right < len(s):
-            if exist[ord(s[right]) - 97] == 0:
-                exist[ord(s[right]) - 97] += 1
-                right += 1
+        slow, fast, ans = 0, 0, 0
+        while fast < len(s):
+            if exist[ord(s[fast])] == 0:
+                exist[ord(s[fast])] += 1
+                fast += 1
             else:
-                exist[ord(s[right]) - 97] -= 1
-                left += 1
-
-            ans = max(ans, right - left)
+                exist[ord(s[slow])] -= 1
+                slow += 1
+            ans = max(ans, fast - slow)
         return ans
 
 
@@ -490,6 +519,52 @@ class Solution:
 class Solution:
     def uniquePaths(self, m: int, n: int) -> int:
         return math.comb(m + n - 2, n - 1)
+
+
+# 70 - Climbing Stairs - EASY
+# dp
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n < 3:
+            return n
+        dp = [1, 2] + [0] * (n - 2)
+        for i in range(2, n):
+            dp[i] = dp[i - 1] + dp[i - 2]
+        return dp[-1]
+
+
+# dp optimized
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n < 3:
+            return n
+        one, two, ans = 1, 2, 0
+        for i in range(2, n):
+            ans = one + two
+            one, two = two, ans
+        return ans
+
+
+# memo
+class Solution:
+    def __init__(self):
+        self.memo = {}
+
+    def climbStairs(self, n: int) -> int:
+        if n < 3:
+            return n
+        if n in self.memo:
+            return self.memo[n]
+        self.memo[n] = self.climbStairs(n - 1) + self.climbStairs(n - 2)
+        return self.memo[n]
+
+
+class Solution:
+    @functools.lru_cache
+    def climbStairs(self, n: int) -> int:
+        if n < 3:
+            return n
+        return self.climbStairs(n - 1) + self.climbStairs(n - 2)
 
 
 # 71 - Simplify Path - MEDIUM

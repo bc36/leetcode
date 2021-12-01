@@ -30,6 +30,16 @@ class Solution:
         return ret
 
 
+# 506 - Relative Ranks - EASY
+class Solution:
+    def findRelativeRanks(self, score: List[int]) -> List[str]:
+        dic = {n: idx for idx, n in enumerate(sorted(score, reverse=True))}
+        medals = ["Gold Medal", "Silver Medal", "Bronze Medal"]
+        return [
+            str(dic[i] + 1) if dic[i] >= 3 else medals[dic[i]] for i in score
+        ]
+
+
 # 509 - Fibonacci Number - EASY
 class Solution:
     def fib(self, n: int) -> int:
@@ -326,13 +336,14 @@ class Solution:
 # 557 - Reverse Words in a String III - EASY
 class Solution:
     def reverseWords(self, s: str) -> str:
-        split = s.split() # default delimiter: " ", whitespace
+        split = s.split()  # default delimiter: " ", whitespace
         for i in range(len(split)):
             split[i] = split[i][::-1]
         return " ".join(split)
 
         # return ' '.join(x[::-1] for x in s.split())
         # return ' '.join(s.split()[::-1])[::-1]
+
 
 # 558
 
