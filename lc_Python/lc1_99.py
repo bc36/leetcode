@@ -206,6 +206,36 @@ class Solution:
         return len(stack) == 0
 
 
+# 21. Merge Two Sorted Lists - EASY
+# iterative
+class Solution:
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        dummy = head = ListNode(-1)
+        while l1 and l2:
+            if l1.val >= l2.val:
+                head.next = l2
+                l2 = l2.next
+            else:
+                head.next = l1
+                l1 = l1.next
+            head = head.next
+        head.next = l1 or l2
+        return dummy.next
+
+
+# recursive
+class Solution:
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        if not l1 or not l2:
+            return l1 or l2
+        if l1.val < l2.val:
+            l1.next = self.mergeTwoLists(l1.next, l2)
+            return l1
+        else:
+            l2.next = self.mergeTwoLists(l1, l2.next)
+            return l2
+
+
 # 31 - Next Permutation - MEDUIM
 # find the first number that is greater than the adjecent number on the right
 # then swap this number with the smallest number among the numbers larger than it on the right.

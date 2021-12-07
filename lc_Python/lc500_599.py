@@ -400,7 +400,7 @@ class Solution:
         self.ans = 0  # ans = []
 
         # return sum of right subtree and left subtree
-        def dfs(root: TreeNode):
+        def dfs(root: TreeNode) -> int:
             if not root:
                 return 0
             vl = dfs(root.left)
@@ -410,6 +410,26 @@ class Solution:
 
         dfs(root)
         return self.ans  # sum(ans)
+
+
+# 567 - Permutation in String - MEDIUM
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        if len(s1) > len(s2):
+            return False
+        arr1 = [0] * 26
+        arr2 = [0] * 26
+        for i in range(len(s1)):
+            arr1[ord(s1[i]) - ord('a')] += 1
+            arr2[ord(s2[i]) - ord('a')] += 1
+        if arr1 == arr2:
+            return True
+        for i in range(len(s1), len(s2)):
+            arr2[ord(s2[i - len(s1)]) - ord('a')] -= 1
+            arr2[ord(s2[i]) - ord('a')] += 1
+            if arr1 == arr2:
+                return True
+        return False
 
 
 # 575 - Distribute Candies - EASY

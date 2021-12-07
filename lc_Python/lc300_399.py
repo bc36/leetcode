@@ -2,12 +2,17 @@ from typing import List, Optional
 import collections, math, functools
 
 
-# Definition for a binary tree node.
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
 
 # 301 - Remove Invalid Parentheses - HARD
@@ -83,6 +88,86 @@ class Solution:
 class Solution:
     def bulbSwitch(self, n: int) -> int:
         return int(math.sqrt(n))
+
+
+# 328 - Odd Even Linked List - MEDIUM
+# O(n) / O(n)
+class Solution:
+    def oddEvenList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        num = 1
+        odd, even = ListNode(-1), ListNode(-1)
+        cpodd, cpeven = odd, even
+        while head:
+            if num & 1:
+                odd.next = ListNode(head.val)
+                odd = odd.next
+            else:
+                even.next = ListNode(head.val)
+                even = even.next
+            head = head.next
+            num += 1
+        odd.next = cpeven.next
+        return cpodd.next
+
+
+# O(1) / O(n)
+class Solution:
+    def oddEvenList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head:
+            return head
+        odd, even = head, head.next
+        evenHead = even
+        while even and even.next:
+            odd.next = odd.next.next
+            even.next = even.next.next
+            odd = odd.next
+            even = even.next
+        odd.next = evenHead
+        return head
+
+
+# 337 - House Robber III - MEDIUM
+# recursive
+class Solution:
+    memory = {}
+
+    def rob(self, root: TreeNode) -> int:
+        if root is None:
+            return 0
+        if root.left is None and root.right is None:
+            return root.val
+        if self.memory.get(root) is not None:
+            return self.memory[root]
+        # rob root
+        val1 = root.val
+        if root.left:
+            val1 += self.rob(root.left.left) + self.rob(root.left.right)
+        if root.right:
+            val1 += self.rob(root.right.left) + self.rob(root.right.right)
+        # not rob root
+        val2 = self.rob(root.left) + self.rob(root.right)
+        self.memory[root] = max(val1, val2)
+        return max(val1, val2)
+
+
+# dp
+class Solution:
+    def rob(self, root: TreeNode) -> int:
+        result = self.rob_tree(root)
+        return max(result[0], result[1])
+
+    def rob_tree(self, node: TreeNode) -> int:
+        if node is None:
+            return (0, 0)  # (rob this node，not rob this node)
+        left = self.rob_tree(node.left)
+        right = self.rob_tree(node.right)
+        val1 = node.val + left[1] + right[1]  # rob node
+        val2 = max(left[0], left[1]) + max(right[0],
+                                           right[1])  # not rob this node
+        return (val1, val2)
+
+
+# 338
 
 
 # 339 - Nested List Weight Sum - MEDIUM
@@ -291,6 +376,31 @@ class Solution:
         return max(f, key=len)
 
 
+# 372 Super Pow
+class Solution:
+    def superPow(self, a: int, b: List[int]) -> int:
+        return pow(a, int(''.join(map(str, b))), 1337)
+
+
+class Solution:
+    def superPow(self, a: int, b: List[int]) -> int:
+        ans = 1
+        for digit in b:
+            ans = pow(ans, 10, 1337) * pow(a, digit, 1337) % 1337
+        return ans
+
+
+class Solution:
+    def superPow(self, a: int, b: List[int]) -> int:
+        ans = 1
+        for digit in reversed(b):
+            ans = ans * pow(a, digit, 1337) % 1337
+            a = pow(a, 10, 1337)
+        return ans
+
+
+# 373
+
 # 374 - Guess Number Higher or Lower - EASY
 # The guess API is already defined for you.
 # @param num, your guess
@@ -374,6 +484,13 @@ class Solution:
                 dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j])
                                for k in range(i, j))
         return dp[1][n]
+
+
+# 383 - Ransom Note - EASY
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        return not collections.Counter(ransomNote) - collections.Counter(
+            magazine)
 
 
 # 397 - Integer Replacement - MEDIUM

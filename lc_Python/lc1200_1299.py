@@ -3,6 +3,32 @@ from typing import Iterable, List
 import collections, itertools
 
 
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+# 1217 - Minimum Cost to Move Chips to The Same Position - EASY
+class Solution:
+    def minCostToMoveChips(self, position: List[int]) -> int:
+        odd, even = 0, 0
+        for chip in position:
+            if chip & 1:
+                even += 1
+            else:
+                odd += 1
+        return min(odd, even)
+
+
+class Solution:
+    def minCostToMoveChips(self, position: List[int]) -> int:
+        cost = [0, 0]
+        for chip in position:
+            cost[chip & 1] += 1
+        return min(cost)
+
+
 # 1218 - Longest Arithmetic Subsequence of Given Difference - MEDIUM
 class Solution:
     def longestSubsequence(self, arr: List[int], difference: int) -> int:
@@ -93,3 +119,19 @@ class CombinationIterator:
 
     def hasNext(self) -> bool:
         return len(self.dq) > 0
+
+
+# 1290 - Convert Binary Number in a Linked List to Integer - EASY
+class Solution:
+    def getDecimalValue(self, head: ListNode) -> int:
+        s = ""
+        while head:
+            s += str(head.val)
+            head = head.next
+        return int(s, 2)
+
+    def getDecimalValue(self, head: ListNode) -> int:
+        ans = head.val
+        while head := head.next:
+            ans = (ans << 1) + head.val
+        return ans

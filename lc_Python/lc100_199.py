@@ -356,6 +356,31 @@ class LRUCache:
             self.cache.popitem(last=False)
 
 
+# 152 - Maximum Product Subarray - MEDIUM
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        maxF, minF, ans = nums[0], nums[0], nums[0]
+        length = len(nums)
+        for i in range(1, length):
+            maxF, minF = max(maxF * nums[i], nums[i],
+                             minF * nums[i]), min(minF * nums[i], nums[i],
+                                                  maxF * nums[i])
+            # mx, mn = maxF, minF
+            # maxF = max(mx * nums[i], nums[i], mn * nums[i])
+            # minF = min(mn * nums[i], nums[i], mx * nums[i])
+            ans = max(maxF, ans)
+        return ans
+
+
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        revnums = nums[::-1]
+        for i in range(1, len(nums)):
+            nums[i] *= nums[i - 1] or 1
+            revnums[i] *= revnums[i - 1] or 1
+        return max(nums + revnums)
+
+
 # 162 - Find Peak Element - MEDIUM
 class Solution:
     def findPeakElement(self, nums: List[int]) -> int:
@@ -510,10 +535,10 @@ class Solution:
 
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        dp1, dp2 = 0, 0
+        pre, cur = 0, 0
         for i in range(len(nums)):
-            dp1, dp2 = dp2, max(dp1 + nums[i], dp2)
-        return dp2
+            pre, cur = cur, max(pre + nums[i], cur)
+        return cur
 
 
 # 199 - Binary Tree Right Side View - MEDIUM

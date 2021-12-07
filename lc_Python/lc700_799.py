@@ -1,3 +1,4 @@
+from operator import imatmul
 from typing import List
 import collections
 
@@ -114,6 +115,59 @@ class Solution:
         for emails in indexToEmails.values():
             ans.append([emailToName[emails[0]]] + sorted(emails))
         return ans
+
+
+# 733 - Flood Fill - EASY
+class Solution:
+    # bfs
+    def floodFill(self, image: List[List[int]], sr: int, sc: int,
+                  newColor: int) -> List[List[int]]:
+        if image[sr][sc] == newColor:
+            return image
+        position, originalColor = [(sr, sc)], image[sr][sc]
+        while position:
+            pos = position.pop()
+            image[pos[0]][pos[1]] = newColor
+            for m in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                if 0 <= pos[0] + m[0] < len(
+                        image) and 0 <= pos[1] + m[1] < len(
+                            image[0]) and image[pos[0] +
+                                                m[0]][pos[1] +
+                                                      m[1]] == originalColor:
+                    position.append((pos[0] + m[0], pos[1] + m[1]))
+        return image
+
+    # dfs
+    def floodFill(self, image: List[List[int]], sr: int, sc: int,
+                  newColor: int) -> List[List[int]]:
+        if image[sr][sc] == newColor:
+            return image
+        originalColor = image[sr][sc]
+
+        def dfs(row: int, col: int):
+            image[row][col] = newColor
+            for m in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                if 0 <= row + m[0] < len(image) and 0 <= col + m[1] < len(
+                        image[0]) and image[row + m[0]][col +
+                                                        m[1]] == originalColor:
+                    dfs(row + m[0], col + m[1])
+            return
+
+        dfs(sr, sc)
+        return image
+
+    # recursive
+    def floodFill(self, image: List[List[int]], sr: int, sc: int,
+                  newColor: int) -> List[List[int]]:
+        if image[sr][sc] == newColor:
+            return image
+        originalColor = image[sr][sc]
+        image[sr][sc] = newColor
+        for x, y in [(sr + 1, sc), (sr - 1, sc), (sr, sc + 1), (sr, sc - 1)]:
+            if 0 <= x < len(image) and 0 <= y < len(
+                    image[0]) and image[x][y] == originalColor:
+                self.floodFill(image, x, y, newColor)
+        return image
 
 
 # 746 - Min Cost Climbing Stairs - EASY

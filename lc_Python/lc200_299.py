@@ -1,3 +1,4 @@
+from operator import ne
 from typing import List, Optional
 import collections, random, heapq
 
@@ -180,12 +181,7 @@ class Solution:
 
 
 # 206 - Reverse Linked List - EASY
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-
+# iterative
 class Solution:
     def reverseList(self, head: ListNode) -> ListNode:
         pre = None
@@ -195,6 +191,17 @@ class Solution:
             pre = head
             head = tmp
         return pre
+
+
+# recursive
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        newHead = self.reverseList(head.next)
+        head.next.next = head
+        head.next = None
+        return newHead
 
 
 # 208 - Implement Trie (Prefix Tree) - MEDIUM
@@ -232,6 +239,56 @@ class Trie:
                 return False
             current = current.children[letter]
         return True
+
+
+# 213 - House Robber II - MEDIUM
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if len(nums) < 3:
+            return max(nums)
+        # dp0: start from index 0, dp1: start from index 1
+        dp0 = [0] * (len(nums) - 1)
+        dp0[0], dp0[1] = nums[0], max(nums[0], nums[1])
+        dp1 = [0] * (len(nums) - 1)
+        dp1[0], dp1[1] = nums[1], max(nums[1], nums[2])
+        for i in range(2, len(nums) - 1):
+            dp0[i] = max(dp0[i - 2] + nums[i], dp0[i - 1])
+        for i in range(3, len(nums)):
+            dp1[i - 1] = max(dp1[i - 3] + nums[i], dp1[i - 2])
+        return max(dp0[-1], dp1[-1])
+
+
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        def my_rob(nums):
+            cur, pre = 0, 0
+            for num in nums:
+                '''
+                Correct:
+                cur, pre = max(pre + num, cur), cur 
+                
+                pre, cur = cur, max(pre + num, cur)
+                
+                tmp = pre
+                pre = cur
+                cur = max(tmp + num, cur)
+
+                tmp = cur
+                cur = max(pre + num, cur)
+                pre = tmp
+
+                Wrong:
+                pre = cur
+                cur = max(tmp + num, cur)
+
+                cur = max(tmp + num, cur)
+                pre = cur
+                '''
+                pre, cur = cur, max(pre + num, cur)
+            return cur
+
+        return max(my_rob(nums[:-1]), my_rob(
+            nums[1:])) if len(nums) != 1 else nums[0]
 
 
 # 215 - Kth Largest Element in an Array - MEDIUM
