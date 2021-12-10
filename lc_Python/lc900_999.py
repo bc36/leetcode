@@ -16,9 +16,7 @@ class Solution:
             s = s.replace("()", "")
         return len(s)
 
-
-# stack
-class Solution:
+    # stack
     def minAddToMakeValid(self, s: str) -> int:
         left = right = 0
         for ch in s:
@@ -48,8 +46,6 @@ class Solution:
             a, b, c, d = d, (2 * c + 2 * d) % mod, b, (2 * a + b) % mod
         return (a + b + c + d) % mod
 
-
-class Solution:
     def knightDialer(self, n: int) -> int:
         x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x0 = 1
         for _ in range(n - 1):
@@ -90,8 +86,6 @@ class Solution:
         dfs(root, ans)
         return sum(ans)
 
-
-class Solution:
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
         # preorder
         def dfs(root: TreeNode):
@@ -106,9 +100,7 @@ class Solution:
 
         return dfs(root)
 
-
-# search the whole tree (see next solution to speed up)
-class Solution:
+    # search the whole tree (see next solution to speed up)
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
         if not root:
             return 0
@@ -116,10 +108,8 @@ class Solution:
         return val + self.rangeSumBST(root.left, low, high) + self.rangeSumBST(
             root.right, low, high)
 
-
-# since its a 'binary search tree' which means that left.val < root.val < right.val
-# so we can speed up by jump some unqualified node (the value greater than high or smalller than low)
-class Solution:
+    # since its a 'binary search tree' which means that left.val < root.val < right.val
+    # so we can speed up by jump some unqualified node (the value greater than high or smalller than low)
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
         if not root:
             return 0
@@ -130,9 +120,7 @@ class Solution:
         return root.val + self.rangeSumBST(
             root.left, low, high) + self.rangeSumBST(root.right, low, high)
 
-
-# bfs
-class Solution:
+    # bfs
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
         dq = collections.deque()
         ans = 0
@@ -168,21 +156,15 @@ class Solution:
                 return False
         return True
 
-
-class Solution:
     def isAlienSorted(self, words: List[str], order: str) -> bool:
         m = {c: i for i, c in enumerate(order)}
         words = [[m[c] for c in w] for w in words]
         return all(w1 <= w2 for w1, w2 in zip(words, words[1:]))
 
-
-class Solution:
     def isAlienSorted(self, words: List[str], order: str) -> bool:
         return words == sorted(words, key=lambda w: map(order.index, w))
 
-
-# compare each character in word[i] and word[i+1]
-class Solution:
+    # compare each character in word[i] and word[i+1]
     def isAlienSorted(self, words: List[str], order: str) -> bool:
         order_map = {val: index for index, val in enumerate(order)}
         for i in range(len(words) - 1):
@@ -224,8 +206,6 @@ class Solution:
                 i += 1
         return ans
 
-
-class Solution:
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
         heap = []
         for (x, y) in points:
@@ -236,14 +216,10 @@ class Solution:
                 heapq.heappush(heap, (dist, x, y))
         return [(x, y) for (_, x, y) in heap]
 
-
-class Solution:
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
         points.sort(key=lambda x: (x[0]**2 + x[1]**2))
         return points[:k]
 
-
-class Solution:
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
         q = [(-x**2 - y**2, i) for i, (x, y) in enumerate(points[:k])]
         heapq.heapify(q)
@@ -262,8 +238,6 @@ class Solution:
     def sortedSquares(self, nums: List[int]) -> List[int]:
         return sorted([num**2 for num in nums])
 
-
-class Solution:
     def sortedSquares(self, nums: List[int]) -> List[int]:
         left, right = 0, len(nums) - 1
         ans = [0] * len(nums)
@@ -276,3 +250,28 @@ class Solution:
                 ans[right - left] = ar**2
                 right -= 1
         return ans
+
+
+# 994 - Rotting Oranges - MEDIUM
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        starts, m, n, fresh = [], len(grid), len(grid[0]), 0
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == 2:
+                    starts.append((i, j))
+                elif grid[i][j] == 1:
+                    fresh += 1
+        ans, dq = 0, collections.deque(starts)
+        while dq:
+            for _ in range(len(dq)):
+                x, y = dq.popleft()
+                for i, j in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+                    if 0 <= i < m and 0 <= j < n and grid[i][j] == 1:
+                        grid[i][j] = 2
+                        fresh -= 1
+                        dq.append((i, j))
+            if not dq:
+                break
+            ans += 1
+        return ans if fresh == 0 else -1

@@ -29,9 +29,7 @@ class Solution:
             values = []
         return ans
 
-
-# dfs: depth-first search
-class Solution:
+    # dfs: depth-first search
     def levelOrder(self, root: TreeNode) -> List[List[int]]:
         ans = []
 
@@ -56,10 +54,14 @@ class Solution:
             return 0
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 
+# 120 - Triangle - MEDIUM
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        return
 
 # 121 - Best Time to Buy and Sell Stock - EASY
-# Dynamic Programming
 class Solution:
+    # Dynamic Programming
     def maxProfit(self, prices: List[int]) -> int:
         hisLowPrice, ans = prices[0], 0
         for price in prices:
@@ -103,8 +105,6 @@ class Solution:
                 longest = max(longest, curLen)
         return longest
 
-
-class Solution:
     def longestConsecutive(self, nums: List[int]) -> int:
         nums, maxlen = set(nums), 0
         while nums:
@@ -136,9 +136,7 @@ class Solution:
 
         return dfs(root, 0)
 
-
-# bfs
-class Solution:
+    # bfs
     def sumNumbers(self, root: TreeNode) -> int:
         total = 0
         nodes = collections.deque([root])
@@ -187,9 +185,8 @@ class Solution:
                 board[i][j] = "X" if board[i][j] != "*" else "O"
         return
 
-
 # bfs
-class Solution:
+
     def solve(self, board: List[List[str]]) -> None:
         dq = collections.deque([])
         row, col = len(board), len(board[0])
@@ -231,10 +228,8 @@ class Solution:
             ans ^= i
         return ans
 
-
-# lambda arguments: expression
-# reduce(func, seq)
-class Solution:
+    # lambda arguments: expression
+    # reduce(func, seq)
     def singleNumber(self, nums: List[int]) -> int:
         # return functools.reduce(operator.xor, nums)
         return functools.reduce(lambda x, y: x ^ y, nums)
@@ -371,8 +366,6 @@ class Solution:
             ans = max(maxF, ans)
         return ans
 
-
-class Solution:
     def maxProduct(self, nums: List[int]) -> int:
         revnums = nums[::-1]
         for i in range(1, len(nums)):
@@ -395,9 +388,7 @@ class Solution:
                 return i
         return len(nums) - 1
 
-
-# climbing to the greater side
-class Solution:
+    # climbing to the greater side
     def findPeakElement(self, nums: List[int]) -> int:
         idx = random.randint(0, len(nums) - 1)
 
@@ -416,6 +407,28 @@ class Solution:
         return idx
 
 
+# 163 - Missing Ranges - EASY - PREMIUM
+class Solution:
+    def findMissingRanges(self, nums: List[int], lower: int,
+                          upper: int) -> List[str]:
+        def helper(lower: int, upper: int) -> str:
+            if lower == upper:
+                return str(lower)
+            return f"{lower}->{upper}"
+
+        ans = []
+        if not nums:
+            return helper(lower, upper)
+        if lower < nums[0]:
+            ans.append(lower, nums[0] - 1)
+        for i in range(len(nums) - 1):
+            if nums[i] + 1 < nums[i + 1]:
+                ans.append(helper(nums[i] + 1, nums[i + 1] - 1))
+        if nums[-1] < upper:
+            ans.append(nums[-1] + 1, upper)
+        return ans
+
+
 # 167 - Two Sum II - Input Array Is Sorted - EASY
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
@@ -427,8 +440,6 @@ class Solution:
                 dic[target - nums[i]] = i
         return [-1, -1]
 
-
-class Solution:
     def twoSum(self, numbers: List[int], target: int) -> List[int]:
         left, right = 0, len(numbers) - 1
         while left < right:
@@ -521,19 +532,39 @@ class Solution:
         return
 
 
+# 191 - Number of 1 Bits - EASY
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        ans = 0
+        while n:
+            if n & 1:
+                ans += 1
+                n -= 1
+            n >>= 1
+        return ans
+
+    def hammingWeight(self, n: int) -> int:
+        ans = 0
+        while n:
+            n &= n - 1
+            ans += 1
+        return ans
+
+    def hammingWeight(self, n: int) -> int:
+        return bin(n).count('1')
+
+
 # 198 - House Robber - MEDIUM
 class Solution:
     def rob(self, nums: List[int]) -> int:
         if len(nums) < 3:
             return max(nums)
         dp = [0] * len(nums)
-        dp[0], dp[1] = nums[0], max(nums[0], nums[1])
+        dp[0], dp[1] = nums[0], max(nums[:2])
         for i in range(2, len(nums)):
             dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
         return dp[-1]
 
-
-class Solution:
     def rob(self, nums: List[int]) -> int:
         pre, cur = 0, 0
         for i in range(len(nums)):
@@ -542,36 +573,30 @@ class Solution:
 
 
 # 199 - Binary Tree Right Side View - MEDIUM
-# dfs postorder
 class Solution:
+    # dfs postorder
     def rightSideView(self, root: TreeNode) -> List[int]:
-        ans = []
+        self.ans = []
 
-        def postorder(root: TreeNode, level: int):
+        def postorder(root: TreeNode, level: int) -> None:
             if root == None:
                 return
-            if level == len(ans):
-                ans.append(root.val)
+            if level == len(self.ans):
+                self.ans.append(root.val)
             level += 1
             postorder(root.right, level)
             postorder(root.left, level)
             return
 
         postorder(root, 0)
-        return ans
+        return self.ans
 
-
-# bfs
-# use dequeue to save every nodes in each level
-# FIFO
-class Solution:
+    # bfs
     def rightSideView(self, root: TreeNode) -> List[int]:
-        dq = collections.deque()
+        dq, ans = collections.deque(), []
         if root:
             dq.append(root)
-        ans = []
         while dq:
-            # queue is not empty
             ans.append(dq[-1].val)
             for _ in range(len(dq)):
                 node = dq.popleft()
@@ -579,52 +604,4 @@ class Solution:
                     dq.append(node.left)
                 if node.right:
                     dq.append(node.right)
-        return ans
-
-
-class Solution:
-    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
-        # bfs
-        dq = collections.deque()
-        if root:
-            dq.append(root)
-        ans = []
-        level = 0
-        while dq:
-            # process each layer
-            for _ in range(len(dq)):
-                node = dq.pop()
-                # not have node be seen in this layer, add rightmost node first
-                if len(ans) == level:
-                    ans.append(node.val)
-                # right side view, add right node first
-                if node.right:
-                    dq.appendleft(node.right)
-                if node.left:
-                    dq.appendleft(node.left)
-            level += 1
-        return ans
-
-
-class Solution:
-    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
-        # bfs
-        dq = collections.deque()
-        if root:
-            dq.append(root)
-        ans, level = [], 0
-        while dq:
-            # process each layer
-            for _ in range(len(dq)):
-                node = dq.popleft()
-                # add from left, so need to update
-                if len(ans) == level:
-                    ans.append(node.val)
-                else:
-                    ans[level] = node.val
-                if node.left:
-                    dq.append(node.left)
-                if node.right:
-                    dq.append(node.right)
-            level += 1
         return ans

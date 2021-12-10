@@ -1,4 +1,3 @@
-from operator import ne
 from typing import List, Optional
 import collections, random, heapq
 
@@ -297,33 +296,7 @@ class Solution:
         nums.sort()
         return nums[-k]
 
-
-# two stacks, almost TLE(Time Limit Exceeded)
-class Solution:
-    def findKthLargest(self, nums: List[int], k: int) -> int:
-        ans, tmp = [], []
-        for num in nums:
-            if ans:
-                while ans and num > ans[-1]:
-                    # need put to the right position in stack
-                    tmp.append(ans.pop())
-                if len(ans) == k:
-                    tmp = []
-                    continue
-                # descending order, put into stack directly
-                else:
-                    ans.append(num)
-                    while tmp and len(ans) < k:
-                        ans.append(tmp.pop())
-                    tmp = []
-            else:
-                ans.append(num)
-
-        return ans[-1]
-
-
-# partition: based on quick sort
-class Solution:
+    # partition: based on quick sort
     def findKthLargest(self, nums: List[int], k: int) -> int:
         n = len(nums)
         left, right = 0, n - 1
@@ -346,9 +319,7 @@ class Solution:
             else:
                 left = i + 1
 
-
-# quick select
-class Solution:
+    # quick select
     def findKthLargest(self, nums: List[int], k: int) -> int:
         def partition(left: int, right: int, pivot_idx: int):
             pivot = nums[pivot_idx]
@@ -377,8 +348,6 @@ class Solution:
 
         return select(0, len(nums) - 1, len(nums) - k)
 
-
-class Solution:
     def findKthLargest(self, nums, k):
         if not nums:
             return
@@ -393,8 +362,6 @@ class Solution:
         else:
             return self.findKthLargest(left, k - len(right) - len(mid))
 
-
-class Solution:
     def findKthLargest(self, nums, k):
         if not nums: return
         pivot = random.choice(nums)
@@ -411,9 +378,7 @@ class Solution:
         else:
             return mid[0]
 
-
-# 11.14 mock
-class Solution:
+    # 11.14 mock
     def findKthLargest(self, nums: List[int], k: int) -> int:
         def helper(nums: List[int], k: int):
             pivot = random.choice(nums)
@@ -429,15 +394,11 @@ class Solution:
 
         return helper(nums, k)
 
-
-# heap (a.k.a: priority queue)
-class Solution:
+    # heap (a.k.a: priority queue)
     def findKthLargest(self, nums: List[int], k: int) -> int:
         return heapq.nlargest(k, nums)[-1]
 
-
-# heap
-class Solution:
+    # heap
     def findKthLargest(self, nums: List[int], k: int) -> int:
         heap = []
         for num in nums:
@@ -447,32 +408,9 @@ class Solution:
         return heapq.heappop(heap)
 
 
-# O(nk): selections sort idea, almost TLE(Time Limit Exceeded)
-class Solution:
-    def findKthLargest(self, nums: List[int], k: int) -> int:
-        for i in range(len(nums), len(nums) - k, -1):
-            tmp_max = 0
-            for j in range(i):
-                if nums[j] > nums[tmp_max]:
-                    tmp_max = j
-            nums[tmp_max], nums[i - 1] = nums[i - 1], nums[tmp_max]
-        return nums[len(nums) - k]
-
-
-# O(nk): bubble sort idea, TLE(Time Limit Exceeded)
-class Solution:
-    def findKthLargest(self, nums: List[int], k: int) -> int:
-        for i in range(k):
-            for j in range(len(nums) - i - 1):
-                if nums[j] > nums[j + 1]:
-                    # exchange elements, time consuming
-                    nums[j], nums[j + 1] = nums[j + 1], nums[j]
-        return nums[len(nums) - k]
-
-
 # 226 - Invert Binary Tree - EASY
-# breadth-first search
 class Solution:
+    # breadth-first search
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         stack = []
         if root:
@@ -487,9 +425,7 @@ class Solution:
 
         return root
 
-
-# depth-first search
-class Solution:
+    # depth-first search
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         def dfs(root: TreeNode):
             if not root:
@@ -502,9 +438,7 @@ class Solution:
         dfs(root)
         return root
 
-
-# recursively
-class Solution:
+    # recursively
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         if root:
             root.left, root.right = self.invertTree(
@@ -540,9 +474,7 @@ class Solution:
                 return
         return
 
-
-# stack
-class Solution:
+    # stack
     def calculate(self, s: str) -> int:
         stack = []
         s += '$'
@@ -602,11 +534,9 @@ class Solution:
                 ans.append(i)
         return ans
 
-
-# up to two potential number appear more then n/3 times
-# when the first 'num1' appears too many times,
-# the second 'num2' may not get enough votes
-class Solution:
+    # up to two potential number appear more then n/3 times
+    # when the first 'num1' appears too many times,
+    # the second 'num2' may not get enough votes
     def majorityElement(self, nums: List[int]) -> List[int]:
 
         time1, time2, num1, num2 = 0, 0, 0, 0
@@ -640,16 +570,25 @@ class Solution:
         return ans
 
 
-# 235 - Lowest Common Ancestor of a Binary Search Tree - EASY
-class TreeNode:
-    def __init__(self, x):
-        self.val = x
-        self.left = None
-        self.right = None
-
-
-# recursive solution
+# 231 - Power of Two - EASY
 class Solution:
+    def isPowerOfTwo(self, n: int) -> bool:
+        if n <= 0:
+            return False
+        while n > 1:
+            if n & 1:
+                return False
+            else:
+                n >>= 1
+        return True
+
+    def isPowerOfTwo(self, n: int) -> bool:
+        return n and n & (n - 1) == 0
+
+
+# 235 - Lowest Common Ancestor of a Binary Search Tree - EASY
+class Solution:
+    # recursive solution
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
         if p.val < root.val and q.val < root.val:
@@ -658,9 +597,7 @@ class Solution:
             return self.lowestCommonAncestor(root.right, p, q)
         return root
 
-
-# Non-recursive solution
-class Solution:
+    # Non-recursive solution
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
         while (root.val - p.val) * (root.val - q.val) > 0:
@@ -685,12 +622,10 @@ class Solution:
             return root
         return left if left else right
 
-
-# three cases:
-# 1. root == p || root == q
-# 2. p, q are subtree in two sides (p in left, q in right and vice versa)
-# 3. p, q on the same side of subtree, recursive
-class Solution:
+    # three cases:
+    # 1. root == p || root == q
+    # 2. p, q are subtree in two sides (p in left, q in right and vice versa)
+    # 3. p, q on the same side of subtree, recursive
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
         if not root:
@@ -702,9 +637,7 @@ class Solution:
         if left and right: return root
         return left if left else right
 
-
-# iterative solution
-class Solution:
+    # iterative solution
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
         stack = [root]
@@ -764,7 +697,17 @@ class Solution:
         return list(dic.values())
 
 
-# 260 - Single Number III - MEDUIM
+# 252 - Meeting Rooms - EASY - PREMIUM
+class Solution:
+    def canAttendMeetings(self, intervals: List[List[int]]) -> bool:
+        intervals.sort()
+        for i in range(len(intervals) - 1):
+            if intervals[i][1] > intervals[i + 1][0]:
+                return False
+        return True
+
+
+# 260 - Single Number III - MEDIUM
 # Hash / O(n) + O(n)
 class Solution:
     def singleNumber(self, nums: List[int]) -> List[int]:
@@ -805,18 +748,14 @@ class Solution:
                 return i
         return len(nums)
 
-
-# XOR
-class Solution:
+    # XOR
     def missingNumber(self, nums: List[int]) -> int:
         ans = len(nums)
         for i in range(len(nums)):
             ans = ans ^ i ^ nums[i]
         return ans
 
-
-# math
-class Solution:
+    # math
     def missingNumber(self, nums: List[int]) -> int:
         # (0 + n) * (n + 1) // 2
         n = len(nums)
@@ -858,8 +797,6 @@ class Solution:
                 slow += 1
         return
 
-
-class Solution:
     def moveZeroes(self, nums: List[int]) -> None:
         nums[:] = [i for i in nums if i != 0] + nums.count(0) * [0]
         return
@@ -883,7 +820,8 @@ class Solution:
         #     if i in secret:
         #         cow += min(guess.count(i),secret.count(i))
         # cow = cow-bull
-
-        # str(bull) + "A" + str(cow) + "B"
-        # "{}A{}B".format(bull, cow)
+        '''
+        str(bull) + "A" + str(cow) + "B"
+        "{}A{}B".format(bull, cow)
+        '''
         return f'{bull}A{cow}B'

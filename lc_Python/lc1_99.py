@@ -1,4 +1,4 @@
-import bisect, collections, functools, random, operator, math
+import bisect, collections, functools, random, operator, math, itertools
 from posix import X_OK
 from typing import AnyStr, Iterable, List, Optional
 '''
@@ -43,8 +43,6 @@ class Solution:
             dic[target - nums[i]] = i
         return None
 
-
-class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         right = len(nums) - 1
         while nums:
@@ -88,9 +86,7 @@ class Solution:
                 longest_substr = longest_substr[i + 1:] + ch
         return res
 
-
-# sliding window + hashmap
-class Solution:
+    # sliding window + hashmap
     def lengthOfLongestSubstring(self, s: str) -> int:
         slow, fast, ans = 0, 0, 0
         dic = {}
@@ -102,9 +98,7 @@ class Solution:
             ans = max(ans, fast - slow)
         return ans
 
-
-# set
-class Solution:
+    # set
     def lengthOfLongestSubstring(self, s: str) -> int:
         st, ans, slow, fast = set(), 0, 0, 0
         while fast < len(s):
@@ -117,9 +111,7 @@ class Solution:
             ans = max(ans, len(st))
         return ans
 
-
-# ord(), chr() / byte -> position
-class Solution:
+    # ord(), chr() / byte -> position
     def lengthOfLongestSubstring(self, s: str) -> int:
         exist = [0 for _ in range(256)]
         slow, fast, ans = 0, 0, 0
@@ -169,8 +161,6 @@ class Solution:
         helper(dummy)
         return dummy.next
 
-
-class Solution:
     def removeNthFromEnd(self, head, n):
         fast = slow = head
         for _ in range(n):
@@ -185,30 +175,31 @@ class Solution:
 
 
 # 20 - Valid Parentheses - EASY
-# stack
 class Solution:
+    # stack
     def isValid(self, s: str) -> bool:
+        dic = {'(': ')', '{': '}', '[': ']'}
         stack = []
-        for ch in s:
-            if len(stack) == 0 and (ch == ")" or ch == "]" or ch == "}"):
+        for i in s:
+            if i in dic:
+                stack.append(i)
+            elif len(stack) == 0 or dic[stack.pop()] != i:
                 return False
-            elif ch == "(" or ch == "[" or ch == "{":
-                stack.append(ch)
-            elif ch == ")":
-                if stack.pop() != "(":
-                    return False
-            elif ch == "]":
-                if stack.pop() != "[":
-                    return False
-            elif ch == "}":
-                if stack.pop() != "{":
-                    return False
         return len(stack) == 0
+
+    def isValid(self, s: str) -> bool:
+        preLen = len(s)
+        while True:
+            s = s.replace("()", "").replace("[]", "").replace("{}", "")
+            if preLen == len(s):
+                break
+            preLen = len(s)
+        return len(s) == 0
 
 
 # 21. Merge Two Sorted Lists - EASY
-# iterative
 class Solution:
+    # iterative
     def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
         dummy = head = ListNode(-1)
         while l1 and l2:
@@ -222,9 +213,7 @@ class Solution:
         head.next = l1 or l2
         return dummy.next
 
-
-# recursive
-class Solution:
+    # recursive
     def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
         if not l1 or not l2:
             return l1 or l2
@@ -236,11 +225,11 @@ class Solution:
             return l2
 
 
-# 31 - Next Permutation - MEDUIM
-# find the first number that is greater than the adjecent number on the right
-# then swap this number with the smallest number among the numbers larger than it on the right.
-# then sort the numbers to the right side of this number in ascending order
+# 31 - Next Permutation - MEDIUM
 class Solution:
+    # find the first number that is greater than the adjecent number on the right
+    # then swap this number with the smallest number among the numbers larger than it on the right.
+    # then sort the numbers to the right side of this number in ascending order
     def nextPermutation(self, nums: List[int]) -> None:
         # greater save the number value and position
         greater = [[nums[-1], -1]]
@@ -266,9 +255,7 @@ class Solution:
         nums.reverse()
         return
 
-
-# better
-class Solution:
+    # better
     def nextPermutation(self, nums: List[int]) -> None:
         i = len(nums) - 2
         # nums are in descending order
@@ -303,21 +290,8 @@ class Solution:
                 right = mid - 1
         return left
 
-
-class Solution:
     def searchInsert(self, nums: List[int], target: int) -> int:
-        left, right = 0, len(nums) - 1
-        while left < right:
-            mid = (right + left) >> 1
-            if nums[mid] > target:
-                right = mid
-            elif nums[mid] < target:
-                left = mid + 1
-            else:
-                return mid
-        if nums[left] < target:
-            return left + 1
-        return left
+        return bisect.bisect_left(nums, target)
 
 
 # 37 - Sudoku Solver - HARD
@@ -409,17 +383,23 @@ class Solution:
 # 46 - Permutations - MEDIUM
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        ret = []
-
-        def backtrack(nums, tmp):
-            if not nums:
-                ret.append(tmp)
+        def backtrack(res: List[int], path: List[int]):
+            if not res:
+                ret.append(path)
                 return
-            for i in range(len(nums)):
-                backtrack(nums[:i] + nums[i + 1:], tmp + [nums[i]])
+            for i in range(len(res)):
+                backtrack(res[:i] + res[i + 1:], path + [res[i]])
+            return
 
+        ret = []
         backtrack(nums, [])
         return ret
+
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        # [(2, 3), (3, 2)]
+        # return list(itertools.permutations(nums, len(nums)))
+        # [[2, 3], [3, 2]]
+        return list(map(list, itertools.permutations(nums, len(nums))))
 
 
 # 50 - Pow(x, n) - MEDIUM
@@ -435,8 +415,8 @@ TypeError: unsupported operand type(s) for &: 'float' and 'int
 '''
 
 
-# iterative
 class Solution:
+    # iterative
     def myPow(self, x: float, n: int) -> float:
         if n < 0:
             n = -n
@@ -449,9 +429,7 @@ class Solution:
             n >>= 1  # equal to n //= 2
         return ans
 
-
-# recursive
-class Solution:
+    # recursive
     def myPow(self, x: float, n: int) -> float:
         if not n:
             return 1
@@ -470,8 +448,6 @@ class Solution:
             dp[i] = max(dp[i - 1] + nums[i], nums[i])
         return max(dp)
 
-
-class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
         pre, ans = 0, nums[0]
         for i in range(len(nums)):
@@ -499,9 +475,7 @@ class Solution:
 
         return ans
 
-
-# two pointers
-class Solution:
+    # two pointers
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         ret = []
         intervals = sorted(intervals, key=lambda x: x[0])
@@ -518,8 +492,8 @@ class Solution:
 
 
 # 62 - Unique Paths - MEDIUM
-# dp[i][j] peresent the maximum value of paths that can reach this point
 class Solution:
+    # dp[i][j] peresent the maximum value of paths that can reach this point
     def uniquePaths(self, m: int, n: int) -> int:
         # dp = [[1] * n] + [[1] + [0] * (n - 1) for _ in range(m - 1)]
         dp = [[0 for _ in range(n)] for j in range(m)]
@@ -533,8 +507,6 @@ class Solution:
                 dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
         return dp[m - 1][n - 1]
 
-
-class Solution:
     def uniquePaths(self, m: int, n: int) -> int:
         dp = [[1] * n] + [[1] + [0] * (n - 1)] * (m - 1)
         for i in range(1, m):
@@ -542,18 +514,16 @@ class Solution:
                 dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
         return dp[m - 1][n - 1]
 
-
-# combination
-# To make the machine get to the corner, the number of steps to the right and the number of steps to the left are fixed
-# m - 1 down && n - 1 right -> m + n - 1 times movement
-class Solution:
+    # combination
+    # To make the machine get to the corner, the number of steps to the right and the number of steps to the left are fixed
+    # m - 1 down && n - 1 right -> m + n - 1 times movement
     def uniquePaths(self, m: int, n: int) -> int:
         return math.comb(m + n - 2, n - 1)
 
 
 # 70 - Climbing Stairs - EASY
-# dp
 class Solution:
+    # dp
     def climbStairs(self, n: int) -> int:
         if n < 3:
             return n
@@ -562,21 +532,17 @@ class Solution:
             dp[i] = dp[i - 1] + dp[i - 2]
         return dp[-1]
 
-
-# dp optimized
-class Solution:
+    # dp optimized
     def climbStairs(self, n: int) -> int:
         if n < 3:
             return n
         one, two, ans = 1, 2, 0
-        for i in range(2, n):
+        for _ in range(2, n):
             ans = one + two
             one, two = two, ans
         return ans
 
-
-# memo
-class Solution:
+    # memo
     def __init__(self):
         self.memo = {}
 
@@ -588,8 +554,6 @@ class Solution:
         self.memo[n] = self.climbStairs(n - 1) + self.climbStairs(n - 2)
         return self.memo[n]
 
-
-class Solution:
     @functools.lru_cache
     def climbStairs(self, n: int) -> int:
         if n < 3:
@@ -613,8 +577,6 @@ class Solution:
                 stack.append(i)
         return "/" + "/".join(stack)
 
-
-class Solution:
     def simplifyPath(self, path: str) -> str:
         stack = []
         for p in path.split("/"):
@@ -626,7 +588,6 @@ class Solution:
 
 
 # 76 - Minimum Window Substring - HARD
-#
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
         needdic = collections.Counter(t)
@@ -652,6 +613,43 @@ class Solution:
         return "" if right > len(s) else s[left:right + 1]
 
 
+# 77 - Combinations - MEDIUM
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        return list(itertools.combinations(range(1, n + 1), k))
+
+    # pretty slow: > 500ms
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        def backtrack(res: List[int], path: List[int], k: int):
+            if not k:
+                ans.append(path)
+            for i in range(len(res)):
+                # optimize: there are not enough numbers remaining: > 90ms
+                # if len(res) - i < k:
+                #     return
+                backtrack(res[i + 1:], path + [res[i]], k - 1)
+            return
+
+        ans = []
+        backtrack(list(range(1, n + 1)), [], k)
+        return ans
+
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        def backtrack(n: int, k: int, startIndex: int):
+            if len(path) == k:
+                ans.append(path[:])
+                return
+            for i in range(startIndex, n - (k - len(path)) + 2):
+                path.append(i)
+                backtrack(n, k, i + 1)
+                path.pop()
+            return
+
+        ans, path = [], []
+        backtrack(n, k, 1)
+        return ans
+
+
 # 83 - Remove Duplicates from Sorted List - EASY
 class Solution:
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
@@ -673,8 +671,6 @@ class Solution:
                 head = head.next
         return dummy.next
 
-
-class Solution:
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
         ans = ListNode(-101)
         dummy = ans
@@ -705,8 +701,6 @@ class Solution:
             insertPos -= 1
         return
 
-
-class Solution:
     def merge(self, nums1: List[int], m: int, nums2: List[int],
               n: int) -> None:
         nums1[m:] = nums2

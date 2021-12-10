@@ -51,6 +51,33 @@ class Solution:
         return ans
 
 
+# 516 - Longest Palindromic Subsequence - MEDIUM
+class Solution:
+    def longestPalindromeSubseq(self, s: str) -> int:
+        dp = [[0] * len(s) for _ in range(len(s))]
+        for i in range(len(s) - 1, -1, -1):
+            dp[i][i] = 1
+            for j in range(i + 1, len(s)):
+                if s[i] == s[j]:
+                    dp[i][j] = dp[i + 1][j - 1] + 2
+                else:
+                    dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+        return dp[0][-1]
+
+    # reverse, LCS
+    def longestPalindromeSubseq(self, s: str) -> int:
+        n = len(s)
+        dp = [[0] * (n + 1) for _ in range(n + 1)]
+        ss = s[::-1]
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                if s[i - 1] == ss[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1] + 1
+                else:
+                    dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
+        return dp[n][n]
+
+
 # 519 - Random Flip Matrix - MEDIUM
 # TLE
 class Solution:
@@ -132,8 +159,6 @@ class Solution:
                             return False
         return True
 
-
-class Solution:
     def detectCapitalUse(self, word: str) -> bool:
         # Solution 1: word.istitle()
         return word.istitle() or word.isupper() or word.islower()
@@ -141,7 +166,7 @@ class Solution:
         # return word[1:] == word[1:].lower() or word == word.upper()
 
 
-# 523 - Continuous Subarray Sum - MEDUIM
+# 523 - Continuous Subarray Sum - MEDIUM
 # 'cur' calculate the prefix sum remainder of input array 'nums'
 # 'seen' will record the first occurrence of the remainder.
 # If we have seen the same remainder before,
@@ -155,14 +180,12 @@ class Solution:
                 return True
         return False
 
-
-# Idea: if sum(nums[i:j]) % k == 0 for some i < j
-# then sum(nums[:j]) % k == sum(nums[:i]) % k
-# So we just need to use a dictionary to keep track of
-# sum(nums[:i]) % k and the corresponding index i
-# Once some later sum(nums[:j]) % k == sum(nums[:i]) % k and j - i > 1
-# we return True
-class Solution:
+    # Idea: if sum(nums[i:j]) % k == 0 for some i < j
+    # then sum(nums[:j]) % k == sum(nums[:i]) % k
+    # So we just need to use a dictionary to keep track of
+    # sum(nums[:i]) % k and the corresponding index i
+    # Once some later sum(nums[:j]) % k == sum(nums[:i]) % k and j - i > 1
+    # we return True
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
         rmd, sumRmd = {0: -1}, 0
         # why {0: -1}: sum(nums) % k == 0
@@ -175,8 +198,6 @@ class Solution:
                     return True
         return False
 
-
-class Solution:
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
         presum = itertools.accumulate(nums)
         dic = {0: -1}
@@ -189,10 +210,8 @@ class Solution:
             dic[num % k] = index
         return
 
-
-# the required length is at least 2,
-# so we just need to insert the mod one iteration later.
-class Solution:
+    # the required length is at least 2,
+    # so we just need to insert the mod one iteration later.
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
         numSum, pre = 0, 0
         s = set()
@@ -205,8 +224,6 @@ class Solution:
             pre = mod
         return False
 
-
-class Solution:
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
         preSum = [0]  # length = len(nums) + 1
         for num in nums:
@@ -255,6 +272,26 @@ class Solution:
             else:
                 left = mid + 1
         return left
+
+
+# 542 - 01 Matrix - MEDIUM
+class Solution:
+    def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
+        m, n = len(mat), len(mat[0])
+        dq = collections.deque([])
+        for i in range(m):
+            for j in range(n):
+                if mat[i][j] == 0:
+                    dq.append((i, j))
+                else:
+                    mat[i][j] = '#'  # not visited yet
+        while dq:
+            x, y = dq.popleft()
+            for i, j in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]:
+                if 0 <= i < m and 0 <= j < n and mat[i][j] == '#':
+                    mat[i][j] = mat[x][y] + 1
+                    dq.append((i, j))
+        return mat
 
 
 # 543 - Diameter of Binary Tree - EASY
@@ -349,9 +386,9 @@ class Solution:
 
 
 # 559 - Maximum Depth of N-ary Tree - EASY
-# root.children is a list
-# bfs
 class Solution:
+    # root.children is a list
+    # bfs
     def maxDepth(self, root: 'Node') -> int:
         if not root:
             return 0
@@ -365,9 +402,7 @@ class Solution:
             ans += 1
         return ans
 
-
-# dfs
-class Solution:
+    # dfs
     def maxDepth(self, root: 'Node') -> int:
         if not root:
             return 0
@@ -394,22 +429,21 @@ class Solution:
 
 
 # 563 - Binary Tree Tilt - EAST
-# depth-first search
 class Solution:
     def findTilt(self, root: Optional[TreeNode]) -> int:
-        self.ans = 0  # ans = []
+        self.ans = 0
 
         # return sum of right subtree and left subtree
-        def dfs(root: TreeNode) -> int:
+        def helper(root: TreeNode) -> int:
             if not root:
                 return 0
-            vl = dfs(root.left)
-            vr = dfs(root.right)
-            self.ans += abs(vl - vr)  # ans.append(abs(vl - vr))
+            vl = helper(root.left)
+            vr = helper(root.right)
+            self.ans += abs(vl - vr)
             return vl + vr + root.val
 
-        dfs(root)
-        return self.ans  # sum(ans)
+        helper(root)
+        return self.ans
 
 
 # 567 - Permutation in String - MEDIUM
@@ -433,15 +467,13 @@ class Solution:
 
 
 # 575 - Distribute Candies - EASY
-# counter
 class Solution:
+    # counter
     def distributeCandies(self, candyType: List[int]) -> int:
         return min(len(collections.Counter(candyType)),
                    int(len(candyType) / 2))
 
-
-# set
-class Solution:
+    # set
     def distributeCandies(self, candyType: List[int]) -> int:
         return min(len(set(candyType)), len(candyType) // 2)
 
@@ -462,4 +494,6 @@ class Solution:
 # 598 - Range Addition II - EASY
 class Solution:
     def maxCount(self, m: int, n: int, ops: List[List[int]]) -> int:
-        return 1
+        if not ops:
+            return m * n
+        return min(op[0] for op in ops) * min(op[1] for op in ops)

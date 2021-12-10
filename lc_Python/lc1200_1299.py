@@ -38,7 +38,7 @@ class Solution:
         return max(dp.values())
 
 
-# 1249 - Minimum Remove to Make Valid Parentheses - MEDUIM
+# 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 # left must less than right
 # make the invalid parentheses as special character "*"
 # remove the extra "(" and "*"

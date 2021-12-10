@@ -182,7 +182,33 @@ class Solution:
 
 # 747
 
-# 748
+
+# 748 - Shortest Completing Word - EASY
+class Solution:
+    def shortestCompletingWord(self, licensePlate: str,
+                               words: List[str]) -> str:
+        licensePlate = [
+            x for x in licensePlate.lower() if ord('a') <= ord(x) <= ord('z')
+        ]
+        s, cnt = set(licensePlate), collections.Counter(licensePlate)
+        for word in sorted(words, key=lambda word: len(word)):
+            word = [x for x in word.lower() if ord('a') <= ord(x) <= ord('z')]
+            '''
+            Counter(word) - cnt: means that cnt(word) strictly larger than cnt
+            not including the case: cnt(word) == cnt
+            '''
+            if set(word).intersection(
+                    s) == s and not cnt - collections.Counter(word):
+                return "".join(word)
+        return ""
+
+    # not use set, counter all character in each word, a little bit slow
+    def shortestCompletingWord(self, licensePlate: str,
+                               words: List[str]) -> str:
+        pc = collections.Counter(filter(str.isalpha, licensePlate.lower()))
+        return min([w for w in words if collections.Counter(w) & pc == pc],
+                   key=len)
+
 
 # 749
 
@@ -199,8 +225,6 @@ class Solution:
         div.sort(key=lambda x: x[0] / x[1])
         return div[k - 1]
 
-
-class Solution:
     def kthSmallestPrimeFraction(self, arr: List[int], k: int) -> List[int]:
         left, right = 0, 1
         while True:
@@ -252,8 +276,6 @@ class Solution:
                 cnt[ch] -= 1
         return ans
 
-
-class Solution:
     def customSortString(self, order: str, s: str) -> str:
         cnt, ans = collections.Counter(s), ""
         for ch in order:
@@ -262,6 +284,13 @@ class Solution:
                 cnt.pop(ch)
 
         return ans + "".join(ch * cnt[ch] for ch in cnt)
+
+
+# 794 - Valid Tic-Tac-Toe State - MEDIUM
+class Solution:
+    def validTicTacToe(self, board: List[str]) -> bool:
+
+        return
 
 
 # 797 - All Paths From Source to Target - MEDIUM
@@ -279,8 +308,6 @@ class Solution:
         dfs(0, [0])
         return ret
 
-
-class Solution:
     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
         stack, ret = [(0, [0])], []
         while stack:

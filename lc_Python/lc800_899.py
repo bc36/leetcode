@@ -8,6 +8,13 @@ class ListNode:
         self.next = next
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 # 827 - Making A Large Island - HARD
 # STEP 1: Explore every island using DFS, count its area
 #         give it an island index and save the result to a {index: area} map.
@@ -68,6 +75,89 @@ class Solution:
         return len(diff) == 2 and diff[0] == diff[1][::-1]
 
 
+# 863 - All Nodes Distance K in Binary Tree - MEDIUM
+class Solution:
+    # find parent of each node, then dfs
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        def findParent(root: TreeNode):
+            if root.left:
+                dic[root.left.val] = root
+                findParent(root.left)
+            if root.right:
+                dic[root.right.val] = root
+                findParent(root.right)
+            return
+
+        def dfs(root: TreeNode, visited: TreeNode, k: int):
+            if k == 0:
+                ans.append(root.val)
+                return
+            if root.left and root.left != visited:
+                dfs(root.left, root, k - 1)
+            if root.right and root.right != visited:
+                dfs(root.right, root, k - 1)
+            if root.val in dic and dic[root.val] != visited:
+                dfs(dic[root.val], root, k - 1)
+            return
+
+        ans, dic = [], {}  # k:node.value v:node.parent
+        findParent(root)
+        dfs(target, None, k)
+        return ans
+
+    # bfs
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        conn = collections.defaultdict(list)  # undirected graph
+
+        def connect(parent: TreeNode, child: TreeNode):
+            if parent and child:
+                conn[parent.val].append(child.val)
+                conn[child.val].append(parent.val)
+            if child.left:
+                connect(child, child.left)
+            if child.right:
+                connect(child, child.right)
+
+        connect(None, root)
+        bfs = [target.val]
+        seen = set(bfs)
+        for _ in range(k):
+            new_level = []
+            for node_val in bfs:
+                for connected_node_val in conn[node_val]:
+                    if connected_node_val not in seen:
+                        new_level.append(connected_node_val)
+            bfs = new_level
+            # seen = set(bfs).union(seen) # '.intersection()' <=> '&'
+            seen |= set(bfs)
+        return bfs
+
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        def connected(node: TreeNode):
+            if node.left:
+                adj[node].append(node.left)
+                adj[node.left].append(node)
+                connected(node.left)
+            if node.right:
+                adj[node].append(node.right)
+                adj[node.right].append(node)
+                connected(node.right)
+
+        def dfs(node: TreeNode, step: int):
+            if step < k:
+                visited.add(node)
+                for v in adj[node]:
+                    if v not in visited:
+                        dfs(v, step + 1)
+            else:
+                res.append(node.val)
+
+        adj, res, visited = collections.defaultdict(list), [], set()
+        connected(root)
+        dfs(target, 0)
+        return res
+
+
 # 876 - Middle of the Linked List - EASY
 # recursive. O(n)+ stack space / O(3)
 class Solution:
@@ -93,9 +183,7 @@ class Solution:
         helper(dummy)
         return self.head
 
-
-# compute the length of linked list. O(1.5n) / O(2)
-class Solution:
+    # compute the length of linked list. O(1.5n) / O(2)
     def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
         n, cp = 0, head
         while head:
@@ -108,9 +196,7 @@ class Solution:
             n -= 1
         return head
 
-
-# two pointers. O(n) / O(2)
-class Solution:
+    # two pointers. O(n) / O(2)
     def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
         slow = fast = head
         while fast and fast.next:

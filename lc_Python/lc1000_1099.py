@@ -112,8 +112,8 @@ class Solution:
 
 
 # 1047 - Remove All Adjacent Duplicates In String - EASY
-# stack
 class Solution:
+    # stack
     def removeDuplicates(self, s: str) -> str:
         stack = [s[0]]
         for i in range(1, len(s)):
@@ -123,9 +123,7 @@ class Solution:
                 stack.append(s[i])
         return "".join(stack)
 
-
-# two pointers
-class Solution:
+    # two pointers
     def removeDuplicates(self, s: str) -> str:
         # pointers: 'ch' and 'end',
         # change 'ls' in-place.
