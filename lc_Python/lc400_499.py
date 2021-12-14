@@ -19,8 +19,6 @@ class Solution:
             k += 1
         return int(str(n // k)[n % k])
 
-
-class Solution:
     def findNthDigit(self, n):
         n -= 1
         for digits in range(1, 11):
@@ -93,8 +91,8 @@ class Solution:
 
 
 # 438 - Find All Anagrams in a String - MEDIUM
-# sliding window + list
 class Solution:
+    # sliding window + list
     def findAnagrams(self, s: str, p: str) -> List[int]:
         ls, lp, ans = len(s), len(p), []
         if ls < lp:
@@ -114,9 +112,7 @@ class Solution:
                 ans.append(i - lp + 1)
         return ans
 
-
-# sliding window + two pointers
-class Solution:
+    # sliding window + two pointers
     def findAnagrams(self, s: str, p: str) -> List[int]:
         ls, lp, ans = len(s), len(p), []
         if ls < lp:
@@ -138,6 +134,28 @@ class Solution:
             if right - left + 1 == lp:
                 ans.append(left)
         return ans
+
+
+# 440 - K-th Smallest in Lexicographical Order - HARD - REVIEW
+class Solution:
+    def findKthNumber(self, n: int, k: int) -> int:
+        def getCnt(prefix: int, n: int) -> int:
+            cnt, cur, next = 0, prefix, prefix + 1
+            while cur <= n:
+                cnt += min(next, n + 1) - cur
+                cur, next = cur * 10, next * 10
+            return cnt
+
+        cur, prefix = 1, 1
+        while cur < k:
+            cnt = getCnt(prefix, n)
+            if cur + cnt > k:
+                prefix *= 10
+                cur += 1
+            else:
+                prefix += 1
+                cur += cnt
+        return prefix
 
 
 # 441 - Arranging Coins - EASY
@@ -165,9 +183,7 @@ class Solution:
                 ans.append(i + 1)
         return ans
 
-
-# marker the scaned number as negative
-class Solution:
+    # marker the scaned number as negative
     def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
         for i in range(len(nums)):
             index = abs(nums[i]) - 1
@@ -204,9 +220,7 @@ class Solution:
             ans += min(duration, timeSeries[i] - timeSeries[i - 1])
         return ans + duration
 
-
-# reduce the number of function calls can speed up the operation
-class Solution:
+    # reduce the number of function calls can speed up the operation
     def findPoisonedDuration(self, timeSeries: List[int],
                              duration: int) -> int:
         ans = 0
@@ -221,10 +235,8 @@ class Solution:
 
 
 # 496 - Next Greater Element I - EASY
-# brutal-force solution
-
-
 class Solution:
+    # brutal-force solution
     def nextGreaterElement(self, nums1: List[int],
                            nums2: List[int]) -> List[int]:
         m, n = len(nums1), len(nums2)
@@ -237,9 +249,7 @@ class Solution:
             ret[i] = nums2[k] if k < n else -1
         return ret
 
-
-# stack
-class Solution:
+    # stack
     def nextGreaterElement(self, nums1: List[int],
                            nums2: List[int]) -> List[int]:
         stack = []
@@ -251,8 +261,6 @@ class Solution:
             stack.append(nums2[i])
         return [dic[n1] for n1 in nums1]
 
-
-class Solution:
     def nextGreaterElement(self, nums1: List[int],
                            nums2: List[int]) -> List[int]:
         stack = []

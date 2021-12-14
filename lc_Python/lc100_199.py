@@ -54,10 +54,42 @@ class Solution:
             return 0
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 
+
+# 118 - Pascal's Triangle - EASY
+class Solution:
+    def generate(self, numRows: int) -> List[List[int]]:
+        ans = [[1]]
+        for _ in range(numRows - 1):
+            new = [1]
+            for j in range(len(ans[-1]) - 1):
+                new.append(ans[-1][j] + ans[-1][j + 1])
+            new += [1]
+            ans.append(new)
+        return ans
+
+    # fastest
+    def generate(self, numRows: int) -> List[List[int]]:
+        pascal = [[1] * (i + 1) for i in range(numRows)]
+        for i in range(numRows):
+            for j in range(1, i):
+                pascal[i][j] = pascal[i - 1][j - 1] + pascal[i - 1][j]
+        return pascal
+
+    def generate(self, numRows: int) -> List[List[int]]:
+        #    1 3 3 1 0
+        # +  0 1 3 3 1
+        # =  1 4 6 4 1
+        res = [[1]]
+        for _ in range(1, numRows):
+            res += [map(lambda x, y: x + y, res[-1] + [0], [0] + res[-1])]
+        return res[:numRows]
+
+
 # 120 - Triangle - MEDIUM
 class Solution:
     def minimumTotal(self, triangle: List[List[int]]) -> int:
         return
+
 
 # 121 - Best Time to Buy and Sell Stock - EASY
 class Solution:

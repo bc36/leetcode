@@ -440,6 +440,26 @@ class Solution:
         return self.myPow(x * x, n / 2)
 
 
+# 55. Jump Game - MEDIUM
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        can_reach = 0
+        for i in range(len(nums)):
+            if i > can_reach:
+                return False
+            can_reach = max(can_reach, i + nums[i])
+        return True
+
+    def canJump(self, nums: List[int]) -> bool:
+        rightmost, n = 0, len(nums)
+        for i in range(n):
+            if i <= rightmost:
+                rightmost = max(rightmost, i + nums[i])
+                if rightmost >= n - 1:
+                    return True
+        return False
+
+
 # 53 - Maximum Subarray - EASY
 class Solution:
     def maxSubArray(self, nums: List[int]) -> int:

@@ -1,5 +1,5 @@
 from typing import List, Optional
-import collections
+import collections, math
 
 
 class ListNode:
@@ -13,6 +13,21 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
+
+
+# 807 - Max Increase to Keep City Skyline - MEDIUM
+class Solution:
+    def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
+        row_maxes = [max(row) for row in grid]
+        col_maxes = [max(col) for col in zip(*grid)]
+
+        return sum(
+            min(row_maxes[r], col_maxes[c]) - val for r, row in enumerate(grid)
+            for c, val in enumerate(row))
+
+    def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
+        rows, cols = list(map(max, grid)), list(map(max, zip(*grid)))
+        return sum(min(i, j) for i in rows for j in cols) - sum(map(sum, grid))
 
 
 # 827 - Making A Large Island - HARD
@@ -203,3 +218,22 @@ class Solution:
             slow = slow.next
             fast = fast.next.next
         return slow
+
+
+# 878 - Nth Magical Number - HARD
+class Solution:
+    def nthMagicalNumber(self, N: int, a: int, b: int) -> int:
+        def check(n):
+            return n // a + n // b - n // c >= N
+
+        c = a * b // math.gcd(a, b)
+        if a > b:
+            a, b = b, a
+        l, r = a * N // 2, a * N
+        while l < r:
+            mid = (l + r) >> 1
+            if check(mid):
+                r = mid
+            else:
+                l = mid + 1
+        return l % (10**9 + 7)

@@ -290,7 +290,7 @@ class Solution:
             nums[1:])) if len(nums) != 1 else nums[0]
 
 
-# 215 - Kth Largest Element in an Array - MEDIUM
+# 215 - Kth Largest Element in an Array - MEDIUM - REVIEW
 class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
         nums.sort()

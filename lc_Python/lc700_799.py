@@ -38,6 +38,19 @@ class Solution:
         return -1
 
 
+# 709 -To Lower Case - EASY
+class Solution:
+    def toLowerCase(self, s: str) -> str:
+        '''
+        upper, lower exchange: asc ^= 32;
+        upper, lower to lower: asc |= 32;
+        lower, upper to upper: asc &= -33
+        '''
+        return "".join(
+            chr(asc | 32) if 65 <= (asc := ord(ch)) <= 90 else ch for ch in s)
+        return s.lower()
+
+
 # 721 - Accounts Merge - MEDIUM
 class Solution:
     def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:
