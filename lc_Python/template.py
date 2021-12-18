@@ -106,7 +106,7 @@ class UnionFind:
 
         return root
 
-    def merge(self, x, y, val):
+    def union(self, x, y, val):
         """
         合并两个节点
         """

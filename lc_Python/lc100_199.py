@@ -9,6 +9,12 @@ class TreeNode:
         self.right = right
 
 
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
 # 102 - Binary Tree Level Order Traversal - MEDIUM
 # bfs: breadth-first search
 class Solution:
@@ -88,7 +94,14 @@ class Solution:
 # 120 - Triangle - MEDIUM
 class Solution:
     def minimumTotal(self, triangle: List[List[int]]) -> int:
-        return
+        dp = [[0] * len(x) for x in triangle]
+        dp[0][0] = triangle[0][0]
+        for i in range(1, len(triangle)):
+            dp[i][0] = dp[i - 1][0] + triangle[i][0]
+            for j in range(1, i):
+                dp[i][j] = min(dp[i - 1][j], dp[i - 1][j - 1]) + triangle[i][j]
+            dp[i][i] = dp[i - 1][-1] + triangle[i][i]
+        return min(dp[-1])
 
 
 # 121 - Best Time to Buy and Sell Stock - EASY
@@ -191,9 +204,9 @@ class Solution:
 
 
 # 130 - Surrounded Regions - MEDIUM
-# search from edge
-# dfs
 class Solution:
+    # search from edge
+    # dfs
     def solve(self, board: List[List[str]]) -> None:
         row, col = len(board), len(board[0])
 
@@ -217,8 +230,7 @@ class Solution:
                 board[i][j] = "X" if board[i][j] != "*" else "O"
         return
 
-# bfs
-
+    # bfs
     def solve(self, board: List[List[str]]) -> None:
         dq = collections.deque([])
         row, col = len(board), len(board[0])
@@ -252,8 +264,8 @@ class Solution:
 
 
 # 136 - Single Number - EASY
-# XOR operation
 class Solution:
+    # XOR operation
     def singleNumber(self, nums: List[int]) -> int:
         ans = 0
         for i in nums:
@@ -381,6 +393,29 @@ class LRUCache:
         # # del is faster, pop() or popitem() used to get the return value
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
+
+
+# 147 - Insertion Sort List - MEDIUM
+class Solution:
+    def insertionSortList(self,
+                          head: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode(-1, head)
+        while head and head.next:
+            if head.val <= head.next.val:
+                head = head.next
+                continue
+            pre = dummy
+            while pre.next.val < head.next.val:
+                pre = pre.next
+            cur = head.next
+            head.next = cur.next
+            cur.next = pre.next
+            pre.next = cur
+            if cur.val > head.val:
+                pre.next = head
+                cur.next = head.next
+                head.next = cur
+        return dummy.next
 
 
 # 152 - Maximum Product Subarray - MEDIUM
@@ -561,6 +596,12 @@ class Solution:
         '''
         nums[k:], nums[:k] = nums[:-k], nums[-k:]
         # nums[:] = nums[-k:] + nums[:-k]
+        return
+
+
+# 190 - Reverse Bits - EASY
+class Solution:
+    def reverseBits(self, n: int) -> int:
         return
 
 

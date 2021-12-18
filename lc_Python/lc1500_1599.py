@@ -1,5 +1,16 @@
 from typing import List
 
+
+# 1518 - Water Bottles - EASY
+class Solution:
+    def numWaterBottles(self, numBottles: int, numExchange: int) -> int:
+        ans, empty = 0, 0
+        while numBottles:
+            ans += numBottles
+            numBottles, empty = divmod(empty + numBottles, numExchange)
+        return ans
+
+
 # 1570 - Dot Product of Two Sparse Vectors - MEDIUM
 class SparseVector:
     def __init__(self, nums: List[int]):

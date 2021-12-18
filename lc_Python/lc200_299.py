@@ -408,6 +408,36 @@ class Solution:
         return heapq.heappop(heap)
 
 
+# 221 - Maximal Square - MEDIUM
+class Solution:
+    def maximalSquare(self, matrix: List[List[str]]) -> int:
+        rows, cols = len(matrix), len(matrix[0])
+        dp, maxSide = [[0] * cols for _ in range(rows)], 0
+        for i in range(rows):
+            for j in range(cols):
+                if matrix[i][j] == '1':
+                    if i == 0 or j == 0:
+                        dp[i][j] = 1
+                    else:
+                        dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j],
+                                       dp[i][j - 1]) + 1
+                maxSide = max(maxSide, dp[i][j])
+        return maxSide**2
+
+    def maximalSquare(self, matrix: List[List[str]]) -> int:
+        rows, cols = len(matrix), len(matrix[0])
+        dp = [0] * (cols + 1)
+        max_side = 0
+        for r in range(1, rows + 1):
+            nxt_dp = [0] * (cols + 1)
+            for c in range(1, cols + 1):
+                if matrix[r - 1][c - 1] == '1':
+                    nxt_dp[c] = 1 + min(dp[c], dp[c - 1], nxt_dp[c - 1])
+                max_side = max(max_side, nxt_dp[c])
+            dp = nxt_dp
+        return max_side**2
+
+
 # 226 - Invert Binary Tree - EASY
 class Solution:
     # breadth-first search

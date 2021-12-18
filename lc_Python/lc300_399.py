@@ -1,3 +1,4 @@
+from types import new_class
 from typing import List, Optional
 import collections, math, functools
 
@@ -19,6 +20,32 @@ class ListNode:
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
         return
+
+
+# 310 - Minimum Height Trees - MEDIUM
+class Solution:
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+        if not edges:
+            return [0]
+        graph = collections.defaultdict(set)
+        for u, v in edges:
+            graph[u].add(v)
+            graph[v].add(u)
+        leaves, degree = [], []
+        for i in range(n):
+            if len(graph[i]) == 1:
+                leaves.append(i)
+            degree.append(len(graph[i]))
+        while n > 2:
+            new_leaves = []
+            for leaf in leaves:
+                for adj in graph[leaf]:
+                    degree[adj] -= 1
+                    if degree[adj] == 1:
+                        new_leaves.append(adj)
+            n -= len(leaves)
+            leaves = new_leaves
+        return leaves
 
 
 # 314 - Binary Tree Vertical Order Traversal - MEDIUM
