@@ -63,6 +63,16 @@ class SnapshotArray:
         return d[k[i - 1]]
 
 
+# 1154 - Day of the Year - EASY
+class Solution:
+    def dayOfYear(self, date: str) -> int:
+        m = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        year, month, day = [int(x) for x in date.split("-")]
+        if year % 400 == 0 or (year % 4 == 0 and year % 100 != 0):
+            m[1] += 1
+        return sum(m[:month - 1]) + day
+
+
 # 1178 - Number of Valid Words for Each Puzzle - HARD
 # 超时
 class Solution:

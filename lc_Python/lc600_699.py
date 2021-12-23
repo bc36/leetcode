@@ -1,3 +1,4 @@
+import itertools
 from typing import List
 
 
@@ -201,6 +202,20 @@ class Solution:
             i += 1
         s = s[i:len(s) - i]
         return s[1:] == s[1:][::-1] or s[:-1] == s[:-1][::-1]
+
+
+# 686 - Repeated String Match - MEDIUM
+class Solution:
+    def repeatedStringMatch(self, a: str, b: str) -> int:
+        i, cp_a = 1, a
+        max_l = len(a) * 2 + len(b)
+        while len(a) < max_l:
+            if b in a:
+                return i
+            else:
+                i += 1
+                a += cp_a
+        return -1
 
 
 # 689 - Maximum Sum of 3 Non-Overlapping Subarrays - HARD

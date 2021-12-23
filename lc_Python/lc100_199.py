@@ -61,6 +61,25 @@ class Solution:
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 
 
+# 116 - Populating Next Right Pointers in Each Node - MEDIUM
+class Solution:
+    def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
+        if not root:
+            return root
+        dq = collections.deque([root])
+        while dq:
+            size = len(dq)
+            for i in range(size):
+                node = dq.popleft()
+                if i < size - 1:
+                    node.next = dq[0]
+                if node.left:
+                    dq.append(node.left)
+                if node.right:
+                    dq.append(node.right)
+        return root
+
+
 # 118 - Pascal's Triangle - EASY
 class Solution:
     def generate(self, numRows: int) -> List[List[int]]:
@@ -342,6 +361,29 @@ class Solution:
             head = head.next
             tmp = tmp.next
         return ans
+
+
+# 143 - Reorder List - MEDIUM
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next    
+            fast = fast.next.next
+        pre = None
+        while slow:
+            '''
+            # pre, slow, slow.next = slow, slow.next, pre # wrong
+            # pre, slow.next, slow = slow, pre, slow.next # right
+            # slow, slow.next, pre = slow.next, pre, slow # wrong
+            # slow.next, slow, pre = pre, slow.next, slow # right
+            # slow, pre, slow.next = slow.next, slow, pre # wrong
+            '''
+            slow.next, pre, slow = pre, slow, slow.next # right
+        while pre.next:
+            head.next, head = pre, head.next
+            pre.next, pre = head, pre.next
+        return
 
 
 # 146 - LRU Cache - MEDIUM

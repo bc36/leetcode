@@ -520,6 +520,27 @@ class Solution:
             magazine)
 
 
+# 394 - Decode String - MEDIUM
+class Solution:
+    def decodeString(self, s: str) -> str:
+        stack, time, ans = [], 0, ''
+        for ch in s:
+            if ch == '[':
+                stack.append(ans)
+                stack.append(time)
+                ans = ''
+                time = 0
+            elif ch == ']':
+                pre_num = stack.pop()
+                pre_string = stack.pop()
+                ans = pre_string + pre_num * ans
+            elif ch.isdigit():
+                time = time * 10 + int(ch)
+            else:
+                ans += ch
+        return ans
+
+
 # 397 - Integer Replacement - MEDIUM
 # memo
 class Solution:

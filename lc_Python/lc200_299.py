@@ -16,8 +16,8 @@ class TreeNode:
 
 
 # 200 - Number of Islands - MEDIUM
-# dfs
 class Solution:
+    # dfs
     def numIslands(self, grid: List[List[str]]) -> int:
         row = len(grid)
         col = len(grid[0])
@@ -42,8 +42,6 @@ class Solution:
                     index += 1
         return index - 2
 
-
-class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
         m, n = len(grid), len(grid[0])
 
@@ -65,9 +63,7 @@ class Solution:
 
         return count
 
-
-# bfs
-class Solution:
+    # bfs
     def numIslands(self, grid: List[List[str]]):
         def helper(grid: List[List[str]], queue: collections.deque()) -> None:
             while queue:
@@ -105,9 +101,7 @@ class Solution:
                 cur = cur.next
         return dummyHead.next
 
-
-# recursive
-class Solution:
+    # recursive
     def removeElements(self, head: Optional[ListNode],
                        val: int) -> Optional[ListNode]:
         if head == None:
@@ -120,9 +114,7 @@ class Solution:
         head.next = next
         return head
 
-
-# v1 two pointers
-class Solution:
+    # v1 two pointers
     def removeElements(self, head: Optional[ListNode],
                        val: int) -> Optional[ListNode]:
         pre = None
@@ -138,9 +130,7 @@ class Solution:
             cur = cur.next
         return head
 
-
-# v2 two pointers
-class Solution:
+    # v2 two pointers
     def removeElements(self, head: Optional[ListNode],
                        val: int) -> Optional[ListNode]:
         dummyHead = ListNode(-1)
@@ -155,10 +145,8 @@ class Solution:
             cur = cur.next
         return dummyHead.next
 
-
-# v3 NOT WORK!! / input: [7,7,7,7] 7
-# head did not change
-class Solution:
+    # v3 NOT WORK!! / input: [7,7,7,7] 7
+    # head did not change
     def removeElements(self, head: Optional[ListNode],
                        val: int) -> Optional[ListNode]:
         pre = ListNode(-1)
@@ -180,8 +168,8 @@ class Solution:
 
 
 # 206 - Reverse Linked List - EASY
-# iterative
 class Solution:
+    # iterative
     def reverseList(self, head: ListNode) -> ListNode:
         pre = None
         while head:
@@ -191,9 +179,7 @@ class Solution:
             head = tmp
         return pre
 
-
-# recursive
-class Solution:
+    # recursive
     def reverseList(self, head: ListNode) -> ListNode:
         if not head or not head.next:
             return head
@@ -256,8 +242,6 @@ class Solution:
             dp1[i - 1] = max(dp1[i - 3] + nums[i], dp1[i - 2])
         return max(dp0[-1], dp1[-1])
 
-
-class Solution:
     def rob(self, nums: List[int]) -> int:
         def my_rob(nums):
             cur, pre = 0, 0
@@ -639,9 +623,9 @@ class Solution:
 
 
 # 236 - Lowest Common Ancestor of a Binary Tree - MEDIUM
-# need to know the status of left and right subtrees
-# then we can proceed to the next step, so we use postorder traversal
 class Solution:
+    # need to know the status of left and right subtrees
+    # then we can proceed to the next step, so we use postorder traversal
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
         if not root or p.val == root.val or q.val == root.val:
@@ -738,19 +722,18 @@ class Solution:
 
 
 # 260 - Single Number III - MEDIUM
-# Hash / O(n) + O(n)
 class Solution:
+# Hash / O(n) + O(n)
     def singleNumber(self, nums: List[int]) -> List[int]:
         cnt = collections.Counter(nums)
         ans = [num for num, times in cnt.items() if times == 1]
         return ans
 
 
-# "lsb" is the last 1 of its binary representation, means that two numbers are different in that bit
-# split nums[] into two lists, one with that bit as 0 and the other with that bit as 1.
-# separately perform XOR operation, find the number that appears once in each list.
-# O(n) + O(1)
-class Solution:
+    # "lsb" is the last 1 of its binary representation, means that two numbers are different in that bit
+    # split nums[] into two lists, one with that bit as 0 and the other with that bit as 1.
+    # separately perform XOR operation, find the number that appears once in each list.
+    # O(n) + O(1)
     def singleNumber(self, nums: List[int]) -> List[int]:
         xorSum = 0
         for i in nums:
@@ -769,8 +752,8 @@ class Solution:
 
 
 # 268 - Missing Number - EASY
-# sort
 class Solution:
+    # sort
     def missingNumber(self, nums: List[int]) -> int:
         nums.sort()
         for i in range(len(nums)):

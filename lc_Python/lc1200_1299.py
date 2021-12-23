@@ -9,6 +9,32 @@ class ListNode:
         self.next = next
 
 
+# 1200 - Minimum Absolute Difference - EASY
+class Solution:
+    def minimumAbsDifference(self, arr: List[int]) -> List[List[int]]:
+        diff = float('inf')
+        arr.sort()
+        for i in range(len(arr) - 1):
+            diff = min(arr[i + 1] - arr[i], diff)
+        ans, left, right = [], 0, 1
+        while right < len(arr):
+            if arr[right] - arr[left] > diff:
+                left += 1
+            elif arr[right] - arr[left] < diff:
+                right += 1
+            else:
+                ans.append([arr[left], arr[right]])
+                left += 1
+                right += 1
+        return ans
+
+    def minimumAbsDifference(self, a: List[int]) -> List[List[int]]:
+        a.sort()
+        diff = min(a[i] - a[i - 1] for i in range(1, len(a)))
+        return [[a[i - 1], a[i]] for i in range(1, len(a))
+                if a[i] - a[i - 1] == diff]
+
+
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
 class Solution:
     def minCostToMoveChips(self, position: List[int]) -> int:

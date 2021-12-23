@@ -562,13 +562,24 @@ class Solution:
             one, two = two, ans
         return ans
 
-    # memo
+    # memo 1
     def __init__(self):
         self.memo = {}
 
     def climbStairs(self, n: int) -> int:
         if n < 3:
             return n
+        if n in self.memo:
+            return self.memo[n]
+        self.memo[n] = self.climbStairs(n - 1) + self.climbStairs(n - 2)
+        return self.memo[n]
+
+    # memo 2
+    memo = {1: 1, 2: 2}
+
+    def climbStairs(self, n: int) -> int:
+        if n < 3:
+            return self.memo[n]
         if n in self.memo:
             return self.memo[n]
         self.memo[n] = self.climbStairs(n - 1) + self.climbStairs(n - 2)
@@ -643,6 +654,7 @@ class Solution:
         def backtrack(res: List[int], path: List[int], k: int):
             if not k:
                 ans.append(path)
+            # for i in range(len(res) - (k - len(path)) + 1):
             for i in range(len(res)):
                 # optimize: there are not enough numbers remaining: > 90ms
                 # if len(res) - i < k:

@@ -1,4 +1,4 @@
-import collections
+import collections, bisect
 from typing import List
 
 
@@ -222,6 +222,21 @@ class Solution:
             if y & 1:
                 ans += 1
             y >>= 1
+        return ans
+
+
+# 475 - Heaters - MEDIUM
+class Solution:
+    def findRadius(self, houses: List[int], heaters: List[int]) -> int:
+        heaters = heaters + [float('-inf'), float('inf')]
+        houses.sort()
+        heaters.sort()
+        ans, i = 0, 0
+        for h in houses:
+            while h > heaters[i + 1]:
+                i += 1
+            dis = min(h - heaters[i], heaters[i + 1] - h)
+            ans = max(ans, dis)
         return ans
 
 
