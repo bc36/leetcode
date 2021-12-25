@@ -1,5 +1,5 @@
 from typing import List
-import collections
+import collections, itertools, functools
 
 
 class TreeNode:
@@ -20,20 +20,20 @@ class Solution:
         results = []
         if not root:
             return results
-        que = collections.deque([root])
-        while que:
-            size = len(que)
+        dq = collections.deque([root])
+        while dq:
+            size = len(dq)
             thisLevel = []
             # for _ in list(nodeStack): list冻结deque, 否则在更改deque的同时迭代报错如下:
             # RuntimeError: deque mutated during iteration
             for _ in range(size):
                 # 倒序弹出
-                cur = que.popleft()
+                cur = dq.popleft()
                 thisLevel.append(cur.val)
                 if cur.left:
-                    que.append(cur.left)
+                    dq.append(cur.left)
                 if cur.right:
-                    que.append(cur.right)
+                    dq.append(cur.right)
             results.append(thisLevel)
 
         return results
@@ -79,8 +79,19 @@ class Solution:
 
 # 链表 recursive lc-203
 
+# 图
+'''
+邻接表(adjacency list): 出度 / 逆邻接表(inverse adjacency list): 入度
+BFS 维护一个入度为0的队列
+    拓扑排序 是专门应用于有向图的算法
+    需要两个辅助数据结构: 邻接表(set()*n, defaultdict(list)), 入度表(list, defaultdict(int))
+DFS 检查有无cycle 
+    why逆邻接表: 若求路径时 使用邻接表, 则第一个元素在递归过程中会在栈底, 会逆序输出拓扑排序
+    单纯 detect cycle 哪个表无所谓
+'''
 
-# 并查集 Union-Find
+
+# 并查集 Union-Find / 可检测有无cycle
 class UnionFind:
     def __init__(self):
         """
@@ -127,3 +138,7 @@ class UnionFind:
         """
         if x not in self.father:
             self.father[x] = None
+
+# 堆
+# 所有的k，都有 heap[k] <= heap[2*k+1] 和 heap[k] <= heap[2*k+2]
+# 最小的元素总是在根结点：heap[0]

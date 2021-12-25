@@ -1,6 +1,6 @@
 from operator import imatmul
 from typing import List
-import collections
+import collections, itertools
 
 
 class TreeNode:
@@ -228,6 +228,48 @@ class Solution:
 # 750
 
 
+# 784 - Letter Case Permutation - MEDIUM
+class Solution:
+    def letterCasePermutation(self, s: str) -> List[str]:
+        ans = ['']
+        for ch in s:
+            if ch.isalpha():
+                ans = [i + j for i in ans for j in [ch.upper(), ch.lower()]]
+            else:
+                ans = [i + ch for i in ans]
+        return ans
+
+        # ans = ['']
+        # for c in s.lower():
+        #     ans = [a + c
+        #            for a in ans] + ([a + c.upper()
+        #                              for a in ans] if c.isalpha() else [])
+        # return ans
+
+        ## L = ['a', 'A'], '1', ['b', 'B'], '2']
+        ## itertools.product(L) --> only 1 parameter [['a', 'A'], '1', ['b', 'B'], '2']
+        ## itertools.product(*L) --> 4 parameter ['a', 'A'], '1', ['b', 'B'], '2'
+        # L = [set([i.lower(), i.upper()]) for i in s]
+        # return map(''.join, itertools.product(*L))
+
+    def letterCasePermutation(self, s: str) -> List[str]:
+        def backtrack(sub: str, i: int):
+            if len(sub) == len(s):
+                ans.append(sub)
+            else:
+                if s[i].isalpha():
+                    # chr(ord(s[i])^(1<<5))
+                    backtrack(sub + s[i].swapcase(), i + 1)
+                    # backtrack(sub + s[i].lower(), i + 1)
+                backtrack(sub + s[i], i + 1)
+                # backtrack(sub + s[i].upper(), i + 1)
+
+        ans = []
+        backtrack("", 0)
+        return ans
+
+
+# 785
 # 786 - K-th Smallest Prime Fraction - HARD
 class Solution:
     def kthSmallestPrimeFraction(self, arr: List[int], k: int) -> List[int]:

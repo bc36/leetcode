@@ -226,6 +226,98 @@ class Trie:
         return True
 
 
+# 207 - Course Schedule I - MEDIUM
+# [0, 1] you have to first take course 1
+class Solution:
+    # bfs, adjacency list, indegree, save successor
+    def canFinish(self, numCourses: int,
+                  prerequisites: List[List[int]]) -> bool:
+        graph = collections.defaultdict(list)  # or {i: set()}
+        in_d = [0] * numCourses  # or {i: 0}
+        for p in (prerequisites):
+            graph[p[1]].append(p[0])  # save successor, no dependence
+            in_d[p[0]] += 1
+        dq, count = collections.deque([]), 0
+        for i in range(numCourses):
+            if in_d[i] == 0:
+                dq.append(i)
+        while dq:
+            node = dq.popleft()
+            # seen.add(node)
+            count += 1
+            for successor in graph[node]:
+                in_d[successor] -= 1
+                if in_d[successor] == 0:
+                    dq.append(successor)
+        # return len(seen) == numCourses
+        # return not sum(in_d) # not use count or in_d
+        return count == numCourses
+
+    # dfs, whether there is a cycle
+    def canFinish(self, numCourses: int,
+                  prerequisites: List[List[int]]) -> bool:
+        def hasCycle(v: int) -> bool:  # 0 default
+            if flags[v] == -1: return True  # is being processing
+            if flags[v] == 1: return False  # is processed
+            flags[v] = -1  # is being processing
+            for i in adj[v]:
+                if hasCycle(i): return True
+            flags[v] = 1  # process finished
+            return False
+
+        adj = [[] for _ in range(numCourses)]
+        flags = [0] * numCourses
+        for cur, pre in prerequisites:
+            adj[pre].append(cur)  # save successor
+        for i in range(numCourses):
+            if hasCycle(i): return False
+        return True
+
+
+# 210 - Course Schedule II - MEDIUM
+class Solution:
+    def findOrder(self, numCourses: int,
+                  prerequisites: List[List[int]]) -> List[int]:
+        graph, in_d = collections.defaultdict(list), [0] * numCourses
+        for p in prerequisites:
+            graph[p[1]].append(p[0])  # save successor
+            in_d[p[0]] += 1
+        dq, ans = collections.deque([]), []
+        for i in range(len(in_d)):
+            if not in_d[i]:
+                dq.append(i)
+        while dq:
+            node = dq.popleft()
+            ans.append(node)
+            for n in graph[node]:
+                in_d[n] -= 1
+                if in_d[n] == 0:
+                    dq.append(n)
+        return ans if len(ans) == numCourses else []
+
+    def findOrder(self, numCourses: int,
+                  prerequisites: List[List[int]]) -> List[int]:
+        def dfs(v: int) -> bool:
+            if visited[v] == -1: return False  # cycle detected
+            if visited[v] == 1: return True  # finished, need added
+            visited[v] = -1  # mark as visited
+            for x in graph[v]:
+                if not dfs(x): return False
+            visited[v] = 1  # mark as finished
+            ans.append(v)
+            return True
+
+        graph = collections.defaultdict(list)
+        visited, ans = [0] * numCourses, []
+        for pair in prerequisites:
+            graph[pair[0]].append(pair[1])  # save predecessor
+        for vertex in range(numCourses):
+            if not dfs(vertex): return []
+        # if build graph with successor, return ans[::-1]
+        # the first vertex will be in the bottom of stack in recursive process
+        return ans
+
+
 # 213 - House Robber II - MEDIUM
 class Solution:
     def rob(self, nums: List[int]) -> int:
@@ -592,11 +684,11 @@ class Solution:
         while n > 1:
             if n & 1:
                 return False
-            else:
-                n >>= 1
+            n >>= 1
         return True
 
     def isPowerOfTwo(self, n: int) -> bool:
+        # return n > 0 and 2**30 % n == 0
         return n and n & (n - 1) == 0
 
 
@@ -723,12 +815,11 @@ class Solution:
 
 # 260 - Single Number III - MEDIUM
 class Solution:
-# Hash / O(n) + O(n)
+    # Hash / O(n) + O(n)
     def singleNumber(self, nums: List[int]) -> List[int]:
         cnt = collections.Counter(nums)
         ans = [num for num, times in cnt.items() if times == 1]
         return ans
-
 
     # "lsb" is the last 1 of its binary representation, means that two numbers are different in that bit
     # split nums[] into two lists, one with that bit as 0 and the other with that bit as 1.
@@ -749,6 +840,46 @@ class Solution:
             else:
                 ans2 ^= i
         return [ans1, ans2]
+
+
+# 264 - Ugly Number II - MEDIUM
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        factors = [2, 3, 5]
+        seen, heap = {1}, [1]
+        for _ in range(n - 1):
+            cur = heapq.heappop(heap)
+            for factor in factors:
+                if (nxt := cur * factor) not in seen:
+                    seen.add(nxt)
+                    heapq.heappush(heap, nxt)
+        return heapq.heappop(heap)
+
+    def nthUglyNumber(self, n: int) -> int:
+        dp = [0] * n
+        dp[0] = 1
+        p2 = p3 = p5 = 0
+        for i in range(1, n):
+            num2, num3, num5 = dp[p2] * 2, dp[p3] * 3, dp[p5] * 5
+            dp[i] = min(num2, num3, num5)
+            if dp[i] == num2:
+                p2 += 1
+            if dp[i] == num3:
+                p3 += 1
+            if dp[i] == num5:
+                p5 += 1
+        return dp[-1]
+
+    # much faster 40ms, it does not compute time spent before entering objective function
+    ugly = sorted(2**a * 3**b * 5**c for a in range(32) for b in range(20)
+                  for c in range(14))
+
+    def nthUglyNumber(self, n):
+        return self.ugly[n - 1]
+        # quite slow, 4000ms
+        ugly = sorted(2**a * 3**b * 5**c for a in range(32) for b in range(20)
+                      for c in range(14))
+        return ugly
 
 
 # 268 - Missing Number - EASY
