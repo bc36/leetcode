@@ -278,6 +278,24 @@ class Solution:
         return
 
 
+# 34 - Find First and Last Position of Element in Sorted Array - MEDIUM
+class Solution:
+    def searchRange(self, nums, target):
+        def search(n: int) -> int:
+            lo, hi = 0, len(nums)
+            while lo < hi:
+                mid = (lo + hi) // 2
+                if nums[mid] >= n:
+                    hi = mid
+                else:
+                    lo = mid + 1
+            return lo
+
+        lo = search(target)
+        return [lo, search(target + 1) - 1] if target in nums[lo:lo +
+                                                              1] else [-1, -1]
+
+
 # 35 - Search Insert Position - EASY
 class Solution:
     def searchInsert(self, nums: List[int], target: int) -> int:
@@ -618,6 +636,36 @@ class Solution:
         return "/" + "/".join(stack)
 
 
+# 74 - Search a 2D Matrix - MEDIUM
+class Solution:
+    # zigzag search
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        j, i = len(matrix[0]) - 1, 0
+        while i < len(matrix):
+            if matrix[i][j] >= target:
+                while j >= 0:
+                    if matrix[i][j] == target:
+                        return True
+                    j -= 1
+            i += 1
+        return False
+
+    # binary search
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        n = len(matrix[0])
+        lo, hi = 0, len(matrix) * n
+        while lo < hi:
+            mid = (lo + hi) // 2
+            x = matrix[mid // n][mid % n]
+            if x < target:
+                lo = mid + 1
+            elif x > target:
+                hi = mid
+            else:
+                return True
+        return False
+
+
 # 76 - Minimum Window Substring - HARD
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
@@ -682,18 +730,27 @@ class Solution:
         return ans
 
 
+# 82 - Remove Duplicates from Sorted List II - MEDIUM
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        dummy = ListNode(-101, head)
+        pre, cur = dummy, head
+        while cur:
+            while cur.next and cur.val == cur.next.val:
+                cur = cur.next
+            if pre.next == cur:
+                pre = pre.next  # no duplicate nodes between pre and cur
+            else:
+                pre.next = cur.next  # have duplicate nodes, don't move pre
+            cur = cur.next
+        return dummy.next
+
+
 # 83 - Remove Duplicates from Sorted List - EASY
 class Solution:
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
         if not head:
             return None
-        '''
-        slower
-        dummy = ListNode(-1,head)
-        faster
-        dummy = ListNode(-1)
-        dummy.next = head
-        '''
         dummy = ListNode(-1)
         dummy.next = head
         while head.next:

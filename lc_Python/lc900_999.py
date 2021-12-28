@@ -184,9 +184,9 @@ class Solution:
 
 
 # 973 - K Closest Points to Origin - MEDIUM
-# Pay attention that if the points are at the same distance,
-# different coordinates should be returned.
 class Solution:
+    # Pay attention that if the points are at the same distance,
+    # different coordinates should be returned.
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
         # [info[0]: square, info[1]: position index]
         info = [[x[0] * x[0] + x[1] * x[1], i] for i, x in enumerate(points)]
@@ -208,6 +208,10 @@ class Solution:
         return ans
 
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+        points.sort(key=lambda x: (x[0]**2 + x[1]**2))
+        return points[:k]
+
+    def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
         heap = []
         for (x, y) in points:
             dist = -(x * x + y * y)
@@ -218,13 +222,8 @@ class Solution:
         return [(x, y) for (_, x, y) in heap]
 
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
-        points.sort(key=lambda x: (x[0]**2 + x[1]**2))
-        return points[:k]
-
-    def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
         q = [(-x**2 - y**2, i) for i, (x, y) in enumerate(points[:k])]
         heapq.heapify(q)
-
         n = len(points)
         for i in range(k, n):
             x, y = points[i]

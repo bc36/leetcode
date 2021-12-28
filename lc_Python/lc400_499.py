@@ -108,36 +108,36 @@ class Solution:
 class Solution:
     # sliding window + list
     def findAnagrams(self, s: str, p: str) -> List[int]:
-        ls, lp, ans = len(s), len(p), []
-        if ls < lp:
+        ans = []
+        if len(s) < len(p):
             return ans
         p_cnt = [0] * 26
         s_cnt = [0] * 26
-        for i in range(lp):
+        for i in range(len(p)):
             p_cnt[ord(p[i]) - ord('a')] += 1
             s_cnt[ord(s[i]) - ord('a')] += 1
         if s_cnt == p_cnt:
             ans.append(0)
 
-        for i in range(lp, ls):
-            s_cnt[ord(s[i - lp]) - ord('a')] -= 1
+        for i in range(len(p), len(s)):
+            s_cnt[ord(s[i - len(p)]) - ord('a')] -= 1
             s_cnt[ord(s[i]) - ord('a')] += 1
             if s_cnt == p_cnt:
-                ans.append(i - lp + 1)
+                ans.append(i - len(p) + 1)
         return ans
 
     # sliding window + two pointers
     def findAnagrams(self, s: str, p: str) -> List[int]:
-        ls, lp, ans = len(s), len(p), []
-        if ls < lp:
+        ans = []
+        if len(s) < len(p):
             return ans
         p_cnt = [0] * 26
         s_cnt = [0] * 26
-        for i in range(lp):
+        for i in range(len(p)):
             p_cnt[ord(p[i]) - ord('a')] += 1
 
         left = 0
-        for right in range(ls):
+        for right in range(len(s)):
             cur_right = ord(s[right]) - ord('a')
             s_cnt[cur_right] += 1
             while s_cnt[cur_right] > p_cnt[cur_right]:
@@ -145,7 +145,7 @@ class Solution:
                 cur_left = ord(s[left]) - ord('a')
                 s_cnt[cur_left] -= 1
                 left += 1
-            if right - left + 1 == lp:
+            if right - left + 1 == len(p):
                 ans.append(left)
         return ans
 
@@ -239,6 +239,25 @@ class Solution:
             ans = max(ans, dis)
         return ans
 
+# 476 - Number Complement - EASY
+class Solution:
+    def findComplement(self, num: int) -> int:
+        mask = num
+        mask |= mask >> 1
+        mask |= mask >> 2
+        mask |= mask >> 4
+        mask |= mask >> 8
+        mask |= mask >> 16
+        return num ^ mask
+
+
+    def findComplement(self, num: int) -> int:
+        a = 1 # sum is -1
+        while True:
+            if num >= a:
+                a <<= 1
+            else:
+                return a - num - 1
 
 # 495 - Teemo Attacking - EASY
 class Solution:

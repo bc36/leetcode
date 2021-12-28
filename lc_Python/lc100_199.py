@@ -80,6 +80,26 @@ class Solution:
         return root
 
 
+# 117 - Populating Next Right Pointers in Each Node II - MEDIUM
+class Solution:
+    def connect(self, root: 'Node') -> 'Node':
+        if not root: return
+        cur = root
+        while cur:
+            dummy = Node(None)
+            pre = dummy
+            while cur:
+                if cur.left:
+                    pre.next = cur.left
+                    pre = pre.next
+                if cur.right:
+                    pre.next = cur.right
+                    pre = pre.next
+                cur = cur.next
+            cur = dummy.next
+        return root
+
+
 # 118 - Pascal's Triangle - EASY
 class Solution:
     def generate(self, numRows: int) -> List[List[int]]:
@@ -368,7 +388,7 @@ class Solution:
     def reorderList(self, head: Optional[ListNode]) -> None:
         slow = fast = head
         while fast and fast.next:
-            slow = slow.next    
+            slow = slow.next
             fast = fast.next.next
         pre = None
         while slow:
@@ -379,7 +399,7 @@ class Solution:
             # slow.next, slow, pre = pre, slow.next, slow # right
             # slow, pre, slow.next = slow.next, slow, pre # wrong
             '''
-            slow.next, pre, slow = pre, slow, slow.next # right
+            slow.next, pre, slow = pre, slow, slow.next  # right
         while pre.next:
             head.next, head = pre, head.next
             pre.next, pre = head, pre.next
@@ -481,6 +501,19 @@ class Solution:
             nums[i] *= nums[i - 1] or 1
             revnums[i] *= revnums[i - 1] or 1
         return max(nums + revnums)
+
+
+# 153 - Find Minimum in Rotated Sorted Array - MEDIUM
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        l, r = 0, len(nums) - 1
+        while l < r:
+            mid = (l + r) // 2
+            if nums[mid] < nums[r]:
+                r = mid
+            else:
+                l = mid + 1
+        return nums[l]
 
 
 # 162 - Find Peak Element - MEDIUM
@@ -644,7 +677,29 @@ class Solution:
 # 190 - Reverse Bits - EASY
 class Solution:
     def reverseBits(self, n: int) -> int:
-        return
+        ans = 0
+        for _ in range(31):
+            if n & 1:
+                ans += 1
+            n >>= 1
+            ans <<= 1
+        if n & 1:
+            ans += 1
+        return ans
+
+    def reverseBits(self, n):
+        ans = 0
+        for _ in range(32):
+            ans = (ans << 1) + (n & 1)
+            # ans = (ans << 1) ^ (n & 1)
+            # ans = (ans << 1) | (n & 1)
+            n >>= 1
+        return ans
+
+    def reverseBits(self, n):
+        oribin = '{0:032b}'.format(n)
+        reversebin = oribin[::-1]
+        return int(reversebin, 2)
 
 
 # 191 - Number of 1 Bits - EASY

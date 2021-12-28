@@ -1,3 +1,4 @@
+import itertools
 from typing import List, Optional
 import collections, math
 
@@ -30,12 +31,35 @@ class Solution:
         return sum(min(i, j) for i in rows for j in cols) - sum(map(sum, grid))
 
 
-# 827 - Making A Large Island - HARD
-# STEP 1: Explore every island using DFS, count its area
-#         give it an island index and save the result to a {index: area} map.
-# STEP 2: Loop every cell == 0,
-#         check its connected islands and calculate total islands area.
+# 825 - Friends Of Appropriate Ages - MEDIUM
 class Solution:
+    def numFriendRequests(self, ages: List[int]) -> int:
+        def request(a: int, b: int) -> bool:
+            return not (b <= 0.5 * a + 7 or b > a or b > 100 and a < 100)
+
+        c = collections.Counter(ages)
+        return sum(
+            request(a, b) * c[a] * (c[b] - (a == b)) for a in c for b in c)
+
+    def numFriendRequests(self, ages: List[int]) -> int:
+        cnt = collections.Counter(ages)
+        ans = 0
+        for a in cnt:
+            for b in cnt:
+                if not (b <= 0.5 * a + 7 or b > a or b > 100 and a < 100):
+                    if a != b:
+                        ans += cnt[a] * cnt[b]
+                    else:
+                        ans += cnt[a] * (cnt[a] - 1)
+        return ans
+
+
+# 827 - Making A Large Island - HARD
+class Solution:
+    # STEP 1: Explore every island using DFS, count its area
+    #         give it an island index and save the result to a {index: area} map.
+    # STEP 2: Loop every cell == 0,
+    #         check its connected islands and calculate total islands area.
     def largestIsland(self, grid: List[List[int]]) -> int:
         N = len(grid)
 
@@ -74,6 +98,36 @@ class Solution:
                     # '+1' means grid[x][y] itself
                     ret = max(ret, sum(areas[index] for index in possible) + 1)
         return ret
+
+
+# 844 - Backspace String Compare - EASY
+class Solution:
+    def backspaceCompare(self, s: str, t: str) -> bool:
+        a, b = [], []
+        for ch in s:
+            if ch == '#':
+                if a: a.pop()
+            else: a.append(ch)
+        for ch in t:
+            if ch == '#':
+                if b: b.pop()
+            else: b.append(ch)
+        return a == b
+
+    # O(n) + O(1): reversed, save '#'
+    def backspaceCompare(self, s: str, t: str) -> bool:
+        def build(s: str) -> str:
+            skip, a = 0, ''
+            for ch in reversed(s):
+                if ch == '#':
+                    skip += 1
+                elif skip:
+                    skip -= 1
+                else:
+                    a += ch
+            return a
+
+        return build(s) == build(t)
 
 
 # 851 - Loud and Rich - MEDIUM
@@ -218,8 +272,8 @@ class Solution:
 
 
 # 876 - Middle of the Linked List - EASY
-# recursive. O(n)+ stack space / O(3)
 class Solution:
+    # recursive. O(n)+ stack space / O(3)
     def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
         self.n = 0
         self.head = ListNode(-1)

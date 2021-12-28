@@ -555,54 +555,46 @@ class Solution:
 # 227 - Basic Calculator II - MEDIUM
 class Solution:
     def calculate(self, s: str) -> int:
-        s = s.replace(" ", "")
-        newS = []
-        num = ""
-        for ch in s:
-            if ch == '+' or ch == '-' or ch == '*' or ch == '/':
-                if num != "":
-                    newS.append(num)
-                    num = ""
-                newS.append(ch)
-            else:
-                num = num + ch
-        if num != "":
-            newS.append(num)
-
-        addAndSubs = [int(s[0])]
-        for i in range(1, len(s) - 1):
-            if s[i] != '*' and s[i] != "/":
-                addAndSubs.append(s[i])
-            elif s[i] == '*':
-                addAndSubs[-1] = addAndSubs[-1] * s[i + 1]
-                i += 1
-            else:
-                return
-        return
+        pre, cur, result, sign = 0, 0, 0, '+'
+        for ch in s + '#':
+            if ch == ' ': continue
+            if ch.isdigit():
+                pre = 10 * pre + int(ch)
+                continue
+            if sign == '+':
+                result += cur
+                cur = pre
+            elif sign == '-':
+                result += cur
+                cur = -pre
+            elif sign == '*':
+                cur = cur * pre
+            elif sign == '/':
+                cur = int(cur / pre)
+            pre, sign = 0, ch
+        return result + cur
 
     # stack
     def calculate(self, s: str) -> int:
-        stack = []
-        s += '$'
-        pre_flag = '+'
-        pre_num = 0
+        stack, sign, pre = [], '+', 0
+        s += '#'
 
         for ch in s:
             if ch.isdigit():
-                pre_num = pre_num * 10 + int(ch)
+                pre = pre * 10 + int(ch)
             elif ch == ' ':
                 continue
             else:
-                if pre_flag == '+':
-                    stack.append(pre_num)
-                elif pre_flag == '-':
-                    stack.append(-pre_num)
-                elif pre_flag == '*':
-                    stack.append(stack.pop() * pre_num)
-                elif pre_flag == '/':
-                    stack.append(stack.pop() // pre_num)
-                pre_flag = ch
-                pre_num = 0
+                if sign == '+':
+                    stack.append(pre)
+                elif sign == '-':
+                    stack.append(-pre)
+                elif sign == '*':
+                    stack.append(stack.pop() * pre)
+                elif sign == '/':
+                    stack.append(stack.pop() // pre)
+                sign = ch
+                pre = 0
 
         return sum(stack)
 

@@ -2,7 +2,6 @@ import collections
 from typing import List
 
 
-# Definition for a Node.
 class Node:
     def __init__(self, val):
         self.val = val
@@ -11,12 +10,51 @@ class Node:
         self.parent = None
 
 
-# Definition for a binary tree node.
 class TreeNode:
     def __init__(self, x):
         self.val = x
         self.left = None
         self.right = None
+
+
+# 1609 - Even Odd Tree - MEDIUM
+class Solution:
+    # bfs
+    def isEvenOddTree(self, root: TreeNode) -> bool:
+        dq = collections.deque([root])
+        is_even = True
+        while dq:
+            pre = None
+            for _ in range(len(dq)):
+                n = dq.popleft()
+                if is_even:
+                    if n.val % 2 == 0: return False
+                    if pre and pre.val >= n.val: return False
+                else:
+                    if n.val % 2 == 1: return False
+                    if pre and pre.val <= n.val: return False
+                if n.left: dq.append(n.left)
+                if n.right: dq.append(n.right)
+                pre = n
+            is_even = not is_even  # bool value cannot use '~' to inverse
+        return True
+
+    def isEvenOddTree(self, root: TreeNode) -> bool:
+        l, nodes = 0, [root]
+        while nodes:
+            nxt, cur = [], float('inf') if l % 2 else 0
+            for n in nodes:
+                if (l % 2 == n.val % 2) or (l % 2 and cur <= n.val) or (
+                    (not l % 2) and cur >= n.val):
+                    return False
+                cur = n.val
+                if n.left:
+                    nxt.append(n.left)
+                if n.right:
+                    nxt.append(n.right)
+            nodes = nxt
+            l += 1
+        return True
 
 
 # 1650 - Lowest Common Ancestor of a Binary Tree III - MEDIUM
@@ -30,9 +68,7 @@ class Solution:
             q = q.parent
         return q
 
-
-# like running in a cycle
-class Solution:
+    # like running in a cycle
     def lowestCommonAncestor(self, p: 'Node', q: 'Node') -> 'Node':
         p1, p2 = p, q
         while p1 != p2:
