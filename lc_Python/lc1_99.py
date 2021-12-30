@@ -139,6 +139,28 @@ class Solution:
         return ret
 
 
+# 15 - 3Sum - MEDIUM
+class Solution:
+    # narrow down 'left' and 'right' for each 'i'
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        ans = []
+        for i in range(len(nums) - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+            ri = len(nums) - 1  # do not declare it in next loop!
+            for le in range(i + 1, len(nums) - 1):
+                if le > i + 1 and nums[le - 1] == nums[le]:
+                    continue
+                while le < ri and nums[le] + nums[ri] > -nums[i]:
+                    ri -= 1
+                if ri == le:
+                    break
+                if nums[ri] + nums[le] == -nums[i]:
+                    ans.append([nums[i], nums[le], nums[ri]])
+        return ans
+
+
 # 19 - Remove Nth Node From End of List - MEDIUM
 class Solution:
     def removeNthFromEnd(self, head: Optional[ListNode],
@@ -510,7 +532,6 @@ class Solution:
                 j += 1
             ans.append([intervals[i][0], right])
             i = j
-
         return ans
 
     # two pointers
@@ -534,7 +555,7 @@ class Solution:
     # dp[i][j] peresent the maximum value of paths that can reach this point
     def uniquePaths(self, m: int, n: int) -> int:
         # dp = [[1] * n] + [[1] + [0] * (n - 1) for _ in range(m - 1)]
-        dp = [[0 for _ in range(n)] for j in range(m)]
+        dp = [[0 for _ in range(n)] for _ in range(m)]
         # initialize
         for i in range(m):
             dp[i][0] = 1

@@ -130,6 +130,22 @@ class Solution:
         return build(s) == build(t)
 
 
+# 846 - Hand of Straights - MEDIUM
+class Solution:
+    def isNStraightHand(self, hand: List[int], groupSize: int) -> bool:
+        if len(hand) % groupSize > 0:
+            return False
+        cnt = collections.Counter(hand)
+        for start in sorted(hand):
+            if cnt[start] == 0:
+                continue
+            for num in range(start, start + groupSize):
+                if cnt[num] == 0:
+                    return False
+                cnt[num] -= 1
+        return True
+
+
 # 851 - Loud and Rich - MEDIUM
 class Solution:
     def loudAndRich(self, richer: List[List[int]],

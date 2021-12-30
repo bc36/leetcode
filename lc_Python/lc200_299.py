@@ -202,27 +202,55 @@ class Trie:
         self.root = TrieNode()
 
     def insert(self, word: str) -> None:
-        current = self.root
-        for letter in word:
-            if letter not in current.children:
-                current.children[letter] = TrieNode()
-            current = current.children[letter]
-        current.is_word = True
+        cur = self.root
+        for ch in word:
+            if ch not in cur.children:
+                cur.children[ch] = TrieNode()
+            cur = cur.children[ch]
+        cur.is_word = True
 
-    def search(self, word: str):
-        current = self.root
-        for letter in word:
-            if letter not in current.children:
+    def search(self, word: str) -> bool:
+        cur = self.root
+        for ch in word:
+            if ch not in cur.children:
                 return False
-            current = current.children[letter]
-        return current.is_word
+            cur = cur.children[ch]
+        return cur.is_word
 
-    def startsWith(self, prefix: str):
-        current = self.root
-        for letter in prefix:
-            if letter not in current.children:
+    def startsWith(self, prefix: str) -> bool:
+        cur = self.root
+        for ch in prefix:
+            if ch not in cur.children:
                 return False
-            current = current.children[letter]
+            cur = cur.children[ch]
+        return True
+
+
+class Trie:
+    def __init__(self):
+        self.root = {}
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for ch in word:
+            if ch not in node:
+                node[ch] = {}
+            node = node[ch]
+        node['END'] = True
+        return
+
+    def search(self, word: str) -> bool:
+        node = self.root
+        for ch in word:
+            if ch not in node: return False
+            node = node[ch]
+        return 'END' in node
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.root
+        for ch in prefix:
+            if ch not in node: return False
+            node = node[ch]
         return True
 
 
@@ -272,6 +300,9 @@ class Solution:
         for i in range(numCourses):
             if hasCycle(i): return False
         return True
+
+
+# 208 - Implement Trie (Prefix Tree) - MEDIUM
 
 
 # 210 - Course Schedule II - MEDIUM

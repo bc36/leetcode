@@ -141,4 +141,8 @@ class UnionFind:
 
 # 堆
 # 所有的k，都有 heap[k] <= heap[2*k+1] 和 heap[k] <= heap[2*k+2]
-# 最小的元素总是在根结点：heap[0]
+# 最小的元素总是在根结点：heap[0] => 最小堆
+# 保存负数变最大堆
+
+# 前缀树
+# Trie 208
