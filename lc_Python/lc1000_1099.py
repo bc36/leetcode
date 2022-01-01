@@ -2,6 +2,13 @@ import collections
 from typing import List
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 # 1005 - Maximize Sum Of Array After K Negations - EASY
 class Solution:
     def largestSumAfterKNegations(self, nums: List[int], k: int) -> int:
@@ -45,6 +52,97 @@ class Solution:
             ans += cnt[theOther]
             cnt[t % 60] += 1
         return ans
+
+
+# 1015 - Smallest Integer Divisible by K - MEDIUM
+class Solution:
+    # time consuming, just because Python supports arbitrarily large numbers
+    def smallestRepunitDivByK(self, k: int) -> int:
+        if not k % 2 or not k % 5: return -1
+        ans, l = 1, 1
+        while True:
+            if ans % k == 0: return l
+            l += 1
+            ans = 10 * ans + 1
+
+    # At every iteration, n = kq + r for some quotient q and remainder r.
+    # Therefore, 10*n + 1 = 10(kq + r) + 1 = 10kq + 10r + 1.
+    # 10kq is divisible by k, so for 10*n + 1 to be divisible by k, it all depends on if 10r + 1 is divisible by k.
+    # Therefore, we only have to keep track of r!
+    def smallestRepunitDivByK(self, k: int) -> int:
+        if not k % 2 or not k % 5: return -1
+        r = length = 1
+        while True:
+            r = r % k
+            if not r: return length
+            length += 1
+            r = 10 * r + 1
+
+    # k possible remainders from 0 to k-1
+    def smallestRepunitDivByK(self, k: int) -> int:
+        if k % 2 == 0 or k % 5 == 0: return -1
+        n = 1
+        for i in range(k):
+            r = n % k
+            if r == 0: return i + 1
+            n = r * 10 + 1
+
+
+# 1026 - Maximum Difference Between Node and Ancestor - MEDIUM
+class Solution:
+    # down to top, calculate the minimum and maximum values then pass them to the root
+    def maxAncestorDiff(self, root: TreeNode) -> int:
+        self.ans = 0
+
+        def dfs(root):
+            if not root:
+                return float('inf'), -float('inf')
+            lmin, lmax = dfs(root.left)
+            rmin, rmax = dfs(root.right)
+            rootmin = min(root.val, lmin, rmin)
+            rootmax = max(root.val, lmax, rmax)
+            self.ans = max(self.ans, abs(root.val - rootmin),
+                           abs(root.val - rootmax))
+            return rootmin, rootmax
+
+        dfs(root)
+        return self.ans
+
+    # top to down, pass the minimum and maximum values to the children
+    def maxAncestorDiff(self, root: TreeNode) -> int:
+        def dfs(root: TreeNode, low: int, high: int) -> int:
+            if root is None:
+                return high - low
+            low = min(root.val, low)
+            high = max(root.val, high)
+            return max(dfs(root.left, low, high), dfs(root.right, low, high))
+
+        return dfs(root, root.val, root.val)
+
+    # top to down, pass the minimum and maximum values to the children
+    def maxAncestorDiff(self,
+                        root: TreeNode,
+                        mn: int = 100000,
+                        mx: int = 0) -> int:
+        return max(self.maxAncestorDiff(root.left, min(mn, root.val), max(mx, root.val)), \
+            self.maxAncestorDiff(root.right, min(mn, root.val), max(mx, root.val))) \
+            if root else mx - mn
+
+    def maxAncestorDiff(self, root: TreeNode) -> int:
+        if not root: return 0
+        stack = [(root, root.val, root.val)]  #stack, parent, child
+        res = 0
+        while stack:
+            node, parent, child = stack.pop()
+            res = max(res, abs(parent - child))
+            if node.left:
+                stack.append(
+                    (node.left, max(parent,
+                                    node.left.val), min(child, node.left.val)))
+            if node.right:
+                stack.append((node.right, max(parent, node.right.val),
+                              min(child, node.right.val)))
+        return res
 
 
 # 1034 - Coloring A Border - MEDIUM

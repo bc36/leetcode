@@ -1,5 +1,5 @@
-import collections, timeit
-import random, bisect, itertools
+import collections, math, random, bisect, itertools
+import functools
 from typing import List, Optional
 
 
@@ -38,6 +38,22 @@ class Solution:
         return [
             str(dic[i] + 1) if dic[i] >= 3 else medals[dic[i]] for i in score
         ]
+
+
+# 507 - Perfect Number - EASY
+class Solution:
+    def checkPerfectNumber(self, num: int) -> bool:
+        if num == 1:
+            return False
+        ans = 0
+        for i in range(1, int(math.sqrt(num) + 1)):
+            if num % i == 0:
+                ans += num // i + i
+        return ans == num * 2
+
+    # [0, 10**8] has only 5 perfect numbers
+    def checkPerfectNumber(self, num: int) -> bool:
+        return num == 6 or num == 28 or num == 496 or num == 8128 or num == 33550336
 
 
 # 509 - Fibonacci Number - EASY
@@ -464,6 +480,25 @@ class Solution:
             if arr1 == arr2:
                 return True
         return False
+
+
+# 572 - Subtree of Another Tree - EASY
+class Solution:
+    def isSubtree(self, root: TreeNode, sub: TreeNode) -> bool:
+        if not sub and not root:
+            return True
+        if not sub or not root:
+            return False
+        return self.isSameTree(sub, root) or self.isSubtree(
+            root.left, sub) or self.isSubtree(root.right, sub)
+
+    def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
+        if not q and not p:
+            return True
+        if not q or not p:
+            return False
+        return q.val == p.val and self.isSameTree(
+            q.left, p.left) and self.isSameTree(q.right, p.right)
 
 
 # 575 - Distribute Candies - EASY
