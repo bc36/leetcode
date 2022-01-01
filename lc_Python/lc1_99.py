@@ -751,6 +751,27 @@ class Solution:
         return ans
 
 
+# 78 - Subsets - MEDIUM
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        q = [[]]
+        for i in range(len(nums)):
+            for j in range(len(q)):
+                q.append(q[j] + [nums[i]])
+        return q
+
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        def dfs(nums, path, ret):
+            ret.append(path)
+            for i in range(len(nums)):
+                dfs(nums[i + 1:], path + [nums[i]], ret)
+            return
+
+        ret = []
+        dfs(nums, [], ret)
+        return ret
+
+
 # 82 - Remove Duplicates from Sorted List II - MEDIUM
 class Solution:
     def deleteDuplicates(self, head: ListNode) -> ListNode:
@@ -816,6 +837,46 @@ class Solution:
         nums1[m:] = nums2
         nums1.sort()
         return
+
+
+# 90 - Subsets II - MEDIUM
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        def dfs(nums, path, ret):
+            ret.append(path)
+            for i in range(len(nums)):
+                if i != 0 and nums[i] == nums[i - 1]: continue
+                dfs(nums[i + 1:], path + [nums[i]], ret)
+            return
+
+        nums.sort()
+        ret = []
+        dfs(nums, [], ret)
+        return ret
+
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        def dfs(nums, index, path, ret):
+            ret.append(path)
+            for i in range(index, len(nums)):
+                if i > index and nums[i] == nums[i - 1]: continue
+                dfs(nums, i + 1, path + [nums[i]], ret)
+            return
+
+        nums.sort()
+        ret = []
+        dfs(nums, 0, [], ret)
+        return ret
+
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        ret, cur = [[]], []
+        for i in range(len(nums)):
+            if i > 0 and nums[i] == nums[i - 1]:
+                cur = [item + [nums[i]] for item in cur]
+            else:
+                cur = [item + [nums[i]] for item in ret]
+            ret += cur
+        return ret
 
 
 # 96 - Unique Binary Search Trees - MEDIUM

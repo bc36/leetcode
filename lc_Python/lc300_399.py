@@ -48,6 +48,76 @@ class Solution:
         return leaves
 
 
+# 312 - Burst Balloons - HARD
+class Solution:
+    # not pass
+    @functools.lru_cache
+    def maxCoins(self, nums: List[int]) -> int:
+        def backtrack(nums: List[int], cur):
+            if len(nums) == 0:
+                self.ans = max(self.ans, cur)
+                return
+            for i in range(len(nums)):
+                left = nums[i - 1] if i - 1 >= 0 else 1
+                right = nums[i + 1] if i + 1 < len(nums) else 1
+                cur += left * nums[i] * right
+                backtrack(nums[:i - 1] + nums[i + 1:], cur)
+            return
+
+        nums = [n for n in nums if n]
+        self.ans = -math.inf
+        backtrack(nums[1:-1], 0)
+        return self.ans
+
+    def maxCoins(self, A: List[int]) -> int:
+        # a test case that all elements are '100'
+        if len(A) > 1 and len(set(A)) == 1:
+            return (A[0]**3) * (len(A) - 2) + A[0]**2 + A[0]
+        A, n = [1] + A + [1], len(A) + 2
+        dp = [[0] * n for _ in range(n)]
+        # why bottom to up: must solve subquestion first
+        for i in range(n - 2, -1, -1):
+            for j in range(i + 2, n):
+                dp[i][j] = max(A[i] * A[k] * A[j] + dp[i][k] + dp[k][j]
+                               for k in range(i + 1, j))
+        return dp[0][n - 1]
+
+    def maxCoins(self, nums: List[int]) -> int:
+        if len(nums) > 1 and len(set(nums)) == 1:  # speed up
+            return (nums[0]**3) * (len(nums) - 2) + nums[0]**2 + nums[0]
+        nums = [1] + nums + [1]
+        # or: nums = [1] + [n for n in nums if n] + [1]
+        dp = [[0] * len(nums) for _ in range(len(nums))]
+        for i in range(len(nums) - 1, -1, -1):
+            for j in range(i + 2, len(nums)):
+                for k in range(i + 1, j):
+                    dp[i][j] = max(
+                        dp[i][j],
+                        dp[i][k] + dp[k][j] + nums[i] * nums[k] * nums[j])
+        return dp[0][-1]
+
+    def maxCoins(self, nums: List[int]) -> int:
+        if len(nums) == 1:
+            return nums[0]
+        elif len(set(nums)) == 1:
+            n = nums[0]
+            return n**3 * (len(nums) - 2) + n * n + n
+        nums = [1] + [n for n in nums if n] + [1]
+        N = len(nums)
+
+        @functools.lru_cache
+        def helper(lo, hi):
+            if lo > hi:
+                return 0
+            res = -math.inf
+            for i in range(lo, hi + 1):
+                gain = nums[i] * nums[lo - 1] * nums[hi + 1]
+                res = max(res, gain + helper(lo, i - 1) + helper(i + 1, hi))
+            return res
+
+        return helper(1, N - 2)
+
+
 # 314 - Binary Tree Vertical Order Traversal - MEDIUM
 # dfs
 class Solution:

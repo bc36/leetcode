@@ -1,4 +1,4 @@
-import collections
+import collections, math, copy
 from typing import List
 
 
@@ -243,3 +243,46 @@ class Solution:
             if text[i - 2] == first and text[i - 1] == second:
                 ans.append(text[i])
         return ans
+
+
+# 1091 - Shortest Path in Binary Matrix - MEDIUM
+class Solution:
+    # TLE, not suitable for 'dfs', be careful with 'visited2'(cycle)
+    def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
+        if grid[-1][-1] == 1 or grid[0][0] == 1: return -1
+
+        def dfs(x, y, step, visited):
+            n = len(grid)
+            if x == y == n - 1:
+                self.ans = min(self.ans, step)
+                return
+            for i, j in ((x - 1, y - 1), (x - 1, y), (x - 1, y + 1),
+                         (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
+                         (x + 1, y + 1)):
+                if 0 <= i < n and 0 <= j < n and grid[i][j] == 0 and (
+                        i, j) not in visited:
+                    visited.add((i, j))
+                    visited2 = copy.deepcopy(visited)
+                    dfs(i, j, step + 1, visited2)
+            return
+
+        self.ans = math.inf
+        dfs(0, 0, 1, set())
+        return self.ans if self.ans != math.inf else -1
+
+    # bfs, O(n^2) + O(n)
+    def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
+        if grid[-1][-1] == 1 or grid[0][0] == 1: return -1
+        dq, n = collections.deque([(0, 0, 1)]), len(grid)
+        # no need to use 'visited', space complexity from O(n^2) to O(n)
+        grid[0][0] = 1
+        while dq:
+            x, y, step = dq.popleft()
+            if x == y == n - 1: return step
+            for i, j in ((x - 1, y - 1), (x - 1, y), (x - 1, y + 1),
+                         (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
+                         (x + 1, y + 1)):
+                if 0 <= i < n and 0 <= j < n and grid[i][j] == 0:
+                    grid[i][j] = 1
+                    dq.append((i, j, step + 1))
+        return -1
