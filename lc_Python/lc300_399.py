@@ -590,6 +590,35 @@ class Solution:
             magazine)
 
 
+# 390 - Elimination Game - MEDIUM
+class Solution(object):
+    def lastRemaining(self, n):
+        def helper(n: int, isLeft: bool) -> int:
+            if (n == 1): return 1
+            # if started from left side the odd elements will be removed, the only remaining ones will the the even i.e.
+            # [1 2 3 4 5 6 7 8 9] => [2 4 6 8] => 2*[1 2 3 4]
+            if isLeft:
+                return 2 * helper(n // 2, False)
+            # same as left side the odd elements will be removed
+            elif (n % 2 == 1):
+                return 2 * helper(n // 2, True)
+            # even elements will be removed and the only left ones will be [1 2 3 4 5 6] => [1 3 5] => 2*[1 2 3] - 1
+            else:
+                return 2 * helper(n // 2, True) - 1
+
+        return helper(n, True)
+
+    def lastRemaining(self, n: int) -> int:
+        startLeft, ans, step = True, 1, 1
+        while n > 1:
+            if startLeft or n % 2 == 1:
+                ans += step
+            startLeft = not startLeft
+            step *= 2
+            n //= 2
+        return ans
+
+
 # 394 - Decode String - MEDIUM
 class Solution:
     def decodeString(self, s: str) -> str:
