@@ -1,4 +1,4 @@
-import collections, math, copy
+import collections, math, copy, bisect, heapq
 from typing import List
 
 
@@ -33,18 +33,17 @@ class Solution:
             c[t % 60] += 1
         return ret
 
-
-class Solution:
     def numPairsDivisibleBy60(self, time: List[int]) -> int:
-        ans, cnt = 0, collections.Counter()
+        dic, ans = collections.defaultdict(int), 0
         for t in time:
-            theOther = -t % 60
-            ans += cnt[theOther]
-            cnt[t % 60] += 1
+            mod = t % 60
+            dic[mod] += 1
+            if mod == 30 or mod == 0:
+                ans += dic[mod] - 1
+            elif 60 - mod in dic:
+                ans += dic[60 - mod]
         return ans
 
-
-class Solution:
     def numPairsDivisibleBy60(self, time: List[int]) -> int:
         ans, cnt = 0, collections.Counter()
         for t in time:
