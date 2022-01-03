@@ -1,5 +1,5 @@
 from typing import List, Optional
-import collections, random, heapq
+import collections, random, heapq, math
 
 
 class ListNode:
@@ -189,6 +189,54 @@ class Solution:
         return newHead
 
 
+# 207 - Course Schedule I - MEDIUM
+# [0, 1] you have to first take course 1
+class Solution:
+    # bfs, adjacency list, indegree, save successor
+    def canFinish(self, numCourses: int,
+                  prerequisites: List[List[int]]) -> bool:
+        graph = collections.defaultdict(list)  # or {i: set()}
+        in_d = [0] * numCourses  # or {i: 0}
+        for p in (prerequisites):
+            graph[p[1]].append(p[0])  # save successor, no dependence
+            in_d[p[0]] += 1
+        dq, count = collections.deque([]), 0
+        for i in range(numCourses):
+            if in_d[i] == 0:
+                dq.append(i)
+        while dq:
+            node = dq.popleft()
+            # seen.add(node)
+            count += 1
+            for successor in graph[node]:
+                in_d[successor] -= 1
+                if in_d[successor] == 0:
+                    dq.append(successor)
+        # return len(seen) == numCourses
+        # return not sum(in_d) # not use count or in_d
+        return count == numCourses
+
+    # dfs, whether there is a cycle
+    def canFinish(self, numCourses: int,
+                  prerequisites: List[List[int]]) -> bool:
+        def hasCycle(v: int) -> bool:  # 0 default
+            if flags[v] == -1: return True  # is being processing
+            if flags[v] == 1: return False  # is processed
+            flags[v] = -1  # is being processing
+            for i in adj[v]:
+                if hasCycle(i): return True
+            flags[v] = 1  # process finished
+            return False
+
+        adj = [[] for _ in range(numCourses)]
+        flags = [0] * numCourses
+        for cur, pre in prerequisites:
+            adj[pre].append(cur)  # save successor
+        for i in range(numCourses):
+            if hasCycle(i): return False
+        return True
+
+
 # 208 - Implement Trie (Prefix Tree) - MEDIUM
 class TrieNode:
     def __init__(self):
@@ -254,55 +302,20 @@ class Trie:
         return True
 
 
-# 207 - Course Schedule I - MEDIUM
-# [0, 1] you have to first take course 1
+# 209 - Minimum Size Subarray Sum - MEDIUM
 class Solution:
-    # bfs, adjacency list, indegree, save successor
-    def canFinish(self, numCourses: int,
-                  prerequisites: List[List[int]]) -> bool:
-        graph = collections.defaultdict(list)  # or {i: set()}
-        in_d = [0] * numCourses  # or {i: 0}
-        for p in (prerequisites):
-            graph[p[1]].append(p[0])  # save successor, no dependence
-            in_d[p[0]] += 1
-        dq, count = collections.deque([]), 0
-        for i in range(numCourses):
-            if in_d[i] == 0:
-                dq.append(i)
-        while dq:
-            node = dq.popleft()
-            # seen.add(node)
-            count += 1
-            for successor in graph[node]:
-                in_d[successor] -= 1
-                if in_d[successor] == 0:
-                    dq.append(successor)
-        # return len(seen) == numCourses
-        # return not sum(in_d) # not use count or in_d
-        return count == numCourses
-
-    # dfs, whether there is a cycle
-    def canFinish(self, numCourses: int,
-                  prerequisites: List[List[int]]) -> bool:
-        def hasCycle(v: int) -> bool:  # 0 default
-            if flags[v] == -1: return True  # is being processing
-            if flags[v] == 1: return False  # is processed
-            flags[v] = -1  # is being processing
-            for i in adj[v]:
-                if hasCycle(i): return True
-            flags[v] = 1  # process finished
-            return False
-
-        adj = [[] for _ in range(numCourses)]
-        flags = [0] * numCourses
-        for cur, pre in prerequisites:
-            adj[pre].append(cur)  # save successor
-        for i in range(numCourses):
-            if hasCycle(i): return False
-        return True
-
-
-# 208 - Implement Trie (Prefix Tree) - MEDIUM
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        s = l = r = 0
+        n = len(nums)
+        ans = float('inf')
+        while r < n:
+            s += nums[r]
+            while s >= target:
+                ans = min(ans, r - l + 1)
+                s -= nums[l]
+                l += 1
+            r += 1
+        return ans if ans != float('inf') else 0
 
 
 # 210 - Course Schedule II - MEDIUM

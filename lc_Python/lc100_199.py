@@ -248,7 +248,6 @@ class Solution:
     # dfs
     def solve(self, board: List[List[str]]) -> None:
         row, col = len(board), len(board[0])
-
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
         def dfs(i: int, j: int):

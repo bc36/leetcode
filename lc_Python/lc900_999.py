@@ -1,4 +1,4 @@
-import collections, heapq
+import collections, heapq, functools
 from typing import List
 
 
@@ -10,6 +10,113 @@ class TreeNode:
 
 
 # 911 - Online Election - MEDIUM
+
+# 913 - Cat and Mouse — HARD
+class Solution:
+    # 思路：
+    # 将该问题视为状态方程，状态公式[mouse,cat,turn]代表老鼠的位置，猫的位置，下一步轮到谁走
+    # 猫胜利的状态为[i,i,1]或[i,i,2]（i!=0），1代表老鼠走，2代表猫走
+    # 老鼠胜利的状态为[0,i,1]或[0,i,2]
+    # 用0代表未知状态，1代表老鼠赢，2代表猫赢
+    # 由最终的胜利状态，回推
+    # 假如当前父节点轮次是1（父节点轮次是2同样的道理）
+    # 父节点=1 if 子节点是1
+    # 或者
+    # 父节点=2 if 所有子节点是2
+    def catMouseGame(self, graph: List[List[int]]) -> int:
+        n = len(graph)
+        degrees = [[[0] * 2 for _ in range(n)] for _ in range(n)]  #(m,c,t)
+        for i in range(n):
+            for j in range(n):
+                if j == 0:
+                    continue
+                degrees[i][j][0] += len(graph[i])
+                degrees[i][j][1] += len(graph[j]) - (0 in graph[j])
+
+        dp = [[[0] * 2 for _ in range(n)] for _ in range(n)]  #(m,c,t)
+        queue = collections.deque()
+        for i in range(1, n):
+            states = [(i, i, 0), (i, i, 1), (0, i, 0), (0, i, 1)]
+            results = [2, 2, 1, 1]
+            for (m, c, t), rv in zip(states, results):
+                dp[m][c][t] = rv
+            queue.extend(states)
+
+        while queue:
+            m, c, t = queue.popleft()
+            rv = dp[m][c][t]
+            if t == 0:  # mouse
+                for pre in graph[c]:
+                    if pre == 0 or dp[m][pre][1] != 0:
+                        continue
+                    if rv == 2:
+                        dp[m][pre][1] = 2
+                        queue.append((m, pre, 1))
+                    else:
+                        degrees[m][pre][1] -= 1
+                        if degrees[m][pre][1] == 0:
+                            dp[m][pre][1] = 1
+                            queue.append((m, pre, 1))
+            else:
+                for pre in graph[m]:
+                    if dp[pre][c][0] != 0:
+                        continue
+                    if rv == 1:
+                        dp[pre][c][0] = 1
+                        queue.append((pre, c, 0))
+                    else:
+                        degrees[pre][c][0] -= 1
+                        if degrees[pre][c][0] == 0:
+                            dp[pre][c][0] = 2
+                            queue.append((pre, c, 0))
+
+        return dp[1][2][0]
+
+    def catMouseGame(self, graph: List[List[int]]) -> int:
+        n = len(graph)
+        # search(step,cat,mouse) 表示步数=step，猫到达位置cat，鼠到达位置mouse的情况下最终的胜负情况
+        @functools.lru_cache(None)
+        def search(mouse, cat, step):
+            # mouse到达洞最多需要n步(初始step=1) 说明mouse走n步还没达洞口 且cat也没抓住mouse
+            if step == 2 * (n):
+                return 0
+            # cat抓住mouse
+            if cat == mouse:
+                return 2
+            # mouse入洞
+            if mouse == 0:
+                return 1
+            # 奇数步：mouse走
+            if step % 2 == 0:
+                # 对mouse最优的策略: 先看是否能mouse赢 再看是否能平 如果都不行则cat赢
+                drawFlag = False
+                for nei in graph[mouse]:
+                    ans = search(nei, cat, step + 1)
+                    if ans == 1:
+                        return 1
+                    elif ans == 0:
+                        drawFlag = True
+                if drawFlag:
+                    return 0
+                return 2
+            else:
+                # 对cat最优的策略: 先看是否能cat赢 再看是否能平 如果都不行则mouse赢
+                drawFlag = False
+                for nei in graph[cat]:
+                    if nei == 0:
+                        continue
+                    ans = search(mouse, nei, step + 1)
+                    if ans == 2:
+                        return 2
+                    elif ans == 0:
+                        drawFlag = True
+                if drawFlag:
+                    return 0
+                return 1
+
+        return search(1, 2, 0)
+
+
 # 921 - Minimum Add to Make Parentheses Valid - MEDIUM
 class Solution:
     def minAddToMakeValid(self, s: str) -> int:
