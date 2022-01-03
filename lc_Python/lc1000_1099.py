@@ -1,4 +1,4 @@
-import collections, math, copy, bisect, heapq
+import collections, math, copy, bisect, heapq, datetime
 from typing import List
 
 
@@ -242,6 +242,31 @@ class Solution:
             if text[i - 2] == first and text[i - 1] == second:
                 ans.append(text[i])
         return ans
+
+
+# 1185 - Day of the Week - EASY
+class Solution:
+    def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
+        return datetime.date(year, month, day).strftime('%A')
+
+    # Zelle formula
+    days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ]
+
+    def dayOfTheWeek(self, d, m, y):
+        if m < 3:
+            m += 12
+            y -= 1
+        c, y = y // 100, y % 100
+        w = (c // 4 - 2 * c + y + y // 4 + 13 * (m + 1) // 5 + d - 1) % 7
+        return self.days[w]
 
 
 # 1091 - Shortest Path in Binary Matrix - MEDIUM
