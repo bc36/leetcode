@@ -24,6 +24,32 @@ class Solution:
         return sum(pos) - sum(neg) - 2 * tmp
 
 
+# 1009 - Complement of Base 10 Integer - EASY
+class Solution:
+    def bitwiseComplement(self, n: int) -> int:
+        ans = ''
+        while n:
+            ans += '0' if n & 1 else '1'
+            n >>= 1
+        return int(ans[::-1], 2) if ans else 1
+
+    def bitwiseComplement(self, n: int) -> int:
+        x = 1
+        while n > x:
+            x = x * 2 + 1
+        return x ^ n # XOR
+
+    def bitwiseComplement(self, n: int) -> int:
+        if not n: return 1
+        mask = n
+        mask |= mask >> 1
+        mask |= mask >> 2
+        mask |= mask >> 4
+        mask |= mask >> 8
+        mask |= mask >> 16
+        return n ^ mask
+
+
 # 1010 - Pairs of Songs With Total Durations Divisible by 60 - MEDIUM
 class Solution:
     def numPairsDivisibleBy60(self, time: List[int]) -> int:

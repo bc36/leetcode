@@ -184,6 +184,16 @@ class Solution:
 
 
 # 740 - Delete and Earn - MEDIUM
+class Solution:
+    def deleteAndEarn(self, nums: List[int]) -> int:
+        maxVal = max(nums)
+        v = [0] * (maxVal + 1)
+        for val in nums:
+            v[val] += val
+        pre, cur = 0, 0  # 198 - House Robber
+        for i in range(1, len(v)):
+            pre, cur = cur, max(pre + v[i], cur)
+        return cur
 
 
 # 746 - Min Cost Climbing Stairs - EASY
