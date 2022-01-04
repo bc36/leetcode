@@ -183,6 +183,9 @@ class Solution:
         return image
 
 
+# 740 - Delete and Earn - MEDIUM
+
+
 # 746 - Min Cost Climbing Stairs - EASY
 class Solution:
     def minCostClimbingStairs(self, cost: List[int]) -> int:

@@ -420,6 +420,41 @@ class Solution:
         return ''.join(map(str, ret[::-1]))
 
 
+# 45 - Jump Game II - MEDIUM
+class Solution:
+    # slow, O(n^2)
+    def jump(self, nums: List[int]) -> int:
+        if len(nums) == 1: return 0
+        n = len(nums)
+        dp = [0] + [float('inf')] * (n - 1)  # dp[i]: minimum step to 'i'
+        for i in range(n - 1):
+            if i + nums[i] >= n - 1:
+                return dp[i] + 1
+            for step in range(1, nums[i] + 1):
+                dp[i + step] = min(dp[i] + 1, dp[i + step])
+        return dp[-1]
+
+    # greedy, O(n), find the next reachable area
+    def jump(self, nums: List[int]) -> int:
+        if len(nums) == 1: return 0
+        l = r = times = 0
+        while r < len(nums) - 1:
+            times += 1
+            nxt = max(i + nums[i] for i in range(l, r + 1))
+            l, r = r + 1, nxt
+        return times
+
+    # greedy, O(n), when reach the boundry of reachable area, 'step++'
+    def jump(self, nums: List[int]) -> int:
+        cur = ans = nxt = 0
+        for i in range(len(nums) - 1):
+            nxt = max(nums[i] + i, nxt)
+            if i == cur:
+                cur = nxt
+                ans += 1
+        return ans
+
+
 # 46 - Permutations - MEDIUM
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
@@ -480,6 +515,28 @@ class Solution:
         return self.myPow(x * x, n / 2)
 
 
+# 53 - Maximum Subarray - EASY
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        dp = [nums[0]] + [0] * (len(nums) - 1)
+        for i in range(1, len(nums)):
+            dp[i] = max(dp[i - 1] + nums[i], nums[i])
+        return max(dp)
+
+    def maxSubArray(self, nums: List[int]) -> int:
+        for i in range(1, len(nums)):
+            nums[i] = nums[i] + max(nums[i - 1], 0)
+        return max(nums)
+
+    def maxSubArray(self, nums: List[int]) -> int:
+        pre, ans = 0, nums[0]
+        for i in range(len(nums)):
+            pre = max(pre + nums[i], nums[i])
+            if pre > ans:
+                ans = pre
+        return ans
+
+
 # 55. Jump Game - MEDIUM
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
@@ -498,23 +555,6 @@ class Solution:
                 if rightmost >= n - 1:
                     return True
         return False
-
-
-# 53 - Maximum Subarray - EASY
-class Solution:
-    def maxSubArray(self, nums: List[int]) -> int:
-        dp = [nums[0]] + [0] * (len(nums) - 1)
-        for i in range(1, len(nums)):
-            dp[i] = max(dp[i - 1] + nums[i], nums[i])
-        return max(dp)
-
-    def maxSubArray(self, nums: List[int]) -> int:
-        pre, ans = 0, nums[0]
-        for i in range(len(nums)):
-            pre = max(pre + nums[i], nums[i])
-            if pre > ans:
-                ans = pre
-        return ans
 
 
 # 56 - Merge Intervals - MEDIUM
