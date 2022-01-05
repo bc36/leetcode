@@ -1,6 +1,5 @@
-import bisect, collections, functools, random, operator, math, itertools
-from posix import X_OK
-from typing import AnyStr, Iterable, List, Optional
+import bisect, collections, functools, random, operator, math, itertools, os
+from typing import Iterable, List, Optional
 '''
 Function usually used
 
@@ -788,6 +787,9 @@ class Solution:
                 stack.append(p)
         return "/" + "/".join(stack)
 
+    def simplifyPath(self, path: str) -> str:
+        return os.path.realpath(path)
+
 
 # 74 - Search a 2D Matrix - MEDIUM
 class Solution:
@@ -1058,6 +1060,32 @@ class Solution:
                 cur = [item + [nums[i]] for item in ret]
             ret += cur
         return ret
+
+
+# 91 - Decode Ways - MEDIUM
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        if s[0] == '0': return 0
+        dp = [1] + [0] * len(s)
+        for i in range(1, len(s) + 1):
+            if s[i - 1] != '0':
+                dp[i] += dp[i - 1]
+            if i > 1 and s[i - 2] != '0' and int(s[i - 2:i]) < 27:
+                dp[i] += dp[i - 2]
+        return dp[-1]
+
+    @functools.lru_cache
+    def numDecodings(self, s: str) -> int:
+        if len(s) == 1:
+            return int(s[0] != '0')
+        if len(s) == 0:
+            return 1
+        one = two = 0
+        if s[-1] != '0':
+            one += self.numDecodings(s[:-1])
+        if s[-2] != '0' and int(s[-2:]) < 27:
+            two += self.numDecodings(s[:-2])
+        return one + two
 
 
 # 96 - Unique Binary Search Trees - MEDIUM
