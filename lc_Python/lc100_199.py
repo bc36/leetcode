@@ -289,6 +289,23 @@ class Solution:
         return
 
 
+# 131 - Palindrome Partitioning - MEDIUM
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        def dfs(path, s):
+            if len(s) == 0:
+                ans.append(list(path))
+                return
+            for i in range(1, len(s) + 1):
+                if s[:i] == s[:i][::-1]:
+                    dfs(path + [s[:i]], s[i:])
+            return
+
+        ans = []
+        dfs([], s)
+        return ans
+
+
 # 134 - Gas Station - MEDIUM
 class Solution:
     def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:

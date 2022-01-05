@@ -16,7 +16,6 @@ class SparseVector:
     def __init__(self, nums: List[int]):
         self.nums = {k: num for k, num in enumerate(nums) if num != 0}
 
-    # Return the dotProduct of two sparse vectors
     def dotProduct(self, vec: 'SparseVector') -> int:
         ans = 0
         for key, value in self.nums.items():
@@ -25,7 +24,27 @@ class SparseVector:
         return ans
 
 
-# Your SparseVector object will be instantiated and called as such:
-# v1 = SparseVector(nums1)
-# v2 = SparseVector(nums2)
-# ans = v1.dotProduct(v2)
+# 1576 - Replace All ?'s to Avoid Consecutive Repeating Characters - EASY
+class Solution:
+    def modifyString(self, s: str) -> str:
+        alpha = 'abcdefghijklmnopqrstuvwxyz'
+        s = ['#'] + list(s) + ['#']
+        for i in range(1, len(s) - 1):
+            if s[i] == '?':
+                new = i
+                while s[i - 1] == alpha[new % 26] or s[i + 1] == alpha[new %
+                                                                       26]:
+                    new += 1
+                s[i] = alpha[new % 26]
+        return ''.join(s[1:-1])
+
+    def modifyString(self, s: str) -> str:
+        alpha = 'abc'
+        s = ['#'] + list(s) + ['#']
+        for i in range(1, len(s) - 1):
+            if s[i] == '?':
+                for ch in alpha:
+                    if s[i - 1] != ch and s[i + 1] != ch:
+                        s[i] = ch
+                        break
+        return ''.join(s[1:-1])

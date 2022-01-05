@@ -161,6 +161,68 @@ class Solution:
         return ans
 
 
+# 17 - Letter Combinations of a Phone Number - MEDIUM
+class Solution:
+    dic = {
+        '2': 'abc',
+        '3': 'def',
+        '4': 'ghi',
+        '5': 'jkl',
+        '6': 'mno',
+        '7': 'pqrs',
+        '8': 'tuv',
+        '9': 'wxyz'
+    }
+
+    def letterCombinations(self, digits: str) -> List[str]:
+        a = []
+        for i in range(len(digits)):
+            a.append(digits[i])
+        if len(a) == 4:
+            return [
+                ''.join(i) for i in (itertools.product(self.dic[
+                    a[0]], self.dic[a[1]], self.dic[a[2]], self.dic[a[3]]))
+            ]
+        if len(a) == 3:
+            return [
+                ''.join(i) for i in (itertools.product(self.dic[
+                    a[0]], self.dic[a[1]], self.dic[a[2]]))
+            ]
+        if len(a) == 2:
+            return [
+                ''.join(i)
+                for i in (itertools.product(self.dic[a[0]], self.dic[a[1]]))
+            ]
+        if len(a) == 1:
+            return [''.join(i) for i in (itertools.product(self.dic[a[0]]))]
+        return []
+
+    def letterCombinations(self, digits: str) -> List[str]:
+        ans = [''] if digits else []
+        for d in digits:
+            cur = []
+            for ch in self.dic[d]:
+                for i in ans:
+                    cur.append(i + ch)
+            ans = cur
+        return ans
+
+    def letterCombinations(self, digits: str) -> List[str]:
+        def dfs(i: int, cur: str):
+            if i == len(digits):
+                ans.append(cur)
+                return
+            s = self.dic[digits[i]]
+            for ch in s:
+                dfs(i + 1, cur + ch)
+            return
+
+        if not digits: return []
+        ans = []
+        dfs(0, '')
+        return ans
+
+
 # 19 - Remove Nth Node From End of List - MEDIUM
 class Solution:
     def removeNthFromEnd(self, head: Optional[ListNode],
@@ -245,6 +307,36 @@ class Solution:
         else:
             l2.next = self.mergeTwoLists(l1, l2.next)
             return l2
+
+
+# 22 - Generate Parentheses - MEDIUM
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        def dfs(left: int, right: int, cur: str):
+            if left == right == n:
+                ans.append(cur)
+                return
+            if left < n:
+                dfs(left + 1, right, cur + '(')
+            if left > right:
+                dfs(left, right + 1, cur + ')')
+            return
+
+        ans = []
+        dfs(0, 0, '')
+        return ans
+
+    def generateParenthesis(self, n: int) -> List[str]:
+        ans, s = [], [("", 0, 0)]
+        while s:
+            cur, l, r = s.pop()
+            if l - r < 0 or l > n or r > n:
+                continue
+            if l == r == n:
+                ans.append(cur)
+            s.append((cur + "(", l + 1, r))
+            s.append((cur + ")", l, r + 1))
+        return ans
 
 
 # 31 - Next Permutation - MEDIUM
@@ -810,6 +902,55 @@ class Solution:
         ret = []
         dfs(nums, [], ret)
         return ret
+
+
+# 79 - Word Search - MEDIUM
+class Solution:
+    # slow, > 6s
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        def search(x, y, i):
+            if i == len(word) - 1: return True
+            for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if 0 <= nx < m and 0 <= ny < n and board[nx][ny] == word[i +
+                                                                         1]:
+                    board[x][y] = '#'
+                    if search(nx, ny, i + 1):
+                        return True
+                    board[x][y] = word[i]
+            return False
+
+        m, n = len(board), len(board[0])
+        for i in range(m):
+            for j in range(n):
+                if board[i][j] == word[0]:
+                    if search(i, j, 0):
+                        return True
+        return False
+
+    # fast, < 100ms
+    # TODO do not know how it works
+    def exist(self, board, word):
+        def backtracking(r, c, step=0):
+            if step == len(word): return True
+            # Q1: 'word[~step]'
+            if 0 <= r < m and 0 <= c < n and board[r][c] == word[~step] and (
+                    r, c) not in visited:
+                visited.add((r, c))
+                HashMap[(r, c,
+                         step)] += 1  # Q2: how it works to speed up, why?
+                for nr, nc in (r, c + 1), (r, c - 1), (r - 1, c), (r + 1, c):
+                    if HashMap[(nr, nc, step + 1)] < n:
+                        if backtracking(nr, nc, step + 1):
+                            return True
+                visited.remove((r, c))
+                return False
+
+        m, n = len(board), len(board[0])
+        visited, HashMap = set(), collections.defaultdict(int)
+        for i, j in itertools.product(range(m), range(n)):
+            if backtracking(i, j):
+                return True
+        return False
 
 
 # 82 - Remove Duplicates from Sorted List II - MEDIUM

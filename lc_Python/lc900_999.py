@@ -11,6 +11,7 @@ class TreeNode:
 
 # 911 - Online Election - MEDIUM
 
+
 # 913 - Cat and Mouse — HARD
 class Solution:
     # 思路：
@@ -115,6 +116,30 @@ class Solution:
                 return 1
 
         return search(1, 2, 0)
+
+
+# 918 - Maximum Sum Circular Subarray - MEDIUM
+class Solution:
+    def maxSubarraySumCircular(self, nums: List[int]) -> int:
+        dpx = dpn = 0  # mx = mi = 0 -> wrong
+        mx = mi = nums[0]  # help solve for all elements being negative
+        for i in range(len(nums)):
+            dpx = nums[i] + max(dpx, 0)
+            mx = max(mx, dpx)
+            dpn = nums[i] + min(dpn, 0)
+            mi = min(mi, dpn)
+        return max(sum(nums) - mi, mx) if mx > 0 else mx
+
+    # reducing the number of times 'max()' and 'min()' are used will reduce the runtime
+    def maxSubarraySumCircular(self, nums: List[int]) -> int:
+        dpx = dpn = 0
+        mx = mi = nums[0]
+        for n in nums:
+            dpx = n + dpx if dpx > 0 else n
+            if dpx > mx: mx = dpx
+            dpn = n + dpn if dpn < 0 else n
+            if dpn < mi: mi = dpn
+        return max(sum(nums) - mi, mx) if mx > 0 else mx
 
 
 # 921 - Minimum Add to Make Parentheses Valid - MEDIUM
