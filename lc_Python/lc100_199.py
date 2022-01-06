@@ -154,6 +154,23 @@ class Solution:
         return ans
 
 
+# 124 - Binary Tree Maximum Path Sum - HARD
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        def getMax(root: TreeNode) -> int:
+            # nonlocal ans
+            if not root:
+                return 0
+            l = max(0, getMax(root.left))
+            r = max(0, getMax(root.right))
+            self.ans = max(self.ans, root.val + l + r)
+            return root.val + max(l, r)
+
+        self.ans = float('-inf')
+        getMax(root)
+        return self.ans
+
+
 # 125 - Valid Palindrome - EASY
 class Solution:
     def isPalindrome(self, s: str) -> bool:
@@ -207,8 +224,8 @@ class Solution:
 
 
 # 129 - Sum Root to Leaf Numbers - MEDIUM
-# dfs
 class Solution:
+    # dfs
     def sumNumbers(self, root: TreeNode) -> int:
         def dfs(root: TreeNode, pre: int) -> int:
             if not root:
