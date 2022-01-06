@@ -1,4 +1,4 @@
-import collections
+import collections, itertools
 from typing import List
 
 
@@ -55,6 +55,19 @@ class Solution:
             nodes = nxt
             l += 1
         return True
+
+
+# 1614 - Maximum Nesting Depth of the Parentheses - EASY
+class Solution:
+    def maxDepth(self, s: str) -> int:
+        ans = left = 0
+        for ch in s:
+            if ch == '(':
+                left += 1
+                ans = max(ans, left)
+            elif ch == ')':
+                left -= 1
+        return ans
 
 
 # 1650 - Lowest Common Ancestor of a Binary Tree III - MEDIUM

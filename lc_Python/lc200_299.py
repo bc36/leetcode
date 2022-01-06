@@ -783,7 +783,7 @@ class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
         stack = [root]
-        parent = {root: None}
+        parent = {root: None}  # {child: father}
         # find p's and q's parents
         while p not in parent or q not in parent:
             node = stack.pop()

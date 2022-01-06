@@ -16,8 +16,8 @@ class ListNode:
 
 
 # 102 - Binary Tree Level Order Traversal - MEDIUM
-# bfs: breadth-first search
 class Solution:
+    # bfs: breadth-first search
     def levelOrder(self, root: TreeNode) -> List[List[int]]:
         ans, values = [], []
         nodeStack = collections.deque()
@@ -470,6 +470,7 @@ class LRUCache:
         return
 
 
+# OrderedDict
 class LRUCache:
     def __init__(self, capacity: int):
         self.capacity = capacity
@@ -488,6 +489,68 @@ class LRUCache:
         # # del is faster, pop() or popitem() used to get the return value
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
+
+
+# Double linked list + Hashmap
+class ListNode:
+    def __init__(self, key=0, value=0):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.dic = {}
+        self.head = ListNode()
+        self.tail = ListNode()
+        # head <-> tail
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def remove(self, node: ListNode):
+        #      hashmap[key]                               hashmap[key]
+        #           |                                          |
+        #           V              -->                         V
+        # prev <-> node <-> next         pre <-> next   ...   node
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def add(self, node: ListNode):
+        #                 hashmap[key]                 hashmap[key]
+        #                      |                            |
+        #                      V        -->                 V
+        # prev <-> tail  ...  node                prev <-> node <-> tail
+        node.prev = self.tail.prev
+        node.next = self.tail
+        self.tail.prev.next = node
+        self.tail.prev = node
+
+    def move_to_end(self, key: int):
+        node = self.dic[key]
+        self.remove(node)
+        self.add(node)
+
+    def get(self, key: int) -> int:
+        if key not in self.dic:
+            return -1
+        self.move_to_end(key)
+        node = self.dic[key]
+        return node.value
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.dic:
+            self.dic[key].value = value
+            self.move_to_end(key)
+        else:
+            if len(self.dic) == self.capacity:
+                self.dic.pop(self.head.next.key)
+                self.remove(self.head.next)
+            node = ListNode(key, value)
+            self.dic[key] = node
+            self.add(node)
 
 
 # 147 - Insertion Sort List - MEDIUM
