@@ -49,6 +49,32 @@ class Solution:
         return i == len(word) and j == len(abbr)
 
 
+# 413 - Arithmetic Slices - MEDIUM
+class Solution:
+    def numberOfArithmeticSlices(self, nums: List[int]) -> int:
+        dp = [0] * len(nums)
+        for i in range(1, len(nums) - 1):
+            if nums[i - 1] + nums[i + 1] == nums[i] * 2:
+                dp[i] = dp[i - 1] + 1
+        return sum(dp)
+
+    # (1,2,3)->1 (1,2,3,4)->3 (1,2,3,4,5)->6 (1,2,3,4,5,6)->10
+    # add a number to an Arithmetic Slices, each increment is added by 1
+    # so there are two ways of understanding:
+    # 1. the rule of equal variance series / 2. space optimized dp
+    def numberOfArithmeticSlices(self, nums: List[int]) -> int:
+        if len(nums) < 3:
+            return 0
+        ans = add = 0
+        for i in range(2, len(nums)):
+            if nums[i] - nums[i - 1] == nums[i - 1] - nums[i - 2]:
+                add += 1
+                ans += add
+            else:
+                add = 0
+        return ans
+
+
 # 419 - Battleships in a Board - MEDIUM
 class Solution:
     def countBattleships(self, board):
@@ -239,6 +265,7 @@ class Solution:
             ans = max(ans, dis)
         return ans
 
+
 # 476 - Number Complement - EASY
 class Solution:
     def findComplement(self, num: int) -> int:
@@ -250,14 +277,14 @@ class Solution:
         mask |= mask >> 16
         return num ^ mask
 
-
     def findComplement(self, num: int) -> int:
-        a = 1 # sum is -1
+        a = 1  # sum is -1
         while True:
             if num >= a:
                 a <<= 1
             else:
                 return a - num - 1
+
 
 # 495 - Teemo Attacking - EASY
 class Solution:

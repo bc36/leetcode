@@ -399,12 +399,12 @@ class Solution:
             mid = (l + r) // 2
             if nums[mid] == target:
                 return mid
-            if nums[0] <= nums[mid]: # left half in order
+            if nums[0] <= nums[mid]:  # left half in order
                 if nums[0] <= target < nums[mid]:
                     r = mid - 1
                 else:
                     l = mid + 1
-            else: # right half in order
+            else:  # right half in order
                 if nums[mid] <= target <= nums[-1]:
                     l = mid + 1
                 else:
@@ -587,6 +587,29 @@ class Solution:
         # return list(itertools.permutations(nums, len(nums)))
         # [[2, 3], [3, 2]]
         return list(map(list, itertools.permutations(nums, len(nums))))
+
+
+# 47 - Permutations II - MEDIUM
+class Solution:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        def backtrack(path: List[int], check):
+            if len(path) == len(nums):
+                ret.append(path)
+                return
+            for i in range(len(nums)):
+                if check[i] == 1: 
+                    continue
+                if i > 0 and nums[i] == nums[i - 1] and check[i - 1] == 0:
+                    continue
+                check[i] = 1
+                backtrack(path + [nums[i]], check)
+                check[i] = 0
+            return
+
+        ret, check = [], [0] * len(nums)
+        nums.sort()
+        backtrack([], check)
+        return ret
 
 
 # 50 - Pow(x, n) - MEDIUM

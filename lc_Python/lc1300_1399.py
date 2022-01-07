@@ -1,5 +1,12 @@
 import collections
-from typing import List
+from typing import List, Optional
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 1306 - Jump Game III - MEDIUM
@@ -33,6 +40,38 @@ class Solution:
                     seen.add(child)
                     dq.append(child)
         return False
+
+
+# 1325 - Delete Leaves With a Given Value - MEDIUM
+class Solution:
+    def removeLeafNodes(self, root: TreeNode, target: int) -> TreeNode:
+        def postorder(root):
+            if not root:
+                return None
+            if postorder(root.left) and root.left.val == target:
+                root.left = None
+            if postorder(root.right) and root.right.val == target:
+                root.right = None
+            if not root.left and not root.right:
+                return True
+            return False
+
+        postorder(root)
+        return None if root.val == target and root.right == root.left == None else root
+
+    def removeLeafNodes(self, root: TreeNode, target: int) -> TreeNode:
+        if root.left:
+            root.left = self.removeLeafNodes(root.left, target)
+        if root.right:
+            root.right = self.removeLeafNodes(root.right, target)
+        return None if root.left == root.right and root.val == target else root
+
+    def removeLeafNodes(self, root, target):
+        if root:
+            root.left = self.removeLeafNodes(root.left, target)
+            root.right = self.removeLeafNodes(root.right, target)
+            if root.val != target or root.left or root.right:
+                return root
 
 
 # 1345 - Jump Game IV - HARD

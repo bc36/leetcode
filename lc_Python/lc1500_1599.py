@@ -1,4 +1,12 @@
 from typing import List
+import collections
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 1518 - Water Bottles - EASY
@@ -9,6 +17,32 @@ class Solution:
             ans += numBottles
             numBottles, empty = divmod(empty + numBottles, numExchange)
         return ans
+
+
+###############
+# 2022.1.6 VO #
+###############
+# 1530 - Number of Good Leaf Nodes Pairs - MEDIUM
+class Solution:
+    # postorder
+    def countPairs(self, root: TreeNode, distance: int) -> int:
+        def dfs(root: TreeNode) -> List[int]:
+            if not root:
+                return []
+            if root.left is None and root.right is None:
+                return [1]
+            left = dfs(root.left)
+            right = dfs(root.right)
+            for l in left:
+                for r in right:
+                    if l + r <= distance:
+                        self.ans += 1
+            return [x + 1 for x in left + right]
+            return [x + 1 for x in left + right if x + 1 < distance]  # prune
+
+        self.ans = 0
+        dfs(root)
+        return self.ans
 
 
 # 1570 - Dot Product of Two Sparse Vectors - MEDIUM

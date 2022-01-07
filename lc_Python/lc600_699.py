@@ -218,6 +218,44 @@ class Solution:
         return -1
 
 
+# 687 - Longest Univalue Path - MEDIUM
+class Solution:
+    def longestUnivaluePath(self, root: TreeNode) -> int:
+        def postorder(root: TreeNode):  # return root.val and the longest path
+            if not root:
+                return (-1001, 0)
+            left, ll = postorder(root.left)
+            right, rl = postorder(root.right)
+            l = 0
+            if root.val == left == right:
+                # two subtree may consist a longer path
+                self.ans = max(self.ans, ll + rl + 2)
+                l += max(ll, rl) + 1
+            elif left == root.val:
+                l += ll + 1
+            elif right == root.val:
+                l += rl + 1
+            self.ans = max(self.ans, l)
+            return (root.val, l)
+
+        self.ans = 0
+        postorder(root)
+        return self.ans
+
+    def longestUnivaluePath(self, root: TreeNode) -> int:
+        def postorder(node: TreeNode, parent_val: int) -> int:
+            if not node:
+                return 0
+            left = postorder(node.left, node.val)
+            right = postorder(node.right, node.val)
+            self.longest = max(self.longest, left + right)
+            return 1 + max(left, right) if node.val == parent_val else 0
+
+        self.longest = 0
+        postorder(root, None)
+        return self.longest
+
+
 # 689 - Maximum Sum of 3 Non-Overlapping Subarrays - HARD
 class Solution:
     def maxSumOfThreeSubarrays(self, nums: List[int], k: int) -> List[int]:

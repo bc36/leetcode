@@ -236,8 +236,6 @@ class Solution:
 
     # bfs
     def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
-        conn = collections.defaultdict(list)  # undirected graph
-
         def connect(parent: TreeNode, child: TreeNode):
             if parent and child:
                 conn[parent.val].append(child.val)
@@ -247,6 +245,7 @@ class Solution:
             if child.right:
                 connect(child, child.right)
 
+        conn = collections.defaultdict(list)  # undirected graph
         connect(None, root)
         bfs = [target.val]
         seen = set(bfs)
