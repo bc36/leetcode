@@ -958,7 +958,8 @@ class Solution:
             '''
             precedence of '>>' is lower than '+'
             '''
-            mid = ((right - left) >> 1) + left
+            mid = ((right - left) >> 1) + left # wrong way
+            # mid = left + (right - left) >> 1 # right way
             if isBadVersion(mid):
                 right = mid
             else:
