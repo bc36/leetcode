@@ -129,6 +129,21 @@ class Solution:
             res += [map(lambda x, y: x + y, res[-1] + [0], [0] + res[-1])]
         return res[:numRows]
 
+# 119 - Pascal's Triangle II - EASY
+class Solution(object):
+    def getRow(self, rowIndex: int) -> List[int]:
+        row = [1]
+        for _ in range(rowIndex):
+            row = [x + y for x, y in zip([0] + row, row + [0])]
+        return row
+
+    def getRow(self, rowIndex: int) -> List[int]:
+        row = [1]
+        for _ in range(rowIndex):
+            row = [1] + [row[j] + row[j + 1]
+                         for j in range(len(row) - 1)] + [1]
+        return row
+
 
 # 120 - Triangle - MEDIUM
 class Solution:

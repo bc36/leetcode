@@ -70,6 +70,18 @@ class Solution:
         return ans
 
 
+# 1629 - Slowest Key - EASY
+class Solution:
+    def slowestKey(self, rT: List[int], keys: str) -> str:
+        ans, time = keys[0], rT[0]
+        for i in range(len(rT) - 1):
+            if rT[i + 1] - rT[i] > time or rT[i + 1] - rT[i] == time and keys[
+                    i + 1] > ans:
+                time = rT[i + 1] - rT[i]
+                ans = keys[i + 1]
+        return ans
+
+
 # 1650 - Lowest Common Ancestor of a Binary Tree III - MEDIUM
 class Solution:
     def lowestCommonAncestor(self, p: 'Node', q: 'Node') -> 'Node':

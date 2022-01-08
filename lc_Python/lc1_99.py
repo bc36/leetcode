@@ -497,6 +497,27 @@ class Solution:
         return
 
 
+# 40 - Combination Sum II - MEDIUM
+class Solution:
+    def combinationSum2(self, candidates: List[int],
+                        target: int) -> List[List[int]]:
+        def backtrack(begin: int, path: List[int], target: int):
+            if target == 0:
+                ans.append(path)
+                return
+            for i in range(begin, len(candidates)):
+                if candidates[i] > target: break
+                if i > begin and candidates[i - 1] == candidates[i]: continue
+                backtrack(i + 1, path + [candidates[i]],
+                          target - candidates[i])
+            return
+
+        ans = []
+        candidates.sort()
+        backtrack(0, [], target)
+        return ans
+
+
 # 42 - Trapping Rain Water - HARD
 class Solution:
     def trap(self, height: List[int]) -> int:
@@ -597,7 +618,7 @@ class Solution:
                 ret.append(path)
                 return
             for i in range(len(nums)):
-                if check[i] == 1: 
+                if check[i] == 1:
                     continue
                 if i > 0 and nums[i] == nums[i - 1] and check[i - 1] == 0:
                     continue
@@ -753,6 +774,43 @@ class Solution:
     # m - 1 down && n - 1 right -> m + n - 1 times movement
     def uniquePaths(self, m: int, n: int) -> int:
         return math.comb(m + n - 2, n - 1)
+
+
+# 63 - Unique Paths II - MEDIUM
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        if obstacleGrid[0][0] == 1: return 0
+        m, n = len(obstacleGrid), len(obstacleGrid[0])
+        dp = [[0 for _ in range(n)] for _ in range(m)]
+        for i in range(m):
+            if obstacleGrid[i][0] == 1: break
+            dp[i][0] = 1
+        for j in range(n):
+            if obstacleGrid[0][j] == 1: break
+            dp[0][j] = 1
+        for i in range(1, m):
+            for j in range(1, n):
+                if obstacleGrid[i][j] != 1:
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+        return dp[-1][-1]
+
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        m, n = len(obstacleGrid), len(obstacleGrid[0])
+        firstObs = n
+        for i in range(n):
+            if obstacleGrid[0][i] == 1:
+                firstObs = i
+                break
+        dp = [1] * firstObs + [0] * (n - firstObs)
+        for i in range(1, m):
+            if obstacleGrid[i][0] == 1:
+                dp[0] = 0
+            for j in range(1, n):
+                if obstacleGrid[i][j] != 1:
+                    dp[j] += dp[j - 1]
+                else:
+                    dp[j] = 0
+        return dp[-1]
 
 
 # 70 - Climbing Stairs - EASY
