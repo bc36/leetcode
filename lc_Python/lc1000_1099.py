@@ -37,7 +37,7 @@ class Solution:
         x = 1
         while n > x:
             x = x * 2 + 1
-        return x ^ n # XOR
+        return x ^ n  # XOR
 
     def bitwiseComplement(self, n: int) -> int:
         if not n: return 1
@@ -232,6 +232,17 @@ class Solution:
 
         dfs(row, col)
         return grid
+
+
+# 1041 - Robot Bounded In Circle - MEDIUM
+class Solution:
+    def isRobotBounded(self, instructions: str) -> bool:
+        x, y, dx, dy = 0, 0, 0, 1
+        for i in instructions:
+            if i == 'R': dx, dy = dy, -dx
+            if i == 'L': dx, dy = -dy, dx
+            if i == 'G': x, y = x + dx, y + dy
+        return (x, y) == (0, 0) or not (dx == 0 and dy > 0)
 
 
 # 1047 - Remove All Adjacent Duplicates In String - EASY

@@ -1,9 +1,10 @@
 from typing import List
-import collections, functools
-
-# 274
+import collections, functools, itertools, heapq, math
 
 
+########################
+# 274 / 3道 / 2022.1.1 #
+########################
 # 5969
 # https://leetcode-cn.com/problems/destroying-asteroids/
 # https://leetcode-cn.com/contest/weekly-contest-274/problems/destroying-asteroids/
@@ -280,3 +281,134 @@ class Solution:
                 counter += 1
                 dfs2(i, i)
         return res
+
+
+########################
+# 275 / 1道 / 2022.1.8 #
+########################
+# https://leetcode-cn.com/problems/minimum-swaps-to-group-all-1s-together-ii/
+# https://leetcode.com/problems/minimum-swaps-to-group-all-1s-together-ii/
+# 5977. 最少交换次数来组合所有的 1 II
+class Solution:
+    # 滑动窗口, '1'的总数的连续段滑动, 找包含最多'1'的段
+    def minSwaps(self, nums: List[int]) -> int:
+        ones, n = nums.count(1), len(nums)
+        x, onesInWindow = 0, 0
+        for i in range(n * 2):
+            if i >= ones and nums[i % n - ones]:
+                x -= 1
+            if nums[i % n] == 1:
+                x += 1
+            onesInWindow = max(x, onesInWindow)
+        return ones - onesInWindow
+
+    # 找包含最少'0'的段
+    def minSwaps(self, nums: List[int]) -> int:
+        a = sum(nums)  # '1'的个数
+        t = sum(nums[:a])  # 窗口大小
+        r = a - t
+        for i in range(len(nums)):
+            t -= nums[i]
+            i = (i + a) % len(nums)
+            t += nums[i]
+            r = min(r, a - t)
+        return r
+
+    # 前缀和
+    def minSwaps(self, nums: List[int]) -> int:
+        cnt = nums.count(1)
+        n = len(nums)
+        t = [0]
+        res = 0
+        for i in range(n):
+            t.append(t[-1] + nums[i])
+        for i in range(cnt, n + 1):
+            d = t[i] - t[i - cnt]
+            res = max(res, d)
+        for i in range(cnt):
+            d = t[i] + t[n] - t[n - (cnt - i)]
+            res = max(res, d)
+        return cnt - res
+
+
+# https://leetcode-cn.com/problems/count-words-obtained-after-adding-a-letter/
+# https://leetcode.com/problems/count-words-obtained-after-adding-a-letter/
+# 5978. 统计追加字母可以获得的单词数
+class Solution:
+    # 暴力, 字符排序后加入set, 不要直接append到list, 数量太大超时
+    def wordCount(self, sw: List[str], tw: List[str]) -> int:
+        dic = collections.defaultdict(set)
+        for i in range(len(sw)):
+            dic[len(sw[i])].add(''.join(sorted(sw[i])))
+        ans = 0
+        for i in range(len(tw)):
+            s = ''.join(sorted(tw[i]))
+            for j in range(len(s)):
+                if s[:j] + s[j + 1:] in dic[len(s) - 1]:
+                    ans += 1
+                    break
+        return ans
+
+    # frozenset
+    def wordCount(self, startWords: List[str], targetWords: List[str]) -> int:
+        ss = set(frozenset(w) for w in startWords)
+        res = 0
+        for w in targetWords:
+            s = set(w)
+            for c in w:
+                if s.difference(c) in ss:
+                    res += 1
+                    break
+        return res
+
+    # 用二进制第i位数表示第i个小写字母, 每个单词算出来一个固定的数字
+    def wordCount(self, startWords: List[str], targetWords: List[str]) -> int:
+        s = set()
+
+        def word2int(s):
+            n = 0
+            for ch in s:
+                n |= 1 << (ord(ch) - ord('a'))
+            return n
+
+        for i in startWords:
+            s.add(word2int(i))
+        ans = 0
+        for w in targetWords:
+            n = word2int(w)
+            for ch in w:
+                if n ^ word2int(ch) in s:  # XOR 异或去掉这个字符
+                    ans += 1
+                    break
+        return ans
+
+
+# https://leetcode-cn.com/problems/earliest-possible-day-of-full-bloom/
+# https://leetcode.com/problems/earliest-possible-day-of-full-bloom/
+# 5979. 全部开花的最早一天
+# 长的慢的先种, 播种的时间不能避免, 直接加
+class Solution:
+    def earliestFullBloom(self, plantTime: List[int],
+                          growTime: List[int]) -> int:
+        data = list(zip(plantTime, growTime))
+        data.sort(key=lambda x: -x[1])  # sort by grow time in descending order
+        # data.sort(key=lambda x: x[1], reverse=True)
+        ans = 0
+        allPlantTime = 0
+        for plant, grow in data:
+            allPlantTime += plant
+            ans = max(ans, allPlantTime + grow)
+        return ans
+
+    def earliestFullBloom(self, plantTime: List[int],
+                          growTime: List[int]) -> int:
+        heap = []
+        for i in range(0, len(plantTime)):
+            heapq.heappush(heap, (-growTime[i], plantTime[i]))
+        ans = 0
+        cur_time = 0
+        while heap:
+            g, p = heapq.heappop(heap)
+            cur_time += p
+            ans = max(ans, cur_time - g)
+        return ans

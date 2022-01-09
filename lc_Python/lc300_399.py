@@ -1,4 +1,3 @@
-from types import new_class
 from typing import List, Optional
 import collections, math, functools
 
@@ -16,10 +15,60 @@ class ListNode:
         self.next = next
 
 
+# 300 - Longest Increasing Subsequence - MEDIUM
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        return
+
+
 # 301 - Remove Invalid Parentheses - HARD
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
         return
+
+
+# 306 - Additive Number - MEDIUM
+class Solution:
+    def isAdditiveNumber(self, num: str) -> bool:
+        for i in range(1, len(num)):
+            for j in range(i + 1, len(num)):
+                first, second, remaining = num[:i], num[i:j], num[j:]
+                if (first.startswith('0')
+                        and first != '0') or (second.startswith('0')
+                                              and second != '0'):
+                    continue
+                while remaining:
+                    third = str(int(first) + int(second))
+                    if not remaining.startswith(third):
+                        break
+                    first = second
+                    second = third
+                    remaining = remaining[len(third):]
+                if not remaining:
+                    return True
+        return False
+
+    def isAdditiveNumber(self, num: str) -> bool:
+        def check(i, j):
+            a = num[:i + 1]
+            b = num[i + 1:j + 1]
+            if (a.startswith('0') and a != '0') or (b.startswith('0')
+                                                    and b != '0'):
+                return False
+            c = str(int(a) + int(b))
+            temp = a + b + c
+            while len(temp) <= len(num):
+                if num == temp:
+                    return True
+                b, c = c, str(int(b) + int(c))
+                temp += c
+            return False
+
+        for j in range(1, len(num) - 1):
+            for i in range(j):
+                if check(i, j):
+                    return True
+        return False
 
 
 # 310 - Minimum Height Trees - MEDIUM
