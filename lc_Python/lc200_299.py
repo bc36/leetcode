@@ -34,13 +34,13 @@ class Solution:
                     dfs(i, j, index)
             return
 
-        index = 2
+        count = 0
         for x in range(row):
             for y in range(col):
                 if grid[x][y] == "1":
-                    dfs(x, y, index)
-                    index += 1
-        return index - 2
+                    dfs(x, y, count)
+                    count += 1
+        return count
 
     def numIslands(self, grid: List[List[str]]) -> int:
         m, n = len(grid), len(grid[0])
@@ -958,7 +958,7 @@ class Solution:
             '''
             precedence of '>>' is lower than '+'
             '''
-            mid = ((right - left) >> 1) + left # wrong way
+            mid = ((right - left) >> 1) + left  # wrong way
             # mid = left + (right - left) >> 1 # right way
             if isBadVersion(mid):
                 right = mid

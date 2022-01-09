@@ -156,8 +156,8 @@ class Solution:
 
 
 # 520 - Detect Capital - EASY
-# brutal-force
 class Solution:
+    # brutal-force
     def detectCapitalUse(self, word: str) -> bool:
         if ord(word[0]) >= 97 and ord(word[0]) <= 122:
             for ch in word:
@@ -183,11 +183,11 @@ class Solution:
 
 
 # 523 - Continuous Subarray Sum - MEDIUM
-# 'cur' calculate the prefix sum remainder of input array 'nums'
-# 'seen' will record the first occurrence of the remainder.
-# If we have seen the same remainder before,
-# it means the subarray sum is a multiple of k
 class Solution:
+    # 'cur' calculate the prefix sum remainder of input array 'nums'
+    # 'seen' will record the first occurrence of the remainder.
+    # If we have seen the same remainder before,
+    # it means the subarray sum is a multiple of k
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
         seen, cur = {0: -1}, 0
         for i, num in enumerate(nums):
