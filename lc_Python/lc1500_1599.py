@@ -45,6 +45,60 @@ class Solution:
         return self.ans
 
 
+# 1567 - Maximum Length of Subarray With Positive Product - MEDIUM
+class Solution:
+    # dp
+    def getMaxLen(self, nums: List[int]) -> int:
+        n = len(nums)
+        pos, neg = [0] * n, [0] * n
+        if nums[0] > 0: pos[0] = 1
+        if nums[0] < 0: neg[0] = 1
+        ans = pos[0]
+        for i in range(1, n):
+            if nums[i] > 0:
+                pos[i] = 1 + pos[i - 1]
+                neg[i] = 1 + neg[i - 1] if neg[i - 1] > 0 else 0
+            elif nums[i] < 0:
+                pos[i] = 1 + neg[i - 1] if neg[i - 1] > 0 else 0
+                neg[i] = 1 + pos[i - 1]
+            ans = max(ans, pos[i])
+        return ans
+
+    def getMaxLen(self, nums: List[int]) -> int:
+        n = len(nums)
+        pos, neg = 0, 0
+        if nums[0] > 0: pos = 1
+        if nums[0] < 0: neg = 1
+        ans = pos
+        for i in range(1, n):
+            if nums[i] > 0:
+                pos = 1 + pos
+                neg = 1 + neg if neg > 0 else 0
+            elif nums[i] < 0:
+                pos, neg = 1 + neg if neg > 0 else 0, 1 + pos
+                # neg = 1 + pos
+            else:
+                pos = neg = 0
+            ans = max(ans, pos)
+        return ans
+
+    # sliding window
+    def getMaxLen(self, nums: List[int]) -> int:
+        nums = [0] + nums + [0]
+        last_zero, ans, negs = 0, 0, []  # negative number postion
+        for i in range(1, len(nums)):
+            if nums[i] == 0:
+                if len(negs) % 2 == 0:
+                    ans = max(ans, i - last_zero - 1)
+                else:
+                    ans = max(ans, i - negs[0] - 1, negs[-1] - last_zero - 1)
+                last_zero = i
+                negs = []
+            elif nums[i] < 0:
+                negs.append(i)
+        return ans
+
+
 # 1570 - Dot Product of Two Sparse Vectors - MEDIUM
 class SparseVector:
     def __init__(self, nums: List[int]):

@@ -234,6 +234,68 @@ class Solution:
         return grid
 
 
+# 1036 - Escape a Large Maze - HARD
+class Solution:
+    # bfs: determine if the start and end points are surrounded
+    #      since the amount of data is large
+    def isEscapePossible(self, blocked: List[List[int]], source: List[int],
+                         target: List[int]) -> bool:
+        self.blocked_set = set([(r, c) for r, c in blocked])
+        bn = len(self.blocked_set)
+        if bn <= 1: return True
+        self.maxblock = bn * (bn - 1) // 2
+        return self.bfs(source, target) and self.bfs(target, source)
+
+    def bfs(self, s: List[int], t: List[int]) -> bool:
+        row, col = 10**6, 10**6
+        visited = set()
+        sr, sc = s[0], s[1]
+        tr, tc = t[0], t[1]
+
+        dq = collections.deque([(sr, sc)])
+        visited.add((sr, sc))
+        while dq:
+            if len(visited) > self.maxblock:
+                return True
+            for _ in range(len(dq)):
+                r, c = dq.popleft()
+                if r == tr and c == tc:
+                    return True
+                for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):
+                    if 0 <= nr < row and 0 <= nc < col and (
+                        (nr, nc) not in self.blocked_set) and ((nr, nc)
+                                                               not in visited):
+                        dq.append((nr, nc))
+                        visited.add((nr, nc))
+        return False
+
+    def isEscapePossible(self, blocked: List[List[int]], source: List[int],
+                         target: List[int]) -> bool:
+        blocked = {tuple(p) for p in blocked}
+        # > 400ms
+        # blocked_set = set([(r, c) for r, c in blocked])
+        # size = len(blocked_set) * (len(blocked_set) - 1) // 2
+        # > 800 ms
+        size = len(blocked) * (len(blocked) - 1) // 2
+
+        def bfs(source: List[int], target: List[int]) -> bool:
+            bfs, seen = [source], {tuple(source)}
+            for x0, y0 in bfs:
+                for i, j in [[0, 1], [1, 0], [-1, 0], [0, -1]]:
+                    x, y = x0 + i, y0 + j
+                    if 0 <= x < 10**6 and 0 <= y < 10**6 and (
+                            x, y) not in seen and (x, y) not in blocked:
+                        if [x, y] == target: return True
+                        bfs.append([x, y])
+                        seen.add((x, y))
+                # > 2000ms
+                # if len(bfs) == 20000: return True
+                if len(bfs) > size: return True
+            return False
+
+        return bfs(source, target) and bfs(target, source)
+
+
 # 1041 - Robot Bounded In Circle - MEDIUM
 class Solution:
     def isRobotBounded(self, instructions: str) -> bool:

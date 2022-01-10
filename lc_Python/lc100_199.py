@@ -129,6 +129,7 @@ class Solution:
             res += [map(lambda x, y: x + y, res[-1] + [0], [0] + res[-1])]
         return res[:numRows]
 
+
 # 119 - Pascal's Triangle II - EASY
 class Solution(object):
     def getRow(self, rowIndex: int) -> List[int]:
@@ -594,24 +595,33 @@ class Solution:
 # 152 - Maximum Product Subarray - MEDIUM
 class Solution:
     def maxProduct(self, nums: List[int]) -> int:
-        maxF, minF, ans = nums[0], nums[0], nums[0]
-        length = len(nums)
-        for i in range(1, length):
+        maxF = minF = ans = nums[0]
+        for i in range(1, len(nums)):
             maxF, minF = max(maxF * nums[i], nums[i],
-                             minF * nums[i]), min(minF * nums[i], nums[i],
-                                                  maxF * nums[i])
+                             minF * nums[i]), min(maxF * nums[i], nums[i],
+                                                  minF * nums[i])
             # mx, mn = maxF, minF
             # maxF = max(mx * nums[i], nums[i], mn * nums[i])
-            # minF = min(mn * nums[i], nums[i], mx * nums[i])
+            # minF = min(mx * nums[i], nums[i], mn * nums[i])
             ans = max(maxF, ans)
         return ans
 
+    # TODO https://leetcode.com/problems/maximum-product-subarray/discuss/183483/JavaC%2B%2BPython-it-can-be-more-simple
     def maxProduct(self, nums: List[int]) -> int:
         revnums = nums[::-1]
         for i in range(1, len(nums)):
             nums[i] *= nums[i - 1] or 1
             revnums[i] *= revnums[i - 1] or 1
         return max(nums + revnums)
+
+    # Kadane
+    def maxProduct(self, nums: List[int]) -> int:
+        prefix, suffix, ans = 0, 0, float('-inf')
+        for i in range(len(nums)):
+            prefix = (prefix or 1) * nums[i]
+            suffix = (suffix or 1) * nums[~i]
+            ans = max(ans, prefix, suffix)
+        return ans
 
 
 # 153 - Find Minimum in Rotated Sorted Array - MEDIUM

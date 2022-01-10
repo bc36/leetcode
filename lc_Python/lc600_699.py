@@ -1,4 +1,4 @@
-import itertools
+import itertools, bisect, heapq, collections, math, functools
 from typing import List
 
 
@@ -37,6 +37,44 @@ class Solution:
             root1.left = self.mergeTrees(root1.left, root2.left)
             root1.right = self.mergeTrees(root1.right, root2.right)
         return root1 or root2
+
+
+# 673 - Number of Longest Increasing Subsequence - MEDIUM
+class Solution:
+    # O(n^2)
+    def findNumberOfLIS(self, nums: List[int]) -> int:
+        dp = [1] * len(nums)
+        cnt = [1] * len(nums)
+        for i in range(len(nums)):
+            for j in range(i):
+                if nums[j] < nums[i]:
+                    if dp[j] + 1 > dp[i]:
+                        dp[i] = dp[j] + 1
+                        cnt[i] = cnt[j]
+                    elif dp[j] + 1 == dp[i]:
+                        cnt[i] += cnt[j]
+        ans = 0
+        for i in range(len(nums)):
+            if dp[i] == max(dp):
+                ans += cnt[i]
+        return ans
+
+    # O(nlogn)
+    def findNumberOfLIS(self, nums: List[int]) -> int:
+        dp = []
+        cnt = collections.defaultdict(list)
+        for num in nums:
+            idx = bisect.bisect_left(dp, num)
+            if idx == len(dp):
+                dp.append(num)
+            else:
+                dp[idx] = num
+            total = 0
+            for count, last in cnt[idx]:
+                if last < num:
+                    total += count
+            cnt[idx + 1].append((max(1, total), num))
+        return sum([count for count, _ in cnt[len(dp)]])
 
 
 # 670 - Maximum Swap - MEDIUM

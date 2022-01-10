@@ -165,6 +165,29 @@ class Solution:
         return left + right
 
 
+# 931 - Minimum Falling Path Sum - MEDIUM
+class Solution:
+    def minFallingPathSum(self, matrix: List[List[int]]) -> int:
+        n = len(matrix)
+        dp = [[i for i in matrix[0]]] + [[0] * n for _ in range(n - 1)]
+        for i in range(1, n):
+            dp[i][0] = min(dp[i - 1][0], dp[i - 1][1]) + matrix[i][0]
+            for j in range(1, n - 1):
+                dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j],
+                               dp[i - 1][j + 1]) + matrix[i][j]
+            dp[i][-1] = min(dp[i - 1][-1], dp[i - 1][-2]) + matrix[i][-1]
+        return min(dp[-1])
+
+    def minFallingPathSum(self, matrix: List[List[int]]) -> int:
+        n = len(matrix)
+        dp = [[float('inf')] + matrix[i] + [float('inf')] for i in range(n)]
+        for i in range(1, n):
+            for j in range(1, n + 1):
+                dp[i][j] = dp[i][j] + min(dp[i - 1][j - 1], dp[i - 1][j],
+                                          dp[i - 1][j + 1])
+        return min(dp[-1])
+
+
 # 935 - Knight Dialer - MEDIUM
 # 0         -> 4 6
 # 1 3 7 9   -> 2 8 / 4 6
@@ -199,10 +222,8 @@ class Solution:
 # 938 - Range Sum of BST - EASY
 # dfs
 class Solution:
+    # preorder
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
-        ans = []
-
-        # preorder
         def dfs(root: TreeNode, ans: List[int]):
             if not root:
                 return
@@ -216,11 +237,12 @@ class Solution:
                 dfs(root.right, ans)
             return
 
+        ans = []
         dfs(root, ans)
         return sum(ans)
 
+    # preorder
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
-        # preorder
         def dfs(root: TreeNode):
             if not root:
                 return 0
