@@ -1,5 +1,5 @@
 from typing import List, Optional
-import collections, math, functools
+import collections, math, functools, bisect
 
 
 class TreeNode:
@@ -18,7 +18,40 @@ class ListNode:
 # 300 - Longest Increasing Subsequence - MEDIUM
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
-        return
+        dp = [1] * len(nums)
+        for i in range(len(nums)):
+            for j in range(i):
+                if nums[i] > nums[j] and dp[i] < dp[j] + 1:
+                    dp[i] = dp[j] + 1
+        return max(dp)
+
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        dp = []
+        for num in nums:
+            idx = bisect.bisect_left(dp, num)
+            if idx == len(dp):
+                dp.append(num)
+            else:
+                dp[idx] = num
+        return len(dp)
+
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        dp, ans = [1] * len(nums), 0
+        for num in nums:
+            lo, hi = 0, ans
+            while lo < hi:
+                mid = lo + hi >> 1
+                if dp[mid] < num:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            if lo == len(dp):
+                dp.append(num)
+            else:
+                dp[lo] = num
+            if lo == ans:
+                ans += 1
+        return ans
 
 
 # 301 - Remove Invalid Parentheses - HARD
@@ -666,6 +699,19 @@ class Solution(object):
             step *= 2
             n //= 2
         return ans
+
+
+# 392 - Is Subsequence - EASY
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool:
+        i = j = 0
+        while i < len(s) and j < len(t):
+            if s[i] == t[j]:
+                i += 1
+                j += 1
+            else:
+                j += 1
+        return i == len(s)
 
 
 # 394 - Decode String - MEDIUM

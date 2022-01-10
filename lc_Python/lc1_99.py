@@ -833,6 +833,21 @@ class Solution:
         return dp[-1]
 
 
+# 67 - Add Binary - EASY
+class Solution:
+    def addBinary(self, a: str, b: str) -> str:
+        ans, num = '', (int(a, 2) + int(b, 2))
+        while num:
+            if num & 1: ans += '1'
+            else: ans += '0'
+            num >>= 1
+        return ans[::-1] if ans else '0'
+
+    def addBinary(self, a: str, b: str) -> str:
+        x, y = int(a, 2), int(b, 2)
+        return bin(x + y)[2:]
+
+
 # 70 - Climbing Stairs - EASY
 class Solution:
     # dp
