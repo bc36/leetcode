@@ -432,6 +432,29 @@ class Solution:
         return ans
 
 
+# 141 - Linked List Cycle - EASY
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        slow, fast = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                return True
+        return False
+
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        try:
+            slow = head
+            fast = head.next
+            while slow is not fast:
+                slow = slow.next
+                fast = fast.next.next
+            return True
+        except:
+            return False
+
+
 # 143 - Reorder List - MEDIUM
 class Solution:
     def reorderList(self, head: Optional[ListNode]) -> None:

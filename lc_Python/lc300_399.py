@@ -359,6 +359,21 @@ class Solution:
         return head
 
 
+# 334 - Increasing Triplet Subsequence - MEDIUM
+class Solution:
+    def increasingTriplet(self, nums: List[int]) -> bool:
+        if len(nums) < 3: return False
+        first, second = float('inf'), float('inf')
+        for n in nums:
+            if n <= first:
+                first = n
+            elif first < n <= second:
+                second = n
+            elif n > second:
+                return True
+        return False
+
+
 # 337 - House Robber III - MEDIUM
 # recursive
 class Solution:

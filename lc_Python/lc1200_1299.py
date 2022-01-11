@@ -65,10 +65,10 @@ class Solution:
 
 
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
-# left must less than right
-# make the invalid parentheses as special character "*"
-# remove the extra "(" and "*"
 class Solution:
+    # left must less than right
+    # make the invalid parentheses as special character "*"
+    # remove the extra "(" and "*"
     def minRemoveToMakeValid(self, s: str) -> str:
         s = list(s)
         left = 0
@@ -93,9 +93,7 @@ class Solution:
             i -= 1
         return "".join(s)
 
-
-# better
-class Solution:
+    # better
     def minRemoveToMakeValid(self, s: str) -> str:
         left = []
         s = list(s)
@@ -115,9 +113,7 @@ class Solution:
             s[i] = ''
         return ''.join(s)
 
-
-# better
-class Solution:
+    # better
     def minRemoveToMakeValid(self, s: str) -> str:
         arr = list(s)
         stack = []
