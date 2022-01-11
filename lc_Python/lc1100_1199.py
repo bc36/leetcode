@@ -4,7 +4,7 @@ from typing import List
 
 # 1137 - N-th Tribonacci Number - EASY
 class Solution:
-    @functools.lru_cache()
+    @functools.lru_cache(None)
     def tribonacci(self, n: int) -> int:
         if n == 0: return 0
         if n == 1: return 1

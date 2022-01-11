@@ -133,7 +133,7 @@ class Solution:
 # 312 - Burst Balloons - HARD
 class Solution:
     # not pass
-    @functools.lru_cache
+    @functools.lru_cache(None)
     def maxCoins(self, nums: List[int]) -> int:
         def backtrack(nums: List[int], cur):
             if len(nums) == 0:
@@ -187,7 +187,7 @@ class Solution:
         nums = [1] + [n for n in nums if n] + [1]
         N = len(nums)
 
-        @functools.lru_cache
+        @functools.lru_cache(None)
         def helper(lo, hi):
             if lo > hi:
                 return 0
@@ -267,6 +267,60 @@ class Solution:
 class Solution:
     def bulbSwitch(self, n: int) -> int:
         return int(math.sqrt(n))
+
+
+# 322 - Coin Change - MEDIUM
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        dp = [0] + [float('inf')] * amount
+        for i in range(1, amount + 1):
+            dp[i] = min(dp[i - c] if i - c >= 0 else float('inf')
+                        for c in coins) + 1
+        return dp[-1] if dp[-1] != float('inf') else -1
+
+    def coinChange(self, coins, amount):
+        dp = [0] + [float('inf')] * amount
+        for coin in coins:
+            for i in range(coin, amount + 1):
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+        return dp[-1] if dp[-1] != float('inf') else -1
+
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        ans, dq, visited = 0, collections.deque([amount]), set()
+        while dq:
+            for _ in range(len(dq)):
+                val = dq.popleft()
+                if val == 0:
+                    return ans
+                for coin in coins:
+                    if val >= coin and val - coin not in visited:
+                        visited.add(val - coin)
+                        dq.append(val - coin)
+            ans += 1
+        return -1
+
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        @functools.lru_cache(None)
+        def dp(amount: int) -> int:
+            if amount == 0:
+                return 0
+            ans = math.inf
+            for coin in coins:
+                if amount >= coin:
+                    ans = min(ans, dp(amount - coin) + 1)
+            return ans
+
+        ans = dp(amount)
+        return ans if ans != math.inf else -1
+
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        @functools.lru_cache(None)
+        def dp(amount: int) -> int:
+            if amount == 0: return 0
+            if amount < 0: return float("inf")
+            return min(dp(amount - coin) + 1 for coin in coins)
+
+        return dp(amount) if dp(amount) != float("inf") else -1
 
 
 # 328 - Odd Even Linked List - MEDIUM

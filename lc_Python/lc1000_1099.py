@@ -113,6 +113,43 @@ class Solution:
             n = r * 10 + 1
 
 
+# 1022 - Sum of Root To Leaf Binary Numbers - EASY
+class Solution:
+    def sumRootToLeaf(self, root: TreeNode) -> int:
+        dq, ans = collections.deque([(root, root.val)]), 0
+        while dq:
+            for _ in range(len(dq)):
+                n, num = dq.popleft()
+                if not n.left and not n.right:
+                    ans += num
+                if n.left:
+                    dq.append((n.left, num * 2 + n.left.val))
+                if n.right:
+                    dq.append((n.right, num * 2 + n.right.val))
+        return ans
+
+    def sumRootToLeaf(self, root: TreeNode) -> int:
+        def dfs(root: TreeNode, pre: str):
+            if not root: return
+            if not root.left and not root.right:
+                self.ans += int(pre + str(root.val), 2)
+                return
+            dfs(root.left, pre + str(root.val))
+            dfs(root.right, pre + str(root.val))
+            return
+
+        self.ans = 0
+        dfs(root, '')
+        return self.ans
+
+    def sumRootToLeaf(self, root: TreeNode, val=0) -> int:
+        if not root: return 0
+        val = val * 2 + root.val
+        if root.left == root.right == None: return val
+        return self.sumRootToLeaf(root.left, val) + self.sumRootToLeaf(
+            root.right, val)
+
+
 # 1026 - Maximum Difference Between Node and Ancestor - MEDIUM
 class Solution:
     # down to top, calculate the minimum and maximum values then pass them to the root
