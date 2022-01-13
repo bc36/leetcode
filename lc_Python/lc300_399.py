@@ -132,6 +132,22 @@ class Solution:
         return False
 
 
+# 309 - Best Time to Buy and Sell Stock with Cooldown - MEDIUM
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        if not prices:
+            return 0
+        n = len(prices)
+        f0, f1, f2 = -prices[0], 0, 0
+        for i in range(1, n):
+            f0, f1, f2 = max(f0, f2 - prices[i]), f0 + prices[i], max(f1, f2)
+            # newf0 = max(f0, f2 - prices[i])
+            # newf1 = f0 + prices[i]
+            # newf2 = max(f1, f2)
+            # f0, f1, f2 = newf0, newf1, newf2
+        return max(f1, f2)
+
+
 # 310 - Minimum Height Trees - MEDIUM
 class Solution:
     def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:

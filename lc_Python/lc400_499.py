@@ -231,6 +231,18 @@ class Solution:
         return [i + 1 for i in range(len(nums)) if nums[i] > 0]
 
 
+# 452 - Minimum Number of Arrows to Burst Balloons - MEDIUM
+class Solution:
+    def findMinArrowShots(self, points: List[List[int]]) -> int:
+        points = sorted(points, key=lambda x: x[1])
+        ans, end = 0, float('-inf')
+        for p in points:
+            if p[0] > end:
+                ans += 1
+                end = p[1]
+        return ans
+
+
 # 461 - Hamming Distance - EASY
 class Solution:
     def hammingDistance(self, x: int, y: int) -> int:

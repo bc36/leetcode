@@ -51,6 +51,23 @@ class Solution:
         return s.lower()
 
 
+# 714 - Best Time to Buy and Sell Stock with Transaction Fee - MEDIUM
+class Solution:
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        dp = [[0, -prices[0]]] + [[0, 0] for _ in range(len(prices) - 1)]
+        for i in range(1, len(prices)):
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i] - fee)
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
+        return dp[-1][0]
+
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        sell, buy = 0, -prices[0]
+        for i in range(1, len(prices)):
+            sell, buy = max(sell,
+                            buy + prices[i] - fee), max(buy, sell - prices[i])
+        return sell
+
+
 # 721 - Accounts Merge - MEDIUM
 class Solution:
     def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:
@@ -206,7 +223,16 @@ class Solution:
         return min(dp[-2], dp[-1])
 
 
-# 747
+# 747 - Largest Number At Least Twice of Others - EASY
+class Solution:
+    def dominantIndex(self, nums: List[int]) -> int:
+        m1, m2, idx = -1, -1, 0
+        for i, n in enumerate(nums):
+            if n > m1:
+                m1, m2, idx = n, m1, i
+            elif n > m2:
+                m2 = n
+        return idx if m1 >= m2 * 2 else -1
 
 
 # 748 - Shortest Completing Word - EASY

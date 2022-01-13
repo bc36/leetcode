@@ -87,6 +87,31 @@ class Solution:
         return count
 
 
+# 201 - Bitwise AND of Numbers Range - MEDIUM
+
+
+# 202 - Happy Number - EASY
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        while n >= 10:
+            new = 0
+            while n:
+                d = n % 10
+                new += d**2
+                n //= 10
+            if new == 1:
+                return True
+            n = new
+        return n == 1 or n == 7
+
+    def isHappy(self, n: int) -> bool:
+        seen = set()
+        while n not in seen:
+            seen.add(n)
+            n = sum([int(x)**2 for x in str(n)])
+        return n == 1
+
+
 # 203 - Remove Linked List Elements - EASY
 class Solution:
     def removeElements(self, head: Optional[ListNode],
