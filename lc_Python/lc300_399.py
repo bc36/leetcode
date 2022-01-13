@@ -57,7 +57,35 @@ class Solution:
 # 301 - Remove Invalid Parentheses - HARD
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
-        return
+        l = r = 0
+        for c in s:
+            if c == '(':
+                l += 1
+            elif c == ')':
+                if l:
+                    l -= 1
+                else:
+                    r += 1
+        ans = []
+        # cl cr: left or right count
+        # dl dr: left or right remain
+        @functools.lru_cache(None)
+        def dfs(idx, cl, cr, dl, dr, path):
+            if idx == len(s):
+                if not dl and not dr:
+                    ans.append(path)
+                return
+            if cr > cl or dl < 0 or dr < 0:
+                return
+            ch = s[idx]
+            if ch == '(':
+                dfs(idx + 1, cl, cr, dl - 1, dr, path)
+            elif ch == ')':
+                dfs(idx + 1, cl, cr, dl, dr - 1, path)
+            dfs(idx + 1, cl + (ch == '('), cr + (ch == ')'), dl, dr, path + ch)
+
+        dfs(0, 0, 0, l, r, "")
+        return ans
 
 
 # 306 - Additive Number - MEDIUM

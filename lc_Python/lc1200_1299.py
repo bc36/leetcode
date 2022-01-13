@@ -93,7 +93,6 @@ class Solution:
             i -= 1
         return "".join(s)
 
-    # better
     def minRemoveToMakeValid(self, s: str) -> str:
         left = []
         s = list(s)
@@ -113,20 +112,19 @@ class Solution:
             s[i] = ''
         return ''.join(s)
 
-    # better
     def minRemoveToMakeValid(self, s: str) -> str:
         arr = list(s)
         stack = []
         for i, ch in enumerate(s):
-            if ch == "(":
+            if ch == '(':
                 stack.append(i)
             elif ch == ')':
                 if stack:
                     stack.pop()
                 else:
-                    arr[i] = ""
+                    arr[i] = ''  # remove extra ')'
         while stack:
-            arr[stack.pop()] = ""
+            arr[stack.pop()] = ''  # remove extra '('
         return ''.join(arr)
 
 
