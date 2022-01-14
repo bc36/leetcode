@@ -94,6 +94,16 @@ class Solution:
         return dp[n][n]
 
 
+# 518 - Coin Change 2 - MEDIUM
+class Solution:
+    def change(self, amount: int, coins: List[int]) -> int:
+        dp = [1] + [0] * amount
+        for i in range(len(coins)):
+            for j in range(coins[i], amount + 1):
+                dp[j] += dp[j - coins[i]]
+        return dp[-1]
+
+
 # 519 - Random Flip Matrix - MEDIUM
 # TLE
 class Solution:

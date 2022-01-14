@@ -432,6 +432,26 @@ class Solution:
         return ans
 
 
+# 139 - Word Break - MEDIUM
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = [True] + [False] * len(s)
+        for i in range(len(s)):
+            for j in range(i + 1, len(s) + 1):
+                if dp[i] and s[i:j] in wordDict:
+                    dp[j] = True
+        return dp[-1]
+
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = [True] + [False] * len(s)
+        for j in range(1, len(s) + 1):
+            for word in wordDict:
+                # if j >= len(word):
+                dp[j] = dp[j] or (dp[j - len(word)]
+                                  and word == s[j - len(word):j])
+        return dp[-1]
+
+
 # 141 - Linked List Cycle - EASY
 class Solution:
     def hasCycle(self, head: Optional[ListNode]) -> bool:

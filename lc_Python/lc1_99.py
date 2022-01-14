@@ -120,6 +120,20 @@ class Solution:
                    -2**31)
 
 
+# 11 - Container With Most Water - MEDIUM
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        ans, i, j, ans = 0, 0, len(height) - 1
+        while i < j:
+            if height[i] < height[j]:
+                ans = max(ans, height[i] * (j - i))
+                i += 1
+            else:
+                ans = max(ans, height[j] * (j - i))
+                j -= 1
+        return ans
+
+
 # 12 - Integer to Roman - MEDIUM
 class Solution:
     def intToRoman(self, num: int) -> str:
