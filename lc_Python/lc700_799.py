@@ -51,6 +51,23 @@ class Solution:
         return s.lower()
 
 
+# 713 - Subarray Product Less Than K - MEDIUM
+class Solution:
+    def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
+        r = l = ans = 0
+        p = nums[0]
+        while l < len(nums) and r < len(nums):
+            if p < k:
+                ans += r - l + 1
+                r += 1
+                if r < len(nums):
+                    p *= nums[r]
+            else:
+                p //= nums[l]
+                l += 1
+        return ans
+
+
 # 714 - Best Time to Buy and Sell Stock with Transaction Fee - MEDIUM
 class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:

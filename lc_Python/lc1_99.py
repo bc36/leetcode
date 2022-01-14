@@ -1,4 +1,4 @@
-import bisect, collections, functools, random, operator, math, itertools, os
+import bisect, collections, functools, random, operator, math, itertools, re, os
 from typing import Iterable, List, Optional
 '''
 Function usually used
@@ -11,18 +11,6 @@ bit operation
 <<  left shift
 >>  right shift
 '''
-
-# For viewing definitions
-
-# LIBRARY FUNCTION
-bisect.bisect_left()
-collections.Counter(dict)
-collections.deque(Iterable)
-random.randint()
-functools.reduce()
-operator.xor()
-# CLASS METHOD
-dict.setdefault()
 
 
 class ListNode:
@@ -123,6 +111,13 @@ class Solution:
                 slow += 1
             ans = max(ans, fast - slow)
         return ans
+
+
+# 8 - String to Integer (atoi) - MEDIUM
+class Solution:
+    def myAtoi(self, s: str) -> int:
+        return max(min(int(*re.findall('^[\+\-]?\d+', s.lstrip())), 2**31 - 1),
+                   -2**31)
 
 
 # 12 - Integer to Roman - MEDIUM
