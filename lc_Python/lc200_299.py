@@ -1005,6 +1005,42 @@ class Solution:
         return left
 
 
+# 279 - Perfect Squares - MEDIUM
+class Solution:
+    # Lagrange's four-square theorem
+    def numSquares(self, n: int) -> int:
+        while n % 4 == 0:
+            n /= 4
+        if n % 8 == 7:
+            return 4
+        a = 0
+        while a**2 <= n:
+            b = int((n - a**2)**0.5)
+            if a**2 + b**2 == n:
+                return (not not a) + (not not b)
+                # or
+                if a != 0 and b != 0:
+                    return 2
+                else:
+                    return 1
+            a += 1
+        return 3
+
+    def numSquares(self, n: int) -> int:
+        def divisible(n, count):
+            if count == 1: 
+                return n in ps
+            for p in ps:
+                if divisible(n - p, count - 1):
+                    return True
+            return False
+
+        ps = set([i * i for i in range(1, int(n**0.5) + 1)])
+        for count in range(1, n + 1):
+            if divisible(n, count):
+                return count
+
+
 # 283 - Move Zeroes - EASY
 class Solution:
     def moveZeroes(self, nums: List[int]) -> None:

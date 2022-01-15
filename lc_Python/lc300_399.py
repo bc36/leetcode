@@ -1,5 +1,5 @@
 from typing import List, Optional
-import collections, math, functools, bisect
+import collections, math, functools, bisect, heapq, random
 
 
 class TreeNode:
@@ -545,6 +545,26 @@ class Solution(object):
         return ret
 
 
+# 343 - Integer Break - MEDIUM
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        dp = [0] * (n + 1)
+        for i in range(2, n + 1):
+            for j in range(i):
+                dp[i] = max(dp[i], j * (i - j), j * dp[i - j])
+        return dp[n]
+
+    def integerBreak(self, n: int) -> int:
+        if n <= 3:
+            return n - 1
+        d, mod = n // 3, n % 3
+        if mod == 0:
+            return 3**d
+        if mod == 1:
+            return 3**(d - 1) * 4
+        return 3**d * 2
+
+
 # 344 - Reverse String - EASY
 class Solution:
     def reverseString(self, s: List[str]) -> None:
@@ -691,7 +711,36 @@ class Solution:
         return ans
 
 
-# 373
+# 373 - Find K Pairs with Smallest Sums - MEDIUM
+class Solution:
+    def kSmallestPairs(self, nums1: List[int], nums2: List[int],
+                       k: int) -> List[List[int]]:
+        def push(i: int, j: int):
+            if i < len(nums1) and j < len(nums2):
+                heapq.heappush(queue, [nums1[i] + nums2[j], i, j])
+
+        queue, ans = [], []
+        push(0, 0)
+        while queue and len(ans) < k:
+            _, i, j = heapq.heappop(queue)
+            ans.append([nums1[i], nums2[j]])
+            push(i, j + 1)
+            if j == 0:
+                push(i + 1, 0)
+        return ans
+
+    def kSmallestPairs(self, nums1: List[int], nums2: List[int],
+                       k: int) -> List[List[int]]:
+        ans = []
+        queue = [(nums1[i] + nums2[0], i, 0)
+                 for i in range(min(k, len(nums1)))]
+        while queue and len(ans) < k:
+            _, i, j = heapq.heappop(queue)
+            ans.append([nums1[i], nums2[j]])
+            if j + 1 < len(nums2):
+                heapq.heappush(queue, (nums1[i] + nums2[j + 1], i, j + 1))
+        return ans
+
 
 # 374 - Guess Number Higher or Lower - EASY
 # The guess API is already defined for you.
@@ -767,8 +816,6 @@ class Solution:
 
         return dp[1][n]
 
-
-class Solution:
     def getMoneyAmount(self, n: int) -> int:
         dp = [[0] * (n + 1) for _ in range(n + 1)]
         for i in range(n - 1, 0, -1):
@@ -778,11 +825,80 @@ class Solution:
         return dp[1][n]
 
 
+# 376 - Wiggle Subsequence - MEDIUM
+class Solution:
+    def wiggleMaxLength(self, nums: List[int]) -> int:
+        pre, cur, ans = 0, 0, 1  
+        for i in range(len(nums) - 1):
+            cur = nums[i + 1] - nums[i]
+            if cur * pre <= 0 and cur != 0:  
+                ans += 1
+                pre = cur 
+        return ans
+
+
+# 377 - Combination Sum IV - MEDIUM
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        dp = [1] + [0] * target
+        for i in range(1, target + 1):
+            for num in nums:
+                if num <= i:
+                    dp[i] += dp[i - num]
+        return dp[-1]
+
+
+# 382 - Linked List Random Node - MEDIUM
+class Solution:
+    def __init__(self, head: Optional[ListNode]):
+        self.node = []
+        while head:
+            self.node.append(head.val)
+            head = head.next
+        return
+
+    def getRandom(self) -> int:
+        return random.choice(self.node)
+
+
+# reservoir sampling
+
+
 # 383 - Ransom Note - EASY
 class Solution:
     def canConstruct(self, ransomNote: str, magazine: str) -> bool:
         return not collections.Counter(ransomNote) - collections.Counter(
             magazine)
+
+
+# 384 - Shuffle an Array - MEDIUM
+class Solution:
+    def __init__(self, nums: List[int]):
+        self.nums = nums[:]
+        self.cp = nums[:]
+
+    def reset(self) -> List[int]:
+        self.nums[:] = self.cp[:]
+        return self.nums
+
+    def shuffle(self) -> List[int]:
+        random.shuffle(self.nums)
+        return self.nums
+
+    # Fisher-Yates Algorithm
+    # the same as built-in function: 'random.shuffle'
+    def shuffle(self) -> List[int]:
+        n = len(self.nums)
+        for i in range(n):
+            idx = random.randrange(i, n)
+            self.nums[i], self.nums[idx] = self.nums[idx], self.nums[i]
+        return self.nums
+
+
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(nums)
+# param_1 = obj.reset()
+# param_2 = obj.shuffle()
 
 
 # 390 - Elimination Game - MEDIUM
