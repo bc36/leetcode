@@ -98,9 +98,9 @@ class Solution:
 class Solution:
     def change(self, amount: int, coins: List[int]) -> int:
         dp = [1] + [0] * amount
-        for i in range(len(coins)):
-            for j in range(coins[i], amount + 1):
-                dp[j] += dp[j - coins[i]]
+        for coin in coins:
+            for i in range(coin, amount + 1):
+                dp[i] += dp[i - coin]
         return dp[-1]
 
 

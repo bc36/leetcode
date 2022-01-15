@@ -1,5 +1,5 @@
 from typing import List
-import heapq
+import heapq, collections, itertools, functools, math
 
 
 # 1705 - Maximum Number of Eaten Apples - MEDIUM
@@ -27,7 +27,7 @@ class Solution:
             if apples[i]:
                 heapq.heappush(pq, [i + days[i], apples[i]])
             if pq:
-                pq[0][1]-=1
+                pq[0][1] -= 1
                 if not pq[0][1]:
                     heapq.heappop(pq)
                 ans += 1
@@ -39,6 +39,27 @@ class Solution:
             ans += d
             while pq and pq[0][0] <= i:
                 heapq.heappop(pq)
+        return ans
+
+
+# 1716 - Calculate Money in Leetcode Bank - EASY
+class Solution:
+    def totalMoney(self, n: int) -> int:
+        div, mod = divmod(n, 7)
+        ans = 0
+        for i in range(mod):
+            ans += i + 1 + div
+        while div:
+            ans += 28 + (div - 1) * 7
+            div -= 1
+        return ans
+
+    def totalMoney(self, n: int) -> int:
+        div, mod = divmod(n, 7)
+        ans = 0
+        for i in range(mod):
+            ans += i + 1 + div
+        ans += div * 28 + (div - 1) * div * 7 // 2 if div else 0
         return ans
 
 
