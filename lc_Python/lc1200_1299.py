@@ -64,6 +64,16 @@ class Solution:
         return max(dp.values())
 
 
+# 1220 - Count Vowels Permutation - HARD
+class Solution:
+    def countVowelPermutation(self, n: int) -> int:
+        # only: ae, ea, ei, ia, ie, io, iu, oi, ou, ua
+        a, e, i, o, u = 1, 1, 1, 1, 1
+        for _ in range(n - 1):
+            a, e, i, o, u = e + u + i, a + i, o + e, i, i + o
+        return (a + e + i + o + u) % (10**9 + 7)
+
+
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 class Solution:
     # left must less than right

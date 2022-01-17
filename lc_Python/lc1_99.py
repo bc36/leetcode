@@ -26,7 +26,7 @@ class Solution:
         dic = {}
         for i in range(len(nums)):
             if target - nums[i] in dic:
-                return [dic[target-nums[i]], i]
+                return [dic[target - nums[i]], i]
             dic[nums[i]] = i
         return None
 
@@ -111,6 +111,49 @@ class Solution:
                 slow += 1
             ans = max(ans, fast - slow)
         return ans
+
+
+# 5 - Longest Palindromic Substring - MEDIUM
+class Solution:
+    # Longest Common Substring, not subsequence(1143), O(n^2)
+    def longestPalindrome(self, s: str) -> str:
+        return
+
+    # Expand Around Center, O(n^2)
+    def longestPalindrome(self, s: str) -> str:
+        def helper(s, l, r):
+            while l >= 0 and r < len(s) and s[l] == s[r]:
+                l -= 1
+                r += 1
+            return s[l + 1:r]
+
+        ans = ""
+        for i in range(len(s)):
+            # odd case, like "aba"
+            tmp = helper(s, i, i)
+            if len(tmp) > len(ans):
+                ans = tmp
+            # even case, like "abba"
+            tmp = helper(s, i, i + 1)
+            if len(tmp) > len(ans):
+                ans = tmp
+        return ans
+
+    # dp, O(n^2)
+    def longestPalindrome(self, s: str) -> str:
+        dp = [[False] * len(s) for _ in range(len(s))]
+        for i in range(len(s)):
+            dp[i][i] = True
+        ans = s[0]
+        for j in range(len(s)):
+            for i in range(j):
+                if s[i] == s[j] and (dp[i + 1][j - 1] or j == i + 1):
+                    dp[i][j] = True
+                    if j - i + 1 > len(ans):
+                        ans = s[i:j + 1]
+        return ans
+
+    # Manacher's Algorithm, O(n)
 
 
 # 8 - String to Integer (atoi) - MEDIUM
@@ -564,6 +607,65 @@ class Solution:
         ans = 0
         for i in range(n):
             ans += min(left[i], right[i]) - height[i]
+        return ans
+
+    def trap(self, height: List[int]) -> int:
+        left = [0] * len(height)
+        right = [0] * len(height)
+        ans = prel = prer = 0
+        for i in range(len(height)):
+            if height[i] > prel:
+                left[i] = prel = height[i]
+            else:
+                left[i] = prel
+            if height[~i] > prer:
+                right[~i] = prer = height[~i]
+            else:
+                right[~i] = prer
+        for i in range(len(height)):
+            if height[i] < left[i] and height[i] < right[i]:
+                ans += min(left[i], right[i]) - height[i]
+        return ans
+
+    def trap(self, height: List[int]) -> int:
+        w = [0] * len(height)  # w: water level
+        left = right = 0
+        for i in range(len(height)):
+            left = max(left, height[i])
+            w[i] = left  # over-fill it to left max height
+        for i in range(len(height) - 1, -1, -1):
+            right = max(right, height[i])
+            w[i] = min(w[i], right) - height[i]  # drain to the right height
+        return sum(w)
+
+    # monotonic stack
+    def trap(self, height: List[int]) -> int:
+        ans, stack = 0, []
+        for i in range(len(height)):
+            while stack and height[i] > height[stack[-1]]:
+                w = stack.pop()  # water level
+                if not stack:  # do not have wall at left
+                    break
+                left = stack[-1]
+                curWidth = i - left - 1
+                curHeight = min(height[left], height[i]) - height[w]
+                ans += curWidth * curHeight
+            stack.append(i)
+        return ans
+
+    # two pointers
+    def trap(self, height: List[int]) -> int:
+        ans = pl = lmax = rmax = 0
+        pr = len(height) - 1
+        while pl <= pr:
+            if lmax < rmax:
+                ans += max(0, lmax - height[pl])
+                lmax = max(lmax, height[pl])
+                pl += 1
+            else:
+                ans += max(0, rmax - height[pr])
+                rmax = max(rmax, height[pr])
+                pr -= 1
         return ans
 
 

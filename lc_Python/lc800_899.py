@@ -146,6 +146,47 @@ class Solution:
         return True
 
 
+# 849 - Maximize Distance to Closest Person - MEDIUM
+class Solution:
+    def maxDistToClosest(self, seats: List[int]) -> int:
+        a = pre = seats.index(1)
+        b = seats[::-1].index(1)
+        c = 0
+        for i in range(len(seats)):
+            if seats[i] == 1:
+                c = max(c, (i - pre) // 2)
+                pre = i
+        return max(a, b, c)
+
+    def maxDistToClosest(self, seats: List[int]) -> int:
+        i, j,  ans, n = 0, len(seats) - 1, 0, len(seats)
+        while seats[j] == 0:
+            j -= 1
+        ans = max(ans, n - 1 - j)
+        while seats[i] == 0:
+            i += 1
+        ans, pre = max(ans, i), i
+        while i <= j:
+            if seats[i] == 1:
+                ans = max(ans, (i - pre) // 2)
+                pre = i
+            i += 1
+        return ans
+
+    def maxDistToClosest(self, seats: List[int]) -> int:
+        prev, ans = 0, 0
+        for cur, seat in enumerate(seats):
+            if seat:
+                if seats[prev]:
+                    ans = max(ans, (cur - prev) // 2)
+                else:
+                    ans = max(ans, (cur - prev))
+                prev = cur
+        if seats[prev]:
+            ans = max(ans, len(seats) - 1 - prev)
+        return ans
+
+
 # 851 - Loud and Rich - MEDIUM
 class Solution:
     def loudAndRich(self, richer: List[List[int]],

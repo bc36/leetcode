@@ -412,3 +412,127 @@ class Solution:
             cur_time += p
             ans = max(ans, cur_time - g)
         return ans
+
+
+########################
+# 276 / 2道 / 2022.1.6 #
+########################
+# https://leetcode-cn.com/problems/solving-questions-with-brainpower/
+# https://leetcode.com/problems/solving-questions-with-brainpower/
+# 5982. 解决智力问题
+# 10^5 数据规模 O(n^2)明显不行, 因为dp[i]的值取决于dp[i]数组后面值，所以要倒推
+class Solution:
+    def mostPoints(self, questions: List[List[int]]) -> int:
+        @functools.lru_cache(None)
+        def solve(t=0):
+            if t >= len(questions):
+                return 0
+            points, brainpower = questions[t]
+            return max(points + solve(t + brainpower + 1), solve(t + 1))
+
+        return solve()
+
+    def mostPoints(self, q: List[List[int]]) -> int:
+        n = len(q)
+        r = [0] * (n + 1)
+        for i in range(n - 1, -1, -1):
+            r[i] = q[i][0]
+            if i + q[i][1] + 1 < n:
+                r[i] += r[i + q[i][1] + 1]
+            r[i] = max(r[i], r[i + 1])
+        return r[0]
+
+    def mostPoints(self, questions: List[List[int]]) -> int:
+        a, m = [0] * len(questions), 0
+        for i in range(len(questions) - 1, -1, -1):
+            a[i] = max(
+                m, questions[i][0] +
+                (0 if i + questions[i][1] + 1 >= len(questions) else
+                 a[i + questions[i][1] + 1]))
+            m = a[i]
+        return a[0]
+
+    def mostPoints(self, questions: List[List[int]]) -> int:
+        # 状态: 每个位置能得到的最大分数
+        # 假设前面的都跳过，那么最后一个问题一定能解决，最高分初始化为最后一题的得分
+        cnt = [questions[-1][0]] * len(questions)
+        # 从倒数第二项往前推
+        for i in range(len(questions) - 2, -1, -1):
+            # 如果当前下标+冷静期>边界，那么选它的话后面的都不能选，最高分为questions[i][0]; 不选它的话最高分为cnt[i+1]
+            if i + questions[i][1] + 1 > len(questions) - 1:
+                cnt[i] = max(questions[i][0], cnt[i + 1])
+            # 否则就是选了它, 后面还有可选的
+            else:
+                cnt[i] = max(questions[i][0] + cnt[i + questions[i][1] + 1],
+                             cnt[i + 1])
+        return cnt[0]
+
+    def mostPoints(self, questions: List[List[int]]) -> int:
+        n = len(questions)
+        f = [0] * (n + 1)
+        for i in range(n - 1, -1, -1):
+            q = questions[i]
+            j = i + q[1] + 1
+            f[i] = max(f[i + 1], q[0] + (f[j] if j < n else 0))
+        return f[0]
+
+    def mostPoints(self, q: List[List[int]]) -> int:
+        n = len(q)
+        dp = [0] * n
+        dp[-1] = q[-1][0]
+        for i in range(n - 2, -1, -1):
+            pre = 0
+            if i + q[i][1] + 1 < n:
+                pre = dp[i + 1 + q[i][1]]
+            dp[i] = max(dp[i + 1], q[i][0] + pre)
+        return dp[0]
+
+    def mostPoints(self, q: List[List[int]]) -> int:
+        n = len(q)
+        dp = [i for i, _ in q]
+        for i in range(n - 2, -1, -1):
+            if i + q[i][1] + 1 < n:
+                dp[i] = max(dp[i + 1], dp[i + 1 + q[i][1]] + q[i][0])
+            else:
+                dp[i] = max(dp[i + 1], dp[i])
+        return dp[0]
+
+
+# https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/
+# https://leetcode.com/problems/maximum-running-time-of-n-computers/
+# 5983. 同时运行 N 台电脑的最长时间
+class Solution:
+    def maxRunTime(self, n: int, batteries: List[int]) -> int:
+        batteries = sorted(batteries, reverse=True)
+        sumt = sum(batteries)
+        for t in batteries:
+            if t > sumt // n:
+                n -= 1
+                sumt -= t
+            else:
+                return sumt // n
+
+    def maxRunTime(self, n: int, batteries: List[int]) -> int:
+        def check(amt):
+            return sum(min(amt, v) for v in batteries) >= n * amt
+
+        lo, hi = 0, sum(batteries) // n + 1
+        while lo + 1 < hi:
+            x = (lo + hi) >> 1
+            if check(x):
+                lo = x
+            else:
+                hi = x
+        return lo
+
+    def maxRunTime(self, n: int, batteries: List[int]) -> int:
+        l, r = 1, 100000000000005
+        while l < r:
+            t, mid = 0, (l + r) // 2
+            for x in batteries:
+                t += min(x, mid)
+            if t // n >= mid:
+                l = mid + 1
+            else:
+                r = mid
+        return l - 1

@@ -161,12 +161,11 @@ class Solution:
 
 # 121 - Best Time to Buy and Sell Stock - EASY
 class Solution:
-    # Dynamic Programming
     def maxProfit(self, prices: List[int]) -> int:
-        hisLowPrice, ans = prices[0], 0
-        for price in prices:
-            ans = max(ans, price - hisLowPrice)
-            hisLowPrice = min(hisLowPrice, price)
+        mi, ans = prices[0], 0
+        for p in prices:
+            ans = max(ans, p - mi)
+            mi = min(p, mi)
         return ans
 
 
@@ -446,9 +445,17 @@ class Solution:
         dp = [True] + [False] * len(s)
         for j in range(1, len(s) + 1):
             for word in wordDict:
-                # if j >= len(word):
-                dp[j] = dp[j] or (dp[j - len(word)]
-                                  and word == s[j - len(word):j])
+                if j >= len(word):
+                    dp[j] = dp[j] or (dp[j - len(word)]
+                                      and word == s[j - len(word):j])
+        return dp[-1]
+
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = [True] + [False] * len(s)
+        for i in range(len(s) + 1):
+            for w in wordDict:
+                if i + len(w) < len(s) + 1 and s[i:i + len(w)] == w:
+                    dp[i + len(w)] = dp[i] or dp[i + len(w)]
         return dp[-1]
 
 

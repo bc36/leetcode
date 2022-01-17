@@ -79,6 +79,16 @@ class Solution:
         return ans
 
 
+# 1014 - Best Sightseeing Pair - MEDIUM
+class Solution:
+    def maxScoreSightseeingPair(self, A: List[int]) -> int:
+        pre, ans = A[0], 0
+        for i in range(1, len(A)):
+            ans = max(ans, pre + A[i] - i)
+            pre = max(pre, A[i] + i)
+        return ans
+
+
 # 1015 - Smallest Integer Divisible by K - MEDIUM
 class Solution:
     # time consuming, just because Python supports arbitrarily large numbers
@@ -446,3 +456,24 @@ class Solution:
                     grid[i][j] = 1
                     dq.append((i, j, step + 1))
         return -1
+
+
+# 1094 - Car Pooling - MEDIUM
+class Solution:
+    def carPooling(self, trips, capacity):
+        for _, v in sorted(x for n, i, j in trips for x in [[i, n], [j, -n]]):
+            capacity -= v
+            if capacity < 0:
+                return False
+        return True
+
+    def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
+        heap = []
+        for n, i, j in trips:
+            heapq.heappush(heap, (i, n))
+            heapq.heappush(heap, (j, -n))
+        while heap:
+            capacity -= heapq.heappop(heap)[1]
+            if capacity < 0:
+                return False
+        return True
