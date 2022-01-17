@@ -1028,7 +1028,7 @@ class Solution:
 
     def numSquares(self, n: int) -> int:
         def divisible(n, count):
-            if count == 1: 
+            if count == 1:
                 return n in ps
             for p in ps:
                 if divisible(n - p, count - 1):
@@ -1055,6 +1055,40 @@ class Solution:
     def moveZeroes(self, nums: List[int]) -> None:
         nums[:] = [i for i in nums if i != 0] + nums.count(0) * [0]
         return
+
+
+# 290 - Word Pattern - EASY
+class Solution:
+    def wordPattern(self, pattern: str, s: str) -> bool:
+        s = s.split()
+        if len(pattern) != len(s):
+            return False
+        if len(set(pattern)) != len(set(s)):
+            return False  # for the case `words=['dog', 'cat']` and  `p='aa'`, or use two dictionaries.
+        dic = {}
+        for i in range(len(pattern)):
+            if pattern[i] not in dic:
+                dic[pattern[i]] = s[i]
+            else:
+                if dic[pattern[i]] != s[i]:
+                    return False
+        return True
+
+    # better, save index, rather element
+    def wordPattern(self, pattern: str, s: str) -> bool:
+        s = s.split()
+        if len(pattern) != len(s): return False
+        pt, st = {}, {}
+        for i in range(len(pattern)):
+            if pt.get(pattern[i], 0) != st.get(s[i], 0): return False
+            pt[pattern[i]] = i + 1
+            st[s[i]] = i + 1
+        return True
+
+    def wordPattern(self, pattern: str, s: str) -> bool:
+        s = s.split()
+        return len(set(zip(pattern, s))) == len(set(pattern)) == len(set(s)) \
+            and len(pattern) == len(s)
 
 
 # 299 - Bulls and Cows - MEDIUM
