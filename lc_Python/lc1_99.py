@@ -498,6 +498,30 @@ class Solution:
         return bisect.bisect_left(nums, target)
 
 
+# 36 - Valid Sudoku - MEDIUM
+class Solution:
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        seen = []
+        for i, row in enumerate(board):
+            for j, c in enumerate(row):
+                if c != '.':
+                    seen += [(c, j), (i, c), (i // 3, j // 3, c)]
+        return len(seen) == len(set(seen))
+
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        r = [[False] * 9 for _ in range(9)]
+        c = [[False] * 9 for _ in range(9)]
+        sub = [[False] * 9 for _ in range(9)]
+        for i, row in enumerate(board):
+            for j, ch in enumerate(row):
+                if ch != '.':
+                    ch = int(ch) - 1
+                    if r[i][ch] or c[j][ch] or sub[i // 3 * 3 + j // 3][ch]:
+                        return False
+                    r[i][ch] = c[j][ch] = sub[i // 3 * 3 + j // 3][ch] = True
+        return True
+
+
 # 37 - Sudoku Solver - HARD
 class Solution:
     def solveSudoku(self, board: List[List[str]]) -> None:
@@ -1054,6 +1078,59 @@ class Solution:
     def simplifyPath(self, path: str) -> str:
         return os.path.realpath(path)
 
+
+# 73 - Set Matrix Zeroes - MEDIUM
+class Solution:
+    # O(2 * m * n), O(m + n)
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        r, c = set(), set()
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                if matrix[i][j] == 0:
+                    r.add(i)
+                    c.add(j)
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                if i in r or j in c:
+                    matrix[i][j] = 0
+        return
+    # O(2 * m * n), space optimized, O(2), two flags
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        m, n = len(matrix), len(matrix[0])
+        col0 = any(matrix[i][0] == 0 for i in range(m))
+        row0 = any(matrix[0][j] == 0 for j in range(n))
+        for i in range(1, m):
+            for j in range(1, n):
+                if matrix[i][j] == 0:
+                    matrix[i][0] = matrix[0][j] = 0
+        for i in range(1, m):
+            for j in range(1, n):
+                if matrix[i][0] == 0 or matrix[0][j] == 0:
+                    matrix[i][j] = 0
+        if col0:
+            for i in range(m):
+                matrix[i][0] = 0
+        if row0:
+            for j in range(n):
+                matrix[0][j] = 0
+        return
+    # O(2 * m * n), space optimized, O(1), one flags
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        m, n = len(matrix), len(matrix[0])
+        col0 = False
+        for i in range(m):
+            if matrix[i][0] == 0:
+                col0 = True
+            for j in range(1, n):
+                if matrix[i][j] == 0:
+                    matrix[i][0] = matrix[0][j] = 0
+        for i in range(m - 1, -1, -1):
+            for j in range(1, n):
+                if matrix[i][0] == 0 or matrix[0][j] == 0:
+                    matrix[i][j] = 0
+            if col0:
+                matrix[i][0] = 0
+        return
 
 # 74 - Search a 2D Matrix - MEDIUM
 class Solution:

@@ -566,6 +566,30 @@ class Solution:
         return False
 
 
+# 219 - Contains Duplicate II - EASY
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        dic = {}
+        for i in range(len(nums)):
+            if i - dic.get(nums[i], float('-inf')) <= k:
+                return True
+            dic[nums[i]] = i
+            # or
+            # if nums[i] in dic and i - dic[nums[i]] <= k:
+            #     return True
+            # dic[nums[i]] = i
+        return False
+        # slow, > 8000ms
+        # i = j = 0
+        # while j < len(nums):
+        #     if j - i == k + 1:
+        #         i += 1
+        #     if nums[j] in nums[i:j]:
+        #         return True
+        #     j += 1
+        # return False
+
+
 # 221 - Maximal Square - MEDIUM
 class Solution:
     def maximalSquare(self, matrix: List[List[str]]) -> int:

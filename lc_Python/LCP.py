@@ -21,6 +21,7 @@ class Solution:
 # https://leetcode-cn.com/problems/chuan-di-xin-xi/
 # LCP 07. 传递信息 - EASY
 class Solution:
+    # bfs, O(n^k), O(n + len(relation) + n^k), length of queue:n^k
     def numWays(self, n: int, relation: List[List[int]], k: int) -> int:
         dic = collections.defaultdict(set)
         for r in relation:
@@ -38,6 +39,41 @@ class Solution:
                     dq.append(i)
             k -= 1
         return ans
+
+    # dfs, O(n^k), O(n + len(relation) + k), depth of stack:k
+    def numWays(self, n: int, relation: List[List[int]], k: int) -> int:
+        def dfs(start: int, k: int):
+            if not k:
+                if start == n - 1:
+                    self.ans += 1
+                return
+            for i in edge[start]:
+                dfs(i, k - 1)
+            return
+
+        edge = collections.defaultdict(list)
+        for o, i in relation:
+            edge[o].append(i)
+        self.ans = 0
+        dfs(0, k)
+        return self.ans
+
+    # dp, O(k * len(relation)), O(k * n),  dp[i][j] 为经过 i 轮传递到编号 j 的玩家的方案数
+    def numWays(self, n: int, relation: List[List[int]], k: int) -> int:
+        dp = [[0] * n for _ in range(k + 1)]
+        dp[0][0] = 1
+        for i in range(k):
+            for src, dst in relation:
+                dp[i + 1][dst] += dp[i][src]
+        return dp[-1][-1]
+
+
+# https://leetcode-cn.com/problems/ju-qing-hong-fa-shi-jian/
+# LCP 08. 剧情触发时间
+class Solution:
+    def getTriggerTime(self, increase: List[List[int]],
+                       requirements: List[List[int]]) -> List[int]:
+        return
 
 
 # https://leetcode-cn.com/problems/xun-bao/
