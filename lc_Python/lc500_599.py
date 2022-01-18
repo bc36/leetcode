@@ -1,5 +1,4 @@
-import collections, math, random, bisect, itertools
-import functools
+import collections, math, random, bisect, itertools, functools, heapq
 from typing import List, Optional
 
 
@@ -300,6 +299,25 @@ class Solution:
         return left
 
 
+# 539 - Minimum Time Difference - MEDIUM
+class Solution:
+    def findMinDifference(self, timePoints: List[str]) -> int:
+        if len(timePoints) > 1440:
+            return 0
+        timePoints.sort()
+        firstTime = preTime = int(timePoints[0][:2]) * 60 + int(
+            timePoints[0][3:])
+        ans = float('inf')
+        for t in timePoints[1:]:
+            time = int(t[:2]) * 60 + int(t[3:])
+            ans = min(ans, time - preTime)
+            if ans == 0:
+                break
+            preTime = time
+        ans = min(ans, firstTime + 1440 - preTime)
+        return ans
+
+
 # 542 - 01 Matrix - MEDIUM
 class Solution:
     def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
@@ -470,6 +488,51 @@ class Solution:
 
         helper(root)
         return self.ans
+
+
+# 566 - Reshape the Matrix - EASY
+class Solution:
+    def matrixReshape(self, mat: List[List[int]], r: int,
+                      c: int) -> List[List[int]]:
+        if r * c != len(mat) * len(mat[0]):
+            return mat
+        tmp = [0] * (r * c)
+        ans = [[0] * c for _ in range(r)]
+        n = len(mat[0])
+        for i in range(len(mat)):
+            for j in range(len(mat[0])):
+                tmp[i * n + j] = mat[i][j]
+        for i in range(r):
+            for j in range(c):
+                ans[i][j] = tmp[i * c + j]
+        return ans
+
+    # not use tmp, save space
+    def matrixReshape(self, mat: List[List[int]], r: int,
+                      c: int) -> List[List[int]]:
+        if r * c != len(mat) * len(mat[0]):
+            return mat
+        ans = [[0] * c for _ in range(r)]
+        m = n = 0
+        for i in range(len(mat)):
+            for j in range(len(mat[0])):
+                ans[m][n] = mat[i][j]
+                n += 1
+                if n == c:
+                    m += 1
+                    n = 0
+        return ans
+
+    # better
+    def matrixReshape(self, mat: List[List[int]], r: int,
+                      c: int) -> List[List[int]]:
+        m, n = len(mat), len(mat[0])
+        if r * c != m * n:
+            return mat
+        ans = [[0] * c for _ in range(r)]
+        for x in range(m * n):
+            ans[x // c][x % c] = mat[x // n][x % n]
+        return ans
 
 
 # 567 - Permutation in String - MEDIUM

@@ -88,6 +88,51 @@ class Solution:
         return ans
 
 
+# 304 - Range Sum Query 2D - Immutable - MEDIUM
+# Your NumMatrix object will be instantiated and called as such:
+# obj = NumMatrix(matrix)
+# param_1 = obj.sumRegion(row1,col1,row2,col2)class NumMatrix:
+class NumMatrix:
+    # Add zero row and column!!
+    # remove preprocess and additional 'if' in 'sumRegion'
+    def __init__(self, matrix: List[List[int]]):
+        m, n = len(matrix), len(matrix[0])
+        self.presum = [[0] * (n + 1) for _ in range(m + 1)]
+        self.presum[0][0] = matrix[0][0]
+        # for i in range(1, m):
+        #     self.presum[i][0] = matrix[i][0] + self.presum[i - 1][0]
+        # for j in range(1, n):
+        #     self.presum[0][j] = matrix[0][j] + self.presum[0][j - 1]
+        for i in range(m):
+            for j in range(n):
+                self.presum[i + 1][j + 1] = matrix[i][j] + self.presum[i][
+                    j + 1] + self.presum[i + 1][j] - self.presum[i][j]
+        return
+
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        return self.presum[row2 + 1][col2 + 1] - self.presum[
+            row2 + 1][col1] - self.presum[row1][col2 +
+                                                1] + self.presum[row1][col1]
+
+
+class NumMatrix:
+    def __init__(self, matrix: List[List[int]]):
+        m, n = len(matrix), len(matrix[0])
+        for i in range(m):
+            for j in range(1, n):
+                matrix[i][j] += matrix[i][j - 1]
+        for i in range(1, m):
+            for j in range(n):
+                matrix[i][j] += matrix[i - 1][j]
+        self.matrix = matrix
+
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        return self.matrix[row2][col2] - (
+            self.matrix[row1 - 1][col2] if row1 > 0 else 0
+        ) - (self.matrix[row2][col1 - 1] if col1 > 0 else 0) + (
+            self.matrix[row1 - 1][col1 - 1] if row1 > 0 and col1 > 0 else 0)
+
+
 # 306 - Additive Number - MEDIUM
 class Solution:
     def isAdditiveNumber(self, num: str) -> bool:
