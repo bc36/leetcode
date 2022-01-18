@@ -3,7 +3,7 @@ import collections, heapq, functools, math, random, queue
 
 
 # https://leetcode-cn.com/problems/na-ying-bi/
-# LCP 06. 拿硬币
+# LCP 06. 拿硬币 - EASY
 class Solution:
     def minCount(self, coins: List[int]) -> int:
         ans = 0
@@ -18,8 +18,30 @@ class Solution:
         return sum([(x + 1) // 2 for x in coins])
 
 
+# https://leetcode-cn.com/problems/chuan-di-xin-xi/
+# LCP 07. 传递信息 - EASY
+class Solution:
+    def numWays(self, n: int, relation: List[List[int]], k: int) -> int:
+        dic = collections.defaultdict(set)
+        for r in relation:
+            dic[r[0]].add(r[1])
+        dq = collections.deque([0])
+        ans = 0
+        while dq and k:
+            size = len(dq)
+            for _ in range(size):
+                cur = dq.popleft()
+                for i in dic[cur]:
+                    if k == 1 and i == n - 1:
+                        ans += 1
+                        continue
+                    dq.append(i)
+            k -= 1
+        return ans
+
+
 # https://leetcode-cn.com/problems/xun-bao/
-# LCP 13. 寻宝
+# LCP 13. 寻宝 - HARD
 class Solution:
     def minimalSteps(self, maze: List[str]) -> int:
         # 计算（x, y）到maze中其他点的距离，结果保存在ret中
