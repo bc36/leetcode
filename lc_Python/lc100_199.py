@@ -482,6 +482,55 @@ class Solution:
             return False
 
 
+# 142 - Linked List Cycle II - MEDIUM
+class Solution:
+    # O(n), O(n)
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        s = set()
+        while head:
+            if head in s:
+                return head
+            s.add(head)
+            head = head.next
+        return None
+
+    # 1. f = 2s
+    # 2. f = s + n * cycle
+    # 3. from head to entrance: a + n * cycle
+    # s = n * cycle, so let another point from head move 'a' step with 'slow'
+    # 'slow' move 'a + 1 * cycle' to entrance, 'point' move 'a + 0 * cycle' to entrance
+    # O(n), O(1)
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        try:
+            fast = head.next
+            slow = head
+            while fast is not slow:
+                fast = fast.next.next
+                slow = slow.next
+        except:
+            return None
+        # since fast starts at head.next, we need to move slow one step forward
+        slow = slow.next
+        while head is not slow:
+            head = head.next
+            slow = slow.next
+        return head
+
+    # O(n), O(1)
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                p = head
+                while slow != p:
+                    slow = slow.next
+                    p = p.next
+                return slow
+        return None
+
+
 # 143 - Reorder List - MEDIUM
 class Solution:
     def reorderList(self, head: Optional[ListNode]) -> None:

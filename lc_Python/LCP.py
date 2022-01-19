@@ -1,5 +1,5 @@
 from typing import List
-import collections, heapq, functools, math, random, queue
+import collections, heapq, functools, math, random, queue, bisect
 
 
 # https://leetcode-cn.com/problems/na-ying-bi/
@@ -71,9 +71,69 @@ class Solution:
 # https://leetcode-cn.com/problems/ju-qing-hong-fa-shi-jian/
 # LCP 08. 剧情触发时间
 class Solution:
+    # O(n * log(m)), O(n)
     def getTriggerTime(self, increase: List[List[int]],
                        requirements: List[List[int]]) -> List[int]:
-        return
+        n = len(increase)
+        c = [0] * (n + 1)
+        r = [0] * (n + 1)
+        h = [0] * (n + 1)
+        for i in range(n):
+            c[i + 1] = c[i] + increase[i][0]
+            r[i + 1] = r[i] + increase[i][1]
+            h[i + 1] = h[i] + increase[i][2]
+        ans = []
+        for need in requirements:
+            t = max(bisect.bisect_left(c, need[0]),
+                    bisect.bisect_left(r, need[1]),
+                    bisect.bisect_left(h, need[2]))
+            if t == len(c):
+                t = -1
+            ans.append(t)
+        return ans
+
+
+class Solution:
+    def getTriggerTime(self, increase: List[List[int]],
+                       requirements: List[List[int]]) -> List[int]:
+        m = 100001
+        c = [1e9] * m
+        r = [1e9] * m
+        h = [1e9] * m
+        pre = [0, 0, 0]
+        for i, v in enumerate(increase):
+            pre[0] += v[0]
+            pre[1] += v[1]
+            pre[2] += v[2]
+            for j in range(pre[0], -1, -1):
+                if c[j] != 1e9:
+                    break
+                c[j] = i + 1
+            for j in range(pre[1], -1, -1):
+                if r[j] != 1e9:
+                    break
+                r[j] = i + 1
+            for j in range(pre[2], -1, -1):
+                if h[j] != 1e9:
+                    break
+                h[j] = i + 1
+        ans = []
+        for v in requirements:
+            if sum(v) == 0:
+                t = 0
+            else:
+                t = max(c[v[0]], r[v[1]], h[v[2]])
+                if t == 1e9:
+                    t = -1
+            ans.append(t)
+        return ans
+
+
+# https://leetcode-cn.com/problems/qi-wang-ge-shu-tong-ji/
+# LCP 11. 期望个数统计
+class Solution:
+    def expectNumber(self, scores: List[int]) -> int:
+        return len(set(scores))
 
 
 # https://leetcode-cn.com/problems/xun-bao/
