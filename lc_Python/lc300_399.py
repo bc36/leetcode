@@ -977,6 +977,10 @@ class Solution:
 
 
 # 384 - Shuffle an Array - MEDIUM
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(nums)
+# param_1 = obj.reset()
+# param_2 = obj.shuffle()
 class Solution:
     def __init__(self, nums: List[int]):
         self.nums = nums[:]
@@ -1000,10 +1004,33 @@ class Solution:
         return self.nums
 
 
-# Your Solution object will be instantiated and called as such:
-# obj = Solution(nums)
-# param_1 = obj.reset()
-# param_2 = obj.shuffle()
+# 387 - First Unique Character in a String - EASY
+class Solution:
+    # fastest
+    def firstUniqChar(self, s: str) -> int:
+        candi = [chr(i) for i in range(97, 123)]
+        ans = float('inf')
+        for ch in candi:
+            if ch in s and s.find(ch) == s.rfind(ch):
+                if ans > s.find(ch):
+                    ans = s.find(ch)
+        return ans if ans != float('inf') else -1
+
+    # dict is ordered after Python3.6
+    def firstUniqChar(self, s: str) -> int:
+        frequency = collections.Counter(s)
+        for i, ch in enumerate(s):
+            if frequency[ch] == 1:
+                return i
+        return -1
+
+    def firstUniqChar(self, s: str) -> int:
+        dic = {}
+        for i, ch in enumerate(s):
+            if (not dic.get(ch)) and (ch not in s[i + 1:]):
+                return i
+            dic[ch] = True
+        return -1
 
 
 # 390 - Elimination Game - MEDIUM

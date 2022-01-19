@@ -29,6 +29,40 @@ class Solution:
         return ret
 
 
+'''lc 501
+BST: internal nodes each store a key greater than all the keys in the node’s left subtree
+     and less than those in its right subtree.
+Inorder Traversal of BST: ordered sequence
+'''
+
+
+# 501. Find Mode in Binary Search Tree - EASY
+class Solution:
+    def findMode(self, root: TreeNode) -> List[int]:
+        def inorderBST(root: TreeNode):
+            if not root:
+                return
+            nonlocal ans, count, pre, mx
+            inorderBST(root.left)
+            if root.val == pre:
+                count += 1
+            else:
+                pre = root.val
+                count = 1
+            if count == mx:
+                ans.append(root.val)
+            if count > mx:
+                mx = count
+                ans = [root.val]
+            inorderBST(root.right)
+            return
+
+        count = pre = mx = 0
+        ans = []
+        inorderBST(root)
+        return ans
+
+
 # 506 - Relative Ranks - EASY
 class Solution:
     def findRelativeRanks(self, score: List[int]) -> List[str]:

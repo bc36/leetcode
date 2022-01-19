@@ -26,3 +26,14 @@ class Solution:
                          n: int) -> List[List[int]]:
         return [original[i:i + n] for i in range(0, len(original), n)
                 ] if len(original) == m * n else []
+
+
+# 2029 - Stone Game IX - MEDIUM
+class Solution:
+    def stoneGameIX(self, stones: List[int]) -> bool:
+        d = [0, 0, 0]
+        for n in stones:
+            d[n % 3] += 1
+        if d[0] % 2 == 0:
+            return d[1] != 0 and d[2] != 0
+        return d[2] > d[1] + 2 or d[1] > d[2] + 2

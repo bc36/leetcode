@@ -887,6 +887,12 @@ class Solution:
         return ans
 
 
+# 242 - Valid Anagram - EASY
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        return collections.Counter(s) == collections.Counter(t)
+
+
 # 249 - Group Shifted Strings - MEDIUM
 # tuple + tuple: (1,) + (2,)
 class Solution:
