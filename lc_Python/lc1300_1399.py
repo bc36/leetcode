@@ -1,4 +1,4 @@
-import collections
+import collections, itertools, functools, math
 from typing import List, Optional
 
 
@@ -42,6 +42,73 @@ class Solution:
         return False
 
 
+# 1314 - Matrix Block Sum - MEDIUM
+class Solution:
+    def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
+        m, n = len(mat), len(mat[0])
+        sums = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                sums[i][j] = sum(mat[i][max(j - k, 0):min(j + k + 1, n)])
+        ans = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                ans[i][j] = sum([
+                    sums[p][j] for p in range(max(i - k, 0), min(i + k + 1, m))
+                ])
+        return ans
+
+    def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
+        m, n = len(mat), len(mat[0])
+        for i in range(m):
+            for j in range(1, n):
+                mat[i][j] += mat[i][j - 1]
+        for i in range(1, m):
+            for j in range(n):
+                mat[i][j] += mat[i - 1][j]
+        ans = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                r1, c1, r2, c2 = max(0, i - k), max(0, j - k), min(
+                    m - 1, i + k), min(n - 1, j + k)
+                ans[i][j] = mat[r2][c2] - (
+                    mat[r2][c1 - 1]
+                    if c1 > 0 else 0) - (mat[r1 - 1][c2] if r1 > 0 else 0) + (
+                        mat[r1 - 1][c1 - 1] if r1 > 0 and c1 > 0 else 0)
+        return ans
+
+    def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
+        m, n = len(mat), len(mat[0])
+        ps = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(m):
+            for j in range(n):
+                ps[i +
+                   1][j +
+                      1] = mat[i][j] + ps[i][j + 1] + ps[i + 1][j] - ps[i][j]
+        ans = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                r1, c1, r2, c2 = max(0, i - k), max(0, j - k), min(
+                    m - 1, i + k), min(n - 1, j + k)
+                ans[i][j] = ps[r2 + 1][c2 + 1] - ps[r2 + 1][c1] - ps[r1][
+                    c2 + 1] + ps[r1][c1]
+        return ans
+
+    def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
+        m, n = len(mat), len(mat[0])
+        ps = [[0] * (n + 1) for _ in range(m + 1)]
+        for i, j in itertools.product(range(m), range(n)):
+            ps[i + 1][j +
+                      1] = mat[i][j] + ps[i][j + 1] + ps[i + 1][j] - ps[i][j]
+        ans = [[0] * n for _ in range(m)]
+        for i, j in itertools.product(range(m), range(n)):
+            r1, c1, r2, c2 = max(0, i - k), max(0,
+                                                j - k), min(m, i + k + 1), min(
+                                                    n, j + k + 1)
+            ans[i][j] = ps[r2][c2] - ps[r2][c1] - ps[r1][c2] + ps[r1][c1]
+        return ans
+
+
 # 1325 - Delete Leaves With a Given Value - MEDIUM
 class Solution:
     def removeLeafNodes(self, root: TreeNode, target: int) -> TreeNode:
@@ -76,6 +143,7 @@ class Solution:
 
 # 1345 - Jump Game IV - HARD
 class Solution:
+    # O(n) / O(n)
     def minJumps(self, arr: List[int]) -> int:
         # +1 / -1 / same value
         n, idx = len(arr), {}  # defaultdict(list)
@@ -96,4 +164,27 @@ class Solution:
                     visited[j] = True
                     queue.append((j, step + 1))
             idx[arr[i]] = []  # has visited
+        return 0
+
+    def minJumps(self, arr: List[int]) -> int:
+        graph = collections.defaultdict(list)
+        for i, v in enumerate(arr):
+            graph[v].append(i)
+        visited, n = {0}, len(arr)
+        dq = collections.deque([(0, 0)])
+        while dq:
+            i, step = dq.popleft()
+            for j in graph[arr[i]]:
+                if j not in visited:
+                    if j == n - 1:
+                        return step + 1
+                    visited.add(j)
+                    dq.append((j, step + 1))
+            for j in [i - 1, i + 1]:
+                if 0 <= j < n and j not in visited:
+                    if j == n - 1:
+                        return step + 1
+                    visited.add(j)
+                    dq.append((j, step + 1))
+            graph[arr[i]] = []
         return 0
