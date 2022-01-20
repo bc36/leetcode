@@ -159,7 +159,7 @@ class Solution:
         return max(a, b, c)
 
     def maxDistToClosest(self, seats: List[int]) -> int:
-        i, j,  ans, n = 0, len(seats) - 1, 0, len(seats)
+        i, j, ans, n = 0, len(seats) - 1, 0, len(seats)
         while seats[j] == 0:
             j -= 1
         ans = max(ans, n - 1 - j)
@@ -325,6 +325,47 @@ class Solution:
         connected(root)
         dfs(target, 0)
         return res
+
+
+# 875 - Koko Eating Bananas - MEDIUM
+class Solution:
+    # O(n * logm), O(1)
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        def check(mid: int, h: int) -> bool:
+            for b in piles:
+                if not b % mid:
+                    h -= b // mid
+                else:
+                    h -= b // mid + 1
+                # or
+                # h -= (b + mid - 1) // mid
+                # or
+                # h -= (b - 1) / mid + 1
+                # equal to
+                # h -= math.ceil(b / mid)
+            return h >= 0
+
+        lo, hi = 1, max(piles)
+        while lo < hi:
+            mid = (lo + hi) >> 1
+            if not check(mid, h):
+                lo = mid + 1
+            else:
+                hi = mid
+        return lo
+
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        lo, hi = 1, max(piles)
+        while lo < hi:
+            middle = (lo + hi) // 2
+            need = 0
+            for pile in piles:
+                need += math.ceil(pile / middle)
+            if need <= h:
+                hi = middle
+            else:
+                lo = middle + 1
+        return hi
 
 
 # 876 - Middle of the Linked List - EASY
