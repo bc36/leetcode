@@ -461,8 +461,19 @@ class Solution:
 
 # 141 - Linked List Cycle - EASY
 class Solution:
+    # O(n) / O(n)
     def hasCycle(self, head: Optional[ListNode]) -> bool:
-        slow, fast = head, head
+        seen = set()
+        while head:
+            if head in seen:
+                return True
+            seen.add(head)
+            head = head.next
+        return False
+
+    # O(n) / O(1)
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        slow = fast = head
         while fast and fast.next:
             slow = slow.next
             fast = fast.next.next
@@ -470,6 +481,7 @@ class Solution:
                 return True
         return False
 
+    # O(n) / O(1)
     def hasCycle(self, head: Optional[ListNode]) -> bool:
         try:
             slow = head

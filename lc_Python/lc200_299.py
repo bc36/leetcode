@@ -116,15 +116,46 @@ class Solution:
 class Solution:
     def removeElements(self, head: Optional[ListNode],
                        val: int) -> Optional[ListNode]:
-        dummyHead = ListNode(-1)
-        dummyHead.next = head
+        dummyHead = ListNode(-1, head)
         cur = dummyHead
-        while cur.next != None:
+        while cur.next:
             if cur.next.val == val:
                 cur.next = cur.next.next
             else:
                 cur = cur.next
         return dummyHead.next
+
+    # two pointers
+    def removeElements(self, head: ListNode, val: int) -> ListNode:
+        dummy = pre = ListNode(-1, head)
+        while head:
+            if head.val == val:
+                pre.next = head.next
+            else:
+                pre = head
+            head = head.next
+        return dummy.next
+
+    # NOT WORK!! / input: [7,7,7,7] 7
+    # head did not change
+    def removeElements(self, head: Optional[ListNode],
+                       val: int) -> Optional[ListNode]:
+        pre = ListNode(-1)
+        pre.next = head
+        cur = head
+        '''
+        # It is a wrong assigning way, it will create two new objects: 'dummy' and 'pre'
+        dummy, pre = ListNode(-1), ListNode(-1)
+        dummy.next, pre.next = head, head
+        return dummy.next
+        '''
+        while cur:
+            if cur.val == val:
+                pre.next = cur.next
+            else:
+                pre = pre.next
+            cur = cur.next
+        return head
 
     # recursive
     def removeElements(self, head: Optional[ListNode],
@@ -137,58 +168,6 @@ class Solution:
         if head.val == val:
             return next
         head.next = next
-        return head
-
-    # v1 two pointers
-    def removeElements(self, head: Optional[ListNode],
-                       val: int) -> Optional[ListNode]:
-        pre = None
-        cur = head
-        while cur:
-            if cur.val == val:
-                if not pre:
-                    head = head.next
-                else:
-                    pre.next = cur.next
-            else:
-                pre = cur
-            cur = cur.next
-        return head
-
-    # v2 two pointers
-    def removeElements(self, head: Optional[ListNode],
-                       val: int) -> Optional[ListNode]:
-        dummyHead = ListNode(-1)
-        dummyHead.next = head
-        cur = head
-        pre = dummyHead
-        while cur:
-            if cur.val == val:
-                pre.next = cur.next
-            else:
-                pre = pre.next
-            cur = cur.next
-        return dummyHead.next
-
-    # v3 NOT WORK!! / input: [7,7,7,7] 7
-    # head did not change
-    def removeElements(self, head: Optional[ListNode],
-                       val: int) -> Optional[ListNode]:
-        pre = ListNode(-1)
-        pre.next = head
-        cur = head
-        '''
-        # is also wrong assigning way, it will create two new objects
-        dummyHead, pre = ListNode(-1), ListNode(-1)
-        dummyHead.next, pre.next = head, head
-        return dummyHead.next
-        '''
-        while cur:
-            if cur.val == val:
-                pre.next = cur.next
-            else:
-                pre = pre.next
-            cur = cur.next
         return head
 
 

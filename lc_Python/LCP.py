@@ -1,5 +1,5 @@
 from typing import List
-import collections, heapq, functools, math, random, queue, bisect
+import collections, heapq, functools, math, random, queue, bisect, itertools
 
 
 # https://leetcode-cn.com/problems/na-ying-bi/
@@ -129,6 +129,45 @@ class Solution:
         return ans
 
 
+# https://leetcode-cn.com/problems/zui-xiao-tiao-yue-ci-shu/
+# LCP 09. 最小跳跃次数
+class Solution:
+    def minJump(self, jump: List[int]) -> int:
+        n = len(jump)
+        visited = [True] + [False] * (n - 1)
+        queue = [(0, 0)]
+        cur = far = 0
+        while cur < len(queue):
+            idx, step = queue[cur]
+            if idx + jump[idx] >= n:
+                return step + 1
+            if not visited[idx + jump[idx]]:
+                queue.append((idx + jump[idx], step + 1))
+                visited[idx + jump[idx]] = True
+            for j in range(far, idx):
+                if not visited[j]:
+                    queue.append((j, step + 1))
+                    visited[j] = True
+            far = max(far, idx + 1)
+            cur += 1
+        return -1
+
+    def minJump(self, jump: List[int]) -> int:
+        n = len(jump)
+        dp = [0] * n
+        for i in range(n - 1, -1, -1):
+            if i + jump[i] >= n:
+                dp[i] = 1
+            else:
+                dp[i] = 1 + dp[i + jump[i]]
+            for j in range(i + 1, n):  # 后面可以往前跳
+                if dp[j] > dp[i]:  # 下标比j还大的后面的就可以选择从j跳, 不用从i跳
+                    dp[j] = dp[i] + 1
+                else:
+                    break
+        return dp[0]
+
+
 # https://leetcode-cn.com/problems/qi-wang-ge-shu-tong-ji/
 # LCP 11. 期望个数统计
 class Solution:
@@ -197,7 +236,7 @@ class Solution:
         nb, ns = len(buttons), len(stones)
         startToAnyPos = bfs(startX, startY)
         # 若没有机关，最短距离就是(startX, startY)到(endX, endY)的距离
-        if nb == 0: 
+        if nb == 0:
             return startToAnyPos[endX][endY]
         # 记录第i个机关到第j个机关的最短距离
         # dist[i][nb]表示到起点的距离， dist[i][nb+1]表示到终点的距离
