@@ -1094,6 +1094,7 @@ class Solution:
                 if i in r or j in c:
                     matrix[i][j] = 0
         return
+
     # O(2 * m * n), space optimized, O(2), two flags
     def setZeroes(self, matrix: List[List[int]]) -> None:
         m, n = len(matrix), len(matrix[0])
@@ -1114,6 +1115,7 @@ class Solution:
             for j in range(n):
                 matrix[0][j] = 0
         return
+
     # O(2 * m * n), space optimized, O(1), one flags
     def setZeroes(self, matrix: List[List[int]]) -> None:
         m, n = len(matrix), len(matrix[0])
@@ -1131,6 +1133,7 @@ class Solution:
             if col0:
                 matrix[i][0] = 0
         return
+
 
 # 74 - Search a 2D Matrix - MEDIUM
 class Solution:
@@ -1314,11 +1317,11 @@ class Solution:
 
 # 83 - Remove Duplicates from Sorted List - EASY
 class Solution:
+    # O(n) / O(1)
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
         if not head:
             return None
-        dummy = ListNode(-1)
-        dummy.next = head
+        dummy = ListNode(-1, head)
         while head.next:
             if head.val == head.next.val:
                 head.next = head.next.next
@@ -1326,15 +1329,26 @@ class Solution:
                 head = head.next
         return dummy.next
 
-    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        ans = ListNode(-101)
-        dummy = ans
+    # O(n) / O(1)
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        dummy = pre = ListNode(-101, head)
         while head:
-            if head.val != dummy.val:
-                dummy.next = ListNode(head.val)
-                dummy = dummy.next
+            if pre.val == head.val:
+                pre.next = head.next
+            else:
+                pre = pre.next
             head = head.next
-        return ans.next
+        return dummy.next
+
+    # O(n) / O(n)
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = pre = ListNode(-101)
+        while head:
+            if head.val != pre.val:
+                pre.next = ListNode(head.val)
+                pre = pre.next
+            head = head.next
+        return dummy.next
 
 
 # 88 - Merge Sorted Array - EASY

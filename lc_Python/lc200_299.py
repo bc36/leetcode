@@ -181,16 +181,18 @@ class Solution:
             head.next = pre
             pre = head
             head = tmp
+            # one line:
+            # head.next, head, pre = pre, head.next, head
         return pre
 
     # recursive
     def reverseList(self, head: ListNode) -> ListNode:
         if not head or not head.next:
             return head
-        newHead = self.reverseList(head.next)
+        new = self.reverseList(head.next)
         head.next.next = head
         head.next = None
-        return newHead
+        return new
 
 
 # 207 - Course Schedule I - MEDIUM

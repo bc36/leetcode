@@ -341,13 +341,25 @@ class Solution:
 # 134 - Gas Station - MEDIUM
 class Solution:
     def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
-        total, station, minTotal = 0, 0, float("inf")
+        if (sum(gas) - sum(cost) < 0):
+            return -1
+        surplus, start = 0, 0
         for i in range(len(gas)):
-            total += gas[i] - cost[i]
-            if total < minTotal:
-                station = i
-                minTotal = total
-        return (station + 1) % len(gas) if total >= 0 else -1
+            surplus += gas[i] - cost[i]
+            if surplus < 0:
+                start = i + 1
+                surplus = 0
+        return start
+
+    # the answer is the next station of the station with 'minSurplus'
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        surplus, idx, minSurplus = 0, 0, float("inf")
+        for i in range(len(gas)):
+            surplus += gas[i] - cost[i]
+            if surplus < minSurplus:
+                idx = i
+                minSurplus = surplus
+        return (idx + 1) % len(gas) if surplus >= 0 else -1
 
 
 # 136 - Single Number - EASY
