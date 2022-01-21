@@ -2,6 +2,13 @@ from typing import List
 import collections, heapq, functools, math, random, queue, bisect, itertools
 
 
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+
 # https://leetcode-cn.com/problems/na-ying-bi/
 # LCP 06. 拿硬币 - EASY
 class Solution:
@@ -166,6 +173,45 @@ class Solution:
                 else:
                     break
         return dp[0]
+
+
+# https://leetcode-cn.com/problems/er-cha-shu-ren-wu-diao-du/
+# LCP 10. 二叉树任务调度
+class Solution(object):
+    def minimalExecTime(self, root: TreeNode) -> float:
+        def dfs(root):
+            if root is None:
+                return 0., 0.
+            a, b = dfs(root.left)
+            c, d = dfs(root.right)
+            total = root.val + a + c
+            if a < c:
+                a, c = c, a
+                b, d = d, b
+            if a - 2 * b <= c:
+                p = (a + c) / 2
+            else:
+                p = c + b
+            return total, p
+
+        total, p = dfs(root)
+        return total - p
+
+    # TODO
+    def minimalExecTime(self, root: TreeNode) -> float:
+        def dfs(root: TreeNode):
+            """
+            return:
+                [0]: 该结点及子树的最短运行时间, 左右子并行执行，或四孙的并行执行
+                [1]: 该结点及子树的最大运行时间, 令左右子串行执行，让父节点去分配并行
+            """
+            if not root: return 0, 0
+            left = dfs(root.left)
+            right = dfs(root.right)
+            return max(left[0], right[0], (left[1] + right[1]) /
+                       2) + root.val, left[1] + right[1] + root.val
+
+        return dfs(root)[0]
 
 
 # https://leetcode-cn.com/problems/qi-wang-ge-shu-tong-ji/
