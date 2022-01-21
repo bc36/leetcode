@@ -139,8 +139,11 @@ class Solution:
             root.right = self.removeLeafNodes(root.right, target)
             if root.val != target or root.left or root.right:
                 return root
-
-
+# 1332 - Remove Palindromic Subsequences - EASY
+class Solution:
+    def removePalindromeSub(self, s: str) -> int:
+        return 1 if s == s[::-1] else 2
+            
 # 1345 - Jump Game IV - HARD
 class Solution:
     # O(n) / O(n)

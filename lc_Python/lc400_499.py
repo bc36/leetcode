@@ -211,6 +211,40 @@ class Solution:
                 return i - 1
 
 
+# 443 - String Compression - MEDIUM
+class Solution:
+    def compress(self, chars: List[str]) -> int:
+        i = j = 0  # read / write
+        while i < len(chars):
+            chars[j] = chars[i]
+            j += 1
+            count = 0
+            while i < len(chars) and chars[i] == chars[j - 1]:
+                count += 1
+                i += 1
+            if count > 1:
+                for ch in str(count):
+                    chars[j] = ch
+                    j += 1
+        return j
+
+    def compress(self, chars: List[str]) -> int:
+        l = r = 0
+        while r < len(chars):
+            count = 1
+            while r + 1 < len(chars) and chars[r] == chars[r + 1]:
+                count += 1
+                r += 1
+            chars[l] = chars[r]
+            if count > 1:
+                s = str(count)
+                chars[l + 1:l + 1 + len(s)] = s
+                l += len(s)
+            l += 1
+            r += 1
+        return l
+
+
 # 448 - Find All Numbers Disappeared in an Array - EASY
 class Solution:
     def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
