@@ -3,6 +3,7 @@ from typing import List
 
 # 68 / 2021.12.25
 
+
 # https://leetcode-cn.com/problems/check-if-a-parentheses-string-can-be-valid/
 # 5948 判断一个括号字符串是否有效. 正反遍历, 可能的左括号最大最小值. 类似678
 class Solution:
@@ -61,19 +62,22 @@ class Solution:
 # 5931. 用邮票贴满网格图
 # 直接check, 更改矩阵会超时 -> 二维前缀和
 class Solution:
-    def possibleToStamp(self, grid: List[List[int]], stampHeight: int, stampWidth: int) -> bool:
+    def possibleToStamp(self, grid: List[List[int]], stampHeight: int,
+                        stampWidth: int) -> bool:
         m, n = len(grid), len(grid[0])
         sum = [[0] * (n + 1) for _ in range(m + 1)]
         diff = [[0] * (n + 1) for _ in range(m + 1)]
         for i, row in enumerate(grid):
             for j, v in enumerate(row):  # grid 的二维前缀和
-                sum[i + 1][j + 1] = sum[i + 1][j] + sum[i][j + 1] - sum[i][j] + v
+                sum[i + 1][j +
+                           1] = sum[i + 1][j] + sum[i][j + 1] - sum[i][j] + v
 
         for i, row in enumerate(grid):
             for j, v in enumerate(row):
                 if v == 0:
                     x, y = i + stampHeight, j + stampWidth  # 注意这是矩形右下角横纵坐标都 +1 后的位置
-                    if x <= m and y <= n and sum[x][y] - sum[x][j] - sum[i][y] + sum[i][j] == 0:
+                    if x <= m and y <= n and sum[x][y] - sum[x][j] - sum[i][
+                            y] + sum[i][j] == 0:
                         diff[i][j] += 1
                         diff[i][y] -= 1
                         diff[x][j] -= 1
@@ -88,3 +92,53 @@ class Solution:
                     return False
             cnt, pre = pre, cnt
         return True
+
+
+##################
+# 70 / 2022.1.22 #
+##################
+# https://leetcode.com/contest/biweekly-contest-70
+
+
+# https://leetcode.com/problems/number-of-ways-to-divide-a-long-corridor/
+class Solution:
+    def numberOfWays(self, corridor: str) -> int:
+        n, ns, ans, cs, cp = len(corridor), corridor.count('S'), 1, 0, 0
+        if ns & 1 or (ns == 0 and n):
+            return 0
+        for ch in corridor.strip('P'):
+            if ch == 'S':
+                cs += 1
+                if cs == 1:
+                    ans = ans * (cp + 1) % 1000000007
+                if cs == 2:
+                    cs = cp = 0
+            else:
+                cp += 1
+        return ans
+
+    def numberOfWays(self, corridor: str) -> int:
+        s = [i for i, char in enumerate(corridor) if char == 'S']
+        if not s or len(s) % 2:
+            return 0
+        ans, mod = 1, 10**9 + 7
+        for i in range(2, len(s), 2):
+            ans *= s[i] - s[i - 1]
+            ans %= mod
+        return ans
+
+    def numberOfWays(self, corridor: str) -> int:
+        ns = corridor.count("S")
+        if ns == 0 or ns % 2 == 1:
+            return 0
+        s = 0
+        mp = collections.defaultdict(int)
+        for _, ch in enumerate(corridor):
+            s += (ch == "S")
+            if s > 0 and s < ns - 1 and s % 2 == 0:
+                mp[s] += 1
+        ans, mod = 1, 10**9 + 7
+        for val in mp.values():
+            ans *= val
+            ans %= mod
+        return ans
