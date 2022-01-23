@@ -1,4 +1,4 @@
-import collections
+import collections, bisect, itertools, functools, math, heapq
 from typing import List
 
 
@@ -37,3 +37,35 @@ class Solution:
         if d[0] % 2 == 0:
             return d[1] != 0 and d[2] != 0
         return d[2] > d[1] + 2 or d[1] > d[2] + 2
+
+
+# 2034 - Stock Price Fluctuation - MEDIUM
+class StockPrice:
+    def __init__(self):
+        self.maxPrice = []
+        self.minPrice = []
+        self.timePrice = {}
+        self.maxTimestamp = 0
+
+    def update(self, timestamp: int, price: int) -> None:
+        heapq.heappush(self.maxPrice, (-price, timestamp))
+        heapq.heappush(self.minPrice, (price, timestamp))
+        self.timePrice[timestamp] = price
+        self.maxTimestamp = max(self.maxTimestamp, timestamp)
+
+    def current(self) -> int:
+        return self.timePrice[self.maxTimestamp]
+
+    def maximum(self) -> int:
+        while True:
+            price, timestamp = self.maxPrice[0]
+            if -price == self.timePrice[timestamp]:
+                return -price
+            heapq.heappop(self.maxPrice)
+
+    def minimum(self) -> int:
+        while True:
+            price, timestamp = self.minPrice[0]
+            if price == self.timePrice[timestamp]:
+                return price
+            heapq.heappop(self.minPrice)
