@@ -165,3 +165,44 @@ class Solution:
         while head := head.next:
             ans = (ans << 1) + head.val
         return ans
+
+
+# 1291 - Sequential Digits - MEDIUM
+class Solution:
+    def sequentialDigits(self, low: int, high: int) -> List[int]:
+        def dfs(now: int):
+            if now > high or now % 10 == 9:
+                return
+            new = now * 10 + now % 10 + 1
+            if low <= new <= high:
+                ans.append(new)
+            dfs(new)
+            return
+
+        ans = []
+        for i in range(1, 10):
+            dfs(i)
+        return sorted(ans)
+
+    def sequentialDigits(self, low: int, high: int) -> List[int]:
+        ans = []
+        dq = collections.deque(range(1, 10))
+        while dq:
+            cur = dq.popleft()
+            if low <= cur <= high:
+                ans.append(cur)
+            mod = cur % 10
+            if mod < 9:
+                dq.append(cur * 10 + mod + 1)
+        return ans
+
+    def sequentialDigits(self, low: int, high: int) -> List[int]:
+        ans = []
+        for i in range(1, 9):
+            num = nxt = i
+            while num <= high and nxt < 10:
+                if num >= low:
+                    ans.append(num)
+                nxt += 1
+                num = num * 10 + nxt
+        return sorted(ans)
