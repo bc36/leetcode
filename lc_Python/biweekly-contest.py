@@ -101,6 +101,7 @@ class Solution:
 
 
 # https://leetcode.com/problems/number-of-ways-to-divide-a-long-corridor/
+# 5974. 分隔长廊的方案数
 class Solution:
     def numberOfWays(self, corridor: str) -> int:
         n, ns, ans, cs, cp = len(corridor), corridor.count('S'), 1, 0, 0
@@ -114,6 +115,7 @@ class Solution:
                 if cs == 2:
                     cs = cp = 0
             else:
+                # 记录偶数和奇数之间的植物数量
                 cp += 1
         return ans
 
