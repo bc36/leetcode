@@ -331,6 +331,21 @@ class Solution:
             preLen = len(s)
         return len(s) == 0
 
+    def isValid(self, s: str) -> bool:
+        stack = []
+        for ch in s:
+            if ch == '(':
+                stack.append(')')
+            elif ch == '[':
+                stack.append(']')
+            elif ch == '{':
+                stack.append('}')
+            else:
+                if not stack or ch != stack[-1]:
+                    return False
+                stack.pop()
+        return len(stack) == 0
+
 
 # 21. Merge Two Sorted Lists - EASY
 class Solution:
