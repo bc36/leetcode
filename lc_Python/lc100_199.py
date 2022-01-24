@@ -15,6 +15,40 @@ class ListNode:
         self.next = next
 
 
+# 101 - Symmetric Tree - EASY
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        def dfs(left, right):
+            if not (left or right):
+                return True
+            if not (left and right):
+                return False
+            if left.val != right.val:
+                return False
+            return dfs(left.left, right.right) and dfs(left.right, right.left)
+
+        return dfs(root.left, root.right)
+
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root or not (root.left or root.right):
+            return True
+        dq = collections.deque([root.left, root.right])
+        while dq:
+            left = dq.popleft()
+            right = dq.popleft()
+            if not (left or right):
+                continue
+            if not (left and right):
+                return False
+            if left.val != right.val:
+                return False
+            dq.append(left.left)
+            dq.append(right.right)
+            dq.append(left.right)
+            dq.append(right.left)
+        return True
+
+
 # 102 - Binary Tree Level Order Traversal - MEDIUM
 class Solution:
     # bfs: breadth-first search
@@ -55,6 +89,19 @@ class Solution:
 
 # 104 - Maximum Depth of Binary Tree - EASY
 class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        def dfs(r, s):
+            if not r:
+                self.ans = max(self.ans, s)
+                return
+            dfs(r.left, s + 1)
+            dfs(r.right, s + 1)
+            return
+
+        self.ans = 0
+        dfs(root, 0)
+        return self.ans
+
     def maxDepth(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0

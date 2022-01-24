@@ -119,3 +119,20 @@ class Solution:
             return left or right
 
         return lca(root)
+
+
+# 1688 - Count of Matches in Tournament - EASY
+class Solution:
+    def numberOfMatches(self, n: int) -> int:
+        ans = 0
+        while n > 1:
+            if n & 1:
+                ans += (n - 1) // 2
+                n += 1
+            else:
+                ans += n // 2
+            n //= 2
+        return ans
+
+    def numberOfMatches(self, n: int) -> int:
+        return n - 1
