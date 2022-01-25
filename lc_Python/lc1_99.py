@@ -19,6 +19,13 @@ class ListNode:
         self.next = next
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 # 1 - Two Sum - EASY
 # [3, 3] 6: nums.index(3) will return 0, not 1
 class Solution:
@@ -1456,6 +1463,28 @@ class Solution:
         if s[-2] != '0' and int(s[-2:]) < 27:
             two += self.numDecodings(s[:-2])
         return one + two
+
+
+# 94 - Binary Tree Inorder Traversal - EASY
+class Solution:
+    # recursively
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        return self.inorderTraversal(
+            root.left) + [root.val] + self.inorderTraversal(root.right)
+
+    # iteratively
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        stack, ans = [], []
+        while stack or root:
+            while root:
+                stack.append(root)
+                root = root.left
+            n = stack.pop()
+            ans.append(n.val)
+            root = n.right
+        return ans
 
 
 # 96 - Unique Binary Search Trees - MEDIUM

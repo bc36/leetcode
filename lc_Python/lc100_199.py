@@ -625,6 +625,59 @@ class Solution:
         return
 
 
+# 144 - Binary Tree Preorder Traversal - EASY
+class Solution:
+    # recursively
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        def preorder(root):
+            if not root:
+                return
+            ans.append(root.val)
+            preorder(root.left)
+            preorder(root.right)
+            return
+
+        ans = []
+        preorder(root)
+        return ans
+
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        return [root.val] + self.preorderTraversal(
+            root.left) + self.preorderTraversal(root.right)
+
+    # iteratively
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        stack = [root]
+        ans = []
+        while stack:
+            n = stack.pop()
+            if n:
+                ans.append(n.val)
+                stack.append(n.right) # LIFO
+                stack.append(n.left)
+        return ans
+# 145 - Binary Tree Postorder Traversal - EASY
+class Solution:
+    # recursively
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        return self.postorderTraversal(root.left) + self.postorderTraversal(root.right) + [root.val]
+
+    # iteratively
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        stack, ans = [root], []
+        while root:
+            n = stack.pop()
+            if n:
+                ans.append(root.val)
+                stack.append(root.left) # LIFO
+                stack.append(root.right)
+        return ans[::-1]
+
+
 # 146 - LRU Cache - MEDIUM
 class LRUCache:
     def __init__(self, capacity: int):
