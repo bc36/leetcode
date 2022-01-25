@@ -301,6 +301,29 @@ class Solution:
         return ans
 
 
+# 941 - Valid Mountain Array - EASY
+class Solution:
+    def validMountainArray(self, arr: List[int]) -> bool:
+        i = 0
+        while i + 1 < len(arr) and arr[i] < arr[i + 1]:
+            i += 1
+        if i == 0 or i == len(arr) - 1:
+            return False
+        while i + 1 < len(arr) and arr[i] > arr[i + 1]:
+            i += 1
+        return i == len(arr) - 1
+
+    def validMountainArray(self, arr: List[int]) -> bool:
+        if len(arr) < 3:
+            return False
+        i, j = 0, len(arr) - 1
+        while i < len(arr) - 1 and arr[i] < arr[i + 1]:
+            i += 1
+        while j >= 0 and arr[j] < arr[j - 1]:
+            j -= 1
+        return i == j and i != 0 and j != len(arr) - 1
+
+
 # 953 - Verifying an Alien Dictionary - EASY
 class Solution:
     def isAlienSorted(self, words: List[str], order: str) -> bool:
@@ -422,6 +445,77 @@ class Solution:
             #     i += 1
             # else:
             #     j += 1
+        return ans
+
+
+# 992 - Subarrays with K Different Integers - HARD
+class Solution:
+    def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:
+        def atMostK(nums, k):
+            ans = left = right = distinct = 0
+            cnt = collections.Counter()
+            while right < len(nums):
+                if cnt[nums[right]] == 0:
+                    distinct += 1
+                cnt[nums[right]] += 1
+                while distinct > k:
+                    cnt[nums[left]] -= 1
+                    if cnt[nums[left]] == 0:
+                        distinct -= 1
+                    left += 1
+                ans += right - left + 1
+                right += 1
+            return ans
+
+        return atMostK(nums, k) - atMostK(nums, k - 1)
+
+    def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:
+        ret = 0
+        prev_good = 0
+        counter = dict()
+        left, right = 0, 0
+        # keep moving right
+        for right in range(len(nums)):
+            counter[nums[right]] = counter.setdefault(nums[right], 0) + 1
+            # now we have k distinct
+            if len(counter.keys()) == k:
+                # the first time we meet k distinct
+                if prev_good == 0:
+                    prev_good = 1
+                # we can move left to find the shortest good to get new good
+                while counter[nums[left]] > 1:
+                    counter[nums[left]] -= 1
+                    left += 1
+                    prev_good += 1
+            # now we have more than k distinct
+            elif len(counter.keys()) > k:
+                # we remove the first of previous shortest good and appending the right
+                # to get a new good
+                prev_good = 1
+                counter.pop(nums[left])
+                left += 1
+                # we can move left to reach the shortest good to get new good
+                while counter[nums[left]] > 1:
+                    counter[nums[left]] -= 1
+                    left += 1
+                    prev_good += 1
+            ret += prev_good
+        return ret
+
+    def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:
+        freq = {}
+        ans = start = left = 0
+        for right in nums:
+            freq[right] = freq.get(right, 0) + 1
+            if len(freq) == k + 1:
+                del freq[nums[left]]
+                left += 1
+                start = left
+            if len(freq) == k:
+                while freq[nums[left]] > 1:
+                    freq[nums[left]] -= 1
+                    left += 1
+                ans += left - start + 1
         return ans
 
 

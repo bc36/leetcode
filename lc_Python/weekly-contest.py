@@ -536,3 +536,25 @@ class Solution:
             else:
                 r = mid
         return l - 1
+
+
+#########################
+# 277 / 3道 / 2022.1.22 #
+#########################
+
+# https://leetcode.com/problems/maximum-good-people-based-on-statements/
+# 5992. 基于陈述统计最多好人数
+# 二进制枚举的方法就是通过二进制数mask的每一位表示第i个人是好人还是坏人, 所以这个mask表示的是所有人的状态
+# 我们只判断好人的陈词, 并不判断坏人的陈述, 因为坏人无论是说真还是说假都无法提高好人的个数, 对答案没有贡献
+class Solution:
+    def maximumGood(self, statements: List[List[int]]) -> int:
+        def check(i: int) -> int:
+            cnt = 0  # i 中好人个数
+            for j, row in enumerate(statements):  # 枚举 i 中的好人 j
+                if (i >> j) & 1:
+                    if any(st < 2 and st != (i >> k) & 1 for k, st in enumerate(row)):
+                        return 0  # 好人 j 的某个陈述 st 与实际情况矛盾
+                    cnt += 1
+            return cnt
+
+        return max(check(i) for i in range(1, 1 << len(statements)))
