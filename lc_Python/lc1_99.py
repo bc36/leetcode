@@ -1478,12 +1478,13 @@ class Solution:
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         stack, ans = [], []
         while stack or root:
-            while root:
+            if root:
                 stack.append(root)
                 root = root.left
-            n = stack.pop()
-            ans.append(n.val)
-            root = n.right
+            else:
+                n = stack.pop()
+                ans.append(n.val)
+                root = n.right
         return ans
 
 

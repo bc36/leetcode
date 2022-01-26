@@ -12,6 +12,31 @@ class Solution:
         return counter
 
 
+# 2013 - Detect Squares - MEDIUM
+class DetectSquares:
+    def __init__(self):
+        self.samex = collections.defaultdict(collections.Counter)
+
+    def add(self, point: List[int]) -> None:
+        x, y = point
+        self.samex[x][y] += 1
+        return
+
+    def count(self, point: List[int]) -> int:
+        x, y = point
+        ans = 0
+
+        if x not in self.samex:
+            return 0
+        samex = self.samex[x]
+        for k, diffy in self.samex.items():
+            if k != x:
+                d = k - x
+                ans += diffy[y] * samex[y + d] * diffy[y + d]
+                ans += diffy[y] * samex[y - d] * diffy[y - d]
+        return ans
+
+
 # 2022 - Convert 1D Array Into 2D Array - EASY
 class Solution:
     def construct2DArray(self, original: List[int], m: int,

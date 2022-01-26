@@ -9,6 +9,46 @@ class TreeNode:
         self.right = right
 
 
+# 1305 - All Elements in Two Binary Search Trees - MEDIUM
+class Solution:
+    # result of inorder traversal of a Binary Search Tree is ascending order
+    # O((m+n) * log(m+n))
+    def getAllElements(self, root1: TreeNode, root2: TreeNode) -> List[int]:
+        def dfs(node):
+            if node:
+                dfs(node.left)
+                valueList.append(node.val)
+                dfs(node.right)
+
+        valueList = []
+        dfs(root1)
+        dfs(root2)
+        return sorted(valueList)
+
+    # O((m+n) * 2)
+    def getAllElements(self, root1: TreeNode, root2: TreeNode) -> List[int]:
+        def inorder(node: TreeNode, l:List[int]):
+            if not node:
+                return
+            inorder(node.left, l)
+            l.append(node.val)
+            inorder(node.right, l)
+            return
+
+        l1, l2 = [], []
+        inorder(root1, l1)
+        inorder(root2, l2)
+        ans, i, j = [], 0, 0
+        while i < len(l1) or j < len(l2):
+            if i < len(l1) and (j == len(l2) or l1[i] <= l2[j]):
+                ans.append(l1[i])
+                i += 1
+            else:
+                ans.append(l2[j])
+                j += 1
+        return ans
+
+
 # 1306 - Jump Game III - MEDIUM
 class Solution:
     def canReach(self, arr: List[int], start: int) -> bool:
@@ -139,11 +179,14 @@ class Solution:
             root.right = self.removeLeafNodes(root.right, target)
             if root.val != target or root.left or root.right:
                 return root
+
+
 # 1332 - Remove Palindromic Subsequences - EASY
 class Solution:
     def removePalindromeSub(self, s: str) -> int:
         return 1 if s == s[::-1] else 2
-            
+
+
 # 1345 - Jump Game IV - HARD
 class Solution:
     # O(n) / O(n)
