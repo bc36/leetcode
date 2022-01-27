@@ -89,6 +89,41 @@ class Solution:
         return total
 
 
+# 421 - Maximum XOR of Two Numbers in an Array - MEDIUM
+class Solution:
+    # 1000ms
+    def findMaximumXOR(self, nums: List[int]) -> int:
+        ans = 0
+        for i in reversed(range(32)):
+            prefixes = set([x >> i for x in nums])
+            ans <<= 1
+            candidate = ans + 1
+            for p in prefixes:
+                if candidate ^ p in prefixes:
+                    ans = candidate
+                    break
+        return ans
+
+    # 300ms
+    def findMaximumXOR(self, nums: List[int]) -> int:
+        ans = 0
+        max_len = max(nums).bit_length()
+        if not max_len:
+            return 0
+        k = 1 << (max_len - 1)
+        while k:
+            seen = set()
+            ans ^= k
+            for num in nums:
+                seen.add(cur := (ans & num))
+                if cur ^ ans in seen:
+                    break
+            else:
+                ans ^= k
+            k >>= 1
+        return ans
+
+
 # 423 - Reconstruct Original Digits from English - MEDIUM
 class Solution:
     def originalDigits(self, s: str) -> str:
