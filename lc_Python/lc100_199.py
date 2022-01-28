@@ -53,20 +53,20 @@ class Solution:
 class Solution:
     # bfs: breadth-first search
     def levelOrder(self, root: TreeNode) -> List[List[int]]:
-        ans, values = [], []
-        nodeStack = collections.deque()
+        ans = []
+        dq = collections.deque()
         if root:
-            nodeStack.append(root)
-        while nodeStack:
-            for _ in list(nodeStack):
-                node = nodeStack.popleft()
+            dq.append(root)
+        while dq:
+            level = []
+            for _ in list(dq):
+                node = dq.popleft()
                 if node.left:
-                    nodeStack.append(node.left)
+                    dq.append(node.left)
                 if node.right:
-                    nodeStack.append(node.right)
-                values.append(node.val)
-            ans.append(values)
-            values = []
+                    dq.append(node.right)
+                level.append(node.val)
+            ans.append(level)
         return ans
 
     # dfs: depth-first search

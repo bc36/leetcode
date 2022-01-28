@@ -1,5 +1,5 @@
 import itertools, bisect, heapq, collections, math, functools
-from typing import List
+from typing import List, Optional
 
 
 class TreeNode:
@@ -48,6 +48,19 @@ class Solution:
             root1.left = self.mergeTrees(root1.left, root2.left)
             root1.right = self.mergeTrees(root1.right, root2.right)
         return root1 or root2
+
+
+# 653 - Two Sum IV - Input is a BST - EASY
+class Solution:
+    def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
+        if not root: return False
+        bfs, s = [root], set()
+        for i in bfs:
+            if k - i.val in s: return True
+            s.add(i.val)
+            if i.left: bfs.append(i.left)
+            if i.right: bfs.append(i.right)
+        return False
 
 
 # 673 - Number of Longest Increasing Subsequence - MEDIUM
