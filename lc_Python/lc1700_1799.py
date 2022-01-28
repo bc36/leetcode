@@ -73,3 +73,22 @@ class Solution:
                 maxH = heights[i]
         ans.reverse()
         return ans
+
+
+# 1765 - Map of Highest Peak - MEDIUM
+class Solution:
+    def highestPeak(self, isWater: List[List[int]]) -> List[List[int]]:
+        dq = collections.deque([])
+        m, n = len(isWater), len(isWater[0])
+        for i in range(m):
+            for j in range(n):
+                if isWater[i][j] == 1:
+                    dq.append((i, j))
+                isWater[i][j] -= 1
+        while dq:
+            x, y = dq.popleft()
+            for nx, ny in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]:
+                if 0 <= nx < m and 0 <= ny < n and isWater[nx][ny] == -1:
+                    dq.append((nx, ny))
+                    isWater[nx][ny] = isWater[x][y] + 1
+        return isWater
