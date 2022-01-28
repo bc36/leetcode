@@ -30,6 +30,49 @@ class Solution:
         return self.searchBST(root.left if root.val > val else root.right, val)
 
 
+# 701 - Insert into a Binary Search Tree - MEDIUM
+class Solution:
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return TreeNode(val)
+        r = root
+        while (r.val > val and r.left) or r.val < val and r.right:
+            r = r.left if r.val > val else r.right
+        if r.val > val:
+            r.left = TreeNode(val)
+        else:
+            r.right = TreeNode(val)
+        return root
+
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return TreeNode(val)
+        r = root
+        while True:
+            if val < r.val:
+                if r.left:
+                    r = r.left
+                else:
+                    r.left = TreeNode(val)
+                    break
+            else:
+                if r.right:
+                    r = r.right
+                else:
+                    r.right = TreeNode(val)
+                    break
+        return root
+
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return TreeNode(val)
+        if root.val > val:
+            root.left = self.insertIntoBST(root.left, val)
+        else:
+            root.right = self.insertIntoBST(root.right, val)
+        return root
+
+
 # 704 - Binary Search - EASY
 class Solution:
     def search(self, nums: List[int], target: int) -> int:

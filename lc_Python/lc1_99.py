@@ -1482,9 +1482,22 @@ class Solution:
                 stack.append(root)
                 root = root.left
             else:
-                n = stack.pop()
-                ans.append(n.val)
-                root = n.right
+                cur = stack.pop()
+                ans.append(cur.val)
+                root = cur.right
+        return ans
+
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        stack, ans = [], []
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+            cur = stack.pop()
+            ans.append(cur.val)
+            root = cur.right
         return ans
 
 
@@ -1497,3 +1510,42 @@ class Solution(object):
             for j in range(1, i + 1):
                 dp[i] += dp[j - 1] * dp[i - j]
         return dp[n]
+
+
+# 98 - Validate Binary Search Tree - MEDIUM
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        def valid(root: TreeNode, lower=float('-inf'), upper=float('inf')):
+            if not root:
+                return True
+            if root.val <= lower or root.val >= upper:
+                return False
+            return valid(root.left, lower, root.val) and valid(
+                root.right, root.val, upper)
+
+        return valid(root)
+
+    def isValidBST(self, root: TreeNode) -> bool:
+        def isValid(root, minv, maxv):
+            if not root:
+                return True
+            if minv and root.val <= minv.val: return False
+            if maxv and root.val >= maxv.val: return False
+            return isValid(root.left, minv, root) and isValid(
+                root.right, root, maxv)
+
+        return isValid(root, None, None)
+
+    def isValidBST(self, root: TreeNode) -> bool:
+        pre, stack = float('-inf'), []
+        while root or stack:
+            if root:
+                stack.append(root)
+                root = root.left
+            else:
+                cur = stack.pop()
+                if pre >= cur.val:
+                    return False
+                pre = cur.val
+                root = cur.right
+        return True
