@@ -108,6 +108,32 @@ class Solution:
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 
 
+# 112 - Path Sum - EASY
+class Solution:
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        stack = []
+        if root:
+            stack.append((root, targetSum))
+        while stack:
+            n, t = stack.pop()
+            if t - n.val == 0 and not (n.left or n.right):
+                return True
+            if n.left:
+                stack.append((n.left, t - n.val))
+            if n.right:
+                stack.append((n.right, t - n.val))
+        return False
+
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root:
+            return False
+        if not (root.left or root.right):
+            return root.val == targetSum
+        return self.hasPathSum(root.left,
+                               targetSum - root.val) or self.hasPathSum(
+                                   root.right, targetSum - root.val)
+
+
 # 116 - Populating Next Right Pointers in Each Node - MEDIUM
 class Solution:
     def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
@@ -655,16 +681,19 @@ class Solution:
             n = stack.pop()
             if n:
                 ans.append(n.val)
-                stack.append(n.right) # LIFO
+                stack.append(n.right)  # LIFO
                 stack.append(n.left)
         return ans
+
+
 # 145 - Binary Tree Postorder Traversal - EASY
 class Solution:
     # recursively
     def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         if not root:
             return []
-        return self.postorderTraversal(root.left) + self.postorderTraversal(root.right) + [root.val]
+        return self.postorderTraversal(root.left) + self.postorderTraversal(
+            root.right) + [root.val]
 
     # iteratively
     def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
@@ -673,7 +702,7 @@ class Solution:
             n = stack.pop()
             if n:
                 ans.append(root.val)
-                stack.append(root.left) # LIFO
+                stack.append(root.left)  # LIFO
                 stack.append(root.right)
         return ans[::-1]
 

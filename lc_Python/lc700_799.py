@@ -22,6 +22,13 @@ class Solution:
                 return root
         return None
 
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return None
+        if root.val == val:
+            return root
+        return self.searchBST(root.left if root.val > val else root.right, val)
+
 
 # 704 - Binary Search - EASY
 class Solution:

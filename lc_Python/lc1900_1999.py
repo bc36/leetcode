@@ -1,4 +1,4 @@
-import collections
+import collections, bisect, itertools, functools, math, heapq
 from typing import List
 
 
@@ -24,4 +24,29 @@ class Solution:
             for a in range(b):
                 if (total := nums[a] + nums[b]) in cnt:
                     ans += cnt[total]
+        return ans
+
+
+# 1996 - The Number of Weak Characters in the Game - MEDIUM
+class Solution:
+    def numberOfWeakCharacters(self, properties: List[List[int]]) -> int:
+        properties.sort(key=lambda x: (-x[0], x[1]))
+        ans = 0
+        maxDf = 0
+        for _, df in properties:
+            if maxDf > df:
+                ans += 1
+            else:
+                maxDf = max(maxDf, df)
+        return ans
+
+    def numberOfWeakCharacters(self, properties: List[List[int]]) -> int:
+        properties.sort(key=lambda x: (x[0], -x[1]))
+        stack = []
+        ans = 0
+        for _, d in properties:
+            while stack and stack[-1] < d:
+                stack.pop()
+                ans += 1
+            stack.append(d)
         return ans

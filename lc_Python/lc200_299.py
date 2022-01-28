@@ -368,6 +368,78 @@ class Solution:
         return ans
 
 
+# 211 - Design Add and Search Words Data Structure - MEDIUM
+class WordDictionary:
+    def __init__(self):
+        self.root = {}
+
+    def addWord(self, word: str) -> None:
+        r = self.root
+        for ch in word:
+            r = r.setdefault(ch, {})
+        r['END'] = True
+        return
+
+    def search(self, word: str) -> bool:
+        def dfs(word, r):
+            for i, ch in enumerate(word):
+                if ch in r:
+                    r = r[ch]
+                elif ch == '.':
+                    for k in r:
+                        if k == 'END':  # not having the 'isWord' property
+                            continue
+                        if dfs(word[i + 1:], r[k]):
+                            return True
+                    return False
+                else:
+                    return False
+            return 'END' in r
+
+        return dfs(word, self.root)
+
+
+class WordDictionary:
+    def __init__(self):
+        self.root = {}
+
+    def addWord(self, word):
+        r = self.root
+        for ch in word:
+            r = r.setdefault(ch, {})
+        r[None] = None
+
+    def search(self, word):
+        def find(word, r):
+            if not word:
+                return None in r
+            ch, word = word[0], word[1:]
+            if ch != '.':
+                return ch in r and find(word, r[ch])
+            return any(find(word, kid) for kid in r.values() if kid)
+
+        return find(word, self.root)
+
+
+class WordDictionary:
+    def __init__(self):
+        self.d = collections.defaultdict(list)
+
+    def addWord(self, word: str) -> None:
+        self.d[len(word)] += [word]
+
+    def search(self, word: str) -> bool:
+        if '.' not in word:
+            return word in self.d[len(word)]
+        for x in self.d[len(word)]:
+            for i in range(len(word)):
+                if word[i] != x[i] and word[i] != '.':
+                    break
+            else:
+                return True
+        return False
+
+
 # 213 - House Robber II - MEDIUM
 class Solution:
     def rob(self, nums: List[int]) -> int:
@@ -604,28 +676,23 @@ class Solution:
 # 226 - Invert Binary Tree - EASY
 class Solution:
     # breadth-first search
-    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
-        stack = []
-        if root:
-            stack = [root]
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        stack = [root]
         while stack:
             node = stack.pop()
-            if node.left:
-                stack.append(node.left)
-            if node.right:
-                stack.append(node.right)
-            node.left, node.right = node.right, node.left
-
+            if node:
+                node.left, node.right = node.right, node.left
+                stack += node.left, node.right
         return root
 
     # depth-first search
-    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+    def invertTree(self, root: TreeNode) -> TreeNode:
         def dfs(root: TreeNode):
             if not root:
                 return
+            root.left, root.right = root.right, root.left
             dfs(root.left)
             dfs(root.right)
-            root.left, root.right = root.right, root.left
             return
 
         dfs(root)
