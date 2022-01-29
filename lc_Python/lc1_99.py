@@ -1373,6 +1373,21 @@ class Solution:
         return dummy.next
 
 
+# 84 - Largest Rectangle in Histogram - HARD
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        stack = [-1]
+        heights.append(0)
+        ans = 0
+        for i in range(len(heights)):
+            while stack and heights[i] < heights[stack[-1]]:
+                h = heights[stack.pop()]
+                w = i - stack[-1] - 1
+                ans = max(ans, h * w)
+            stack.append(i)
+        return ans
+
+
 # 88 - Merge Sorted Array - EASY
 class Solution:
     def merge(self, nums1: List[int], m: int, nums2: List[int],

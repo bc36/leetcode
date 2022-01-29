@@ -1,7 +1,6 @@
-practice.md
 GoDiary.md
 LcNote.md
-pic.drawio.svg
-test.py
 PyNoob.md
 /lc_Python/template.py
+.*
+!/.gitignore

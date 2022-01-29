@@ -966,6 +966,31 @@ class Solution:
         return [-1, -1]
 
 
+# 169 - Majority Element - EASY
+class Solution:
+    # O(n) / O(1)
+    def majorityElement(self, nums: List[int]) -> int:
+        ans = cnt = 0
+        for n in nums:
+            if cnt == 0:
+                ans = n
+            if ans == n:
+                cnt += 1
+            else:
+                cnt -= 1
+        return ans
+
+    # O(n) / O(n)
+    def majorityElement(self, nums: List[int]) -> int:
+        cnt = collections.Counter(nums)
+        return max(cnt.keys(), key=cnt.get)
+
+    # O(n * logn) / O(logn)
+    def majorityElement(self, nums: List[int]) -> int:
+        nums.sort()
+        return nums[len(nums) // 2]
+
+
 # 173 - Binary Search Tree Iterator - MEDIUM
 # save all node.val by inorder traversal
 class BSTIterator:
