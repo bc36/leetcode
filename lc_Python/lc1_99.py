@@ -201,21 +201,29 @@ class Solution:
 class Solution:
     # narrow down 'left' and 'right' for each 'i'
     def threeSum(self, nums: List[int]) -> List[List[int]]:
+        if not nums or len(nums) < 3:
+            return []
         nums.sort()
         ans = []
         for i in range(len(nums) - 2):
+            if nums[i] > 0:
+                break
             if i > 0 and nums[i] == nums[i - 1]:
                 continue
-            ri = len(nums) - 1  # do not declare it in next loop!
-            for le in range(i + 1, len(nums) - 1):
-                if le > i + 1 and nums[le - 1] == nums[le]:
-                    continue
-                while le < ri and nums[le] + nums[ri] > -nums[i]:
-                    ri -= 1
-                if ri == le:
-                    break
-                if nums[ri] + nums[le] == -nums[i]:
-                    ans.append([nums[i], nums[le], nums[ri]])
+            left, right = i + 1, len(nums) - 1
+            while left < right:
+                if nums[i] + nums[left] + nums[right] == 0:
+                    ans.append([nums[i], nums[left], nums[right]])
+                    left += 1
+                    right -= 1
+                    while left < right and nums[left] == nums[left - 1]:
+                        left += 1
+                    while left < right and nums[right] == nums[right + 1]:
+                        right -= 1
+                elif nums[i] + nums[left] + nums[right] < 0:
+                    left += 1
+                else:
+                    right -= 1
         return ans
 
 

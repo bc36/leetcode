@@ -2,19 +2,17 @@ package lc_Java;
 
 // List / Array
 import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.LinkedList;
+//import java.util.ArrayList;
+//import java.util.LinkedList;
 // Queue
 //import java.util.Stack;
-import java.util.Deque;
-import java.util.Queue;
-import java.util.ArrayDeque;
-import java.util.PriorityQueue;
+//import java.util.Deque;
+//import java.util.Queue;
+//import java.util.ArrayDeque;
+//import java.util.PriorityQueue;
 // Map / Set
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.TreeMap;
-import java.util.LinkedHashMap;
+//import java.util.HashSet;
 import java.util.Map;
 
 public class Lc100_199 {
@@ -83,4 +81,42 @@ public class Lc100_199 {
 		Arrays.sort(nums);
 		return nums[nums.length / 2];
 	}
+
+	// 189. Rotate Array - M
+	// O(n) / O(n)
+	public void rotate(int[] nums, int k) {
+		int n = nums.length;
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) {
+			arr[(i + k) % n] = nums[i];
+		}
+		System.arraycopy(nums, 0, arr, 0, n);
+	}
+
+	public void rotate2(int[] nums, int k) {
+		k %= nums.length;
+		int[] cp = new int[nums.length];
+		System.arraycopy(nums, nums.length - k, cp, 0, k);
+		System.arraycopy(nums, 0, cp, k, nums.length - k);
+		System.arraycopy(cp, 0, nums, 0, nums.length);
+	}
+
+	// O(n) / O(1)
+	public void rotate3(int[] nums, int k) {
+		k %= nums.length;
+		reverse(nums, 0, nums.length - 1);
+		reverse(nums, 0, k - 1);
+		reverse(nums, k, nums.length - 1);
+	}
+
+	public void reverse(int[] nums, int start, int end) {
+		while (start < end) {
+			int temp = nums[start];
+			nums[start] = nums[end];
+			nums[end] = temp;
+			start++;
+			end--;
+		}
+	}
+
 }

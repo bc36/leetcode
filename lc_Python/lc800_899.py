@@ -432,3 +432,14 @@ class Solution:
             else:
                 l = mid + 1
         return l % (10**9 + 7)
+
+
+# 884 - Uncommon Words from Two Sentences - EASY
+class Solution:
+    def uncommonFromSentences(self, s1: str, s2: str) -> List[str]:
+        cnt = collections.Counter(s1.split() + s2.split())
+        ans = []
+        for k in cnt:
+            if cnt[k] == 1:
+                ans.append(k)
+        return ans
