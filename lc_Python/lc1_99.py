@@ -915,20 +915,18 @@ class Solution:
             i = j
         return ans
 
-    # two pointers
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        ret = []
+        ans = []
         intervals = sorted(intervals, key=lambda x: x[0])
-        left, right = intervals[0][0], intervals[0][1]
+        left, right = intervals[0]
         for i in range(1, len(intervals)):
             if intervals[i][0] <= right:
                 right = max(right, intervals[i][1])
             else:
-                ret.append([left, right])
-                left = intervals[i][0]
-                right = intervals[i][1]
-        ret.append([left, right])
-        return ret
+                ans.append([left, right])
+                left, right = intervals[i]
+        ans.append([left, right])
+        return ans
 
 
 # 62 - Unique Paths - MEDIUM
@@ -1193,6 +1191,48 @@ class Solution:
             else:
                 return True
         return False
+
+
+# 75 - Sort Colors - MEDIUM
+class Solution:
+    # O(2n) / O(n)
+    def sortColors(self, nums: List[int]) -> None:
+        cnt = collections.Counter(nums)
+        i = 0
+        for k in sorted(cnt.keys()):
+            while cnt[k] != 0:
+                nums[i] = k
+                i += 1
+                cnt[k] -= 1
+        return
+
+    # O(n) / O(1)
+    def sortColors(self, nums: List[int]) -> None:
+        p = 0
+        for i in range(len(nums)):
+            if nums[i] == 0:
+                nums[p], nums[i] = nums[i], nums[p]
+                p += 1
+        for i in range(p, len(nums)):
+            if nums[i] == 1:
+                nums[p], nums[i] = nums[i], nums[p]
+                p += 1
+        return
+
+    # O(n) / O(1)
+    def sortColors(self, nums: List[int]) -> None:
+        p0 = p1 = 0
+        for i in range(len(nums)):
+            if nums[i] == 1:
+                nums[i], nums[p1] = nums[p1], nums[i]
+                p1 += 1
+            elif nums[i] == 0:
+                nums[i], nums[p0] = nums[p0], nums[i]
+                if p0 < p1:
+                    nums[i], nums[p1] = nums[p1], nums[i]
+                p0 += 1
+                p1 += 1
+        return
 
 
 # 76 - Minimum Window Substring - HARD

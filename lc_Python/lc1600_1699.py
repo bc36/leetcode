@@ -103,6 +103,13 @@ class Solution:
         return p1
 
 
+# 1672 - Richest Customer Wealth - EASY
+class Solution:
+    def maximumWealth(self, accounts: List[List[int]]) -> int:
+        # return max(sum(a) for a in accounts)
+        return max(map(sum, accounts))
+
+
 # 1676 - Lowest Common Ancestor of a Binary Tree IV - MEDIUM
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode',
