@@ -75,6 +75,19 @@ class Solution:
         return ans
 
 
+# 1763 - Longest Nice Substring - EASY
+class Solution:
+    def longestNiceSubstring(self, s: str) -> str:
+        if not s: return ""
+        ss = set(s)
+        for i, c in enumerate(s):
+            if c.swapcase() not in ss:
+                s0 = self.longestNiceSubstring(s[:i])
+                s1 = self.longestNiceSubstring(s[i + 1:])
+                return max(s0, s1, key=len)
+        return s
+
+
 # 1765 - Map of Highest Peak - MEDIUM
 class Solution:
     def highestPeak(self, isWater: List[List[int]]) -> List[List[int]]:

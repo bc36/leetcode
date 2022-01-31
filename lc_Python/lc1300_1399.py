@@ -27,7 +27,7 @@ class Solution:
 
     # O((m+n) * 2)
     def getAllElements(self, root1: TreeNode, root2: TreeNode) -> List[int]:
-        def inorder(node: TreeNode, l:List[int]):
+        def inorder(node: TreeNode, l: List[int]):
             if not node:
                 return
             inorder(node.left, l)
@@ -185,6 +185,19 @@ class Solution:
 class Solution:
     def removePalindromeSub(self, s: str) -> int:
         return 1 if s == s[::-1] else 2
+
+
+# 1342 - Number of Steps to Reduce a Number to Zero - EASY
+class Solution:
+    def numberOfSteps(self, num: int) -> int:
+        step = 0
+        while num:
+            if num & 1:
+                num -= 1
+            else:
+                num //= 2
+            step += 1
+        return step
 
 
 # 1345 - Jump Game IV - HARD
