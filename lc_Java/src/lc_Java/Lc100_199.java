@@ -2,8 +2,9 @@ package lc_Java;
 
 // List / Array
 import java.util.Arrays;
-//import java.util.ArrayList;
+import java.util.ArrayList;
 //import java.util.LinkedList;
+import java.util.List;
 // Queue
 //import java.util.Stack;
 //import java.util.Deque;
@@ -16,6 +17,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Lc100_199 {
+	// 119. Pascal's Triangle II - E
+	public List<Integer> getRow(int rowIndex) {
+		List<Integer> pre = new ArrayList<Integer>();
+		for (int i = 0; i <= rowIndex; i++) {
+			List<Integer> row = new ArrayList<Integer>();
+			for (int j = 0; j <= i; j++) {
+				if (j == 0 || j == i) {
+					row.add(1);
+				} else {
+					row.add(pre.get(j - 1) + pre.get(j));
+				}
+			}
+			pre = row;
+		}
+		return pre;
+	}
+
 	// 136. Single Number - E
 	public int singleNumber(int[] nums) {
 		for (int i = 0; i < nums.length - 1; i++) {

@@ -53,4 +53,34 @@ public class Lc1_99 {
 		}
 		return ans;
 	}
+
+	// 56. Merge Intervals - M
+	public int[][] merge(int[][] intervals) {
+		List<int[]> ans = new ArrayList<>();
+		Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+//		int left = intervals[0][0];
+//		int right = intervals[0][1];
+//		for (int i = 1; i < intervals.length; i++) {
+//			if (intervals[i][0] <= right) {
+//				right = Math.max(right, intervals[i][1]);
+//			} else {
+//				ans.add(new int[] { left, right });
+//				left = intervals[i][0];
+//				right = intervals[i][1];
+//			}
+//		}
+//		ans.add(new int[] { left, right });
+
+		int[] newInterval = intervals[0];
+		ans.add(newInterval);
+		for (int[] interval : intervals) {
+			if (interval[0] <= newInterval[1]) {
+				newInterval[1] = Math.max(newInterval[1], interval[1]);
+			} else {
+				newInterval = interval;
+				ans.add(newInterval);
+			}
+		}
+		return ans.toArray(new int[0][]);
+	}
 }
