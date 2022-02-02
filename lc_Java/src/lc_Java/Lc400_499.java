@@ -12,11 +12,40 @@ import java.util.List;
 //import java.util.ArrayDeque;
 //import java.util.PriorityQueue;
 // Map / Set
-//import java.util.HashMap;
+import java.util.HashMap;
 // import java.util.HashSet;
-//import java.util.Map;
+import java.util.Map;
 
 public class Lc400_499 {
+	// 409. Longest Palindrome - E
+	public int longestPalindrome(String s) {
+		Map<Character, Integer> cnt = new HashMap<Character, Integer>();
+		for (int i = 0; i < s.length(); i++) {
+			cnt.put(s.charAt(i), cnt.getOrDefault(s.charAt(i), 0) + 1);
+		}
+		int ans = 0;
+		boolean odd = false;
+		for (Map.Entry<Character, Integer> e : cnt.entrySet()) {
+			if ((e.getValue() & 1) == 1) {
+				odd = true;
+			}
+			ans += e.getValue() / 2 * 2;
+		}
+		return odd ? ans + 1 : ans;
+	}
+
+	public int longestPalindrome2(String s) {
+		int[] arr = new int[128];
+		for (char c : s.toCharArray()) {
+			arr[c]++;
+		}
+		int odd = 0;
+		for (int i : arr) {
+			odd += (i % 2);
+		}
+		return odd == 0 ? s.length() : (s.length() - odd + 1);
+	}
+
 	// 438. Find All Anagrams in a String - M
 	// O(C * n + m), O(C)
 	public List<Integer> findAnagrams(String s, String p) {

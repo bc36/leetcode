@@ -49,6 +49,27 @@ class Solution:
         return i == len(word) and j == len(abbr)
 
 
+# 409 - Longest Palindrome - EASY
+class Solution:
+    def longestPalindrome(self, s: str) -> int:
+        cnt = collections.Counter(s)
+        ans, odd = 0, False
+        for k in cnt:
+            if cnt[k] & 1:
+                odd = True
+            ans += cnt[k] // 2 * 2
+        return ans + 1 if odd else ans
+
+    def longestPalindrome(self, s: str) -> int:
+        arr = [0] * 128
+        for ch in s:
+            arr[ord(ch) - ord('a')] += 1
+        odd = 0
+        for n in arr:
+            odd += n & 1
+        return len(s) - odd + 1 if odd else len(s)
+
+
 # 413 - Arithmetic Slices - MEDIUM
 class Solution:
     def numberOfArithmeticSlices(self, nums: List[int]) -> int:
