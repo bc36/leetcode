@@ -28,3 +28,32 @@ func set() {
 		}
 	}
 }
+
+// union find / disjoint set
+// 并查集模板（哈希表写法）
+func uf(member []int) {
+	fa := map[int]int{}
+	size := map[int]int{}
+	var find func(int) int
+	find = func(x int) int {
+		if fa[x] != x {
+			fa[x] = find(fa[x])
+		}
+		return fa[x]
+	}
+	groups, maxSize := len(member), 0
+	merge := func(x, y int) {
+		if _, ok := fa[y]; !ok {
+			return
+		}
+		x, y = find(x), find(y)
+		if x == y {
+			return
+		}
+		fa[x] = y
+		size[y] += size[x]
+		maxSize = max(maxSize, size[y]) // 维护答案
+		groups--
+	}
+	merge(member[0], member[1])
+}

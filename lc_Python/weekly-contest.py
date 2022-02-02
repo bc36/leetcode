@@ -542,6 +542,7 @@ class Solution:
 # 277 / 3道 / 2022.1.22 #
 #########################
 
+
 # https://leetcode.com/problems/maximum-good-people-based-on-statements/
 # 5992. 基于陈述统计最多好人数
 # 二进制枚举的方法就是通过二进制数mask的每一位表示第i个人是好人还是坏人, 所以这个mask表示的是所有人的状态
@@ -552,9 +553,140 @@ class Solution:
             cnt = 0  # i 中好人个数
             for j, row in enumerate(statements):  # 枚举 i 中的好人 j
                 if (i >> j) & 1:
-                    if any(st < 2 and st != (i >> k) & 1 for k, st in enumerate(row)):
+                    if any(st < 2 and st != (i >> k) & 1
+                           for k, st in enumerate(row)):
                         return 0  # 好人 j 的某个陈述 st 与实际情况矛盾
                     cnt += 1
             return cnt
 
         return max(check(i) for i in range(1, 1 << len(statements)))
+
+
+#########################
+# 277 / 2道 / 2022.1.29 #
+#########################
+
+
+# https://leetcode-cn.com/problems/find-substring-with-given-hash-value/
+# 5994. 查找给定哈希值的子串
+# 正向滑窗, 需要除以power再求模. 除法不满足取余的恒等性(本题的power和modulo也不一定满足互质)
+# 所以需要倒序, 乘法满足取余恒等. 除法取余: 逆元
+# 所有要做减法求模的行为要小心结果为负数，我们减法之前先加上 mod，保证结果为正
+class Solution:
+    def subStrHash(self, s: str, power: int, modulo: int, k: int,
+                   hashValue: int) -> str:
+        ans = m = 0
+        p, n = 1, len(s)
+        for i in range(n - 1, n - k - 1, -1):
+            m = (m * power + ord(s[i]) - 96) % modulo
+            p = p * power % modulo
+        if m == hashValue:
+            ans = n - k
+        for i in range(i - 1, -1, -1):
+            m = (m * power + ord(s[i]) - 96 -
+                 (ord(s[i + k]) - 96) * p) % modulo
+            if m == hashValue:
+                ans = i
+        return s[ans:ans + k]
+
+
+# https://leetcode-cn.com/problems/groups-of-strings/
+# 5995. 字符串分组
+class Solution:
+    def groupStrings(self, words):
+        parent = [i for i in range(len(words))]
+
+        def find(i):
+            if parent[i] != i:
+                parent[i] = find(parent[i])
+            return parent[i]
+
+        def union(i, j):
+            parent[find(j)] = find(i)
+            return
+
+        words.sort(key=lambda word: len(word))
+        for i in range(len(words)):
+            words[i] = ''.join(sorted(words[i]))
+        hashtable = {words[i]: i for i in range(len(words))}
+        visited = {}
+        for i, word in enumerate(words):
+            if len(word) == 1:
+                union(i, 0)
+                continue
+            if hashtable[word] != i:
+                union(i, hashtable[word])
+                continue
+            for j in range(len(word)):
+                cur = word[:j] + word[j + 1:]
+                if cur in hashtable:
+                    union(i, hashtable[cur])
+                if cur in visited:
+                    union(i, visited[cur])
+                else:
+                    visited[cur] = i
+
+        parent = [find(i) for i in range(len(words))]
+        count = collections.Counter(parent)
+        return [len(count), max(count.values())]
+
+class UnionFind:
+    def __init__(self):
+        self.fa = None
+        self.size = None
+
+    def init_set(self, n: int) -> None:
+        self.fa = list(range(n))
+        self.size = [1] * n
+
+    def find_set(self, x: int) -> int:
+        if x != self.fa[x]:
+            self.fa[x] = self.find_set(self.fa[x])
+        return self.fa[x]
+
+    def union_sets(self, x: int, y: int) -> bool:
+        x, y = self.find_set(x), self.find_set(y)
+        if x == y: return False
+        if self.size[x] < self.size[y]: x, y = y, x
+        self.fa[y] = x
+        self.size[x] += self.size[y]
+        return True
+    
+    def count(self):
+        counter = collections.Counter(map(self.find_set, self.fa))
+        return [len(counter), max(counter.values())]
+    
+def get_mask(s: str) -> int:
+    mask = 0
+    for c in s:
+        mask |= 1 << (ord(c) - 97)
+    return mask
+
+class Solution:
+    def groupStrings(self, words: List[str]) -> List[int]:
+        n = len(words)
+        uf = UnionFind()
+        uf.init_set(n)
+
+        r_mask = dict()
+        for group, word in enumerate(words):
+            mask = get_mask(word)
+            if mask in r_mask:
+                uf.union_sets(group, r_mask[mask])
+            else:
+                r_mask[mask] = group
+
+        d_mask = dict()
+        for mask, group in r_mask.items():
+            for i in range(26):
+                if mask >> i & 1:
+                    t = mask & ~(1 << i)
+                    if t in r_mask:
+                        uf.union_sets(group, r_mask[t])
+                    
+                    if t in d_mask:
+                        uf.union_sets(group, d_mask[t])
+                    else:
+                        d_mask[t] = group
+        
+        return uf.count()
