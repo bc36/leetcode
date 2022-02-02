@@ -9,6 +9,30 @@ class TreeNode:
         self.right = right
 
 
+# 1414 - Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - MEDIUM
+class Solution:
+    def findMinFibonacciNumbers(self, k: int) -> int:
+        s = [1, 1]
+        while s[-1] <= k:
+            s.append(s[-2] + s[-1])
+        ans = 0
+        i = len(s) - 1
+        while k != 0:
+            if k >= s[i]:
+                k -= s[i]
+                ans += 1
+            i -= 1
+        return ans
+
+    def findMinFibonacciNumbers(self, k: int) -> int:
+        if k == 0:
+            return 0
+        f1 = f2 = 1
+        while f1 + f2 <= k:
+            f1, f2 = f2, f1 + f2
+        return self.findMinFibonacciNumbers(k - f2) + 1
+
+
 # 1428 - Leftmost Column with at Least a One - MEDIUM
 
 
