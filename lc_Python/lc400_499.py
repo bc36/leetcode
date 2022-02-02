@@ -169,22 +169,20 @@ class Solution:
 class Solution:
     # sliding window + list
     def findAnagrams(self, s: str, p: str) -> List[int]:
-        ans = []
         if len(s) < len(p):
-            return ans
-        p_cnt = [0] * 26
-        s_cnt = [0] * 26
+            return []
+        ans, ss, pp = [], [0] * 26, [0] * 26
         for i in range(len(p)):
-            p_cnt[ord(p[i]) - ord('a')] += 1
-            s_cnt[ord(s[i]) - ord('a')] += 1
-        if s_cnt == p_cnt:
+            ss[ord(s[i]) - ord('a')] += 1
+            pp[ord(p[i]) - ord('a')] += 1
+        if ss == pp:
             ans.append(0)
-
+        k = len(p)
         for i in range(len(p), len(s)):
-            s_cnt[ord(s[i - len(p)]) - ord('a')] -= 1
-            s_cnt[ord(s[i]) - ord('a')] += 1
-            if s_cnt == p_cnt:
-                ans.append(i - len(p) + 1)
+            ss[ord(s[i]) - ord('a')] += 1
+            ss[ord(s[i - k]) - ord('a')] -= 1
+            if ss == pp:
+                ans.append(i - k + 1)
         return ans
 
     # sliding window + two pointers

@@ -2,6 +2,21 @@ import collections, bisect, itertools, functools, math, heapq, re
 from typing import List
 
 
+# 2000 - Reverse Prefix of Word - EASY
+class Solution:
+    def reversePrefix(self, word: str, ch: str) -> str:
+        idx = -1
+        for i in range(len(word)):
+            if word[i] == ch:
+                idx = i
+                break
+        return word[:idx + 1][::-1] + word[idx + 1:]
+
+    def reversePrefix(self, word: str, ch: str) -> str:
+        i = word.find(ch) + 1
+        return word[:i][::-1] + word[i:]
+
+
 # 2006 - Count Number of Pairs With Absolute Difference K - EASY
 class Solution:
     def countKDifference(self, nums: List[int], k: int) -> int:

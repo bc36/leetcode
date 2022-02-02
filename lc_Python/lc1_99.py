@@ -818,6 +818,36 @@ class Solution:
         return ret
 
 
+# 48 - Rotate Image - MEDIUM
+class Solution:
+    def rotate(self, matrix: List[List[int]]) -> None:
+        m = len(matrix)
+        # horizontal
+        for i in range(m):
+            for j in range(m // 2):
+                matrix[i][j], matrix[i][m - 1 - j] = matrix[i][m - 1 -
+                                                               j], matrix[i][j]
+        # diagonal
+        for i in range(m - 1):
+            for j in range(m - 1 - i):
+                matrix[i][j], matrix[m - 1 - j][m - 1 -
+                                                i] = matrix[m - 1 -
+                                                            j][m - 1 -
+                                                               i], matrix[i][j]
+        return
+
+    def rotate(self, matrix: List[List[int]]) -> None:
+        m = len(matrix)
+        for i in range(m // 2):
+            for j in range(m):
+                matrix[i][j], matrix[m - 1 - i][j] = matrix[m - 1 -
+                                                            i][j], matrix[i][j]
+        for i in range(m):
+            for j in range(i):
+                matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+        return
+
+
 # 50 - Pow(x, n) - MEDIUM
 '''
 operators '>>', '&' are just used for 'int' and not used for 'float', '%' can be.
@@ -878,7 +908,7 @@ class Solution:
         return ans
 
 
-# 55. Jump Game - MEDIUM
+# 55 - Jump Game - MEDIUM
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
         can_reach = 0
@@ -926,6 +956,45 @@ class Solution:
                 ans.append([left, right])
                 left, right = intervals[i]
         ans.append([left, right])
+        return ans
+
+
+# 59 - Spiral Matrix II - MEDIUM
+class Solution:
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        matrix = [[0] * n for _ in range(n)]
+        row = col = dirIdx = 0
+        for i in range(n * n):
+            matrix[row][col] = i + 1
+            dx, dy = dirs[dirIdx]
+            r, c = row + dx, col + dy
+            if r < 0 or r >= n or c < 0 or c >= n or matrix[r][c] > 0:
+                dirIdx = (dirIdx + 1) % 4  # rotate
+                dx, dy = dirs[dirIdx]
+            row, col = row + dx, col + dy
+        return matrix
+
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        ans = [[0] * n for _ in range(n)]
+        left, right, top, down, num = 0, n-1, 0, n-1, 1
+        while left <= right and top <= down:
+            for i in range(left, right+1):
+                ans[top][i] = num 
+                num += 1
+            top += 1
+            for i in range(top, down+1):
+                ans[i][right] = num
+                num += 1
+            right -= 1
+            for i in range(right, left-1, -1):
+                ans[down][i] = num
+                num += 1
+            down -= 1
+            for i in range(down, top-1, -1):
+                ans[i][left] = num
+                num += 1
+            left += 1
         return ans
 
 
