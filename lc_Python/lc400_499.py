@@ -346,6 +346,26 @@ class Solution:
         return ans
 
 
+# 454 - 4Sum II - MEDIUM
+class Solution:
+    def fourSumCount(self, nums1: List[int], nums2: List[int],
+                     nums3: List[int], nums4: List[int]) -> int:
+        dic = collections.defaultdict(int)
+        for n1 in nums1:
+            for n2 in nums2:
+                dic[n1 + n2] += 1
+        ans = 0
+        for n3 in nums3:
+            for n4 in nums4:
+                ans += dic[-n3 - n4]
+        return ans
+
+    def fourSumCount(self, nums1: List[int], nums2: List[int],
+                     nums3: List[int], nums4: List[int]) -> int:
+        ab = collections.Counter(a + b for a in nums1 for b in nums2)
+        return sum(ab[-c - d] for c in nums3 for d in nums4)
+
+
 # 461 - Hamming Distance - EASY
 class Solution:
     def hammingDistance(self, x: int, y: int) -> int:

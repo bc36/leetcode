@@ -63,6 +63,20 @@ class Solution:
         return ans
 
 
+# 1725 - Number Of Rectangles That Can Form The Largest Square - EASY
+class Solution:
+    def countGoodRectangles(self, rectangles: List[List[int]]) -> int:
+        count = pre = 0
+        for l, w in rectangles:
+            sq = min(l, w)
+            if sq > pre:
+                count = 1
+                pre = sq
+            elif sq == pre:
+                count += 1
+        return count
+
+
 # 1762 - Buildings With an Ocean View - MEDIUM
 class Solution:
     def findBuildings(self, heights: List[int]) -> List[int]:
