@@ -1,5 +1,4 @@
-from operator import le
-from typing import Iterable, List
+from typing import List
 import collections, itertools
 
 
@@ -62,6 +61,70 @@ class Solution:
         for i in arr:
             dp[i] = dp[i - difference] + 1
         return max(dp.values())
+
+
+# 1219 - Path with Maximum Gold - MEDIUM
+class Solution:
+    def getMaximumGold(self, grid: List[List[int]]) -> int:
+        def backtrack(i, j, total):
+            self.ans = max(self.ans, total)
+            t = grid[i][j]
+            grid[i][j] = 0
+            for dx, dy in dire:
+                if 0 <= i + dx < m and 0 <= j + dy < n and grid[i + dx][
+                        j + dy] != 0:
+                    backtrack(i + dx, j + dy, total + grid[i + dx][j + dy])
+            grid[i][j] = t
+            return
+
+        # not every need to be searched
+        def find_corner(i, j):
+            count = 0
+            for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                nx, ny = dx + i, dy + j
+                if 0 <= nx < m and 0 <= ny < n and grid[nx][ny]:
+                    count += 1
+            return count <= 2
+
+        self.ans = 0
+        dire = ((1, 0), (-1, 0), (0, 1), (0, -1))
+        m, n = len(grid), len(grid[0])
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] != 0 and find_corner(j, i):
+                    backtrack(i, j, grid[i][j])
+        return self.ans
+
+    def getMaximumGold(self, grid: List[List[int]]) -> int:
+        def backtrack(x, y, count, seen):
+            nonlocal ans
+            if count > ans:
+                ans = count
+            for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n and seen[nx][ny] and grid[nx][
+                        ny]:
+                    seen[nx][ny] = 0
+                    backtrack(nx, ny, count + grid[nx][ny], seen)
+                    seen[nx][ny] = 1
+
+        def find_corner(i, j):
+            count = 0
+            for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                nx, ny = dx + i, dy + j
+                if 0 <= nx < m and 0 <= ny < n and grid[nx][ny]:
+                    count += 1
+            return count <= 2
+
+        m, n = len(grid), len(grid[0])
+        ans = 0
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] and find_corner(i, j):
+                    seen = [[1] * n for _ in range(m)]
+                    seen[i][j] = 0
+                    backtrack(i, j, grid[i][j], seen)
+        return ans
 
 
 # 1220 - Count Vowels Permutation - HARD

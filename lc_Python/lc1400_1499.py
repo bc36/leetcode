@@ -98,6 +98,7 @@ class Solution:
 
         return inorder(root, root.val)
 
+
 # 1460 - Make Two Arrays Equal by Reversing Sub-arrays - EASY
 class Solution:
     def canBeEqual(self, target: List[int], arr: List[int]) -> bool:
