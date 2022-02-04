@@ -97,3 +97,9 @@ class Solution:
                 root.right, premax)
 
         return inorder(root, root.val)
+
+# 1460 - Make Two Arrays Equal by Reversing Sub-arrays - EASY
+class Solution:
+    def canBeEqual(self, target: List[int], arr: List[int]) -> bool:
+        return collections.Counter(target) == collections.Counter(arr)
+        return sorted(target) == sorted(arr)

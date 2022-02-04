@@ -295,6 +295,33 @@ class Solution:
         return False
 
 
+# 525 - Contiguous Array - MEDIUM
+class Solution:
+    def findMaxLength(self, nums: List[int]) -> int:
+        ans = presum = 0
+        dic = {}
+        for i in range(len(nums)):
+            presum += 1 if nums[i] else -1
+            if presum == 0:
+                ans = i + 1
+            elif presum in dic:
+                ans = max(i - dic[presum], ans)
+            else:
+                dic[presum] = i
+        return ans
+
+    def findMaxLength(self, nums: List[int]) -> int:
+        d = {0: -1} # trick for presum
+        presum = ans = 0
+        for i in range(len(nums)):
+            presum = presum + 1 if nums[i] else presum - 1
+            if presum in d:
+                ans = max(ans, i - d[presum])
+            else:
+                d[presum] = i
+        return ans
+
+
 # 528 - Random Pick with Weight - MEDIUM
 # prefix sum + binary search
 # seperate [1, total] in len(w) parts, each part has w[i] elements

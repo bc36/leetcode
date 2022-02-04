@@ -26,6 +26,16 @@ class Solution:
             seen[num] += 1
         return counter
 
+    def countKDifference(self, nums: List[int], k: int) -> int:
+        ans, dic = 0, {}
+        for n in nums:
+            if n - k in dic:
+                ans += dic[n - k]
+            if n + k in dic:
+                ans += dic[n + k]
+            dic[n] = dic.get(n, 0) + 1
+        return ans
+
 
 # 2013 - Detect Squares - MEDIUM
 class DetectSquares:
