@@ -4,3 +4,4 @@ PyNoob.md
 /lc_Python/template.py
 .*
 !/.gitignore
+*.iml
