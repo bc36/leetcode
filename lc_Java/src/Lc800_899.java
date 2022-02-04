@@ -1,5 +1,3 @@
-package lc_Java;
-
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
