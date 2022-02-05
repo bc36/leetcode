@@ -1,5 +1,5 @@
-import bisect, collections, functools, random, operator, math, itertools, re, os
-from typing import Iterable, List, Optional
+import bisect, collections, functools, random, operator, math, itertools, re, os, heapq, queue
+from typing import List, Optional
 '''
 Function usually used
 
@@ -289,6 +289,69 @@ class Solution:
         return ans
 
 
+# 18 - 4Sum - MEDIUM
+class Solution:
+    # > 1300ms
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        def twoSum(arr, target):
+            if len(arr) < 2:
+                return []
+            i, j = 0, len(arr) - 1
+            ans = []
+            while i < j:
+                if arr[i] + arr[j] > target:
+                    j -= 1
+                elif arr[i] + arr[j] < target:
+                    i += 1
+                else:
+                    ans.append([arr[i], arr[j]])
+                    i += 1
+                    j -= 1
+            return ans
+
+        nums.sort()
+        ans = set()
+        if len(nums) < 4:
+            return
+        for i in range(len(nums) - 3):
+            for j in range(i + 1, len(nums) - 2):
+                s = twoSum(nums[j + 1:], target - nums[i] - nums[j])
+                for k in range(len(s)):
+                    ans.add((nums[i], nums[j], s[k][0], s[k][1]))
+        return ans
+
+    # < 200ms
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        def twoSum(nums, t):
+            res = []
+            s = set()
+            for x in nums:
+                if not res or res[-1][1] != x:
+                    if t - x in s:
+                        res.append([t - x, x])
+                s.add(x)
+            return res
+
+        def kSum(nums, t, k):
+            res = []
+            if not nums:
+                return res
+            # speed up
+            average = t // k
+            if nums[0] > average or nums[-1] < average:
+                return res
+            if k == 2:
+                return twoSum(nums, t)
+            for i in range(len(nums)):
+                if i == 0 or nums[i - 1] != nums[i]:
+                    for subset in kSum(nums[i + 1:], t - nums[i], k - 1):
+                        res.append([nums[i]] + subset)
+            return res
+
+        nums.sort()
+        return kSum(nums, target, 4)
+
+
 # 19 - Remove Nth Node From End of List - MEDIUM
 class Solution:
     def removeNthFromEnd(self, head: Optional[ListNode],
@@ -418,6 +481,66 @@ class Solution:
             s.append((cur + "(", l + 1, r))
             s.append((cur + ")", l, r + 1))
         return ans
+
+
+# 23 - Merge k Sorted Lists - HARD
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        hp = []
+        dummy = head = ListNode(-1)
+        for i in range(len(lists)):
+            if lists[i]:
+                # heap cannot compare 'ListNode'
+                # need 'i' just to avoid comparing 'ListNode'
+                heapq.heappush(hp, (lists[i].val, i, lists[i]))
+        while hp:
+            n, i, cur = heapq.heappop(hp)
+            head.next = ListNode(n)
+            head = head.next
+            if cur.next:
+                cur = cur.next
+                heapq.heappush(hp, (cur.val, i, cur))
+        return dummy.next
+
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        dummy = head = ListNode(-1)
+        q = []
+        for i in range(len(lists)):
+            if lists[i]:
+                q.append((lists[i].val, i))
+        heapq.heapify(q)
+        while q:
+            val, i = heapq.heappop(q)
+            head.next = ListNode(val)
+            head = head.next
+            lists[i] = lists[i].next
+            if lists[i]:
+                heapq.heappush(q, (lists[i].val, i))
+        return dummy.next
+
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        def merge2Lists(l1, l2):
+            if not l1: return l2
+            if not l2: return l1
+            if l1.val < l2.val:
+                l1.next = merge2Lists(l1.next, l2)
+                return l1
+            else:
+                l2.next = merge2Lists(l1, l2.next)
+                return l2
+
+        def merge(lists, left, right):
+            if left == right:
+                return lists[left]
+            mid = left + (right - left) // 2
+            l1 = merge(lists, left, mid)
+            l2 = merge(lists, mid + 1, right)
+            return merge2Lists(l1, l2)
+
+        if not lists:
+            return
+        n = len(lists)
+        return merge(lists, 0, n - 1)
 
 
 # 31 - Next Permutation - MEDIUM
@@ -977,21 +1100,21 @@ class Solution:
 
     def generateMatrix(self, n: int) -> List[List[int]]:
         ans = [[0] * n for _ in range(n)]
-        left, right, top, down, num = 0, n-1, 0, n-1, 1
+        left, right, top, down, num = 0, n - 1, 0, n - 1, 1
         while left <= right and top <= down:
-            for i in range(left, right+1):
-                ans[top][i] = num 
+            for i in range(left, right + 1):
+                ans[top][i] = num
                 num += 1
             top += 1
-            for i in range(top, down+1):
+            for i in range(top, down + 1):
                 ans[i][right] = num
                 num += 1
             right -= 1
-            for i in range(right, left-1, -1):
+            for i in range(right, left - 1, -1):
                 ans[down][i] = num
                 num += 1
             down -= 1
-            for i in range(down, top-1, -1):
+            for i in range(down, top - 1, -1):
                 ans[i][left] = num
                 num += 1
             left += 1
