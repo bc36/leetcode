@@ -77,6 +77,21 @@ class Solution:
         return count
 
 
+# 1748 - Sum of Unique Elements - EASY
+class Solution:
+    def sumOfUnique(self, nums: List[int]) -> int:
+        freq = [0] * 100
+        for n in nums:
+            freq[n - 1] += 1
+        ans = 0
+        for i in range(len(freq)):
+            ans += i + 1 if freq[i] == 1 else 0
+        return ans
+
+    def sumOfUnique(self, nums: List[int]) -> int:
+        return sum(k for k, v in collections.Counter(nums).items() if v == 1)
+
+
 # 1762 - Buildings With an Ocean View - MEDIUM
 class Solution:
     def findBuildings(self, heights: List[int]) -> List[int]:
