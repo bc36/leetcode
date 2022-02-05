@@ -1,4 +1,4 @@
-import collections, itertools, functools
+import collections, itertools, functools, heapq
 from typing import List
 
 # 68 / 2021.12.25
@@ -143,4 +143,82 @@ class Solution:
         for val in mp.values():
             ans *= val
             ans %= mod
+        return ans
+
+
+#################
+# 71 / 2022.2.5 #
+#################
+# https://leetcode-cn.com/contest/biweekly-contest-71/
+
+
+# https://leetcode-cn.com/problems/minimum-difference-in-sums-after-removal-of-elements/
+# 5987. 删除元素后和的最小差值
+class Solution:
+    # < 500ms
+    def minimumDifference(self, nums: List[int]) -> int:
+        n = len(nums) // 3
+        max_heap = [-n for n in nums[:n]]
+        heapq.heapify(max_heap)
+        min_value = [0] * (n + 1)
+        s = -sum(max_heap)
+        for i in range(n):
+            min_value[i] = s
+            v = heapq.heappushpop(max_heap, -nums[i + n])
+            s += nums[i + n] + v
+        min_value[n] = s
+        max_value = [0] * (n + 1)
+        min_heap = [n for n in nums[2 * n:]]
+        heapq.heapify(min_heap)
+        s = sum(min_heap)
+        for i in range(n, 0, -1):
+            max_value[i] = s
+            v = heapq.heappushpop(min_heap, nums[i + n - 1])
+            s += nums[i + n - 1] - v
+        max_value[0] = s
+        return min(mi - mx for mi, mx in zip(min_value, max_value))
+
+    def minimumDifference(self, nums: List[int]) -> int:
+        m = len(nums)
+        n = m // 3
+
+        min_pq = nums[m - n:]
+        heapq.heapify(min_pq)
+        suf_max = [0] * (m - n + 1)
+        suf_max[-1] = s = sum(min_pq)
+        for i in range(m - n - 1, n - 1, -1):
+            s += nums[i] - heapq.heappushpop(min_pq, nums[i])
+            suf_max[i] = s
+
+        max_pq = [-v for v in nums[:n]]
+        heapq.heapify(max_pq)
+        pre_min = -sum(max_pq)
+        ans = pre_min - suf_max[n]
+        for i in range(n, m - n):
+            pre_min += nums[i] + heapq.heappushpop(max_pq, -nums[i])
+            ans = min(ans, pre_min - suf_max[i + 1])
+        return ans
+
+    # < 1000ms
+    def minimumDifference(self, nums: List[int]) -> int:
+        n, k = len(nums), len(nums) // 3
+        s1, s2 = [0] * n, [0] * n
+        q = []
+        for i in range(2 * k):
+            if i: 
+                s1[i] = s1[i - 1]
+            heapq.heappush(q, -nums[i])
+            s1[i] += nums[i]
+            if len(q) > k:
+                s1[i] -= -heapq.heappop(q)
+        q.clear()
+        for i in range(n - 2, k - 2, -1):
+            s2[i] = s2[i + 1]
+            heapq.heappush(q, nums[i + 1])
+            s2[i] += nums[i + 1]
+            if len(q) > k:
+                s2[i] -= heapq.heappop(q)
+        ans = float('inf')
+        for i in range(k - 1, 2 * k):
+            ans = min(ans, s1[i] - s2[i])
         return ans
