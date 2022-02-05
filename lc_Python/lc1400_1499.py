@@ -80,9 +80,12 @@ class Solution:
 
     def goodNodes(self, root: TreeNode) -> int:
         def inorder(root, premax):
-            if root.val >= premax: self.cnt += 1
-            if root.left: inorder(root.left, max(premax, root.val))
-            if root.right: inorder(root.right, max(premax, root.val))
+            if root.val >= premax: 
+                self.cnt += 1
+            if root.left: 
+                inorder(root.left, max(premax, root.val))
+            if root.right: 
+                inorder(root.right, max(premax, root.val))
             return
 
         self.cnt = 0
@@ -91,7 +94,8 @@ class Solution:
 
     def goodNodes(self, root: TreeNode) -> int:
         def inorder(root, premax):
-            if not root: return 0
+            if not root: 
+                return 0
             premax = max(root.val, premax)
             return (root.val >= premax) + inorder(root.left, premax) + inorder(
                 root.right, premax)
