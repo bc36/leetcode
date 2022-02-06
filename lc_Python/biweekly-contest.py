@@ -1,4 +1,4 @@
-import collections, itertools, functools, heapq
+import collections, itertools, functools, heapq, math
 from typing import List
 
 # 68 / 2021.12.25
@@ -199,13 +199,43 @@ class Solution:
             ans = min(ans, pre_min - suf_max[i + 1])
         return ans
 
+    def minimumDifference(self, nums: List[int]) -> int:
+        n = len(nums) // 3
+
+        left_part = [-n for n in nums[0:n]]
+        right_part = nums[-n:]
+        heapq.heapify(left_part)
+        heapq.heapify(right_part)
+
+        min_left = [0] * (n + 1)
+        max_right = [0] * (n + 1)
+        min_left[0] = -sum(left_part)
+        max_right[-1] = sum(right_part)
+
+        for i in range(1, n + 1):
+            n = nums[n + i - 1]
+            heapq.heappush(left_part, -n)
+            pn = -heapq.heappop(left_part)
+            min_left[i] = min_left[i - 1] + (n - pn)
+
+        for i in range(n - 1, -1, -1):
+            n = nums[n + i]
+            heapq.heappush(right_part, n)
+            pn = heapq.heappop(right_part)
+            max_right[i] = max_right[i + 1] + (n - pn)
+
+        ans = math.inf
+        for i in range(n + 1):
+            ans = min(ans, min_left[i] - max_right[i])
+        return ans
+
     # < 1000ms
     def minimumDifference(self, nums: List[int]) -> int:
         n, k = len(nums), len(nums) // 3
         s1, s2 = [0] * n, [0] * n
         q = []
         for i in range(2 * k):
-            if i: 
+            if i:
                 s1[i] = s1[i - 1]
             heapq.heappush(q, -nums[i])
             s1[i] += nums[i]
