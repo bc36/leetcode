@@ -1561,6 +1561,28 @@ class Solution:
         return False
 
 
+# 80 - Remove Duplicates from Sorted Array II - MEDIUM
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        cur = 2
+        for i in range(2, len(nums)):
+            if nums[i] != nums[cur - 2]:
+                nums[cur] = nums[i]
+                cur += 1
+        return cur
+
+    def removeDuplicates(self, nums: List[int]) -> int:
+        def solve(k): # Repeat up to k
+            cur = 0
+            for n in nums:
+                if cur < k or nums[cur - k] != n:
+                    nums[cur] = n
+                    cur += 1
+            return cur
+
+        return solve(2)
+
+
 # 82 - Remove Duplicates from Sorted List II - MEDIUM
 class Solution:
     def deleteDuplicates(self, head: ListNode) -> ListNode:

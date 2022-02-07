@@ -9,6 +9,45 @@ class TreeNode:
         self.right = right
 
 
+# 1001 - Grid Illumination - HARD
+class Solution:
+    def gridIllumination(self, n: int, lamps: List[List[int]],
+                         queries: List[List[int]]) -> List[int]:
+        op = set()
+        row = collections.defaultdict(int)
+        col = collections.defaultdict(int)
+        diag = collections.defaultdict(int)
+        antidiag = collections.defaultdict(int)
+
+        for i, j in lamps:
+            if (i, j) not in op:
+                op.add((i, j))
+                row[i] += 1
+                col[j] += 1
+                diag[i - j] += 1  # \
+                antidiag[i + j] += 1  # /
+
+        ans = []
+        for i, j in queries:
+            # whether light on
+            if row[i] or col[j] or diag[i - j] or antidiag[i + j]:
+                ans.append(1)
+            else:
+                ans.append(0)
+                continue
+            # shut down
+            for x, y in [(i - 1, j - 1), (i - 1, j), (i - 1, j + 1),
+                         (i, j - 1), (i, j), (i, j + 1), (i + 1, j - 1),
+                         (i + 1, j), (i + 1, j + 1)]:
+                if (x, y) in op:
+                    op.remove((x, y))
+                    row[x] -= 1
+                    col[y] -= 1
+                    diag[x - y] -= 1
+                    antidiag[x + y] -= 1
+        return ans
+
+
 # 1005 - Maximize Sum Of Array After K Negations - EASY
 class Solution:
     def largestSumAfterKNegations(self, nums: List[int], k: int) -> int:
