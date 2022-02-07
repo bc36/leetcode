@@ -1033,6 +1033,17 @@ class Solution:
         return -1
 
 
+# 389 - Find the Difference - EASY
+class Solution:
+    def findTheDifference(self, s: str, t: str) -> str:
+        xor = 0
+        for ch in s + t:
+            xor ^= ord(ch)
+        return chr(xor)
+        return list((collections.Counter(t) - collections.Counter(s)))[0]
+        return chr(sum([ord(x) for x in t]) - sum([ord(x) for x in s]))
+
+
 # 390 - Elimination Game - MEDIUM
 class Solution(object):
     def lastRemaining(self, n):
