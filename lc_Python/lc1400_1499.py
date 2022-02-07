@@ -1,5 +1,5 @@
 from typing import List
-import collections, queue
+import collections, heapq, functools, itertools, math
 
 
 class TreeNode:
@@ -7,6 +7,64 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
+
+
+# 1405 - Longest Happy String - MEDIUM
+class Solution:
+    def longestDiverseString(self, a: int, b: int, c: int) -> str:
+        ans, pq = "", []
+        if a: pq.append([-a, 'a'])
+        if b: pq.append([-b, 'b'])
+        if c: pq.append([-c, 'c'])
+        heapq.heapify(pq)
+        while pq:
+            n = len(ans)
+            cur = heapq.heappop(pq)
+            if n >= 2 and ans[-1] == ans[-2] == cur[1]:
+                if not pq:
+                    break
+                nxt = heapq.heappop(pq)
+                ans += nxt[1]
+                if nxt[0] + 1 < 0:
+                    nxt[0] += 1
+                    heapq.heappush(pq, nxt)
+                heapq.heappush(pq, cur)
+            else:
+                ans += cur[1]
+                if cur[0] + 1 < 0:
+                    cur[0] += 1
+                    heapq.heappush(pq, cur)
+        return ans
+
+    def longestDiverseString(self, a: int, b: int, c: int) -> str:
+        def generate(a, b, c, aa, bb, cc):
+            if a < b:
+                return generate(b, a, c, bb, aa, cc)
+            if b < c:
+                return generate(a, c, b, aa, cc, bb)
+            if b == 0:
+                return min(2, a) * aa
+            usedA = min(2, a)
+            usedB = 1 if a - usedA >= b else 0
+            return usedA * aa + usedB * bb + generate(a - usedA, b - usedB, c,
+                                                      aa, bb, cc)
+
+        return generate(a, b, c, 'a', 'b', 'c')
+
+    def longestDiverseString(self,
+                             a: int,
+                             b: int,
+                             c: int,
+                             aa='a',
+                             bb='b',
+                             cc='c') -> str:
+        if a < b: return self.longestDiverseString(b, a, c, bb, aa, cc)
+        elif b < c: return self.longestDiverseString(a, c, b, aa, cc, bb)
+        elif b == 0: return min(2, a) * aa
+        usedA = min(2, a)
+        usedB = 1 if a - usedA >= b else 0
+        return usedA * aa + usedB * bb + self.longestDiverseString(
+            a - usedA, b - usedB, c, aa, bb, cc)
 
 
 # 1414 - Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - MEDIUM
@@ -80,11 +138,11 @@ class Solution:
 
     def goodNodes(self, root: TreeNode) -> int:
         def inorder(root, premax):
-            if root.val >= premax: 
+            if root.val >= premax:
                 self.cnt += 1
-            if root.left: 
+            if root.left:
                 inorder(root.left, max(premax, root.val))
-            if root.right: 
+            if root.right:
                 inorder(root.right, max(premax, root.val))
             return
 
@@ -94,7 +152,7 @@ class Solution:
 
     def goodNodes(self, root: TreeNode) -> int:
         def inorder(root, premax):
-            if not root: 
+            if not root:
                 return 0
             premax = max(root.val, premax)
             return (root.val >= premax) + inorder(root.left, premax) + inorder(
