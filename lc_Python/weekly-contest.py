@@ -563,7 +563,7 @@ class Solution:
 
 
 #########################
-# 277 / 2道 / 2022.1.29 #
+# 278 / 2道 / 2022.1.29 #
 #########################
 
 
@@ -630,6 +630,7 @@ class Solution:
         count = collections.Counter(parent)
         return [len(count), max(count.values())]
 
+
 class UnionFind:
     def __init__(self):
         self.fa = None
@@ -651,16 +652,18 @@ class UnionFind:
         self.fa[y] = x
         self.size[x] += self.size[y]
         return True
-    
+
     def count(self):
         counter = collections.Counter(map(self.find_set, self.fa))
         return [len(counter), max(counter.values())]
-    
+
+
 def get_mask(s: str) -> int:
     mask = 0
     for c in s:
         mask |= 1 << (ord(c) - 97)
     return mask
+
 
 class Solution:
     def groupStrings(self, words: List[str]) -> List[int]:
@@ -683,10 +686,66 @@ class Solution:
                     t = mask & ~(1 << i)
                     if t in r_mask:
                         uf.union_sets(group, r_mask[t])
-                    
+
                     if t in d_mask:
                         uf.union_sets(group, d_mask[t])
                     else:
                         d_mask[t] = group
-        
+
         return uf.count()
+
+
+########################
+# 279 / 2道 / 2022.2.5 #
+########################
+
+
+# https://leetcode-cn.com/problems/design-bitset/
+# 6002. 设计位集
+class Bitset:
+    def __init__(self, size: int):
+        self.arr = [0] * size
+        self.ones = 0
+        self.reverse = 0  # flag
+
+    def fix(self, idx: int) -> None:
+        if self.reverse ^ self.arr[idx] == 0:
+            self.arr[idx] ^= 1
+            self.ones += 1
+
+    def unfix(self, idx: int) -> None:
+        if self.reverse ^ self.arr[idx] == 1:
+            self.arr[idx] ^= 1
+            self.ones -= 1
+
+    def flip(self) -> None:
+        self.reverse ^= 1
+        self.ones = len(self.arr) - self.ones
+
+    def all(self) -> bool:
+        return self.ones == len(self.arr)
+
+    def one(self) -> bool:
+        return self.ones > 0
+
+    def count(self) -> int:
+        return self.ones
+
+    def toString(self) -> str:
+        ans = ''
+        for i in self.arr:
+            ans += str(i ^ self.reverse)
+        return ans
+
+
+# https://leetcode-cn.com/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/
+# 6003. 移除所有载有违禁货物车厢所需的最少时间
+class Solution:
+    def minimumTime(self, s: str) -> int:
+        n = ans = len(s)
+        pre = 0
+        for idx, char in enumerate(s):
+            if char == '1':
+                pre = min(pre + 2, idx + 1)
+            ans = min(ans, pre + n - idx - 1)
+        return ans
