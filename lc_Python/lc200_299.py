@@ -990,6 +990,25 @@ class Solution:
         return True
 
 
+# 258 - Add Digits - EASY
+class Solution:
+    def addDigits(self, num: int) -> int:
+        while num > 9:
+            mod = 0
+            while num:
+                mod += num % 10
+                num = num // 10
+            num = mod
+        return num
+
+    def addDigits(self, num: int) -> int:
+        if num == 0:
+            return 0
+        if num % 9 == 0:
+            return 9
+        return num % 9
+
+
 # 260 - Single Number III - MEDIUM
 class Solution:
     # Hash / O(n) + O(n)
