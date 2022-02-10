@@ -311,7 +311,7 @@ class Solution:
         return ans
 
     def findMaxLength(self, nums: List[int]) -> int:
-        d = {0: -1} # trick for presum
+        d = {0: -1}  # trick for presum
         presum = ans = 0
         for i in range(len(nums)):
             presum = presum + 1 if nums[i] else presum - 1
@@ -358,6 +358,29 @@ class Solution:
             else:
                 left = mid + 1
         return left
+
+
+# 532 - K-diff Pairs in an Array - MEDIUM
+class Solution:
+    # like two sum (lc 1)
+    def findPairs(self, nums: List[int], k: int) -> int:
+        seen = set()
+        pairs = set()
+        for n in nums:
+            if n - k in seen:
+                pairs.add((n - k, n))
+            if n + k in seen:
+                pairs.add((n, n + k))
+            seen.add(n)
+        return len(pairs)
+
+    def findPairs(self, nums: List[int], k: int) -> int:
+        ans = 0
+        cnt = collections.Counter(nums)
+        for i in cnt:
+            if (k > 0 and i + k in cnt) or (k == 0 and cnt[i] > 1):
+                ans += 1
+        return ans
 
 
 # 539 - Minimum Time Difference - MEDIUM

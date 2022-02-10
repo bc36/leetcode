@@ -119,6 +119,28 @@ class Solution:
         return ans
 
 
+# 1447 - Simplified Fractions - MEDIUM
+class Solution:
+    def simplifiedFractions(self, n: int) -> List[str]:
+        ans = []
+        while n > 1:
+            for t in range(1, n):
+                if math.gcd(t, n) == 1:
+                    ans.append(str(t) + '/' + str(n))
+            n -= 1
+        return ans
+
+    def gcd(self, a: int, b: int):
+        if not b:
+            return a
+        return self.gcd(b, a % b)
+
+    def gcd(self, a: int, b: int):
+        while b:
+            a, b = b, a % b
+        return a
+
+
 # 1448 - Count Good Nodes in Binary Tree - MEDIUM
 class Solution:
     def goodNodes(self, root: TreeNode) -> int:
