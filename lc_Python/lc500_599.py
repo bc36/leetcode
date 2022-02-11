@@ -638,6 +638,34 @@ class Solution:
                 return True
         return False
 
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        if len(s1) > len(s2):
+            return False
+        c = [0] * 26
+        m, n = len(s1), len(s2)
+        for i in range(m):
+            c[ord(s1[i]) - ord('a')] -= 1
+            c[ord(s2[i]) - ord('a')] += 1
+        diff = 0
+        for i in c:
+            diff += 1 if i else 0
+        if diff == 0:
+            return True
+        for i in range(m, n):
+            if c[ord(s2[i - m]) - ord('a')] == 1:
+                diff -= 1
+            elif c[ord(s2[i - m]) - ord('a')] == 0:
+                diff += 1
+            c[ord(s2[i - m]) - ord('a')] -= 1
+            if c[ord(s2[i]) - ord('a')] == -1:
+                diff -= 1
+            elif c[ord(s2[i]) - ord('a')] == 0:
+                diff += 1
+            c[ord(s2[i]) - ord('a')] += 1
+            if diff == 0:
+                return True
+        return False
+
 
 # 572 - Subtree of Another Tree - EASY
 class Solution:
