@@ -162,6 +162,54 @@ class Solution:
             n = r * 10 + 1
 
 
+# 1020 - Number of Enclaves - MEDIUM
+class Solution:
+    def numEnclaves(self, grid: List[List[int]]) -> int:
+        def dfs(x, y):
+            grid[x][y] = 0
+            for nx, ny in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+                if 0 <= nx < m and 0 <= ny < n and grid[nx][ny]:
+                    dfs(nx, ny)
+
+        ans, m, n = 0, len(grid), len(grid[0])
+        for i in range(m):
+            if grid[i][0] == 1: dfs(i, 0)
+            if grid[i][n - 1] == 1: dfs(i, n - 1)
+        for j in range(n):
+            if grid[0][j] == 1: dfs(0, j)
+            if grid[m - 1][j] == 1: dfs(m - 1, j)
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]:
+                    ans += 1
+        return ans
+
+    def numEnclaves(self, grid: List[List[int]]) -> int:
+        def bfs(x, y):
+            grid[x][y] = 0
+            q = [[x, y]]
+            while q:
+                x, y = q.pop()
+                for nx, ny in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+                    if 0 <= nx < m and 0 <= ny < n and grid[nx][ny]:
+                        grid[nx][ny] = 0
+                        q.append([nx, ny])
+
+        m, n = len(grid), len(grid[0])
+        for i in range(m):
+            if grid[i][0] == 1: bfs(i, 0)
+            if grid[i][n - 1] == 1: bfs(i, n - 1)
+        for j in range(n):
+            if grid[0][j] == 1: bfs(0, j)
+            if grid[m - 1][j] == 1: bfs(m - 1, j)
+
+        ans = 0
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]: ans += 1
+        return ans
+
+
 # 1022 - Sum of Root To Leaf Binary Numbers - EASY
 class Solution:
     def sumRootToLeaf(self, root: TreeNode) -> int:
