@@ -2,6 +2,16 @@ import collections, bisect, itertools, functools, math, heapq
 from typing import List
 
 
+# 1984 - Minimum Difference Between Highest and Lowest of K Scores - EASY
+class Solution:
+    def minimumDifference(self, nums: List[int], k: int) -> int:
+        ans = math.inf
+        nums.sort()
+        for i in range(len(nums) - k + 1):
+            ans = min(ans, nums[i + k - 1] - nums[i])
+        return ans
+
+
 # 1995 - Count Special Quadruplets - EASY
 class Solution:
     # brutal force: O(n^4) + O(1)
