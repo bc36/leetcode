@@ -1,5 +1,5 @@
 from typing import List, Optional
-import collections, random, heapq, math
+import collections, random, heapq, math, bisect
 
 
 class ListNode:
@@ -958,6 +958,31 @@ class Solution:
             ans[i] *= pro
             pro *= nums[i]
         return ans
+
+
+# 240 - Search a 2D Matrix II - MEDIUM
+class Solution:
+    # O(m + n) / O(1)
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        m, n = len(matrix), len(matrix[0])
+        i, j = 0, n - 1
+        while i < m and j > -1:
+            if matrix[i][j] < target:
+                i += 1
+            elif matrix[i][j] > target:
+                j -= 1
+            else:
+                return True
+        return False
+    
+    # O(m * logn) / O(1)
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        m, n = len(matrix), len(matrix[0])
+        for i in range(m):
+            idx = bisect.bisect_left(matrix[i], target)
+            if idx != n and matrix[i][idx] == target:
+                return True
+        return False
 
 
 # 242 - Valid Anagram - EASY

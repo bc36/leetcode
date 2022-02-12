@@ -43,9 +43,6 @@ public class Lc400_499 {
 
     // 415. Add Strings - E
     public String addStrings(String num1, String num2) {
-        int carry = 0, i = 0, j = 0;
-        String ans;
-        while (i < num1.length()???dfa23
         return "";
     }
 
