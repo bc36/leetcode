@@ -1,4 +1,4 @@
-import bisect, functools
+import bisect, functools, collections, itertools, math
 from typing import List
 
 
@@ -107,3 +107,10 @@ class Solution:
             ans.append(num)
 
         return ans
+
+
+# 1189 - Maximum Number of Balloons - EASY
+class Solution:
+    def maxNumberOfBalloons(self, text: str) -> int:
+        cnt = collections.Counter(text)
+        return min(cnt['b'], cnt['a'], cnt['l'] // 2, cnt['o'] // 2, cnt['n'])
