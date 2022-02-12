@@ -272,6 +272,79 @@ class Solution:
         return s == s[::-1]
 
 
+# 127 - Word Ladder - HARD
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str,
+                     wordList: List[str]) -> int:
+        if endWord not in wordList:
+            return 0
+        s = set(wordList)
+        dq = collections.deque([beginWord])
+        step = 1
+        while dq:
+            n = len(dq)
+            for _ in range(n):
+                cur = dq.popleft()
+                for i in range(len(cur)):
+                    for ch in 'qwertyuiopasdfghjklzxcvbnm':
+                        new = cur[:i] + ch + cur[i + 1:]
+                        if new == endWord:
+                            return step + 1
+                        if new in s:
+                            dq.append(new)
+                            s.remove(new)
+            step += 1
+        return 0
+
+    def ladderLength(self, beginWord: str, endWord: str,
+                     wordList: List[str]) -> int:
+        if endWord not in wordList:
+            return 0
+        mapper = collections.defaultdict(list)
+        for word in wordList:
+            for i in range(len(word)):
+                key = word[:i] + "*" + word[i + 1:]
+                mapper[key].append(word)
+        dq = collections.deque([(beginWord, 1)])
+        seen = set(beginWord)
+        while dq:
+            cur, step = dq.popleft()
+            for i in range(len(cur)):
+                key = cur[:i] + "*" + cur[i + 1:]
+                for word in mapper[key]:
+                    if word == endWord:
+                        return step + 1
+                    if word not in seen:
+                        seen.add(word)
+                        dq.append((word, step + 1))
+        return 0
+
+    # bi-directional bfs
+    def ladderLength(self, beginWord: str, endWord: str,
+                     wordList: List[str]) -> int:
+        wordSet = set(wordList)
+        startSet, endSet = set([beginWord]), set([endWord])
+        if endWord not in wordSet:
+            return 0
+        steps = 1
+        while startSet and endSet:
+            if len(startSet) > len(endSet):
+                startSet, endSet = endSet, startSet
+            steps += 1
+            nextSet = set()
+            for word in startSet:
+                for i in range(len(word)):
+                    for ch in 'abcdefghijklmnopqrstuvwxyz':
+                        temp = word[:i] + ch + word[i + 1:]
+                        if temp in endSet:
+                            return steps
+                        if temp in wordSet:
+                            nextSet.add(temp)
+                            wordSet.remove(temp)
+            startSet = nextSet
+        return 0
+
+
 # 128 - Longest Consecutive Sequence - MEDIUM
 class Solution:
     def longestConsecutive(self, nums: List[int]) -> int:
