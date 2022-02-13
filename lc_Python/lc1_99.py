@@ -1501,15 +1501,15 @@ class Solution:
         return q
 
     def subsets(self, nums: List[int]) -> List[List[int]]:
-        def dfs(nums, path, ret):
-            ret.append(path)
-            for i in range(len(nums)):
-                dfs(nums[i + 1:], path + [nums[i]], ret)
+        def helper(i, tmp):
+            ans.append(tmp)
+            for j in range(i, len(nums)):
+                helper(j + 1, tmp + [nums[j]])
             return
 
-        ret = []
-        dfs(nums, [], ret)
-        return ret
+        ans = []
+        helper(0, [])
+        return ans
 
 
 # 79 - Word Search - MEDIUM
