@@ -749,3 +749,113 @@ class Solution:
                 pre = min(pre + 2, idx + 1)
             ans = min(ans, pre + n - idx - 1)
         return ans
+
+
+#########################
+# 280 / 3道 / 2022.2.12 #
+#########################
+# https://leetcode-cn.com/contest/weekly-contest-280/
+
+
+# https://leetcode-cn.com/problems/maximum-and-sum-of-array/
+# 6007. 数组的最大与和
+# 状态压缩 状压 dp
+class Solution:
+    def maximumANDSum(self, nums: List[int], numSlots: int) -> int:
+        # backtracking
+        # try to enumerate all possible
+        n = len(nums)
+
+        @functools.lru_cache(None)
+        def dfs(i, mask=0):
+            if i == n: return 0
+            res = 0
+            for slot in range(numSlots):
+                if not (mask >> (slot * 2) & 1):
+                    res = max(res, (nums[i] & (slot + 1)) +
+                              dfs(i + 1, mask | (1 << slot * 2)))
+                elif not (mask >> (slot * 2) & 2):
+                    res = max(res, (nums[i] & (slot + 1)) +
+                              dfs(i + 1, mask | (1 << (slot * 2 + 1))))
+            return res
+
+        return dfs(0)
+
+    def maximumANDSum(self, nums: List[int], numSlots: int) -> int:
+        @functools.lru_cache(None)
+        def fn(k, m):
+            """Return max AND sum."""
+            if k == len(nums): return 0
+            ans = 0
+            for i in range(numSlots):
+                if m & 1 << 2 * i == 0 or m & 1 << 2 * i + 1 == 0:
+                    if m & 1 << 2 * i == 0:
+                        mm = m ^ 1 << 2 * i
+                    else:
+                        mm = m ^ 1 << 2 * i + 1
+                    ans = max(ans, (nums[k] & i + 1) + fn(k + 1, mm))
+            return ans
+
+        return fn(0, 0)
+
+    # O(m * (3 ** m)), m = numSlots
+    def maximumANDSum(self, nums: List[int], numSlots: int) -> int:
+        @functools.lru_cache(None)
+        def dp(i, mask):
+            res = 0
+            if i == len(nums):
+                return 0
+            for slot in range(1, numSlots + 1):
+                b = 3**(slot - 1)
+                if mask // b % 3 > 0:
+                    res = max(res, (nums[i] & slot) + dp(i + 1, mask - b))
+            return res
+
+        return dp(0, 3**numSlots - 1)
+
+    # O(nm * (3 ** m)), m = numSlots
+    def maximumANDSum(self, nums: List[int], numSlots: int) -> int:
+        @functools.lru_cache(None)
+        def f(i, mask):
+            if i < 0:
+                return 0
+            t, w, res = mask, 1, 0
+            for k in range(1, numSlots + 1):
+                if t % 3:
+                    res = max(res, f(i - 1, mask - w) + (k & nums[i]))
+                t, w = t // 3, w * 3
+            return res
+
+        return f(len(nums) - 1, 3**numSlots - 1)
+
+    # O(m * (3 ** m)), m = numSlots
+    def maximumANDSum(self, nums: List[int], numSlots: int) -> int:
+        @functools.lru_cache(None)
+        def f(mask):
+            t, cnt = mask, 0
+            for k in range(1, numSlots + 1):
+                cnt += 2 - (t % 3)
+                t //= 3
+            i = len(nums) - 1 - cnt
+            if i < 0:
+                return 0
+            t, w, res = mask, 1, 0
+            for k in range(1, numSlots + 1):
+                if t % 3:
+                    res = max(res, f(mask - w) + (k & nums[i]))
+                t, w = t // 3, w * 3
+            return res
+
+        return f(3**numSlots - 1)
+
+    def maximumANDSum(self, nums: List[int], numSlots: int) -> int:
+        f = [0] * (1 << (numSlots * 2))
+        for i, fi in enumerate(f):
+            c = i.bit_count()
+            if c >= len(nums):
+                continue
+            for j in range(numSlots * 2):
+                if (i & (1 << j)) == 0:  # 枚举空篮子 j
+                    s = i | (1 << j)
+                    f[s] = max(f[s], fi + ((j // 2 + 1) & nums[c]))
+        return max(f)

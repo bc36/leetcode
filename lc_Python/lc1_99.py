@@ -1572,7 +1572,7 @@ class Solution:
         return cur
 
     def removeDuplicates(self, nums: List[int]) -> int:
-        def solve(k): # Repeat up to k
+        def solve(k):  # Repeat up to k
             cur = 0
             for n in nums:
                 if cur < k or nums[cur - k] != n:

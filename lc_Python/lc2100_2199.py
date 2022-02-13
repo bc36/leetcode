@@ -202,3 +202,100 @@ class Solution:
                 pre = min(pre + 2, i + 1)
                 ans = min(ans, pre + suf[i + 1])
         return ans
+
+
+# 2169 - Minimum Operations to Make the Array Alternating - MEDIUM
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n == 1:
+            return 0
+        cnt0 = collections.Counter(nums[::2])
+        cnt1 = collections.Counter(nums[1::2])
+        # cnt0 = sorted(cnt0.items(), key=lambda x: x[1], reverse=True)
+        cnt0 = sorted(cnt0.items(), key=lambda x: -x[1])
+        cnt1 = sorted(cnt1.items(), key=lambda x: -x[1])
+        if cnt0[0][0] != cnt1[0][0]:
+            return n - cnt0[0][1] - cnt1[0][1]
+        else:
+            a = n - cnt0[0][1] - (0 if len(cnt1) == 1 else cnt1[1][1])
+            b = n - cnt1[0][1] - (0 if len(cnt0) == 1 else cnt0[1][1])
+            return min(a, b)
+
+    def minimumOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        cnt0 = collections.Counter(nums[::2]).most_common()
+        cnt1 = collections.Counter(nums[1::2]).most_common()
+
+        e0, ecnt0 = cnt0[0] if cnt0 else (0, 0)
+        _, ecnt1 = cnt0[1] if len(cnt0) > 1 else (0, 0)
+        o0, ocnt0 = cnt1[0] if cnt1 else (0, 0)
+        _, ocnt1 = cnt1[1] if len(cnt1) > 1 else (0, 0)
+        if e0 != o0:
+            return n - ecnt0 - ocnt0
+        else:
+            return min(n - ecnt1 - ocnt0, n - ecnt0 - ocnt1)
+
+    def minimumOperations(self, nums: List[int]) -> int:
+        c1 = collections.Counter(nums[::2])
+        c2 = collections.Counter(nums[1::2])
+        m1 = c1.most_common(2)
+        m2 = c2.most_common(2)
+
+        m1.append((None, 0))
+        m2.append((None, 0))
+        # or
+        # if len(set(nums)) == 1:
+        #     return len(nums) // 2
+
+        ans = 0
+        for k1, v1 in m1:
+            for k2, v2 in m2:
+                if k1 != k2:
+                    ans = max(ans, v1 + v2)
+        return len(nums) - ans
+
+
+# 2170 - Removing Minimum Number of Magic Beans - MEDIUM
+class Solution:
+    def minimumRemoval(self, beans: List[int]) -> int:
+        beans.sort(reverse=True)
+        presum = [beans[0]] + [0] * (len(beans) - 1)
+        for i in range(1, len(beans)):
+            presum[i] = presum[i - 1] + beans[i]
+        ans = math.inf
+        left = 0
+        for i in range(len(beans)):
+            if i:
+                left += (beans[i - 1] - beans[i]) * (i)
+            right = presum[-1] - presum[i]
+            ans = min(ans, right + left)
+        return ans
+
+    # min(pick) => max(save)
+    def minimumRemoval(self, beans: List[int]) -> int:
+        beans.sort()
+        n = len(beans)
+        total = remain = 0
+        for i in range(n):
+            total += beans[i]
+            remain = max(remain, (n - i) * beans[i])
+        return total - remain
+
+    def minimumRemoval(self, beans: List[int]) -> int:
+        beans.sort()
+        n = len(beans)
+        if n == 1:
+            return 0
+        total = sum(beans)
+        ans = total
+        for i in range(n):
+            ans = min(total - beans[i] * (n - i), ans)
+        return ans
+
+    def minimumRemoval(self, beans: List[int]) -> int:
+        beans.sort(reverse=True)
+        ans = 0
+        for i in range(len(beans)):
+            ans = max(ans, beans[i] * (i + 1))
+        return sum(beans) - ans
