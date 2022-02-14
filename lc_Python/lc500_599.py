@@ -402,6 +402,66 @@ class Solution:
         return ans
 
 
+# 540 - Single Element in a Sorted Array - MEDIUM
+class Solution:
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        for i in range(1, len(nums)):
+            nums[i] ^= nums[i - 1]
+        return nums[-1]
+
+    # mid is even: mid + 1 = mid ^ 1
+    # mid is odd: mid - 1 = mid ^ 1
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        low, high = 0, len(nums) - 1
+        while low < high:
+            mid = (low + high) // 2
+            if nums[mid] == nums[mid ^ 1]:
+                low = mid + 1
+            else:
+                high = mid
+        return nums[low]
+
+    # the answer must have an even number of index
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        low, high = 0, len(nums) - 1
+        while low < high:
+            mid = (low + high) // 2
+            mid -= mid & 1
+            if nums[mid] == nums[mid + 1]:
+                low = mid + 2
+            else:
+                high = mid
+        return nums[low]
+
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        if len(nums) == 1:
+            return nums[0]
+        l = 0
+        r = len(nums) - 1
+        while l <= r:
+            mid = (l + r) // 2
+            if mid % 2 == 0 and mid + 1 < len(
+                    nums):  # mid是偶数(nums[mid]前面有偶数个元素)
+                if nums[mid] == nums[mid + 1]:  # mid前面没有单一元素
+                    l = mid + 1
+                else:  # mid前面有单一元素
+                    r = mid - 1
+            elif mid % 2 != 0 and mid + 1 < len(
+                    nums):  # mid是奇数(nums[mid]前面有奇数个元素)
+                if nums[mid] == nums[mid + 1]:  # mid前面有单一元素
+                    r = mid - 1
+                else:  # mid前面没有单一元素
+                    l = mid + 1
+            else:
+                return nums[mid]
+        return nums[l]
+
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        return nums[bisect.bisect_left(range(len(nums) - 1),
+                                       True,
+                                       key=lambda x: nums[x] != nums[x ^ 1])]
+
+
 # 542 - 01 Matrix - MEDIUM
 class Solution:
     def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:

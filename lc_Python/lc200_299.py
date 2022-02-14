@@ -974,7 +974,7 @@ class Solution:
             else:
                 return True
         return False
-    
+
     # O(m * logn) / O(1)
     def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
         m, n = len(matrix), len(matrix[0])
@@ -1210,24 +1210,40 @@ class Solution:
         s = s.split()
         if len(pattern) != len(s):
             return False
+        p2s = dict()
+        s2p = dict()
+        for i, ch in enumerate(pattern):
+            if ch not in p2s:
+                p2s[ch] = s[i]
+            if s[i] not in s2p:
+                s2p[s[i]] = ch
+            if p2s[ch] != s[i] or s2p[s[i]] != ch:
+                return False
+        return True
+
+    def wordPattern(self, pattern: str, s: str) -> bool:
+        s = s.split()
+        if len(pattern) != len(s):
+            return False
         if len(set(pattern)) != len(set(s)):
             return False  # for the case `words=['dog', 'cat']` and  `p='aa'`, or use two dictionaries.
         dic = {}
         for i in range(len(pattern)):
             if pattern[i] not in dic:
                 dic[pattern[i]] = s[i]
-            else:
-                if dic[pattern[i]] != s[i]:
+            elif dic[pattern[i]] != s[i]:
                     return False
         return True
 
     # better, save index, rather element
     def wordPattern(self, pattern: str, s: str) -> bool:
         s = s.split()
-        if len(pattern) != len(s): return False
+        if len(pattern) != len(s): 
+            return False
         pt, st = {}, {}
         for i in range(len(pattern)):
-            if pt.get(pattern[i], 0) != st.get(s[i], 0): return False
+            if pt.get(pattern[i], 0) != st.get(s[i], 0): 
+                return False
             pt[pattern[i]] = i + 1
             st[s[i]] = i + 1
         return True
