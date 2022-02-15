@@ -102,10 +102,24 @@ class Solution:
         dfs(root, 0)
         return self.ans
 
-    def maxDepth(self, root: Optional[TreeNode]) -> int:
+    def maxDepth(self, root: TreeNode) -> int:
         if not root:
             return 0
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
+
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if not root: return 0
+        dq = collections.deque([root])
+        step = 0
+        while dq:
+            for _ in range(len(dq)):
+                r = dq.popleft()
+                if r.left:
+                    dq.append(r.left)
+                if r.right:
+                    dq.append(r.right)
+            step += 1
+        return step
 
 
 # 112 - Path Sum - EASY

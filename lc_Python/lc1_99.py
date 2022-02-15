@@ -64,6 +64,19 @@ class Solution:
             l2 = l2.next if l2 else None
         return dummy.next
 
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        carry = 0
+        dummy = head = ListNode(-1)
+        while l1 or l2 or carry:
+            a = l1.val if l1 else 0
+            b = l2.val if l2 else 0
+            if l1: l1 = l1.next
+            if l2: l2 = l2.next
+            head.next = ListNode((a + b + carry) % 10)
+            carry = (a + b + carry) // 10
+            head = head.next
+        return dummy.next
+
 
 # 3 - Longest Substring Without Repeating Characters - MEDIUM
 class Solution:

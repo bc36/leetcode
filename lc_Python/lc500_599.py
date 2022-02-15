@@ -615,6 +615,16 @@ class Solution:
             dic[presum] += 1
         return ans
 
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        dic = {0: 1}
+        ans = presum = 0
+        for n in nums:
+            presum += n
+            if presum - k in dic:
+                ans += dic[presum - k]
+            dic[presum] = dic.get(presum, 0) + 1
+        return ans
+
 
 # 563 - Binary Tree Tilt - EAST
 class Solution:
