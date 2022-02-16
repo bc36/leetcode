@@ -1,4 +1,4 @@
-import collections, bisect
+import collections, bisect, functools, math, heapq
 from typing import List
 
 
@@ -199,6 +199,31 @@ class Solution:
             node = node.right
         dummy.right.left, pre.right = pre, dummy.right
         return dummy.right
+
+
+# 435 - Non-overlapping Intervals - MEDIUM
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        intervals.sort(key=lambda x: x[1])
+        ans = 0
+        mxr = -math.inf
+        for l, r in intervals:
+            if mxr <= l:
+                mxr = r
+            # elif mxr <= r:
+            else:
+                ans += 1
+        return ans
+
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        intervals = sorted(intervals, key=lambda x: x[1])
+        mxr = intervals[0][1]
+        can = 1
+        for i in range(1, len(intervals)):
+            if intervals[i][0] >= mxr:
+                can += 1
+                mxr = intervals[i][1]
+        return len(intervals) - can
 
 
 # 438 - Find All Anagrams in a String - MEDIUM

@@ -1025,14 +1025,16 @@ class Solution:
 
 # 49 - Group Anagrams - MEDIUM
 class Solution:
+    # O(n * k * logk) / O(n * k)
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         dic = collections.defaultdict(list)
         for s in strs:
             dic[''.join(sorted(s))].append(s)
-        ans = []
-        for v in dic.values():
-            ans.append(v)
-        return ans
+        # ans = []
+        # for v in dic.values():
+        #     ans.append(v)
+        # return ans
+        return list(dic.values())
 
 
 # 50 - Pow(x, n) - MEDIUM
