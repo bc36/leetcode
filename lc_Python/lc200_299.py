@@ -914,14 +914,27 @@ class Solution:
         if left and right: return root
         return left if left else right
 
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
+                             q: 'TreeNode') -> 'TreeNode':
+        if not root:
+            return None
+        if p == root:
+            return p
+        if q == root:
+            return q
+        l = self.lowestCommonAncestor(root.left, p, q)
+        r = self.lowestCommonAncestor(root.right, p, q)
+        return root if l and r else l or r
+
     # iterative solution
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
                              q: 'TreeNode') -> 'TreeNode':
         stack = [root]
+        # stack = collections.deque([root])
         parent = {root: None}  # {child: father}
-        # find p's and q's parents
         while p not in parent or q not in parent:
             node = stack.pop()
+            # node = stack.popleft()
             if node.left:
                 parent[node.left] = node
                 stack.append(node.left)
@@ -1232,17 +1245,17 @@ class Solution:
             if pattern[i] not in dic:
                 dic[pattern[i]] = s[i]
             elif dic[pattern[i]] != s[i]:
-                    return False
+                return False
         return True
 
     # better, save index, rather element
     def wordPattern(self, pattern: str, s: str) -> bool:
         s = s.split()
-        if len(pattern) != len(s): 
+        if len(pattern) != len(s):
             return False
         pt, st = {}, {}
         for i in range(len(pattern)):
-            if pt.get(pattern[i], 0) != st.get(s[i], 0): 
+            if pt.get(pattern[i], 0) != st.get(s[i], 0):
                 return False
             pt[pattern[i]] = i + 1
             st[s[i]] = i + 1

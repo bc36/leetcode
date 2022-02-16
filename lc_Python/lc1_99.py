@@ -1023,6 +1023,18 @@ class Solution:
         return
 
 
+# 49 - Group Anagrams - MEDIUM
+class Solution:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        dic = collections.defaultdict(list)
+        for s in strs:
+            dic[''.join(sorted(s))].append(s)
+        ans = []
+        for v in dic.values():
+            ans.append(v)
+        return ans
+
+
 # 50 - Pow(x, n) - MEDIUM
 '''
 operators '>>', '&' are just used for 'int' and not used for 'float', '%' can be.

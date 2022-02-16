@@ -547,12 +547,12 @@ class Solution:
 # 997 - Find the Town Judge - EASY
 class Solution:
     def findJudge(self, n: int, trust: List[List[int]]) -> int:
-        in_d = [0] * n
-        out_d = [0] * n
-        for t in trust:
-            out_d[t[0] - 1] += 1
-            in_d[t[1] - 1] += 1
-        for i in range(n):
-            if in_d[i] == n - 1 and out_d[i] == 0:
-                return i + 1
+        o = [0] * n
+        i = [0] * n
+        for a, b in trust:
+            o[a - 1] += 1
+            i[b - 1] += 1
+        for j in range(n):
+            if i[j] == n - 1 and o[j] == 0:
+                return j + 1
         return -1
