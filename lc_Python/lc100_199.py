@@ -976,6 +976,52 @@ class Solution:
         return nums[l]
 
 
+# 160 - Intersection of Two Linked Lists - EASY
+class Solution:
+    # O(m + n) / O(m)
+    def getIntersectionNode(self, headA: ListNode,
+                            headB: ListNode) -> ListNode:
+        s = set()
+        while headA:
+            s.add(headA)
+            headA = headA.next
+        while headB:
+            if headB in s:
+                return headB
+            headB = headB.next
+        return None
+
+    # O(m + n) / O(1)
+    def getIntersectionNode(self, headA: ListNode,
+                            headB: ListNode) -> ListNode:
+        a = headA
+        b = headB
+        aex = False  # flag: whether a has been exchanged
+        bex = False
+        while a and b:
+            if a == b:
+                return a
+            else:
+                a = a.next
+                b = b.next
+            if not a and not aex:
+                a = headB
+                aex = True
+            if not b and not bex:
+                b = headA
+                bex = True
+        return None
+
+    def getIntersectionNode(self, headA: ListNode,
+                            headB: ListNode) -> ListNode:
+        a = headA
+        b = headB
+        while a != b:
+            a = a.next if a else headB
+            b = b.next if b else headA
+        return a
+
+
 # 162 - Find Peak Element - MEDIUM
 class Solution:
     def findPeakElement(self, nums: List[int]) -> int:
@@ -1226,6 +1272,7 @@ class Solution:
 
 # 199 - Binary Tree Right Side View - MEDIUM
 class Solution:
+    # dfs
     def rightSideView(self, root: TreeNode) -> List[int]:
         def dfs(root, l):
             if not root:
