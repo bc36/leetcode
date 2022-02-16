@@ -247,3 +247,44 @@ class Solution:
                     dq.append((j, step + 1))
             graph[arr[i]] = []
         return 0
+
+
+# 1380 - Lucky Numbers in a Matrix - EASY
+class Solution:
+    def luckyNumbers(self, matrix: List[List[int]]) -> List[int]:
+        ans = []
+        colmax = {}
+        m, n = len(matrix), len(matrix[0])
+        for j in range(n):
+            for i in range(m):
+                if matrix[i][j] > colmax.get(j, 0):
+                    colmax[j] = matrix[i][j]
+        s = set(colmax.values())
+        for i in range(m):
+            rowmin = math.inf
+            for j in range(n):
+                if matrix[i][j] < rowmin:
+                    rowmin = matrix[i][j]
+            if rowmin in s:
+                ans.append(rowmin)
+        return ans
+
+    def luckyNumbers(self, matrix: List[List[int]]) -> List[int]:
+        minRow = [min(row) for row in matrix]
+        maxCol = [max(col) for col in zip(*matrix)]
+        ans = []
+        for i, row in enumerate(matrix):
+            for j, x in enumerate(row):
+                if x == minRow[i] == maxCol[j]:
+                    ans.append(x)
+        return ans
+
+    def luckyNumbers(self, matrix: List[List[int]]) -> List[int]:
+        ans = []
+        cols = list(zip(*matrix))
+        for rows in matrix:
+            num = min(rows)
+            c = rows.index(num)
+            if max(cols[c]) == num:
+                ans.append(num)
+        return ans

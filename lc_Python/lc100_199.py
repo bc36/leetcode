@@ -1226,22 +1226,19 @@ class Solution:
 
 # 199 - Binary Tree Right Side View - MEDIUM
 class Solution:
-    # dfs postorder
     def rightSideView(self, root: TreeNode) -> List[int]:
-        self.ans = []
-
-        def postorder(root: TreeNode, level: int) -> None:
-            if root == None:
+        def dfs(root, l):
+            if not root:
                 return
-            if level == len(self.ans):
-                self.ans.append(root.val)
-            level += 1
-            postorder(root.right, level)
-            postorder(root.left, level)
+            if len(ans) == l:
+                ans.append(root.val)
+            dfs(root.right, l + 1)
+            dfs(root.left, l + 1)
             return
 
-        postorder(root, 0)
-        return self.ans
+        ans = []
+        dfs(root, 0)
+        return ans
 
     # bfs
     def rightSideView(self, root: TreeNode) -> List[int]:

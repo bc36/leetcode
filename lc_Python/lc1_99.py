@@ -556,6 +556,29 @@ class Solution:
         return merge(lists, 0, n - 1)
 
 
+# 24 - Swap Nodes in Pairs - MEDIUM
+class Solution:
+    def swapPairs(self, head: ListNode) -> ListNode:
+        dummy = ListNode(-1, head)
+        pre = dummy
+        while head and head.next:
+            slow, fast = head, head.next
+            pre.next = fast
+            slow.next = fast.next
+            fast.next = slow
+            head = slow.next
+            pre = slow
+        return dummy.next
+
+    def swapPairs(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        newHead = head.next
+        head.next = self.swapPairs(newHead.next)
+        newHead.next = head
+        return newHead
+
+
 # 31 - Next Permutation - MEDIUM
 class Solution:
     # find the first number that is greater than the adjecent number on the right
@@ -1609,6 +1632,18 @@ class Solution:
             else:
                 pre.next = cur.next  # have duplicate nodes, don't move pre
             cur = cur.next
+        return dummy.next
+
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        dummy = ListNode(-101, head)
+        cur = dummy
+        while cur.next and cur.next.next:
+            if cur.next.val == cur.next.next.val:
+                x = cur.next.val
+                while cur.next and cur.next.val == x:
+                    cur.next = cur.next.next
+            else:
+                cur = cur.next
         return dummy.next
 
 
