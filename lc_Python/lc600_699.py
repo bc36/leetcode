@@ -318,6 +318,43 @@ class Solution:
         return self.longest
 
 
+# 688 - Knight Probability in Chessboard - MEDIUM
+class Solution:
+    def knightProbability(self, n: int, k: int, row: int,
+                          column: int) -> float:
+        dp = [[[0] * n for _ in range(n)] for _ in range(k + 1)]
+        for step in range(k + 1):
+            for i in range(n):
+                for j in range(n):
+                    if step == 0:
+                        dp[step][i][j] = 1
+                    else:
+                        for di, dj in ((-2, -1), (-2, 1), (2, -1), (2, 1),
+                                       (-1, -2), (-1, 2), (1, -2), (1, 2)):
+                            ni, nj = i + di, j + dj
+                            if 0 <= ni < n and 0 <= nj < n:
+                                dp[step][i][j] += dp[step - 1][ni][nj] / 8
+        return dp[k][row][column]
+
+    def knightProbability(self, N, K, r, c):
+        memo = {}
+
+        def dfs(i, j, p, k):
+            if 0 <= i < N and 0 <= j < N and k < K:
+                sm = 0
+                for x, y in ((-1, -2), (-2, -1), (-2, 1), (-1, 2), (1, 2),
+                             (2, 1), (2, -1), (1, -2)):
+                    if (i + x, j + y, k) not in memo:
+                        memo[(i + x, j + y, k)] = dfs(i + x, j + y, p / 8,
+                                                      k + 1)
+                    sm += memo[(i + x, j + y, k)]
+                return sm
+            else:
+                return 0 <= i < N and 0 <= j < N and p or 0
+
+        return dfs(r, c, 1, 0)
+
+
 # 689 - Maximum Sum of 3 Non-Overlapping Subarrays - HARD
 class Solution:
     def maxSumOfThreeSubarrays(self, nums: List[int], k: int) -> List[int]:
