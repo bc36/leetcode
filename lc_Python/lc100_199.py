@@ -122,6 +122,32 @@ class Solution:
         return step
 
 
+# 108 - Convert Sorted Array to Binary Search Tree - EASY
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        mid = len(nums) // 2
+        left = nums[:mid]
+        right = nums[mid + 1:]
+        root = TreeNode(nums[mid])
+        if left:
+            root.left = self.sortedArrayToBST(left)
+        if right:
+            root.right = self.sortedArrayToBST(right)
+        return root
+
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        def helper(left, right):
+            if left > right:
+                return None
+            mid = (left + right) // 2
+            root = TreeNode(nums[mid])
+            root.left = helper(left, mid - 1)
+            root.right = helper(mid + 1, right)
+            return root
+
+        return helper(0, len(nums) - 1)
+
+
 # 112 - Path Sum - EASY
 class Solution:
     def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:

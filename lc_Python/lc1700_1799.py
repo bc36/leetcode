@@ -134,3 +134,23 @@ class Solution:
                     dq.append((nx, ny))
                     isWater[nx][ny] = isWater[x][y] + 1
         return isWater
+
+
+# 1791 - Find Center of Star Graph - EASY
+class Solution:
+    def findCenter(self, edges: List[List[int]]) -> int:
+        n = len(edges)
+        d = [0] * (n + 1)
+        for o, i in edges:
+            d[o - 1] += 1
+            d[i - 1] += 1
+        for i in range(len(d)):
+            if d[i] == n:
+                return i + 1
+        return -1
+
+    def findCenter(self, edges: List[List[int]]) -> int:
+        if edges[0][0] in edges[1]:
+            return edges[0][0]
+        else:
+            return edges[0][1]

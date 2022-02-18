@@ -780,21 +780,34 @@ class Solution:
 
 # 39 - Combination Sum - MEDIUM
 class Solution:
-    def combinationSum(self, candidates: List[int],
-                       target: int) -> List[List[int]]:
+    def combinationSum(self, c: List[int], target: int) -> List[List[int]]:
         def backtrack(begin: int, path: List[int], target: int):
             if target == 0:
                 ans.append(path)
                 return
-            for i in range(begin, len(candidates)):
-                if target < candidates[i]:
+            for i in range(begin, len(c)):
+                if target < c[i]:
                     break
-                backtrack(i, path + [candidates[i]], target - candidates[i])
+                backtrack(i, path + [c[i]], target - c[i])
             return
 
         ans = []
-        candidates.sort()
+        c.sort()
         backtrack(0, [], target)
+        return ans
+
+    def combinationSum(self, c: List[int], target: int) -> List[List[int]]:
+        def backtrack(path, target, idx):
+            if target == 0:
+                ans.append(path)
+                return
+            for i in range(idx, len(c)):
+                if target >= c[i]:
+                    backtrack(path + [c[i]], target - c[i], i)
+            return
+
+        ans = []
+        backtrack([], target, 0)
         return ans
 
 
