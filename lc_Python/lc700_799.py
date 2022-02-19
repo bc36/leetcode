@@ -135,6 +135,33 @@ class Solution:
         return sell
 
 
+# 717 - 1-bit and 2-bit Characters - EASY
+class Solution:
+    def isOneBitCharacter(self, bits: List[int]) -> bool:
+        if bits[-1] == 1:
+            return False
+        one = 0
+        for i in range(len(bits) - 2, -1, -1):
+            if bits[i] == 1:
+                one += 1
+            else:
+                break
+        return not one & 1
+
+    def isOneBitCharacter(self, bits: List[int]) -> bool:
+        n = len(bits)
+        i = n - 2
+        while i >= 0 and bits[i]:
+            i -= 1
+        return (n - i) % 2 == 0
+
+    def isOneBitCharacter(self, bits: List[int]) -> bool:
+        i, n = 0, len(bits)
+        while i < n - 1:
+            i += bits[i] + 1
+        return i == n - 1
+
+
 # 721 - Accounts Merge - MEDIUM
 class Solution:
     def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:
@@ -332,6 +359,7 @@ class Solution:
 # 749
 
 # 750
+
 
 # 763 - Partition Labels - MEDIUM
 class Solution:
