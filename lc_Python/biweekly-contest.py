@@ -252,3 +252,83 @@ class Solution:
         for i in range(k - 1, 2 * k):
             ans = min(ans, s1[i] - s2[i])
         return ans
+
+
+##################
+# 71 / 2022.2.19 #
+##################
+# https://leetcode-cn.com/contest/biweekly-contest-72/
+
+
+# https://leetcode-cn.com/problems/maximum-split-of-positive-even-integers/
+# 5998. 拆分成最多数目的偶整数之和
+# 贪心, 从小到大枚举偶数, 多出来的加到最后一个
+class Solution:
+    def maximumEvenSplit(self, f: int) -> List[int]:
+        if f & 1:
+            return []
+        ans = []
+        i = 2
+        while i <= f:
+            ans.append(i)
+            f -= i
+            i += 2
+        ans[-1] += f
+        return ans
+
+
+# https://leetcode-cn.com/problems/count-good-triplets-in-an-array/
+# 5999. 统计数组中好三元组数目
+# 树状数组
+class Solution:
+    def goodTriplets(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums1)
+        pos2 = dict((nums2[i], i) for i in range(n))
+        f = [pos2[nums1[i]] for i in range(n)]
+
+        def inc(x):
+            while x <= n:
+                t[x] += 1
+                x += (x & (-x))
+
+        def calc(x):
+            res = 0
+            while x:
+                res += t[x]
+                x -= (x & (-x))
+            return res
+
+        left, right = [0] * n, [0] * n
+        # 计算左侧小于 f[i] 的元素个数
+        t = [0] * (n + 1)
+        for i in range(n):
+            left[i] = calc(f[i])
+            inc(f[i] + 1)
+        # 计算右侧大于 f[i] 的元素个数
+        t = [0] * (n + 1)
+        for i in range(n - 1, -1, -1):
+            right[i] = n - 1 - i - calc(f[i] + 1)
+            inc(f[i] + 1)
+        ans = 0
+        for i in range(n):
+            ans += left[i] * right[i]
+        return ans
+
+
+import sortedcontainers
+
+
+class Solution:
+    def goodTriplets(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums1)
+        p = [0] * n
+        for i, x in enumerate(nums1):
+            p[x] = i
+        ans = 0
+        s = sortedcontainers.SortedList()
+        for i in range(1, n - 1):
+            s.add(p[nums2[i - 1]])
+            y = p[nums2[i]]
+            less = s.bisect_left(y)
+            ans += less * (n - 1 - y - (i - less))
+        return ans
