@@ -358,6 +358,39 @@ class Solution:
         return True
 
 
+# 969 - Pancake Sorting - MEDIUM
+class Solution:
+    def pancakeSort(self, arr: List[int]) -> List[int]:
+        i = len(arr)
+        ans = []
+        while i > -1:
+            # every two moves make one number to its correct position
+            for j in range(i):
+                if arr[j] == i:
+                    # moves the current largest number to the first position.
+                    ans.append(j + 1)
+                    arr[:] = arr[:j + 1][::-1] + arr[j + 1:]
+                    # reverse the first i elements
+                    # so that the current largest number is moved to its correct position.
+                    ans.append(i)
+                    arr[:] = arr[:i][::-1] + arr[i:]
+                    break
+            i -= 1
+        return ans
+
+    def pancakeSort(self, arr: List[int]) -> List[int]:
+        ans = []
+        n = len(arr)
+        while n:
+            idx = arr.index(n)
+            ans.append(idx + 1)
+            arr = arr[:idx + 1][::-1] + arr[idx + 1:]
+            ans.append(n)
+            arr = arr[:n][::-1] + arr[n:]
+            n -= 1
+        return ans
+
+
 # 973 - K Closest Points to Origin - MEDIUM
 class Solution:
     # Pay attention that if the points are at the same distance,

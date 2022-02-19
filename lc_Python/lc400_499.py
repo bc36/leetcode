@@ -28,6 +28,20 @@ class Solution:
             n -= 9 * first * digits
 
 
+# 402 - Remove K Digits - MEDIUM
+class Solution:
+    def removeKdigits(self, num: str, k: int) -> str:
+        stack = []
+        for d in num:
+            while stack and k and stack[-1] > d:
+                stack.pop()
+                k -= 1
+            stack.append(d)
+        if k > 0:
+            stack = stack[:-k]
+        return ''.join(stack).lstrip('0') or "0"
+
+
 # 408 - Valid Word Abbreviation - EASY
 class Solution:
     def validWordAbbreviation(self, word: str, abbr: str) -> bool:
