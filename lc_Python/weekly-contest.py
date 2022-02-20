@@ -859,3 +859,74 @@ class Solution:
                     s = i | (1 << j)
                     f[s] = max(f[s], fi + ((j // 2 + 1) & nums[c]))
         return max(f)
+
+
+###################
+# 281 / 2022.2.19 #
+###################
+# https://leetcode-cn.com/contest/weekly-contest-281/
+
+
+# https://leetcode-cn.com/problems/count-array-pairs-divisible-by-k/
+# 6015. Count Array Pairs Divisible by K
+# 每个数都可能贡献一些因子 / gcd / 最大公因子
+class Solution:
+    def countPairs(self, nums: List[int], k: int) -> int:
+        divisors = []
+        d = 1
+        while d * d <= k:  # 预处理 k 的所有因子
+            if k % d == 0:
+                divisors.append(d)
+                if d * d < k:
+                    divisors.append(k // d)
+            d += 1
+        ans = 0
+        cnt = collections.defaultdict(int)
+        for n in nums:
+            ans += cnt[k // math.gcd(n, k)]
+            for d in divisors:
+                if n % d == 0:
+                    cnt[d] += 1
+        return ans
+
+    # O(n * log100000 + k * k), k is the number of divisors of k
+    def countPairs(self, nums: List[int], k: int) -> int:
+        cnt = collections.Counter(math.gcd(n, k) for n in nums)
+        ans = 0
+        for a in cnt:
+            for b in cnt:
+                if a <= b and a * b % k == 0:
+                    if a < b:
+                        ans += cnt[a] * cnt[b]
+                    else:
+                        ans += cnt[a] * (cnt[a] - 1) // 2
+        return ans
+
+    def countPairs(self, nums: List[int], k: int) -> int:
+        cnt, ans = collections.Counter(), 0
+        for n in nums:
+            g = math.gcd(n, k)
+            for c in cnt:
+                if (c * g) % k == 0:
+                    ans += cnt[c]
+            cnt[g] += 1
+        return ans
+
+    def countPairs(self, nums: List[int], k: int) -> int:
+        mx = k
+        for x in nums:
+            mx = max(mx, x)
+        cnt = [0] * (mx + 1)
+        for x in nums:
+            cnt[x] += 1
+        # n * (1 + 1/2 + 1/3 + 1/4 ...) -> n * logn
+        for i in range(1, mx + 1):
+            for j in range(2 * i, mx + 1, i):
+                cnt[i] += cnt[j]
+        ans = 0
+        for x in nums:
+            ans += cnt[k // math.gcd(k, x)]
+        for x in nums:
+            if (x * x) % k == 0:
+                ans -= 1
+        return ans // 2  # i < j
