@@ -100,6 +100,39 @@ class Solution:
         return ret
 
 
+class Solution:
+    def pushDominoes(self, dominoes: str) -> str:
+        while 1:
+            new = dominoes.replace('R.L', 'S')
+            new = new.replace('.L', 'LL').replace('R.', 'RR')
+            if new == dominoes:
+                break
+            else:
+                dominoes = new
+        return dominoes.replace('S', 'R.L')
+
+    def pushDominoes(self, d: str) -> str:
+        n = len(d)
+        # [L_dist, R_dist]
+        records = [[math.inf, math.inf] for _ in range(n)]
+        cur = -math.inf
+        for i in range(n):
+            if d[i] == 'R':
+                cur = i
+            elif d[i] == 'L':
+                cur = -math.inf
+            records[i][1] = i - cur
+        cur = math.inf
+        for i in range(n - 1, -1, -1):
+            if d[i] == 'L':
+                cur = i
+            elif d[i] == 'R':
+                cur = math.inf
+            records[i][0] = cur - i
+        return "".join('.' if l == r else ('R' if l > r else 'L')
+                       for l, r in records)
+
+
 # 844 - Backspace String Compare - EASY
 class Solution:
     def backspaceCompare(self, s: str, t: str) -> bool:
