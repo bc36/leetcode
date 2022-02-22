@@ -1150,6 +1150,15 @@ class Solution:
         return nums[len(nums) // 2]
 
 
+# 171 - Excel Sheet Column Number - EASY
+class Solution:
+    def titleToNumber(self, columnTitle: str) -> int:
+        ans = 0
+        for ch in columnTitle:
+            ans = ans * 26 + ord(ch) - ord('A') + 1
+        return ans
+
+
 # 173 - Binary Search Tree Iterator - MEDIUM
 # save all node.val by inorder traversal
 class BSTIterator:

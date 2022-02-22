@@ -46,16 +46,18 @@ class Solution:
                 if num % prime[i] == 0:
                     mask |= 1 << i
             for state in range(1 << m):
-                if state & mask == 0:
+                if state & mask == 0: # no reused prime number
                     dp[state | mask] += dp[state] * cnt[num]
                     dp[state | mask] %= mod
-        return (1 << cnt[1]) * (sum(dp) - 1) % mod
+        return (1 << cnt[1]) * (sum(dp) - 1) % mod  # minus dp[0]
 
     # O(2^10 * 30)
     def numberOfGoodSubsets(self, nums: List[int]) -> int:
         mod = 10**9 + 7
         primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-        dp = [1] + [0] * (1 << 10)
+        # dp = [1] + [0] * (1 << 10) did not use the last element
+        dp = [0] * (1 << 10)
+        dp[0] = 1
         cnt = collections.Counter(nums)
         for n in cnt:
             if n == 1: continue
@@ -64,8 +66,9 @@ class Solution:
             mask = sum(1 << i for i, p in enumerate(primes) if n % p == 0)
             for i in range(1 << 10):
                 if i & mask: continue
+                # no reused prime number
                 dp[i | mask] = (dp[i | mask] + cnt[n] * dp[i]) % mod
-        return (1 << cnt[1]) * (sum(dp) - 1) % mod
+        return (1 << cnt[1]) * (sum(dp) - 1) % mod  # minus dp[0]
 
     def numberOfGoodSubsets(self, nums: List[int]) -> int:
         p = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
