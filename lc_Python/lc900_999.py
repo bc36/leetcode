@@ -118,6 +118,38 @@ class Solution:
         return search(1, 2, 0)
 
 
+# 917 - Reverse Only Letters - EASY
+class Solution:
+    def reverseOnlyLetters(self, s: str) -> str:
+        a, z, A, Z = ord('a'), ord('z'), ord('A'), ord('Z')
+        arr = []
+        for i in range(len(s)):
+            if a <= ord(s[i]) <= z or A <= ord(s[i]) <= Z:
+                arr.append(s[i])
+        ans = ''
+        for i in range(len(s)):
+            if a <= ord(s[i]) <= z or A <= ord(s[i]) <= Z:
+                ans += arr.pop()
+            else:
+                ans += s[i]
+        return ans
+
+    def reverseOnlyLetters(self, s: str) -> str:
+        s = list(s)
+        l, r = 0, len(s) - 1
+        while l < r:
+            while l < r and not s[l].isalpha():
+                l += 1
+            while l < r and not s[r].isalpha():
+                r -= 1
+
+            if l < r:
+                s[l], s[r] = s[r], s[l]
+            l += 1
+            r -= 1
+        return ''.join(s)
+
+
 # 918 - Maximum Sum Circular Subarray - MEDIUM
 class Solution:
     def maxSubarraySumCircular(self, nums: List[int]) -> int:

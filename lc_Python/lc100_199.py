@@ -15,6 +15,12 @@ class ListNode:
         self.next = next
 
 
+class Node:
+    def __init__(self, val=0, neighbors=None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+
 # 101 - Symmetric Tree - EASY
 class Solution:
     def isSymmetric(self, root: TreeNode) -> bool:
@@ -522,6 +528,39 @@ class Solution:
         ans = []
         dfs([], s)
         return ans
+
+
+# 133 - Clone Graph - MEDIUM
+class Solution:
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        def dfs(node):
+            if not node:
+                return
+            if node.val in seen:
+                return seen[node.val]
+            clone = Node(node.val, [])
+            seen[node.val] = clone
+            for n in node.neighbors:
+                clone.neighbors.append(dfs(n))
+            return clone
+
+        seen = {}
+        return dfs(node)
+
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if not node: 
+            return
+        clone = Node(node.val, [])
+        seen = {node:clone}
+        queue = collections.deque([node])
+        while queue:
+            cur = queue.popleft()
+            for n in cur.neighbors:
+                if n not in seen:
+                    seen[n] = Node(n.val, [])
+                    queue.append(n)
+                seen[cur].neighbors.append(seen[n])
+        return clone
 
 
 # 134 - Gas Station - MEDIUM
