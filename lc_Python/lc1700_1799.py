@@ -42,6 +42,46 @@ class Solution:
         return ans
 
 
+# 1706 - Where Will the Ball Fall - MEDIUM
+class Solution:
+    def findBall(self, grid: List[List[int]]) -> List[int]:
+        ans = []
+        m, n = len(grid), len(grid[0])
+        for b in range(n):
+            i = 0
+            j = b
+            succ = True
+            while i < m:
+                if grid[i][j] == 1 and j + 1 < n and grid[i][j + 1] == 1:
+                    j += 1
+                    i += 1
+                elif grid[i][j] == -1 and j - 1 >= 0 and grid[i][j - 1] == -1:
+                    j -= 1
+                    i += 1
+                else:
+                    succ = False
+                    break
+            if succ:
+                ans.append(j)
+            else:
+                ans.append(-1)
+        return ans
+    # for-else
+    def findBall(self, grid: List[List[int]]) -> List[int]:
+        n = len(grid[0])
+        ans = [-1] * n
+        for j in range(n):
+            col = j
+            for row in grid:
+                dir = row[col]
+                col += dir
+                if col < 0 or col == n or row[col] != dir:
+                    break
+            else:
+                ans[j] = col
+        return ans
+
+
 # 1716 - Calculate Money in Leetcode Bank - EASY
 class Solution:
     def totalMoney(self, n: int) -> int:

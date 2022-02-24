@@ -1161,6 +1161,58 @@ class Solution:
         return ans
 
 
+# 57 - Insert Interval - MEDIUM
+class Solution:
+    # O(n * logn)
+    def insert(self, intervals: List[List[int]],
+               newInterval: List[int]) -> List[List[int]]:
+        intervals.append(newInterval)
+        intervals.sort()
+        ans = []
+        l, r = intervals[0]
+        for i in range(1, len(intervals)):
+            if intervals[i][0] <= r:
+                r = max(r, intervals[i][1])
+            else:
+                ans.append([l, r])
+                l, r = intervals[i]
+        ans.append([l, r])
+        return ans
+
+    # O(n)
+    def insert(self, intervals: List[List[int]],
+               newInterval: List[int]) -> List[List[int]]:
+        s, e = newInterval[0], newInterval[1]
+        left, right = [], []
+        for i in intervals:
+            if i[1] < s:
+                left.append(i),
+            elif i[0] > e:
+                right.append(i),
+            else:
+                s = min(s, i[0])
+                e = max(e, i[1])
+        return left + [(s, e)] + right
+
+    # O(n)
+    def insert(self, intervals: List[List[int]],
+               newInterval: List[int]) -> List[List[int]]:
+        ans = []
+        i = 0
+        while i < len(intervals) and intervals[i][1] < newInterval[0]:
+            ans.append(intervals[i])
+            i += 1
+        while i < len(intervals) and intervals[i][0] <= newInterval[1]:
+            newInterval[0] = min(newInterval[0], intervals[i][0])
+            newInterval[1] = max(newInterval[1], intervals[i][1])
+            i += 1
+        ans.append(newInterval)
+        while i < len(intervals):
+            ans.append(intervals[i])
+            i += 1
+        return ans
+
+
 # 59 - Spiral Matrix II - MEDIUM
 class Solution:
     def generateMatrix(self, n: int) -> List[List[int]]:
