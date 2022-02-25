@@ -548,10 +548,10 @@ class Solution:
         return dfs(node)
 
     def cloneGraph(self, node: 'Node') -> 'Node':
-        if not node: 
+        if not node:
             return
         clone = Node(node.val, [])
-        seen = {node:clone}
+        seen = {node: clone}
         queue = collections.deque([node])
         while queue:
             cur = queue.popleft()
@@ -995,6 +995,20 @@ class Solution:
                 head.next = cur
         return dummy.next
 
+# 148 - Sort List - MEDIUM
+class Solution:
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        arr = []
+        while head:
+            arr.append(head.val)
+            head = head.next
+        arr.sort()
+        head = dummy = ListNode(-1)
+        for n in arr:
+            head.next = ListNode(n)
+            head = head.next
+        return dummy.next
+
 
 # 152 - Maximum Product Subarray - MEDIUM
 class Solution:
@@ -1138,6 +1152,60 @@ class Solution:
         if nums[-1] < upper:
             ans.append(nums[-1] + 1, upper)
         return ans
+
+
+# 165 - Compare Version Numbers - MEDIUM
+class Solution:
+    def compareVersion(self, version1: str, version2: str) -> int:
+        v1 = version1.split('.')
+        v2 = version2.split('.')
+        i = j = 0
+        while i < len(v1) and j < len(v2):
+            if int(v1[i]) > int(v2[j]):
+                return 1
+            elif int(v1[i]) < int(v2[j]):
+                return -1
+            else:
+                i += 1
+                j += 1
+        # whether the rest part of longer string are all '0'
+        if i < len(v1):
+            return int(any(int(s) > 0 for s in v1[i:]))
+        if j < len(v2):
+            return -int(any(int(s) > 0 for s in v2[j:]))
+        return 0
+
+    def compareVersion(self, version1: str, version2: str) -> int:
+        versions1 = [int(v) for v in version1.split(".")]
+        versions2 = [int(v) for v in version2.split(".")]
+        for i in range(max(len(versions1), len(versions2))):
+            v1 = versions1[i] if i < len(versions1) else 0
+            v2 = versions2[i] if i < len(versions2) else 0
+            if v1 > v2:
+                return 1
+            elif v1 < v2:
+                return -1
+        return 0
+
+    # compare number between each '.'
+    def compareVersion(self, v1: str, v2: str) -> int:
+        m, n = len(v1), len(v2)
+        i = j = 0
+        while i < m or j < n:
+            a = b = 0
+            while i < m and v1[i] != '.':
+                a = 10 * a + int(v1[i])
+                i += 1
+            while j < n and v2[j] != '.':
+                b = 10 * b + int(v2[j])
+                j += 1
+            if a > b:
+                return 1
+            elif a < b:
+                return -1
+            i += 1
+            j += 1
+        return 0
 
 
 # 167 - Two Sum II - Input Array Is Sorted - EASY

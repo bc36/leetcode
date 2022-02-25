@@ -62,6 +62,25 @@ class DetectSquares:
         return ans
 
 
+# 2016 - Maximum Difference Between Increasing Elements - EASY
+class Solution:
+    def maximumDifference(self, nums: List[int]) -> int:
+        ans, mi = 0, math.inf
+        for n in nums:
+            mi = min(mi, n)
+            ans = max(ans, n - mi)
+        return ans if ans > 0 else -1
+
+    def maximumDifference(self, nums: List[int]) -> int:
+        ans, premin = -1, nums[0]
+        for i in range(1, len(nums)):
+            if nums[i] > premin:
+                ans = max(ans, nums[i] - premin)
+            else:
+                premin = nums[i]
+        return ans
+
+
 # 2022 - Convert 1D Array Into 2D Array - EASY
 class Solution:
     def construct2DArray(self, original: List[int], m: int,
