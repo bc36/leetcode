@@ -383,6 +383,16 @@ class Solution:
         return ans
 
 
+# 537 - Complex Number Multiplication - MEDIUM
+class Solution:
+    def complexNumberMultiply(self, num1: str, num2: str) -> str:
+        a, b = num1[:-1].split('+')
+        c, d = num2[:-1].split('+')
+        e = int(a) * int(c) - int(b) * int(d)
+        f = int(a) * int(d) + int(b) * int(c)
+        return f"{e}+{f}i"
+
+
 # 539 - Minimum Time Difference - MEDIUM
 class Solution:
     def findMinDifference(self, timePoints: List[str]) -> int:
