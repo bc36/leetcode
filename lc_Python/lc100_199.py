@@ -995,8 +995,10 @@ class Solution:
                 head.next = cur
         return dummy.next
 
+
 # 148 - Sort List - MEDIUM
 class Solution:
+    # O(n * logn) / O(n)
     def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         arr = []
         while head:
@@ -1007,6 +1009,44 @@ class Solution:
         for n in arr:
             head.next = ListNode(n)
             head = head.next
+        return dummy.next
+
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        arr = []
+        cur = head
+        while cur:
+            arr.append(cur.val)
+            cur = cur.next
+        cur = head
+        for num in sorted(arr):
+            cur.val = num
+            cur = cur.next
+        return head
+
+    # O(n * logn) / O(logn)
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head or not head.next:
+            return head
+        slow = head
+        fast = head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        start = slow.next
+        slow.next = None  # break the list
+        return self.mergeTwoLists(self.sortList(head), self.sortList(start))
+
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        dummy = head = ListNode(-1)
+        while l1 and l2:
+            if l1.val >= l2.val:
+                head.next = l2
+                l2 = l2.next
+            else:
+                head.next = l1
+                l1 = l1.next
+            head = head.next
+        head.next = l1 or l2
         return dummy.next
 
 
