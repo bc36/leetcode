@@ -925,6 +925,13 @@ class Solution:
             ret.pop()
         return ''.join(map(str, ret[::-1]))
 
+    def multiply(self, num1: str, num2: str) -> str:
+        res = 0
+        for i, v in enumerate(num1[::-1]):
+            for j, u in enumerate(num2[::-1]):
+                res += int(v) * int(u) * (10**(i + j))
+        return str(res)
+
 
 # 45 - Jump Game II - MEDIUM
 class Solution:

@@ -822,6 +822,40 @@ class Solution:
         return ans
 
 
+# 230 - Kth Smallest Element in a BST - MEDIUM
+class Solution:
+    # O(h + k) / O(h), h is the height of this tree
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        def inorder(root):
+            if not root:
+                return
+            inorder(root.left)
+            self.k -= 1
+            if self.k == 0:
+                self.ans = root.val
+                return
+            inorder(root.right)
+            return
+
+        self.k = k
+        self.ans = 0
+        inorder(root)
+        return self.ans
+
+    # O(n) / O(n)
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        def inorder(root):
+            if not root:
+                return
+            inorder(root.left)
+            self.arr.append(root.val)
+            inorder(root.right)
+            return
+        
+        self.arr = []
+        inorder(root)
+        return self.arr[k-1]
+
 # 231 - Power of Two - EASY
 class Solution:
     def isPowerOfTwo(self, n: int) -> bool:
