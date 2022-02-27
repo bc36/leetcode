@@ -930,3 +930,9 @@ class Solution:
             if (x * x) % k == 0:
                 ans -= 1
         return ans // 2  # i < j
+
+
+###################
+# 281 / 2022.2.26 #
+###################
+# https://leetcode-cn.com/contest/weekly-contest-282/
