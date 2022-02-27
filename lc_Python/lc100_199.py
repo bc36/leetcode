@@ -1,5 +1,5 @@
 from typing import List, Optional
-import collections, functools, copy, random
+import collections, functools, copy, random, math
 
 
 class TreeNode:
@@ -126,6 +126,33 @@ class Solution:
                     dq.append(r.right)
             step += 1
         return step
+
+
+# 105 - Construct Binary Tree from Preorder and Inorder Traversal - MEDIUM
+class Solution:
+    # slow, need to find index every time and new four sublists
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        if not preorder:
+            return None
+        root = TreeNode(preorder[0])
+        idx = inorder.index(preorder[0])
+        root.left = self.buildTree(preorder[1:idx + 1], inorder[:idx])
+        root.right = self.buildTree(preorder[idx + 1:], inorder[idx + 1:])
+        return root
+
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        dic = {val: idx for idx, val in enumerate(inorder)}
+
+        def helper(pleft, ileft, iright) -> TreeNode:
+            if ileft > iright:
+                return None
+            root = TreeNode(preorder[pleft])
+            idx = dic[preorder[pleft]]
+            root.left = helper(pleft + 1, ileft, idx - 1)
+            root.right = helper(pleft + 1 + idx - ileft, idx + 1, iright)
+            return root
+
+        return helper(0, 0, len(inorder)-1)
 
 
 # 108 - Convert Sorted Array to Binary Search Tree - EASY
@@ -1093,6 +1120,61 @@ class Solution:
             else:
                 r = mid
         return nums[l]
+
+
+# 155 - Min Stack - EASY
+class MinStack:
+    # O(1) / O(n)
+    def __init__(self):
+        self.stack = []
+        self.min_stack = [math.inf]
+
+    def push(self, x: int) -> None:
+        self.stack.append(x)
+        self.min_stack.append(min(x, self.min_stack[-1]))
+
+    def pop(self) -> None:
+        self.stack.pop()
+        self.min_stack.pop()
+
+    def top(self) -> int:
+        return self.stack[-1]
+
+    def getMin(self) -> int:
+        return self.min_stack[-1]
+
+
+class MinStack:
+    # O(1) / O(1), save diff in stack
+    def __init__(self):
+        self.stack = []
+        self.mi = -1
+
+    def push(self, x: int) -> None:
+        if not self.stack:
+            self.stack.append(0)
+            self.mi = x
+        else:
+            diff = x - self.mi
+            self.stack.append(diff)
+            if diff < 0:
+                self.mi = x
+
+    def pop(self) -> None:
+        if not self.stack:
+            return
+        diff = self.stack.pop()
+        if diff < 0:
+            self.mi = self.mi - diff
+        return
+
+    def top(self) -> int:
+        if self.stack[-1] < 0:
+            return self.mi
+        return self.stack[-1] + self.mi
+
+    def getMin(self) -> int:
+        return self.mi
 
 
 # 160 - Intersection of Two Linked Lists - EASY

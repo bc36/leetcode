@@ -568,6 +568,17 @@ class Solution:
         return uf.num_of_sets
 
 
+# 553 - Optimal Division - MEDIUM
+class Solution:
+    def optimalDivision(self, nums: List[int]) -> str:
+        res = ''
+        if len(nums) > 2:
+            res = '/(' + '/'.join(str(i) for i in nums[1:]) + ')'
+        elif len(nums) == 2:
+            res = '/' + '/'.join(str(i) for i in nums[1:]) + ''
+        return str(nums[0]) + res
+
+
 # 557 - Reverse Words in a String III - EASY
 class Solution:
     def reverseWords(self, s: str) -> str:

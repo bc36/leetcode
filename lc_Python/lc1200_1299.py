@@ -170,15 +170,11 @@ class Solution:
         left = []
         s = list(s)
         for i in range(len(s)):
-            # record the index of each "("
             if s[i] == '(':
                 left.append(i)
             elif s[i] == ')':
-                # no "(" to be paired, remove invalid ")"
                 if not left:
                     s[i] = ''
-                # has extra "(" to be paired, remove one "("
-                # pop will remove the rightmost "("
                 else:
                     left.pop()
         for i in left:
@@ -200,6 +196,25 @@ class Solution:
             arr[stack.pop()] = ''  # remove extra '('
         return ''.join(arr)
 
+    def minRemoveToMakeValid(self, s: str) -> str:
+        arr = []
+        l = 0
+        r = s.count(')')
+        for ch in s:
+            if ch == '(':
+                if r > 0:
+                    arr.append(ch)
+                    l += 1
+                    r -= 1
+            elif ch == ')':
+                if l > 0:
+                    arr.append(ch)
+                    l -= 1
+                else:
+                    r -= 1
+            else:
+                arr.append(ch)
+        return ''.join(arr)
 
 # 1286 - Iterator for Combination - MEDIUM
 class CombinationIterator:
