@@ -191,6 +191,9 @@ class Solution:
 
         return s[l:r + 1]
 
+class Solution:
+    def convert(self, s: str, numRows: int) -> str:
+
 
 # 8 - String to Integer (atoi) - MEDIUM
 class Solution:
