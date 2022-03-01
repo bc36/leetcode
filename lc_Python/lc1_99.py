@@ -191,8 +191,32 @@ class Solution:
 
         return s[l:r + 1]
 
+
+# 6 - ZigZag Conversion - MEDIUM
 class Solution:
     def convert(self, s: str, numRows: int) -> str:
+        n, r = len(s), numRows
+        if r == 1 or r >= n:
+            return s
+        t = r * 2 - 2
+        ans = []
+        for i in range(r):
+            for j in range(0, n - i, t):
+                ans.append(s[j + i])
+                if 0 < i < r - 1 and j + t - i < n:
+                    ans.append(s[j + t - i])
+        return ''.join(ans)
+
+    def convert(self, s: str, numRows: int) -> str:
+        if numRows < 2: return s
+        res = ["" for _ in range(numRows)]
+        i, flag = 0, -1
+        for c in s:
+            res[i] += c
+            if i == 0 or i == numRows - 1:
+                flag = -flag
+            i += flag
+        return "".join(res)
 
 
 # 8 - String to Integer (atoi) - MEDIUM
