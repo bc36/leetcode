@@ -528,7 +528,30 @@ class Solution:
         return (val1, val2)
 
 
-# 338
+# 338 - Counting Bits - EASY
+class Solution:
+    # x is even, bits[x] = bits[x//2]
+    # x is odd, bits[x] = bits[(x+1)//2] + 1
+    def countBits(self, n: int) -> List[int]:
+        bits = [0]
+        for i in range(1, n + 1):
+            bits.append(bits[i >> 1] + (i & 1))
+        return bits
+
+    def countBits(self, n: int) -> List[int]:
+        bits = [0]
+        for i in range(1, n + 1):
+            bits.append(bits[i & (i - 1)] + 1)
+        return bits
+
+    def countBits(self, n: int) -> List[int]:
+        bits = [0]
+        highBit = 0
+        for i in range(1, n + 1):
+            if i & (i - 1) == 0:  # n > 0 && n & (n - 1) == 0
+                highBit = i  # is the power of 2
+            bits.append(bits[i - highBit] + 1)
+        return bits
 
 
 # 339 - Nested List Weight Sum - MEDIUM

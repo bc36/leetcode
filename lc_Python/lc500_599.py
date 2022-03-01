@@ -665,6 +665,33 @@ class Solution:
         return self.ans
 
 
+# 564 - Find the Closest Palindrome - HARD
+class Solution:
+    def nearestPalindromic(self, n: str) -> str:
+        if int(n) < 10 or int(n[::-1]) == 1:
+            return str(int(n) - 1)
+        if n == '11':
+            return '9'
+        # if set(n) == {'9'}:
+        #     return str(int(n) + 2)
+        l, r = n[:(len(n) + 1) // 2], n[(len(n) + 1) // 2:]
+        temp = [str(int(l) - 1), l, str(int(l) + 1)]
+        temp = [i + i[len(r) - 1::-1] for i in temp]
+        # float('inf'), deal with the case like '88'
+        return min(temp, key=lambda x: abs(int(x) - int(n)) or float('inf'))
+
+    def nearestPalindromic(self, n: str) -> str:
+        if int(n) < 10 or int(n[::-1]) == 1:
+            return str(int(n) - 1)
+        if n == '11':
+            return '9'
+        left = n[:(len(n) + 1) // 2]
+        # N-1,N-1 / N, N / N+1, N+1
+        tmp = [str(int(left) - 1), left, str(int(left) + 1)]
+        tmp = [i + i[:(len(n)) // 2][::-1] for i in tmp]
+        return min(tmp, key=lambda x: abs(int(x) - int(n)) or float('inf'))
+
+
 # 566 - Reshape the Matrix - EASY
 class Solution:
     def matrixReshape(self, mat: List[List[int]], r: int,
