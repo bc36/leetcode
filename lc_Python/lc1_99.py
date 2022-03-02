@@ -1928,10 +1928,23 @@ class Solution:
         return self.inorderTraversal(
             root.left) + [root.val] + self.inorderTraversal(root.right)
 
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        def inorder(root):
+            if not root:
+                return
+            inorder(root.left)
+            ans.append(root.val)
+            inorder(root.right)
+            return
+
+        ans = []
+        inorder(root)
+        return ans
+
     # iteratively
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         stack, ans = [], []
-        while stack or root:
+        while root or stack:
             if root:
                 stack.append(root)
                 root = root.left

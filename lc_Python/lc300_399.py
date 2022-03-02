@@ -1103,10 +1103,19 @@ class Solution:
         while i < len(s) and j < len(t):
             if s[i] == t[j]:
                 i += 1
-                j += 1
-            else:
-                j += 1
+            j += 1
         return i == len(s)
+
+    def isSubsequence(self, s: str, t: str) -> bool:
+        if not s:
+            return True
+        j = 0
+        for i in range(len(t)):
+            if t[i] == s[j]:
+                j += 1
+            if j == len(s):
+                return True
+        return False
 
 
 # 394 - Decode String - MEDIUM
