@@ -299,3 +299,87 @@ class Solution:
         for i in range(len(beans)):
             ans = max(ans, beans[i] * (i + 1))
         return sum(beans) - ans
+
+
+# 2185 - Counting Words With a Given Prefix - EASY
+class Solution:
+    def prefixCount(self, words: List[str], pref: str) -> int:
+        return len([word for word in words if word.startswith(pref)])
+
+
+# 2186 - Minimum Number of Steps to Make Two Strings Anagram II - MEDIUM
+class Solution:
+    def minSteps(self, s: str, t: str) -> int:
+        cnt1 = collections.Counter(s)
+        cnt2 = collections.Counter(t)
+        ans = 0
+        for i in range(26):
+            ch = chr(ord('a') + i)
+            ans += abs(cnt1[ch] - cnt2[ch])
+        return ans
+
+    def minSteps(self, s: str, t: str) -> int:
+        arr = [0] * 26
+        for ch in s:
+            arr[ord(ch) - ord('a')] += 1
+        for ch in t:
+            arr[ord(ch) - ord('a')] -= 1
+        ans = 0
+        for i in arr:
+            ans += abs(i)
+        return ans
+
+
+# 2187 - Minimum Time to Complete Trips - MEDIUM
+class Solution:
+    def minimumTime(self, time: List[int], totalTrips: int) -> int:
+        def check(t: int) -> bool:
+            total = 0
+            for period in time:
+                total += t // period
+            return total >= totalTrips
+
+        l, r = 1, totalTrips * min(time)
+        while l < r:
+            mid = l + (r - l) // 2
+            if check(mid):
+                r = mid
+            else:
+                l = mid + 1
+        return l
+
+    def minimumTime(self, time: List[int], totalTrips: int) -> int:
+        cnt = collections.Counter(time)
+        l, r = 1, totalTrips * min(time)
+        while l < r:
+            mid = (l + r) // 2
+            total = 0
+            for i, v in cnt.items():
+                total += (mid // i) * v
+            if total >= totalTrips:
+                r = mid
+            else:
+                l = mid + 1
+        return l
+
+
+# 2188 - Minimum Time to Finish the Race - HARD
+class Solution:
+    def minimumFinishTime(self, tires: List[List[int]], changeTime: int,
+                          numLaps: int) -> int:
+        # minimum time to complete x consecutive circles with one tire (up to 17 circles)
+        min_sec = [math.inf] * 18
+        for f, r in tires:
+            x, time, sum = 1, f, 0
+            while time <= changeTime + f:
+                sum += time
+                min_sec[x] = min(min_sec[x], sum)
+                time *= r
+                x += 1
+
+        f = [0] * (numLaps + 1)
+        f[0] = -changeTime
+        for i in range(1, numLaps + 1):
+            f[i] = changeTime + min(f[i - j] + min_sec[j]
+                                    for j in range(1, min(18, i + 1)))
+        return f[numLaps]

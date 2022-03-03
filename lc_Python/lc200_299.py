@@ -851,10 +851,11 @@ class Solution:
             self.arr.append(root.val)
             inorder(root.right)
             return
-        
+
         self.arr = []
         inorder(root)
-        return self.arr[k-1]
+        return self.arr[k - 1]
+
 
 # 231 - Power of Two - EASY
 class Solution:
@@ -1079,6 +1080,9 @@ class Solution:
         if num % 9 == 0:
             return 9
         return num % 9
+
+    def addDigits(self, num: int) -> int:
+        return (num - 1) % 9 + 1 if num else 0
 
 
 # 260 - Single Number III - MEDIUM

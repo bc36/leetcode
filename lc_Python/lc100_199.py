@@ -152,7 +152,7 @@ class Solution:
             root.right = helper(pleft + 1 + idx - ileft, idx + 1, iright)
             return root
 
-        return helper(0, 0, len(inorder)-1)
+        return helper(0, 0, len(inorder) - 1)
 
 
 # 108 - Convert Sorted Array to Binary Search Tree - EASY
@@ -834,6 +834,12 @@ class Solution:
 class Solution:
     # recursively
     def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        return [root.val] + self.preorderTraversal(
+            root.left) + self.preorderTraversal(root.right)
+
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         def preorder(root):
             if not root:
                 return
@@ -845,12 +851,6 @@ class Solution:
         ans = []
         preorder(root)
         return ans
-
-    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
-        if not root:
-            return []
-        return [root.val] + self.preorderTraversal(
-            root.left) + self.preorderTraversal(root.right)
 
     # iteratively
     def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
@@ -873,6 +873,19 @@ class Solution:
             return []
         return self.postorderTraversal(root.left) + self.postorderTraversal(
             root.right) + [root.val]
+
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        def postorder(root):
+            if not root:
+                return
+            postorder(root.left)
+            postorder(root.right)
+            ans.append(root.val)
+            return
+
+        ans = []
+        postorder(root)
+        return ans
 
     # iteratively
     def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:

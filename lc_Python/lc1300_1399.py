@@ -288,3 +288,57 @@ class Solution:
             if max(cols[c]) == num:
                 ans.append(num)
         return ans
+
+
+# 1381 - Design a Stack With Increment Operation - MEDIUM
+class CustomStack:
+    def __init__(self, maxSize: int):
+        self.m = maxSize
+        self.l = 0
+        self.s = []
+
+    def push(self, x: int) -> None:
+        if self.l < self.m:
+            self.s.append(x)
+            self.l += 1
+
+    def pop(self) -> int:
+        if self.s:
+            r = self.s.pop()
+            self.l -= 1
+            return r
+        return -1
+
+    # O(k)
+    def increment(self, k: int, val: int) -> None:
+        i = 0
+        while i < k and i < self.l:
+            self.s[i] += val
+            i += 1
+
+
+class CustomStack:
+    def __init__(self, maxSize: int):
+        self.stk = [0] * maxSize
+        self.add = [0] * maxSize
+        self.top = -1
+
+    def push(self, x: int) -> None:
+        if self.top < len(self.stk) - 1:
+            self.top += 1
+            self.stk[self.top] = x
+
+    def pop(self) -> int:
+        if self.top == -1:
+            return -1
+        ret = self.stk[self.top] + self.add[self.top]
+        if self.top != 0:
+            self.add[self.top - 1] += self.add[self.top]
+        self.add[self.top] = 0
+        self.top -= 1
+        return ret
+
+    def increment(self, k: int, val: int) -> None:
+        l = min(k - 1, self.top)
+        if l >= 0:
+            self.add[l] += val

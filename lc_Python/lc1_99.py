@@ -622,6 +622,31 @@ class Solution:
         return newHead
 
 
+# 30 - Substring with Concatenation of All Words - HARD
+class Solution:
+    # O((n - k * t) * (k + k * t)), k = len(words), t = word_size
+    def findSubstring(self, s: str, words: List[str]) -> List[int]:
+        if not s or not words:
+            return []
+        cnt = collections.Counter(words)
+        t, k = len(words[0]), len(words)
+        total = t * k
+        ans = []
+        for i in range(len(s) - total + 1):  # O(n)
+            seen = dict(cnt)  # new a dict, O(k)
+            used = 0
+            for j in range(i, i + total, t):  # O(k)
+                w = s[j:j + t]  # O(t)
+                if w in seen and seen[w] > 0:
+                    seen[w] -= 1
+                    used += 1
+                else:
+                    break
+            if used == k:
+                ans.append(i)
+        return ans
+
+
 # 31 - Next Permutation - MEDIUM
 class Solution:
     # find the first number that is greater than the adjecent number on the right
