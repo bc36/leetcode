@@ -491,6 +491,23 @@ class Solution:
                     dq.append((i, j))
         return mat
 
+    def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
+        m, n = len(mat), len(mat[0])
+        dq = collections.deque([])
+        for i in range(m):
+            for j in range(n):
+                if mat[i][j] == 0:
+                    dq.append((i, j, 1))
+                else:
+                    mat[i][j] = -1
+        while dq:
+            x, y, t = dq.popleft()
+            for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
+                if 0 <= nx < m and 0 <= ny < n and mat[nx][ny] == -1:
+                    mat[nx][ny] = t
+                    dq.append((nx, ny, t + 1))
+        return mat
+
 
 # 543 - Diameter of Binary Tree - EASY
 class Solution:

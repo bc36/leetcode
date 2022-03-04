@@ -2,6 +2,21 @@ import bisect, collections, functools, random, math, itertools, heapq
 from typing import List, Optional
 
 
+# 2104 - Sum of Subarray Ranges - MEDIUM
+class Solution:
+    # O(n ^ 2) / O(2)
+    def subArrayRanges(self, nums: List[int]) -> int:
+        ans = 0
+        for i in range( len(nums)):
+            mi = math.inf
+            mx = -math.inf
+            for j in range(i,  len(nums)):
+                mi = min(mi, nums[j])
+                mx = max(mx, nums[j])
+                ans += mx - mi
+        return ans
+
+
 # 2164 - Sort Even and Odd Indices Independently - EASY
 class Solution:
     def sortEvenOdd(self, nums: List[int]) -> List[int]:

@@ -17,41 +17,44 @@ class ListNode:
 
 # 300 - Longest Increasing Subsequence - MEDIUM
 class Solution:
+    # O(n ^ 2) / O(n)
     def lengthOfLIS(self, nums: List[int]) -> int:
         dp = [1] * len(nums)
         for i in range(len(nums)):
             for j in range(i):
-                if nums[i] > nums[j] and dp[i] < dp[j] + 1:
-                    dp[i] = dp[j] + 1
+                if nums[i] > nums[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
         return max(dp)
 
+    # O(n * logn) / O(n)
     def lengthOfLIS(self, nums: List[int]) -> int:
-        dp = []
+        tail = []
         for num in nums:
-            idx = bisect.bisect_left(dp, num)
-            if idx == len(dp):
-                dp.append(num)
+            idx = bisect.bisect_left(tail, num)
+            if idx == len(tail):
+                tail.append(num)
             else:
-                dp[idx] = num
-        return len(dp)
+                tail[idx] = num
+        # keep the 'tail' ordered
+        # replace smaller element
+        # 'tail' may not be the exact LIS, but has the same length
+        return len(tail)
 
     def lengthOfLIS(self, nums: List[int]) -> int:
-        dp, ans = [1] * len(nums), 0
-        for num in nums:
-            lo, hi = 0, ans
-            while lo < hi:
-                mid = lo + hi >> 1
-                if dp[mid] < num:
-                    lo = mid + 1
+        tail = []
+        for n in nums:
+            l, r = 0, len(tail)
+            while l < r:
+                mid = l + r >> 1
+                if tail[mid] < n:
+                    l = mid + 1
                 else:
-                    hi = mid
-            if lo == len(dp):
-                dp.append(num)
+                    r = mid
+            if l == len(tail):
+                tail.append(n)
             else:
-                dp[lo] = num
-            if lo == ans:
-                ans += 1
-        return ans
+                tail[l] = n
+        return len(tail)
 
 
 # 301 - Remove Invalid Parentheses - HARD
