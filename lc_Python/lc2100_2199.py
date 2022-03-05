@@ -1,5 +1,43 @@
-import bisect, collections, functools, random, math, itertools, heapq
+import bisect, collections, functools, math, itertools, heapq
 from typing import List, Optional
+
+
+# 2100 - Find Good Days to Rob the Bank - MEDIUM
+class Solution:
+    def goodDaysToRobBank(self, s: List[int], time: int) -> List[int]:
+        if time == 0:
+            return [i for i in range(len(s))]
+        n = len(s)
+        f = [False] * n
+        b = [False] * n
+        count = 1
+        for i in range(1, n):
+            if s[i - 1] >= s[i]:
+                f[i] = True if count >= time else False
+                count += 1
+            else:
+                f[i] = False
+                count = 1
+        count = 1
+        for i in range(n - 2, -1, -1):
+            if s[i] <= s[i + 1]:
+                b[i] = True if count >= time else False
+                count += 1
+            else:
+                b[i] = False
+                count = 1
+        return [i for i in range(n) if f[i] and b[i]]
+
+    def goodDaysToRobBank(self, s: List[int], t: int) -> List[int]:
+        n = len(s)
+        l = [0] * n
+        r = [0] * n
+        for i in range(1, n):
+            if s[i - 1] >= s[i]:
+                l[i] = l[i - 1] + 1
+            if s[n - i - 1] <= s[n - i]:
+                r[n - i - 1] = r[n - i] + 1
+        return [i for i in range(t, n - t) if l[i] >= t and r[i] >= t]
 
 
 # 2104 - Sum of Subarray Ranges - MEDIUM
@@ -7,10 +45,10 @@ class Solution:
     # O(n ^ 2) / O(2)
     def subArrayRanges(self, nums: List[int]) -> int:
         ans = 0
-        for i in range( len(nums)):
+        for i in range(len(nums)):
             mi = math.inf
             mx = -math.inf
-            for j in range(i,  len(nums)):
+            for j in range(i, len(nums)):
                 mi = min(mi, nums[j])
                 mx = max(mx, nums[j])
                 ans += mx - mi
@@ -398,3 +436,61 @@ class Solution:
             f[i] = changeTime + min(f[i - j] + min_sec[j]
                                     for j in range(1, min(18, i + 1)))
         return f[numLaps]
+
+
+# 2190 - Most Frequent Number Following Key In an Array - EASY
+class Solution:
+    def mostFrequent(self, nums: List[int], key: int) -> int:
+        dic = collections.defaultdict(int)
+        for i in range(1, len(nums)):
+            if nums[i - 1] == key:
+                dic[nums[i]] += 1
+        ans = t = 0
+        for num in dic:
+            if dic[num] > t:
+                ans = num
+                t = dic[num]
+        return ans
+
+    def mostFrequent(self, nums: List[int], key: int) -> int:
+        cnt = collections.Counter()
+        for i in range(len(nums) - 1):
+            if nums[i] == key:
+                cnt[nums[i + 1]] += 1
+        return cnt.most_common(1)[0][0]
+
+
+# 2191 - Sort the Jumbled Numbers - MEDIUM
+class Solution:
+    def sortJumbled(self, mapping: List[int], nums: List[int]) -> List[int]:
+        arr = []
+        # m = {i: n for i, n in enumerate(mapping)}
+        for n in nums:
+            s = list(str(n))
+            t = 0
+            x = n
+            for i in range(len(s)):
+                t = t * 10 + mapping[int(s[i]) % 10]
+            arr.append((x, t))
+        arr.sort(key=lambda x: x[1])
+        return [i[0] for i in arr]
+
+
+# 2192 - All Ancestors of a Node in a Directed Acyclic Graph - MEDIUM
+class Solution:
+    def getAncestors(self, n: int, edges: List[List[int]]) -> List[List[int]]:
+        g = collections.defaultdict(list)
+        for o, i in edges:
+            g[i].append(o)
+        ans = []
+        for i in range(n):
+            seen = set()
+            dq = collections.deque([i])
+            while dq:
+                n = dq.popleft()
+                for nxt in g[n]:
+                    if nxt not in seen:
+                        dq.append(nxt)
+                        seen.add(nxt)
+            ans.append(sorted(seen))
+        return ans

@@ -343,23 +343,59 @@ class Solution:
 # https://leetcode-cn.com/contest/biweekly-contest-73/problems/minimum-number-of-moves-to-make-palindrome/
 # 5237. 得到回文串的最少操作次数
 # 贪心 从外往里
+# GREEDY
 class Solution:
-    # 每次判断将第一个字母安排到合理的位置的cnt,再递归加上剩下的字符串的操作次数
+    # set a character to the correct position, then process the rest of them
     def minMovesToMakePalindrome(self, s: str) -> int:
         if len(s) == 0:
             return 0
-        cnt = 0
+        move = 0
         n = len(s)
         tmp = ""
         for i in range(n - 1, -1, -1):
             if s[i] == s[0] and i != 0:
-                for j in range(1, i):
-                    tmp += s[j]
-                for j in range(i + 1, n):
-                    tmp += s[j]
-                cnt += n - i - 1
+                tmp = s[1:i] + s[i + 1:]
+                move += n - i - 1
                 break
-            if i == 0:
-                cnt += n // 2
+            if i == 0:  # odd, s[0] occur only once
                 tmp = s[1:]
-        return cnt + self.minMovesToMakePalindrome(tmp)
+                move += n // 2
+        return move + self.minMovesToMakePalindrome(tmp)
+
+    def minMovesToMakePalindrome(self, s: str) -> int:
+        length = len(s)
+        d = collections.Counter(s)
+        ans = 0
+        while length > 2:
+            ch = s[-1]
+            if d[ch] == 1:  # odd case, reverse 's', leave this character to the beginning
+                s = s[::-1]
+                ch = s[-1]
+            idx = s.index(ch)  # O(n) opt
+            s = s[:idx] + s[idx + 1:-1]  # delete two character
+            ans += idx
+            d[ch] -= 2
+            length -= 2
+        return ans
+
+    def minMovesToMakePalindrome(self, s: str) -> int:
+        if len(s) < 3:
+            return 0
+        for i in range(len(s)):
+            if s[i] == s[-1]:
+                return i + self.minMovesToMakePalindrome(s[:i] + s[i + 1:-1])
+            elif s[-1 - i] == s[0]:
+                return i + self.minMovesToMakePalindrome(s[1:-1 - i] + s[-i:])
+
+    def minMovesToMakePalindrome(self, s: str) -> int:
+        s = list(s)
+        ans = 0
+        while s:
+            i = s.index(s[-1])
+            if i == len(s) - 1:
+                ans += i // 2
+            else:
+                ans += i
+                s.pop(i)
+            s.pop()
+        return ans
