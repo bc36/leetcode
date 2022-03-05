@@ -306,6 +306,18 @@ class Solution:
             pre, cur = cur, max(pre + v[i], cur)
         return cur
 
+    def deleteAndEarn(self, nums: List[int]) -> int:
+        points = collections.defaultdict(int)
+        size = 0
+        for n in nums:
+            points[n] += n
+            size = max(size, n)
+        dp = [0] * (size + 1)
+        dp[1] = points[1]
+        for i in range(2, len(dp)):
+            dp[i] = max(dp[i - 1], dp[i - 2] + points[i])
+        return dp[-1]
+
 
 # 746 - Min Cost Climbing Stairs - EASY
 class Solution:

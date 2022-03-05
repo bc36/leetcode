@@ -255,7 +255,7 @@ class Solution:
 
 
 ##################
-# 71 / 2022.2.19 #
+# 72 / 2022.2.19 #
 ##################
 # https://leetcode-cn.com/contest/biweekly-contest-72/
 
@@ -332,3 +332,34 @@ class Solution:
             less = s.bisect_left(y)
             ans += less * (n - 1 - y - (i - less))
         return ans
+
+
+#################
+# 73 / 2022.3.5 #
+#################
+# https://leetcode-cn.com/contest/biweekly-contest-73/
+
+
+# https://leetcode-cn.com/contest/biweekly-contest-73/problems/minimum-number-of-moves-to-make-palindrome/
+# 5237. 得到回文串的最少操作次数
+# 贪心 从外往里
+class Solution:
+    # 每次判断将第一个字母安排到合理的位置的cnt,再递归加上剩下的字符串的操作次数
+    def minMovesToMakePalindrome(self, s: str) -> int:
+        if len(s) == 0:
+            return 0
+        cnt = 0
+        n = len(s)
+        tmp = ""
+        for i in range(n - 1, -1, -1):
+            if s[i] == s[0] and i != 0:
+                for j in range(1, i):
+                    tmp += s[j]
+                for j in range(i + 1, n):
+                    tmp += s[j]
+                cnt += n - i - 1
+                break
+            if i == 0:
+                cnt += n // 2
+                tmp = s[1:]
+        return cnt + self.minMovesToMakePalindrome(tmp)
