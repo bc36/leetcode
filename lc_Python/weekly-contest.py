@@ -561,6 +561,24 @@ class Solution:
 
         return max(check(i) for i in range(1, 1 << len(statements)))
 
+    def maximumGood(self, statements: List[List[int]]) -> int:
+        def check(good):
+            for i in good:
+                for j, ans in enumerate(statements[i]):
+                    if (ans == 0 and j in good) or (ans == 1
+                                                    and j not in good):
+                        return False
+            return True
+
+        n = len(statements)
+        nums = list(range(n))
+        for i in range(n + 1, 0, -1):
+            for comb in itertools.combinations(nums, i):
+                good = set(comb)
+                if check(good):
+                    return i
+        return 0
+
 
 #########################
 # 278 / 2道 / 2022.1.29 #

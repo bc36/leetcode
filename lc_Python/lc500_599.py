@@ -225,6 +225,14 @@ class Solution:
         # return word[1:] == word[1:].lower() or word == word.upper()
 
 
+# 521 - Longest Uncommon Subsequence I - EASY
+class Solution:
+    def findLUSlength(self, a: str, b: str) -> int:
+        if a == b:
+            return -1
+        return max(len(a), len(b))
+
+
 # 523 - Continuous Subarray Sum - MEDIUM
 class Solution:
     # 'cur' calculate the prefix sum remainder of input array 'nums'
