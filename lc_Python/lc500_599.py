@@ -63,6 +63,20 @@ class Solution:
         return ans
 
 
+# 504 - Base 7 - EASY
+class Solution:
+    def convertToBase7(self, num: int) -> str:
+        if num == 0:
+            return '0'
+        arr = []
+        f = '-' if num < 0 else ''
+        num = abs(num)
+        while num:
+            arr.append(str(num % 7))
+            num //= 7
+        return f + ''.join(reversed((arr)))
+
+
 # 506 - Relative Ranks - EASY
 class Solution:
     def findRelativeRanks(self, score: List[int]) -> List[str]:
