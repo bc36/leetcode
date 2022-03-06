@@ -2,6 +2,13 @@ import bisect, collections, functools, math, itertools, heapq
 from typing import List, Optional
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 # 2100 - Find Good Days to Rob the Bank - MEDIUM
 class Solution:
     def goodDaysToRobBank(self, s: List[int], time: int) -> List[int]:
@@ -494,3 +501,112 @@ class Solution:
                         seen.add(nxt)
             ans.append(sorted(seen))
         return ans
+
+
+# 2194 - Cells in a Range on an Excel Sheet - EASY
+class Solution:
+    def cellsInRange(self, s: str) -> List[str]:
+        ans = []
+        for i in range(ord(s[0]), ord(s[3]) + 1):
+            for j in range(int(s[1]), int(s[4]) + 1):
+                ans.append(chr(i) + str(j))
+        return ans
+
+
+# 2195 - Append K Integers With Minimal Sum - MEDIUM
+class Solution:
+    def minimalKSum(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        ans = k * (k + 1) // 2
+        last = k
+        pre = -1
+        for num in nums:
+            if num == pre:  # be careful!
+                continue
+            if num <= last:
+                ans += last + 1 - num
+                last += 1
+                pre = num
+            else:
+                break
+        return ans
+
+    def minimalKSum(self, nums: List[int], k: int) -> int:
+        ans = 0
+        nums += [0, 2e9 + 1]  # larger than 2*k
+        nums.sort()
+        for i in range(1, len(nums)):
+            fill = nums[i] - nums[i - 1] - 1
+            if fill < 0:  # repeat
+                continue
+            if fill >= k:
+                ans += (nums[i - 1] * 2 + 1 + k) * k // 2
+                break
+            ans += (nums[i - 1] + nums[i]) * fill // 2
+            k -= fill
+        return ans
+
+
+# 2196 - Create Binary Tree From Descriptions - MEDIUM
+class Solution:
+    def createBinaryTree(self, d: List[List[int]]) -> Optional[TreeNode]:
+        tree = collections.defaultdict(list)
+        ind = set()
+        for p, c, i in d:
+            tree[p].append((c, i))
+            ind.add(c)
+        root = None
+        for p, _, _ in d:
+            if p not in ind:
+                root = TreeNode(p)
+                break
+        dq = collections.deque([root])
+        while dq:
+            n = dq.popleft()
+            for ch, i in tree[n.val]:
+                if i == 1:
+                    n.left = TreeNode(ch)
+                    dq.append(n.left)
+                else:
+                    n.right = TreeNode(ch)
+                    dq.append(n.right)
+        return root
+
+    def createBinaryTree(self, r: List[List[int]]) -> Optional[TreeNode]:
+        # build tree
+        # and calculate the indegree
+        # indegree = 0, root
+        ind = collections.Counter()
+        # node value -> node
+        mp = dict()
+        for parent, child, isLeft in r:
+            if parent not in mp:
+                mp[parent] = TreeNode(parent)
+            if child not in mp:
+                mp[child] = TreeNode(child)
+            ind[child] += 1
+            if isLeft:
+                mp[parent].left = mp[child]
+            else:
+                mp[parent].right = mp[child]
+        for parent, child, isLeft in r:
+            if ind[parent] == 0:
+                return mp[parent]
+        return None
+
+    def createBinaryTree(self, r: List[List[int]]) -> Optional[TreeNode]:
+        nodes = {}
+        hasParent = set()
+        for (parent, child, left) in r:
+            if parent not in nodes:
+                nodes[parent] = TreeNode(parent)
+            if child not in nodes:
+                nodes[child] = TreeNode(child)
+            if left:
+                nodes[parent].left = nodes[child]
+            else:
+                nodes[parent].right = nodes[child]
+            hasParent.add(child)
+        for node in nodes:
+            if node not in hasParent:
+                return nodes[node]
