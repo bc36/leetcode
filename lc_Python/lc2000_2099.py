@@ -221,3 +221,6 @@ class Solution:
             return True
 
         return sum(valid(s) for s in sentence.split())
+
+
+# 2055 - Plates Between Candles - MEDIUM
