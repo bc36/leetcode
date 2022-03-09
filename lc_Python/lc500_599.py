@@ -870,6 +870,43 @@ class Solution:
         return len1 + len2 - dp[-1][-1] * 2
 
 
+# 589 - N-ary Tree Preorder Traversal - EASY
+class Solution:
+    def preorder(self, root: 'Node') -> List[int]:
+        if not root:
+            return []
+        t = [root.val]
+        for ch in root.children:
+            t += self.preorder(ch)
+        return t
+
+    def preorder(self, root: 'Node') -> List[int]:
+        def dfs(root: 'Node'):
+            if not root:
+                return
+            ans.append(root.val)
+            for ch in root.children:
+                dfs(ch)
+            return
+
+        ans = []
+        dfs(root)
+        return ans
+
+    def preorder(self, root: 'Node') -> List[int]:
+        if not root:
+            return []
+        s = [root]
+        ans = []
+        while s:
+            r = s.pop()
+            ans.append(r.val)
+            s.extend(reversed(r.children))
+            # for ch in r.children[::-1]:
+            #     s.append(ch)
+        return ans
+
+
 # 594 - Longest Harmonious Subsequence - EASY
 class Solution:
     def findLHS(self, nums: List[int]) -> int:
