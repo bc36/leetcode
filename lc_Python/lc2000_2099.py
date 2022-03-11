@@ -222,5 +222,7 @@ class Solution:
 
         return sum(valid(s) for s in sentence.split())
 
+# 2049 - Count Nodes With the Highest Score - MEDIUM
+
 
 # 2055 - Plates Between Candles - MEDIUM
