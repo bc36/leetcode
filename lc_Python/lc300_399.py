@@ -1121,6 +1121,29 @@ class Solution:
         return False
 
 
+# 393 - UTF-8 Validation - MEDIUM
+class Solution:
+    def validUtf8(self, data: List[int]) -> bool:
+        k = 0
+        for n in data:
+            if k == 0:
+                if n & 0b10000000 == 0b00000000:
+                    k = 0
+                elif n & 0b11100000 == 0b11000000:
+                    k = 1
+                elif n & 0b11110000 == 0b11100000:
+                    k = 2
+                elif n & 0b11111000 == 0b11110000:
+                    k = 3
+                else:
+                    return False
+            else:
+                if n & 0b11000000 != 0b10000000:
+                    return False
+                k -= 1
+        return k == 0
+
+
 # 394 - Decode String - MEDIUM
 class Solution:
     def decodeString(self, s: str) -> str:
