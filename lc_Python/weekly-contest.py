@@ -951,7 +951,19 @@ class Solution:
 
 
 ###################
-# 281 / 2022.2.26 #
+# 282 / 2022.2.26 #
 ###################
 # https://leetcode-cn.com/contest/weekly-contest-282/
+
 # https://leetcode-cn.com/problems/minimum-time-to-finish-the-race/
+
+##################
+# 283 / 2022.3.5 #
+##################
+# https://leetcode-cn.com/contest/weekly-contest-283/
+
+# https://leetcode-cn.com/contest/weekly-contest-283/problems/append-k-integers-with-minimal-sum/
+# 贪心 or chekc 空隙等差数列
+
+# https://leetcode-cn.com/contest/weekly-contest-283/problems/replace-non-coprime-numbers-in-array/
+# gcd, lcm

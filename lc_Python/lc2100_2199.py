@@ -610,3 +610,74 @@ class Solution:
         for node in nodes:
             if node not in hasParent:
                 return nodes[node]
+
+
+class Solution:
+    def replaceNonCoprimes(self, nums: List[int]) -> List[int]:
+        def gcd(x, y):
+            while y:
+                x, y = y, x % y
+            return x
+
+        def lcm(x, y):
+            res = (x * y) // gcd(x, y)
+            return res
+
+        q = collections.deque()
+        for i in range(len(nums)):
+            q.append(nums[i])
+            while len(q) >= 2 and gcd(q[-1], q[-2]) > 1:
+                fir = q.pop()
+                sec = q.pop()
+                q.append(lcm(fir, sec))
+        return list(q)
+
+    def replaceNonCoprimes(self, nums: List[int]) -> List[int]:
+        s = [nums[0]]
+        for num in nums[1:]:
+            s.append(num)
+            while len(s) > 1:
+                x, y = s[-1], s[-2]
+                g = math.gcd(x, y)
+                if g == 1:
+                    break
+                s.pop()
+                s[-1] *= x // g
+        return s
+
+    def replaceNonCoprimes(self, nums: List[int]) -> List[int]:
+        ans = [1]
+        for n in nums:
+            g = math.gcd(ans[-1], n)
+            if g <= 1:
+                ans.append(n)
+                continue
+            while g > 1:
+                n = ans.pop() * n // g
+                g = math.gcd(ans[-1], n)
+            ans.append(n)
+        return ans[1:]
+
+    def replaceNonCoprimes(self, nums: List[int]) -> List[int]:
+        ans = []
+        pre = nums[0]
+        for cur in nums[1:]:
+            if (g := math.gcd(cur, pre)) > 1:
+                cur = cur * pre // g
+                while ans and (gg := math.gcd(cur, ans[-1])) > 1:
+                    last = ans.pop()
+                    cur = cur * last // gg
+                pre = cur
+            else:
+                ans.append(pre)
+                pre = cur
+        ans.append(pre)
+        return ans
+
+    def replaceNonCoprimes(self, nums: List[int]) -> List[int]:
+        s = []
+        for num in nums:
+            while s and (g := math.gcd(num, s[-1])) > 1:
+                num = s.pop() // g * num
+            s.append(num)
+        return s
