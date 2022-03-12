@@ -907,6 +907,44 @@ class Solution:
         return ans
 
 
+# 590 - N-ary Tree Postorder Traversal - EASY
+class Solution:
+    def postorder(self, root: 'Node') -> List[int]:
+        if not root:
+            return []
+        t = []
+        for ch in root.children:
+            t += self.postorder(ch)
+        t.append(root.val)
+        return t
+
+    def postorder(self, root: 'Node') -> List[int]:
+        def dfs(root: Node):
+            if not root:
+                return
+            for ch in root.children:
+                dfs(ch)
+            ans.append(root.val)
+            return
+
+        ans = []
+        dfs(root)
+        return ans
+
+    def postorder(self, root: 'Node') -> List[int]:
+        if not root:
+            return []
+        q = [root]
+        ans = []
+        while q:
+            r = q.pop()
+            ans.append(r.val)
+            q.extend(r.children)
+            # for ch in r.children:
+            #     q.append(ch)
+        return reversed(ans)
+
+
 # 594 - Longest Harmonious Subsequence - EASY
 class Solution:
     def findLHS(self, nums: List[int]) -> int:

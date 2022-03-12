@@ -222,7 +222,114 @@ class Solution:
 
         return sum(valid(s) for s in sentence.split())
 
+
 # 2049 - Count Nodes With the Highest Score - MEDIUM
+class Solution:
+    def countHighestScoreNodes(self, parents: List[int]) -> int:
+        g = collections.defaultdict(list)
+        for i, v in enumerate(parents):
+            g[v].append(i)
+
+        def post(r):
+            nonlocal ans, mx
+            # if len(g[r]) == 0:
+            #     if n - 1 > mx:
+            #         ans, mx = 1, n - 1
+            #     elif n - 1 == mx:
+            #         ans += 1
+            #     return 1
+            p = 1
+            top = n - 1
+            child = 0
+            for node in g[r]:
+                ch = post(node)
+                child += ch
+                top -= ch
+                p *= max(ch, 1)
+            p *= max(top, 1)
+            if p > mx:
+                ans = 1
+                mx = p
+            elif p == mx:
+                ans += 1
+            return child + 1
+
+        ans = mx = 0
+        n = len(parents)
+        post(0)
+        return ans
+
+    def countHighestScoreNodes(self, parents: List[int]) -> int:
+        n = len(parents)
+        g = collections.defaultdict(list)
+        for i, p in enumerate(parents):
+            g[p].append(i)
+        mx, ans = 0, 0
+
+        def dfs(node):
+            left = dfs(g[node][0]) if g[node] else 0
+            right = dfs(g[node][1]) if len(g[node]) == 2 else 0
+            nonlocal mx, ans
+            if (score := max(1, (n - left - right - 1)) * max(1, left) *
+                    max(1, right)) > mx:
+                mx, ans = score, 1
+            elif score == mx:
+                ans += 1
+            return left + right + 1
+
+        dfs(0)
+        return ans
+
+    def countHighestScoreNodes(self, parents: List[int]) -> int:
+        n = len(parents)
+        children = [[] for _ in range(n)]
+        for node, p in enumerate(parents):
+            if p != -1:
+                children[p].append(node)
+        maxScore, cnt = 0, 0
+
+        def dfs(node: int) -> int:
+            score = 1
+            size = n - 1
+            for ch in children[node]:
+                sz = dfs(ch)
+                score *= sz
+                size -= sz
+            if node != 0:
+                score *= size
+            nonlocal maxScore, cnt
+            if score == maxScore:
+                cnt += 1
+            elif score > maxScore:
+                maxScore, cnt = score, 1
+            return n - size
+
+        dfs(0)
+        return cnt
 
 
 # 2055 - Plates Between Candles - MEDIUM
+class Solution:
+    def platesBetweenCandles(self, s: str, q: List[List[int]]) -> List[int]:
+        preSum = [0] * len(s)
+        left = [0] * len(s)
+        right = [0] * len(s)
+        summ, l, r = 0, -1, -1
+        for i in range(len(s)):
+            if s[i] == '*':
+                summ += 1
+            else:
+                l = i
+            preSum[i] = summ
+            left[i] = l
+        for i in range(len(s) - 1, -1, -1):
+            if s[i] == '|':
+                r = i
+            right[i] = r
+        ans = [0] * len(q)
+        for i in range(len(q)):
+            l, r = q[i]
+            x, y = right[l], left[r]
+            if x >= 0 and y >= 0 and x < y:
+                ans[i] = preSum[y] - preSum[x]
+        return ans

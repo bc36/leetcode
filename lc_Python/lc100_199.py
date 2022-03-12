@@ -1090,6 +1090,60 @@ class Solution:
         return dummy.next
 
 
+# 149 - Max Points on a Line - HARD
+class Solution:
+    # O(n ^ 2)
+    def maxPoints(self, points: List[List[int]]) -> int:
+        def getSlope(i, j):
+            a = points[i]
+            b = points[j]
+            if a[0] == b[0]:
+                return float('inf')
+            else:
+                return (b[1] - a[1]) / (b[0] - a[0])
+
+        ans = 1
+        for i in range(len(points) - 1):
+            dic = collections.defaultdict(int)
+            for j in range(i + 1, len(points)):
+                slope = getSlope(i, j)
+                dic[slope] += 1
+            ans = max(ans, max(dic.values()) + 1)
+        return ans
+
+    def maxPoints(self, points: List[List[int]]) -> int:
+        ans = 1
+        for i in range(len(points) - 1):
+            cnt = collections.Counter()
+            for j in range(i + 1, len(points)):
+                dx, dy = points[j][0] - points[i][0], points[j][1] - points[i][
+                    1]
+                cnt[dy / dx if dx else math.inf] += 1
+            ans = max(ans, max(cnt.values()) + 1)
+        return ans
+
+    # O(n ^ 2 * logm) logm: gcd
+    # python3, math.gcd always return positive number
+    def maxPoints(self, points: List[List[int]]) -> int:
+        if len(points) < 3:
+            return len(points)
+        def gcd(a, b) -> int:
+            while b:
+                a, b = b, a % b
+            return a
+
+        ans = 0
+        for i in range(len(points) - 1):
+            d = collections.defaultdict(int)
+            for j in range(i + 1, len(points)):
+                a = (points[i][1] - points[j][1])
+                b = (points[i][0] - points[j][0])
+                g = gcd(a, b)
+                d[(a // g, b // g)] += 1
+            ans = max(ans, max(d.values()) + 1) # plus 'i' self
+        return ans
+
+
 # 152 - Maximum Product Subarray - MEDIUM
 class Solution:
     def maxProduct(self, nums: List[int]) -> int:
