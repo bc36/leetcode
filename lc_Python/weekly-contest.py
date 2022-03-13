@@ -977,3 +977,9 @@ class Solution:
 # 分类讨论
 
 # https://leetcode-cn.com/contest/weekly-contest-284/problems/minimum-weighted-subgraph-with-the-required-paths/
+# dijkstra
+# 图论经典套路: 枚举中间点
+# 记 d1[i] 为从 src1 出发到达点 i 的最短路，d2[i] 为从 src2 出发到达点 i 的最短路
+# d3[i] 为从点 i 出发到达 dest 的最短路(可以将原图中所有边反向，然后从 dest 出发跑 dijkstra 得到)
+# 枚举中间点 i，答案就是 min(d1[i] + d2[i] + d3[i])
+
