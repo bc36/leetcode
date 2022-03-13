@@ -1008,6 +1008,41 @@ class Solution:
         return ans
 
 
+# 239 - Sliding Window Maximum - HARD
+class Solution:
+    # O(nlogn) / O(n), operation of heap -> logn
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        # dq = collections.deque([i for i in nums[:k-1]])
+        pq = [(-nums[i], i) for i in range(k)]
+        heapq.heapify(pq)
+        ans = [-pq[0][0]]
+        for i in range(k, len(nums)):
+            heapq.heappush(pq, (-nums[i], i))
+            # the smallest element will be removed only if it is not the in the window
+            # it is not needed to maintain the size of 'pq' equal to 'k'
+            while pq[0][1] <= i - k:
+                heapq.heappop(pq)
+            ans.append(-pq[0][0])
+        return ans
+
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        # keep 'dq' monotonically decreasing
+        dq = collections.deque()
+        for i in range(k):
+            while dq and dq[-1] < nums[i]:
+                dq.pop()
+            dq.append(nums[i])
+        ans = [dq[0]]
+        for i in range(k, len(nums)):
+            if dq[0] == nums[i - k]:
+                dq.popleft()
+            while dq and dq[-1] < nums[i]:
+                dq.pop()
+            dq.append(nums[i])
+            ans.append(dq[0])
+        return ans
+
+
 # 240 - Search a 2D Matrix II - MEDIUM
 class Solution:
     # O(m + n) / O(1)

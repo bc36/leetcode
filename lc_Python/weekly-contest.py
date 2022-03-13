@@ -967,3 +967,13 @@ class Solution:
 
 # https://leetcode-cn.com/contest/weekly-contest-283/problems/replace-non-coprime-numbers-in-array/
 # gcd, lcm
+
+###################
+# 284 / 2022.3.12 #
+###################
+# https://leetcode-cn.com/contest/weekly-contest-284/
+
+# https://leetcode-cn.com/contest/weekly-contest-284/problems/maximize-the-topmost-element-after-k-moves/
+# 分类讨论
+
+# https://leetcode-cn.com/contest/weekly-contest-284/problems/minimum-weighted-subgraph-with-the-required-paths/

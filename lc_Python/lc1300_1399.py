@@ -204,48 +204,70 @@ class Solution:
 class Solution:
     # O(n) / O(n)
     def minJumps(self, arr: List[int]) -> int:
-        # +1 / -1 / same value
-        n, idx = len(arr), {}  # defaultdict(list)
+        n = len(arr)
+        idx = collections.defaultdict(list)
+        # save left and right endpoints of the interval with the same value appearing consecutively
         for i in range(n):
-            # save left and right endpoints of the interval with the same value appearing consecutively
             if i in (0, n - 1):
-                idx[arr[i]] = idx.get(arr[i], []) + [i]
+                idx[arr[i]].append(i)
             elif arr[i] != arr[i - 1] or arr[i] != arr[i + 1]:
-                idx[arr[i]] = idx.get(arr[i], []) + [i]
+                idx[arr[i]].append(i)
         visited = [True] + [False] * (n - 1)
-        queue = [(0, 0)]  # deque
-        while queue:
-            i, step = queue.pop(0)
+        dq = collections.deque([(0, 0)])
+        while dq:
+            i, step = dq.popleft()
             for j in (idx.get(arr[i], []) + [i - 1, i + 1]):
                 if 0 <= j < n and not visited[j]:
                     if j == n - 1:
                         return step + 1
                     visited[j] = True
-                    queue.append((j, step + 1))
+                    dq.append((j, step + 1))
             idx[arr[i]] = []  # has visited
         return 0
 
     def minJumps(self, arr: List[int]) -> int:
-        graph = collections.defaultdict(list)
-        for i, v in enumerate(arr):
-            graph[v].append(i)
-        visited, n = {0}, len(arr)
+        g = collections.defaultdict(list)
+        n = len(arr)
+        for i in range(n):
+            g[arr[i]].append(i)
         dq = collections.deque([(0, 0)])
+        seen = set([0])
         while dq:
             i, step = dq.popleft()
-            for j in graph[arr[i]]:
-                if j not in visited:
-                    if j == n - 1:
-                        return step + 1
+            if i == n - 1:
+                return step
+            for nxt in g[arr[i]] + [i - 1, i + 1]:
+                if 0 <= nxt < n and nxt not in seen:
+                    seen.add(nxt)
+                    dq.append((nxt, step + 1))
+            del g[arr[i]]
+        return -1
+
+    def minJumps(self, arr: List[int]) -> int:
+        g = collections.defaultdict(list)
+        shorter = []
+        size = 0
+        # remove the consecutive repeated value in the 'arr'
+        for i, v in enumerate(arr):
+            if 0 < i < len(arr) - 1 and v == arr[i - 1] and v == arr[i + 1]:
+                continue
+            else:
+                g[v].append(size)
+                shorter.append(v)
+                size += 1
+        arr = shorter
+        visited = {0}
+        q = collections.deque([(0, 0)])
+        while q:
+            idx, step = q.popleft()
+            if idx == size - 1:
+                return step
+            value = arr[idx]
+            for j in g[value] + [idx - 1, idx + 1]:
+                if 0 <= j < size and j not in visited:
+                    q.append((j, step + 1))
                     visited.add(j)
-                    dq.append((j, step + 1))
-            for j in [i - 1, i + 1]:
-                if 0 <= j < n and j not in visited:
-                    if j == n - 1:
-                        return step + 1
-                    visited.add(j)
-                    dq.append((j, step + 1))
-            graph[arr[i]] = []
+            del g[value]
         return 0
 
 
