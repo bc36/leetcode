@@ -140,6 +140,80 @@ class StockPrice:
             heapq.heappop(self.minPrice)
 
 
+# 2044 - Count Number of Maximum Bitwise-OR Subsets - MEDIUM
+class Solution:
+    # O(2^n * n) / O(1)
+    def countMaxOrSubsets(self, nums: List[int]) -> int:
+        def backtrack(res, path):
+            t = 0
+            for n in path:
+                t |= n
+            if t > self.mx:
+                self.mx = t
+                self.ans = 1
+            elif t == self.mx:
+                self.ans += 1
+            for i in range(len(res)):
+                backtrack(res[i + 1:], path + [res[i]])
+            return
+
+        self.mx = 0
+        self.ans = 0
+        backtrack(nums, [])
+        return self.ans
+
+    # O(2^n * n) / O(1), Brutal Force
+    def countMaxOrSubsets(self, nums: List[int]) -> int:
+        ans = 0
+        mx = 0
+        for n in nums:
+            mx |= n
+        for state in range(1, 1 << len(nums)):
+            t = 0
+            for i in range(len(nums)):
+                if state & 1:
+                    t |= nums[i]
+                state >>= 1
+            if t == mx:
+                ans += 1
+        return ans
+
+    def countMaxOrSubsets(self, nums: List[int]) -> int:
+        target = 0
+        for num in nums:
+            target |= num
+
+        @functools.lru_cache(None)
+        def dfs(i, cur):
+            if cur == target:
+                # not matter choose the rest of numbers or not
+                return 2**(len(nums) - i)
+            elif i == len(nums):
+                return 0
+            # not choose 'nums[i]' or choose 'nums[i]'
+            return dfs(i + 1, cur) + dfs(i + 1, cur | nums[i])
+
+        return dfs(0, 0)
+
+    # Similar to knapsack problem, but use bitwise-or sum instead of math sum.
+    # O(mn) / O(m), m = max(nums)
+    def countMaxOrSubsets(self, nums: List[int]) -> int:
+        cnt = collections.Counter([0])
+        target = 0
+        for n in nums:
+            target |= n
+            for k, v in list(cnt.items()):
+                cnt[k | n] += v
+        return cnt[target]
+
+    def countMaxOrSubsets(self, nums: List[int]) -> int:
+        dp = collections.Counter([0])
+        for n in nums:
+            for k, v in list(dp.items()):
+                dp[k | n] += v
+        return dp[max(dp)]
+
+
 # 2045 - Second Minimum Time to Reach Destination - HARD
 class Solution:
     def secondMinimum(self, n: int, edges: List[List[int]], time: int,

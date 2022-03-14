@@ -65,26 +65,24 @@ class Solution:
 
     # bfs
     def numIslands(self, grid: List[List[str]]):
-        def helper(grid: List[List[str]], queue: collections.deque()) -> None:
-            while queue:
-                x, y = queue.popleft()
-                for i, j in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
-                    if 0 <= i < len(grid) and 0 <= j < len(
-                            grid[0]) and grid[i][j] == '1':
-                        queue.append((i, j))
-                        grid[i][j] = 0
-            return
-
-        count = 0
-        queue = collections.deque([])
-        for i in range(len(grid)):
-            for j in range(len(grid[0])):
+        ans = 0
+        dq = collections.deque()
+        m, n = len(grid), len(grid[0])
+        for i in range(m):
+            for j in range(n):
                 if grid[i][j] == '1':
-                    grid[i][j] = 0
-                    queue.append((i, j))
-                    helper(grid, queue)  # turn the adjancent '1' to '0'
-                    count += 1
-        return count
+                    ans += 1
+                    dq.append((i, j))
+                    grid[i][j] = '0'
+                    while dq:
+                        x, y = dq.popleft()
+                        for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1],
+                                       [x, y - 1]]:
+                            if 0 <= nx < m and 0 <= ny < n and grid[nx][
+                                    ny] == '1':
+                                dq.append((nx, ny))
+                                grid[nx][ny] = '0'
+        return ans
 
 
 # 201 - Bitwise AND of Numbers Range - MEDIUM
