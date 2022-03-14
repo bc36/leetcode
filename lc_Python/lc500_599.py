@@ -964,3 +964,18 @@ class Solution:
         if not ops:
             return m * n
         return min(op[0] for op in ops) * min(op[1] for op in ops)
+
+
+# 599 - Minimum Index Sum of Two Lists - EASY
+class Solution:
+    def findRestaurant(self, list1: List[str], list2: List[str]) -> List[str]:
+        ans = []
+        d = {v: i for i, v in enumerate(list1)}
+        mx = math.inf
+        for i, v in enumerate(list2):
+            if v in d and i + d[v] < mx:
+                mx = i + d[v]
+                ans = [v]
+            elif v in d and i + d[v] == mx:
+                ans.append(v)
+        return ans

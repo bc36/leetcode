@@ -94,6 +94,61 @@ class Solution:
 # 1428 - Leftmost Column with at Least a One - MEDIUM
 
 
+# 1439 - Find the Kth Smallest Sum of a Matrix With Sorted Rows - HARD
+class Solution:
+    # brute force, O(m * (nk + nk*lognk))
+    def kthSmallest(self, mat: List[List[int]], k: int) -> int:
+        arr = [0]
+        for row in mat:
+            arr = sorted([x + r for r in row for x in arr])[:k]
+        return arr[-1]
+
+    # O(k * m * logk) / O(k)
+    def kthSmallest(self, mat: List[List[int]], k: int) -> int:
+        m, n = len(mat), len(mat[0])
+        pq = [(sum(r[0] for r in mat), (0, ) * m)]
+        seen = {(0, ) * m}
+        while k - 1:
+            score, pos = heapq.heappop(pq)
+            for i in range(m):
+                new = pos[:i] + (pos[i] + 1, ) + pos[i + 1:]
+                if pos[i] + 1 < n and new not in seen:
+                    seen.add(new)
+                    newScore = score - mat[i][pos[i]] + mat[i][pos[i] + 1]
+                    heapq.heappush(pq, (newScore, new))
+            k -= 1
+        return pq[0][0]
+
+    # O(m * k * logm) / O(m)
+    def kthSmallest(self, mat: List[List[int]], k: int) -> int:
+        def check(target, idx, cur):
+            if idx == len(mat):
+                return 1
+            count = 0
+            for i in range(len(mat[0])):
+                val = cur + mat[idx][i] - mat[idx][0]
+                if val <= target:
+                    count += check(target, idx + 1, val)
+                    if count >= k:
+                        break
+                else:
+                    break
+            return count
+
+        l = r = 0
+        for row in mat:
+            l += row[0]
+            r += row[-1]
+        start = l
+        while l < r:
+            m = (l + r) // 2
+            if check(m, 0, start) >= k:
+                r = m
+            else:
+                l = m + 1
+        return l
+
+
 # 1446 - Consecutive Characters - EASY
 class Solution:
     def maxPower(self, s: str) -> int:

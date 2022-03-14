@@ -963,10 +963,11 @@ class Solution:
 # https://leetcode-cn.com/contest/weekly-contest-283/
 
 # https://leetcode-cn.com/contest/weekly-contest-283/problems/append-k-integers-with-minimal-sum/
-# 贪心 or chekc 空隙等差数列
+# 贪心 or check 空隙等差数列
 
 # https://leetcode-cn.com/contest/weekly-contest-283/problems/replace-non-coprime-numbers-in-array/
-# gcd, lcm
+# gcd, Greatest Common Divisor
+# lcm, Least Common Multiple
 
 ###################
 # 284 / 2022.3.12 #
