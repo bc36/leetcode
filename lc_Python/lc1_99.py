@@ -1463,18 +1463,17 @@ class Solution:
 # 71 - Simplify Path - MEDIUM
 class Solution:
     def simplifyPath(self, path: str) -> str:
-        # places = [p for p in path.split("/") if p != "." and p != ""]
-        sp = path.split("/")
-        stack = []
-        for i in sp:
-            if i == "" or i == ".":
+        path = path.split('/')
+        s = []
+        for p in path:
+            if not p or p == '.':
                 continue
-            elif i == "..":
-                if len(stack) > 0:
-                    stack.pop()
+            if p == '..':
+                if s:
+                    s.pop()
             else:
-                stack.append(i)
-        return "/" + "/".join(stack)
+                s.append(p)
+        return '/' + '/'.join(s)
 
     def simplifyPath(self, path: str) -> str:
         stack = []
@@ -1776,7 +1775,7 @@ class Solution:
 # 82 - Remove Duplicates from Sorted List II - MEDIUM
 class Solution:
     def deleteDuplicates(self, head: ListNode) -> ListNode:
-        dummy = ListNode(-101, head)
+        dummy = ListNode(-1, head)
         pre, cur = dummy, head
         while cur:
             while cur.next and cur.val == cur.next.val:
@@ -1784,22 +1783,36 @@ class Solution:
             if pre.next == cur:
                 pre = pre.next  # no duplicate nodes between pre and cur
             else:
-                pre.next = cur.next  # have duplicate nodes, don't move pre
+                pre.next = cur.next  # have duplicate nodes, don't move 'pre'
             cur = cur.next
         return dummy.next
 
     def deleteDuplicates(self, head: ListNode) -> ListNode:
-        dummy = ListNode(-101, head)
-        cur = dummy
-        while cur.next and cur.next.next:
-            if cur.next.val == cur.next.next.val:
-                x = cur.next.val
-                while cur.next and cur.next.val == x:
-                    cur.next = cur.next.next
+        dummy = ListNode(-1, head)
+        p = dummy
+        while p.next and p.next.next:
+            if p.next.val == p.next.next.val:
+                val = p.next.val
+                while p.next and p.next.val == val:
+                    p.next = p.next.next
             else:
-                cur = cur.next
+                p = p.next
         return dummy.next
 
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        p = dummy = ListNode(-1, head)
+        while head:
+            while head.next:
+                if head.val == head.next.val:
+                    head = head.next
+                else:
+                    break
+            if p.next == head:
+                p = p.next
+            else:
+                p.next = head.next # not move 'p'
+            head = head.next
+        return dummy.next
 
 # 83 - Remove Duplicates from Sorted List - EASY
 class Solution:

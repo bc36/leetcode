@@ -757,6 +757,15 @@ class Solution:
         except:
             return False
 
+    # O(n) / O(0), change the 'val' in linked list, may not allowed
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        while head:
+            if head.val == '#':
+                return True
+            head.val = '#'
+            head = head.next
+        return False
+
 
 # 142 - Linked List Cycle II - MEDIUM
 class Solution:
@@ -1127,6 +1136,7 @@ class Solution:
     def maxPoints(self, points: List[List[int]]) -> int:
         if len(points) < 3:
             return len(points)
+
         def gcd(a, b) -> int:
             while b:
                 a, b = b, a % b
@@ -1140,7 +1150,7 @@ class Solution:
                 b = (points[i][0] - points[j][0])
                 g = gcd(a, b)
                 d[(a // g, b // g)] += 1
-            ans = max(ans, max(d.values()) + 1) # plus 'i' self
+            ans = max(ans, max(d.values()) + 1)  # plus 'i' self
         return ans
 
 
