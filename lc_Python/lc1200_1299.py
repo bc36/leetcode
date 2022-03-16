@@ -139,27 +139,20 @@ class Solution:
 
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 class Solution:
-    # left must less than right
-    # make the invalid parentheses as special character "*"
-    # remove the extra "(" and "*"
     def minRemoveToMakeValid(self, s: str) -> str:
         s = list(s)
         left = 0
         for i in range(len(s)):
-            if s[i] == ")":
-                if left <= 0:
-                    s[i] = "*"
-                else:
-                    left -= 1
             if s[i] == "(":
                 left += 1
-        # remove "*"
-        for i in range(len(s)):
-            if s[i] == "*":
-                s[i] = ""
+            elif s[i] == ")":
+                if left <= 0:
+                    s[i] = ""  # remove extra ")"
+                else:
+                    left -= 1
         # remove extra "("
         i = len(s) - 1
-        while left > 0 and i >= 0:
+        while left > 0:
             if s[i] == "(":
                 s[i] = ""
                 left -= 1
@@ -189,9 +182,9 @@ class Solution:
                 stack.append(i)
             elif ch == ')':
                 if stack:
-                    stack.pop()
+                    stack.pop()  # pop the rightmost '('
                 else:
-                    arr[i] = ''  # remove extra ')'
+                    arr[i] = ''  # remove extra ')', the leftmsot ')'
         while stack:
             arr[stack.pop()] = ''  # remove extra '('
         return ''.join(arr)
@@ -215,6 +208,7 @@ class Solution:
             else:
                 arr.append(ch)
         return ''.join(arr)
+
 
 # 1286 - Iterator for Combination - MEDIUM
 class CombinationIterator:
