@@ -356,6 +356,55 @@ class Solution:
         return i == j and i != 0 and j != len(arr) - 1
 
 
+# 946 - Validate Stack Sequences - MEDIUM
+class Solution:
+    def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
+        st = []
+        i = 0
+        for n in pp:
+            while (not st or st[-1] != n) and i < len(ps):
+                st.append(ps[i])
+                i += 1
+            if st[-1] != n:
+                return False
+            else:
+                st.pop()
+        return True
+
+    def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
+        i = 0
+        st = []
+        for n in ps:
+            while st and st[-1] == pp[i]:
+                st.pop()
+                i += 1
+            st.append(n)
+        while st and st[-1] == pp[i]:
+            st.pop()
+            i += 1
+        return not st
+
+    def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
+        st = []
+        i = 0
+        for n in ps:
+            st.append(n)
+            while st and i < len(pp) and st[-1] == pp[i]:
+                st.pop()
+                i += 1
+        return st == []
+
+    def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
+        i = j = 0
+        for n in ps:
+            ps[i] = n
+            while i >= 0 and ps[i] == pp[j]:
+                i -= 1
+                j += 1
+            i += 1
+        return i == 0
+
+
 # 953 - Verifying an Alien Dictionary - EASY
 class Solution:
     def isAlienSorted(self, words: List[str], order: str) -> bool:

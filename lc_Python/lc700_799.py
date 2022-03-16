@@ -162,6 +162,101 @@ class Solution:
         return i == n - 1
 
 
+# 720 - Longest Word in Dictionary - EASY
+class Solution:
+    # O(n + n * 30), brute force
+    def longestWord(self, words: List[str]) -> str:
+        if not words:
+            return ''
+        ans = ''
+        s = set(words)
+        for w in words:
+            if len(w) > len(ans) or (len(w) == len(ans) and w < ans):
+                for i in range(1, len(w) + 1):
+                    if w[:i] not in s:
+                        break
+                else:  # for-else statement
+                    ans = w
+        return ans
+
+    # O(nlogn + n) / O(n)
+    def longestWord(self, words: List[str]) -> str:
+        # ordered by lexicographical, then ordered by length
+        words.sort()
+        s = set([''])
+        ans = ''
+        for w in words:
+            if w[:-1] in s:
+                s.add(w)
+                if len(w) > len(ans):
+                    ans = w
+        return ans
+
+    # Trie
+    def longestWord(self, words: List[str]) -> str:
+        trie = {}
+        for w in words:
+            r = trie
+            for ch in w:
+                if ch not in r:
+                    r[ch] = {}
+                r = r[ch]
+            r["end"] = True
+        ans = ""
+        words.sort()
+        for w in words:
+            r = trie
+            if len(w) > len(ans):
+                f = True # flag, can be replaced by for-else statement
+                for ch in w:
+                    if ch not in r or "end" not in r[ch]:
+                        f = False
+                        break
+                    r = r[ch]
+                if f:
+                    ans = w
+        return ans
+
+
+class TrieNode:
+    def __init__(self):
+        self.children = collections.defaultdict(TrieNode)
+        self.isEnd = False
+        self.word = ''
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        r = self.root
+        for ch in word:
+            r = r.children[ch]
+        r.isEnd = True
+        r.word = word
+
+    def bfs(self):
+        dq = collections.deque([self.root])
+        ans = ''
+        while dq:
+            node = dq.popleft()
+            for ch in node.children.values():
+                if ch.isEnd:
+                    dq.append(ch)
+                    if len(ch.word) > len(ans) or ch.word < ans:
+                        ans = ch.word
+        return ans
+
+
+class Solution:
+    def longestWord(self, words: List[str]) -> str:
+        trie = Trie()
+        for w in words:
+            trie.insert(w)
+        return trie.bfs()
+
+
 # 721 - Accounts Merge - MEDIUM
 class Solution:
     def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:
