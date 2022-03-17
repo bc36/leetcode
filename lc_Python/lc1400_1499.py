@@ -1,5 +1,6 @@
+from bisect import bisect
 from typing import List
-import collections, heapq, functools, itertools, math
+import collections, heapq, functools, itertools, math, sortedcontainers
 
 
 class TreeNode:
@@ -92,6 +93,84 @@ class Solution:
 
 
 # 1428 - Leftmost Column with at Least a One - MEDIUM
+
+
+# 1438 - Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit - MEDIUM
+class Solution:
+    def longestSubarray(self, nums: List[int], limit: int) -> int:
+        s = sortedcontainers.SortedList()
+        l = r = ans = 0
+        while r < len(nums):
+            s.add(nums[r])
+            while s[-1] - s[0] > limit:
+                s.remove(nums[l])
+                l += 1
+            ans = max(ans, r - l + 1)
+            r += 1
+        return ans
+
+    # O(n) / O(n), monotonic queue
+    # think about the difference of two solutions below
+    # print the third example in leetcode to figure out why
+    def longestSubarray(self, nums: List[int], limit: int) -> int:
+        mx = collections.deque()
+        mi = collections.deque()
+        l = r = ans = 0
+        while r < len(nums):
+            while mx and nums[mx[-1]] < nums[r]:
+                mx.pop()
+            while mi and nums[mi[-1]] > nums[r]:
+                mi.pop()
+            mx.append(r)
+            mi.append(r)
+            while nums[mx[0]] - nums[mi[0]] > limit:
+                if l == mi[0]:
+                    mi.popleft()
+                if l == mx[0]:
+                    mx.popleft()
+                l += 1
+            ans = max(ans, r - l + 1)
+            r += 1
+        return ans
+
+    def longestSubarray(self, nums: List[int], limit: int) -> int:
+        mx = collections.deque()
+        mi = collections.deque()
+        l = 0
+        for r in range(len(nums)):
+            while mx and nums[r] > nums[mx[-1]]:
+                mx.pop()
+            while mi and nums[r] < nums[mi[-1]]:
+                mi.pop()
+            mx.append(r)
+            mi.append(r)
+            if nums[mx[0]] - nums[mi[0]] > limit:
+                if mx[0] <= l:
+                    mx.popleft()
+                if mi[0] <= l:
+                    mi.popleft()
+                l += 1
+        # the window will keep the same length and slide 1 step right if not satisfied
+        # when the window meet the answer, it will keep the length to the end
+        return r - l + 1
+        # # or
+        return len(nums) - l
+
+    # O(n * logn) / O(n)
+    def longestSubarray(self, A, limit):
+        maxq, minq = [], []
+        res = i = 0
+        for j, a in enumerate(A):
+            heapq.heappush(maxq, [-a, j])
+            heapq.heappush(minq, [a, j])
+            while -maxq[0][0] - minq[0][0] > limit:
+                i = min(maxq[0][1], minq[0][1]) + 1
+                while maxq[0][1] < i:
+                    heapq.heappop(maxq)
+                while minq[0][1] < i:
+                    heapq.heappop(minq)
+            res = max(res, j - i + 1)
+        return res
 
 
 # 1439 - Find the Kth Smallest Sum of a Matrix With Sorted Rows - HARD
