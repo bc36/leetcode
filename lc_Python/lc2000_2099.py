@@ -140,6 +140,32 @@ class StockPrice:
             heapq.heappop(self.minPrice)
 
 
+# 2043 - Simple Bank System - MEDIUM
+class Bank:
+    def __init__(self, balance: List[int]):
+        self.b = balance
+        self.n = len(balance)
+
+    def transfer(self, a1: int, a2: int, money: int) -> bool:
+        if a1 > self.n or a2 > self.n or self.b[a1 - 1] < money:
+            return False
+        self.b[a1 - 1] -= money
+        self.b[a2 - 1] += money
+        return True
+
+    def deposit(self, a: int, money: int) -> bool:
+        if a > self.n:
+            return False
+        self.b[a - 1] += money
+        return True
+
+    def withdraw(self, a: int, money: int) -> bool:
+        if a > self.n or self.b[a - 1] < money:
+            return False
+        self.b[a - 1] -= money
+        return True
+
+
 # 2044 - Count Number of Maximum Bitwise-OR Subsets - MEDIUM
 class Solution:
     # O(2^n * n) / O(1)
