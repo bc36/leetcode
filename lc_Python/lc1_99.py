@@ -1546,6 +1546,83 @@ class Solution:
         return os.path.realpath(path)
 
 
+# 72 - Edit Distance - HARD
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        m = len(word1)
+        n = len(word2)
+        f = [[math.inf] * (n + 1) for _ in range(m + 1)]
+        f[0][0] = 0
+        for i in range(m + 1):
+            for j in range(n + 1):
+                if j < n:
+                    f[i][j + 1] = min(f[i][j + 1], f[i][j] + 1)
+                if i < m:
+                    f[i + 1][j] = min(f[i + 1][j], f[i][j] + 1)
+                if i < m and j < n and word1[i] == word2[j]:
+                    f[i + 1][j + 1] = min(f[i + 1][j + 1], f[i][j])
+                if i < m and j < n:
+                    f[i + 1][j + 1] = min(f[i + 1][j + 1], f[i][j] + 1)
+        return f[m][n]
+
+    def minDistance(self, word1, word2):
+        if not word1 or not word2:
+            return max(len(word1), len(word2))
+        m, n = len(word1) + 1, len(word2) + 1
+        dp = [[0 for _ in range(n)] for _ in range(m)]
+        for i in range(m):
+            dp[i][0] = i
+        for j in range(n):
+            dp[0][j] = j
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j],
+                               dp[i][j - 1]) + 1
+                if word1[i - 1] == word2[j - 1]:
+                    dp[i][j] = min(dp[i][j], dp[i - 1][j - 1])
+        return dp[m - 1][n - 1]
+
+    def minDistance(self, word1: str, word2: str) -> int:
+        m = len(word1)
+        n = len(word2)
+        f = [[0] * (m + 1) for _ in range(n + 1)]
+
+        def helper(i, j):
+            if i == 0:
+                f[i][j] = j
+                return j
+            if j == 0:
+                f[i][j] = i
+                return i
+            if f[i][j] != 0:
+                return f[i][j]
+            if word1[j - 1] == word2[i - 1]:
+                f[i][j] = helper(i - 1, j - 1)
+            else:
+                f[i][j] = min(
+                    helper(i - 1, j) + 1,
+                    helper(i, j - 1) + 1,
+                    helper(i - 1, j - 1) + 1)
+            return f[i][j]
+
+        return helper(len(word2), len(word1))
+
+    def minDistance(self, w1: str, w2: str) -> int:
+        @functools.lru_cache(None)
+        def helper(i, j):
+            if i == len(w1) or j == len(w2):
+                return len(w1) - i + len(w2) - j
+            if w1[i] == w2[j]:
+                return helper(i + 1, j + 1)
+            else:
+                inserted = helper(i, j + 1)
+                deleted = helper(i + 1, j)
+                replaced = helper(i + 1, j + 1)
+                return min(inserted, deleted, replaced) + 1
+
+        return helper(0, 0)
+
+
 # 73 - Set Matrix Zeroes - MEDIUM
 class Solution:
     # O(2 * m * n), O(m + n)

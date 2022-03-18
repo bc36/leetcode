@@ -1,6 +1,5 @@
-from operator import imatmul
 from typing import List
-import collections, itertools
+import collections, itertools, functools
 
 
 class TreeNode:
@@ -207,7 +206,7 @@ class Solution:
         for w in words:
             r = trie
             if len(w) > len(ans):
-                f = True # flag, can be replaced by for-else statement
+                f = True  # flag, can be replaced by for-else statement
                 for ch in w:
                     if ch not in r or "end" not in r[ch]:
                         f = False
@@ -482,6 +481,138 @@ class Solution:
                 partition.append(end - start + 1)
                 start = end + 1
         return partition
+
+
+# 773 - Sliding Puzzle - HARD
+class Solution:
+    def slidingPuzzle(self, board: List[List[int]]) -> int:
+        adj = {
+            0: [1, 3],
+            1: [0, 2, 4],
+            2: [1, 5],
+            3: [0, 4],
+            4: [1, 3, 5],
+            5: [2, 4]
+        }
+        # # 'key' equal to 'toString'
+        # def toString(a: List[int]) -> str:
+        #     return ''.join([str(x) for x in a])
+        key = lambda a: ''.join([str(x) for x in a])
+        depth = 0
+        init = [n for row in board for n in row]
+        q = collections.deque([init])
+        seen = set([key(init)])
+        while q:
+            k = len(q)
+            for _ in range(k):
+                cur = q.popleft()
+                if key(cur) == '123450':
+                    return depth
+                i = cur.index(0)
+                for j in adj[i]:
+                    nxt = cur.copy()
+                    nxt[i], nxt[j] = nxt[j], nxt[i]
+                    if not key(nxt) in seen:
+                        q.append(nxt)
+                        seen.add(key(nxt))
+            depth += 1
+        return -1
+
+    def slidingPuzzle(self, board: List[List[int]]) -> int:
+        d = {
+            0: [1, 3],
+            1: [0, 2, 4],
+            2: [1, 5],
+            3: [0, 4],
+            4: [1, 3, 5],
+            5: [2, 4]
+        }
+
+        def neighbors(s: str):
+            i = s.find('0')
+            res = []
+            for j in d[i]:
+                t = list(s)
+                t[i], t[j] = t[j], t[i]
+                res += ''.join(t),
+            return res
+
+        start = ''.join([str(n) for row in board for n in row])
+        target = '123450'
+        dq = collections.deque([(start, 0)])
+        seen = {start}
+        while dq:
+            cur, step = dq.popleft()
+            if cur == target:
+                return step
+            for n in neighbors(cur):
+                if n not in seen:
+                    seen.add(n)
+                    dq += (n, step + 1),
+        return -1
+
+    def slidingPuzzle(self, board: List[List[int]]) -> int:
+        s = ''.join(str(n) for row in board for n in row)
+        dq = collections.deque()
+        seen = {s}
+        dq.append((s, s.index('0')))
+        r = len(board)
+        c = len(board[0])
+        steps = 0
+        while dq:
+            for _ in range(len(dq)):
+                cur, i = dq.popleft()
+                if cur == '123450':
+                    return steps
+                x, y = i // c, i % c
+                for nx, ny in (x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y):
+                    if 0 <= nx < r and 0 <= ny < c:
+                        l = [ch for ch in cur]
+                        l[i], l[nx * c + ny] = l[nx * c + ny], '0'
+                        s = ''.join(l)
+                        if s not in seen:
+                            seen.add(s)
+                            dq.append((s, nx * c + ny))
+            steps += 1
+        return -1
+
+    # more general way, r rows and c columns
+    # convert a two-dimensional matrix to a one-dimensional matrix
+    def slidingPuzzle(self, board: List[List[int]]) -> int:
+        r = len(board)
+        c = len(board[0])
+        arr = [None] * (r * c)
+        for i in range(r):
+            for j in range(c):
+                arr[i * c + j] = board[i][j]
+
+        target = [0] * (r * c)
+        for i in range(1, r * c):
+            target[i - 1] = i
+
+        step = 0
+        dir = [(-1, 0), (1, 0), (0, 1), (0, -1)]
+        q = [arr]
+        seen = set()
+        while q:
+            new = []
+            for l in q:
+                if l == target:
+                    return step
+                if tuple(l) not in seen:
+                    seen.add(tuple(l))
+                    z = l.index(0)
+                    x, y = divmod(z, c)
+                    for i, j in dir:
+                        nx = x + i
+                        ny = y + j
+                        if 0 <= nx < r and 0 <= ny < c:
+                            nxt = l.copy()
+                            nxt[nx * c + ny], nxt[z] = nxt[z], nxt[nx * c + ny]
+                            new.append(nxt)
+            step += 1
+            q = new
+        return -1
 
 
 # 784 - Letter Case Permutation - MEDIUM
