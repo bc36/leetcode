@@ -553,9 +553,8 @@ class Solution:
 
     def slidingPuzzle(self, board: List[List[int]]) -> int:
         s = ''.join(str(n) for row in board for n in row)
-        dq = collections.deque()
+        dq = collections.deque([(s, s.index('0'))])
         seen = {s}
-        dq.append((s, s.index('0')))
         r = len(board)
         c = len(board[0])
         steps = 0
