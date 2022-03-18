@@ -485,6 +485,7 @@ class Solution:
 
 # 773 - Sliding Puzzle - HARD
 class Solution:
+    # O((mn)! * mn * 4) / O((mn)! * mn), factorial complexity
     def slidingPuzzle(self, board: List[List[int]]) -> int:
         adj = {
             0: [1, 3],
