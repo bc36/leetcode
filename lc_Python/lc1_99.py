@@ -1156,17 +1156,22 @@ class Solution:
         return max(dp)
 
     def maxSubArray(self, nums: List[int]) -> int:
-        for i in range(1, len(nums)):
-            nums[i] = nums[i] + max(nums[i - 1], 0)
-        return max(nums)
-
-    def maxSubArray(self, nums: List[int]) -> int:
         pre, ans = 0, nums[0]
         for i in range(len(nums)):
             pre = max(pre + nums[i], nums[i])
             if pre > ans:
                 ans = pre
         return ans
+
+    def maxSubArray(self, nums: List[int]) -> int:
+        f = [0] * len(nums)
+        f[0] = nums[0]
+        for i in range(1, len(nums)):
+            if f[i - 1] > 0:
+                f[i] = f[i - 1] + nums[i]
+            else:
+                f[i] = nums[i]
+        return max(f)
 
 
 # 55 - Jump Game - MEDIUM

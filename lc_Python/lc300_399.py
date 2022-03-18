@@ -358,6 +358,35 @@ class Solution:
         return [nodes[i] for i in sorted(nodes)]
 
 
+# 316 - Remove Duplicate Letters - MEDIUM
+class Solution:
+    # O(n * 26 * 26) / O(26 * 2)
+    def removeDuplicateLetters(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        stack = []
+        for ch in s:
+            if ch not in stack:  # maximum length of stack = 26
+                while stack and stack[-1] > ch and cnt[stack[-1]] > 0:
+                    stack.pop()
+                stack.append(ch)
+            cnt[ch] -= 1
+        return "".join(stack)
+
+    # O(n * 26) / O(26 * 3)
+    def removeDuplicateLetters(self, s):
+        dic = {c: i for i, c in enumerate(s)}  # last occurence
+        arr = []
+        seen = set()
+        for i, c in enumerate(s):
+            if c not in seen:
+                while arr and c < arr[-1] and i < dic[arr[-1]]:
+                    t = arr.pop()
+                    seen.remove(t)
+                arr.append(c)
+                seen.add(c)
+        return "".join(arr)
+
+
 # 318 - Maximum Product of Word Lengths - MEDIUM
 class Solution:
     def maxProduct(self, words: List[str]) -> int:
