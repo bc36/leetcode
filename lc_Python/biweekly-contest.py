@@ -399,3 +399,11 @@ class Solution:
                 s.pop(i)
             s.pop()
         return ans
+
+
+##################
+# 74 / 2022.3.19 #
+##################
+# https://leetcode-cn.com/contest/biweekly-contest-74/
+
+# https://leetcode-cn.com/contest/biweekly-contest-74/problems/minimum-white-tiles-after-covering-with-carpets/
