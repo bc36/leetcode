@@ -317,4 +317,99 @@ class Solution:
     def countCollisions(self, directions: str) -> int:
         return sum(d != 'S' for d in directions.lstrip('L').rstrip('R'))
 
+
 # 2212 - Maximum Points in an Archery Competition - MEDIUM
+# TODO
+class Solution:
+    # bitmasking. Enumerate the regions on which Bob wins,
+    # which has a total of 2^12 different cases
+    # O(2 ^ 12 * 12) / O(C)
+    def maximumBobPoints(self, num: int, ali: List[int]) -> List[int]:
+        ans = []
+        mx = 0
+        for i in range(1 << len(ali)):
+            score, arrow, bob = 0, 0, [0] * 12
+            for j in range(len(ali)):
+                # if i & (1 << j):
+                if i >> j & 1 == 1:
+                    score += j
+                    arrow += ali[j] + 1
+                    bob[j] = ali[j] + 1
+            if arrow > num:
+                continue
+            if score > mx:
+                mx = score
+                bob[0] += num - arrow  # has remaining arrow
+                ans = bob
+        return ans
+
+    # O(2 * 12 * numArrows) / O(12 * numArrows)
+    # There are total 12 * numArrows states, each state need at most 2 case (Lose or Win) to compute
+    def maximumBobPoints(self, numArrows: int, ali: List[int]) -> List[int]:
+        @functools.lru_cache(None)
+        def dp(k, numArrows):
+            if k == 12 or numArrows <= 0:
+                return 0
+            mx = dp(k + 1, numArrows)  # Bob Lose
+            if numArrows > ali[k]:
+                mx = max(mx, dp(k + 1, numArrows - ali[k] - 1) + k)  # Bob Win
+            return mx
+
+        # backtracking
+        ans = [0] * 12
+        remain = numArrows
+        for k in range(12):
+            # It means that section k was chosen where bob wins.
+            # If dp(k, numArrows) == dp(k+1, numArrows),
+            # then that would mean that maxScore didn't change
+            # and hence bob didn't win at section k.
+            # Else, it would mean that the maxScore changed,
+            # implying that bob won at section k
+            if dp(k, numArrows) != dp(k + 1, numArrows):  # If Bob win
+                ans[k] = ali[k] + 1
+                numArrows -= ans[k]
+                remain -= ans[k]
+
+        ans[0] += remain  # In case of having remain arrows then it means in all sections Bob always win
+        # then we can distribute the remain to any section, here we simple choose first section.
+        return ans
+
+    def maximumBobPoints(self, numArrows: int, ali: List[int]) -> List[int]:
+        ans = 0
+        plan = [0] * 10
+
+        def search(i, arrows, score, cur_plan):
+            nonlocal ans, plan
+            if i == len(ali):
+                if score > ans:
+                    ans = score
+                    plan = cur_plan[:]
+                return
+            if ali[i] + 1 <= arrows:
+                cur_plan.append(ali[i] + 1)
+                search(i + 1, arrows - ali[i] - 1, score + i, cur_plan)
+                cur_plan.pop()
+            cur_plan.append(0)
+            search(i + 1, arrows, score, cur_plan)
+            cur_plan.pop()
+
+        search(1, numArrows, 0, [])
+        return [numArrows - sum(plan)] + plan
+
+    # TLE, knapsack problem with path reduction
+    def maximumBobPoints(self, numArrows: int, ali: List[int]) -> List[int]:
+        f = [[0] * (numArrows + 1) for _ in range(12)]
+        ans = [0] * 12
+        for i in range(1, 12):
+            a = ali[i]
+            for j in range(1, numArrows + 1):
+                if j < a + 1:
+                    f[i][j] = f[i - 1][j]
+                else:
+                    f[i][j] = max(f[i - 1][j - a - 1] + i, f[i - 1][j])
+        for i in range(11, 0, -1):
+            if f[i][numArrows] > f[i - 1][numArrows]:
+                ans[i] = ali[i] + 1
+                numArrows -= ali[i] + 1
+        ans[0] = numArrows
+        return ans

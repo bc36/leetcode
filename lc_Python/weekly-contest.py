@@ -984,3 +984,13 @@ class Solution:
 # d3[i] 为从点 i 出发到达 dest 的最短路(可以将原图中所有边反向，然后从 dest 出发跑 dijkstra 得到)
 # 枚举中间点 i，答案就是 min(d1[i] + d2[i] + d3[i])
 
+###################
+# 285 / 2022.3.19 #
+###################
+# https://leetcode-cn.com/contest/weekly-contest-285/
+
+# dp, 贪心, 二进制枚举,
+# https://leetcode-cn.com/contest/weekly-contest-285/problems/maximum-points-in-an-archery-competition/
+
+# 线段树, segment tree
+# https://leetcode-cn.com/contest/weekly-contest-285/problems/longest-substring-of-one-repeating-character/
