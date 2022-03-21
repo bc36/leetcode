@@ -140,6 +140,18 @@ class StockPrice:
             heapq.heappop(self.minPrice)
 
 
+# 2038 - Remove Colored Pieces if Both Neighbors are the Same Color - MEDIUM
+class Solution:
+    def winnerOfGame(self, c: str) -> bool:
+        a = b = 0
+        for i in range(1, len(c) - 1):
+            if c[i - 1] == c[i] == c[i + 1] == 'A':
+                a += 1
+            elif c[i - 1] == c[i] == c[i + 1] == 'B':
+                b += 1
+        return a > b
+
+
 # 2043 - Simple Bank System - MEDIUM
 class Bank:
     def __init__(self, balance: List[int]):

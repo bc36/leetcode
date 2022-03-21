@@ -1,7 +1,4 @@
-GoDiary.md
-LcNote.md
-PyNoob.md
-/lc_Python/template.py
 .*
 !/.gitignore
 *.iml
+0/
