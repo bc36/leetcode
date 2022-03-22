@@ -1001,7 +1001,8 @@ class Solution:
 
     # greedy, O(n), find the next reachable area
     def jump(self, nums: List[int]) -> int:
-        if len(nums) == 1: return 0
+        if len(nums) == 1:
+            return 0
         l = r = times = 0
         while r < len(nums) - 1:
             times += 1

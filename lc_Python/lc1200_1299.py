@@ -34,6 +34,64 @@ class Solution:
                 if a[i] - a[i - 1] == diff]
 
 
+# 1202 - Smallest String With Swaps - MEDIUM
+class Solution:
+    # O(n + m + nlogn) / O(n), n = len(s), m = len(pairs)
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        n = len(s)
+        g = [[] for _ in range(n)]
+        for x, y in pairs:
+            g[x].append(y)
+            g[y].append(x)
+        seen = [0] * n
+        ans = list(s)
+        for i in range(n):
+            if not seen[i]:
+                conn = []
+                dq = collections.deque([i])
+                seen[i] = 1
+                conn.append(i)
+                while dq:
+                    cur = dq.popleft()
+                    for nxt in g[cur]:
+                        if not seen[nxt]:
+                            seen[nxt] = 1
+                            conn.append(nxt)
+                            dq.append(nxt)
+                idx = sorted(conn)
+                val = sorted(ans[x] for x in conn)
+                for j, ch in zip(idx, val):
+                    ans[j] = ch
+        return ''.join(ans)
+
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        def dfs(i):
+            seen[i] = True
+            conn.append(i)
+            for j in g[i]:
+                if not seen[j]:
+                    dfs(j)
+            return
+
+        n = len(s)
+        g = [[] for _ in range(n)]
+        for i, j in pairs:
+            g[i].append(j)
+            g[j].append(i)
+        seen = [False for _ in range(n)]
+        ans = list(s)
+        for i in range(n):
+            if not seen[i]:
+                conn = []
+                dfs(i)
+                conn.sort()
+                chars = [ans[k] for k in conn]
+                chars.sort()
+                for j in range(len(conn)):
+                    ans[conn[j]] = chars[j]
+        return ''.join(ans)
+
+
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
 class Solution:
     def minCostToMoveChips(self, position: List[int]) -> int:
