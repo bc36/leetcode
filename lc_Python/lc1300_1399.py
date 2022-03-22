@@ -1,4 +1,4 @@
-import collections, itertools, functools, math
+import collections, itertools, functools, math, heapq
 from typing import List, Optional
 
 
@@ -179,6 +179,86 @@ class Solution:
             root.right = self.removeLeafNodes(root.right, target)
             if root.val != target or root.left or root.right:
                 return root
+
+
+# 1326 - Minimum Number of Taps to Open to Water a Garden - HARD
+class Solution:
+    # O(nlogn) / O(n)
+    def minTaps(self, n: int, ranges: List[int]) -> int:
+        # rg = sorted([(max(0, i - v), min(i + v, n)) for i, v in enumerate(ranges)])
+        rg = sorted([[i - v, i + v] for i, v in enumerate(ranges)])
+        ans = i = j = reach = 0
+        while j < n:
+            while i < n + 1 and rg[i][0] <= j:
+                reach = max(reach, rg[i][1])
+                i += 1
+            if j == reach:
+                return -1
+            j = reach
+            ans += 1
+        return ans
+
+    def minTaps(self, n: int, ranges: List[int]) -> int:
+        arr = sorted([(i - v, i + v) for i, v in enumerate(ranges)])
+        ans = l = r = 0
+        maxHeap = []
+        while r < n:
+            while l < n + 1 and arr[l][0] <= r:
+                heapq.heappush(maxHeap, -arr[l][1])
+                l += 1
+            if not maxHeap:
+                return -1
+            r = -heapq.heappop(maxHeap)
+            ans += 1
+        return ans
+
+    # O(n) / O(n), Jump Game II now
+    def minTaps(self, n: int, ranges: List[int]) -> int:
+        max_range = [0] * (n + 1)
+        for i, v in enumerate(ranges):
+            l = max(0, i - v)
+            r = min(n, i + v)
+            max_range[l] = max(max_range[l], r)
+        start = end = step = 0
+        while end < n:
+            step += 1
+            nxt = max(max_range[i] for i in range(start, end + 1))
+            start, end = end, nxt
+            if start == end:
+                return -1
+        return step
+
+    def minTaps(self, n: int, ranges: List[int]) -> int:
+        jump = [0] * (n + 1)
+        for i in range(n + 1):
+            l = max(0, i - ranges[i])
+            r = min(n, i + ranges[i])
+            jump[l] = max(jump[l], r)
+        ans = furthest = currEnd = 0
+        for i in range(n):
+            furthest = max(furthest, jump[i])
+            if i == currEnd:
+                if furthest <= currEnd:
+                    return -1
+                currEnd = furthest
+                ans += 1
+        return ans
+
+    def minTaps(self, n: int, ranges: List[int]) -> int:
+        reach = [0] * (n + 1)
+        for i, width in enumerate(ranges):
+            start = max(0, i - width)
+            end = min(n, i + width)
+            reach[start] = max(reach[start], end)
+        ans = furthest = currEnd = 0
+        for i in range(n):
+            furthest = max(furthest, reach[i])
+            if i == furthest:
+                return -1
+            if i == currEnd:
+                currEnd = furthest
+                ans += 1
+        return ans
 
 
 # 1332 - Remove Palindromic Subsequences - EASY
