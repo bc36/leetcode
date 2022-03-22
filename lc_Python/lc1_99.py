@@ -989,7 +989,6 @@ class Solution:
 class Solution:
     # slow, O(n^2)
     def jump(self, nums: List[int]) -> int:
-        if len(nums) == 1: return 0
         n = len(nums)
         dp = [0] + [float('inf')] * (n - 1)  # dp[i]: minimum step to 'i'
         for i in range(n - 1):
@@ -998,6 +997,30 @@ class Solution:
             for step in range(1, nums[i] + 1):
                 dp[i + step] = min(dp[i] + 1, dp[i + step])
         return dp[-1]
+
+    def jump(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [0] + [math.inf] * (n - 1)  # dp[i]: minimum step to 'i'
+        for i in range(n):
+            s = i
+            e = min(i + nums[i], n - 1)
+            for j in range(s, e + 1):
+                dp[j] = min(dp[j], dp[s] + 1)
+        return dp[-1] if dp[-1] != math.inf else -1
+
+    def jump(self, nums: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dp(i):
+            if i == n - 1:
+                return 0  # Reached to last index
+            ans = math.inf
+            maxJump = min(n - 1, i + nums[i])
+            for j in range(i + 1, maxJump + 1):
+                ans = min(ans, dp(j) + 1)
+            return ans
+
+        n = len(nums)
+        return dp(0)
 
     # greedy, O(n), find the next reachable area
     def jump(self, nums: List[int]) -> int:
