@@ -221,18 +221,19 @@ class Solution:
 
 
 # 935 - Knight Dialer - MEDIUM
-# 0         -> 4 6
-# 1 3 7 9   -> 2 8 / 4 6
-# 2 8       -> 1 3 7 9
-# 4 6       -> 0 / 1 3 7 9
 class Solution:
+    # 0         -> 4 6
+    # 1 3 7 9   -> 2 8 / 4 6
+    # 2 8       -> 1 3 7 9
+    # 4 6       -> 0 / 1 3 7 9
     def knightDialer(self, n: int) -> int:
         if n == 1:
             return 10
-        a, b, c, d, mod = 1, 4, 2, 2, 10**9 + 7
+        n1379, n46, n28, n0 = 4, 2, 2, 1
+        mod = 10**9 + 7
         for _ in range(n - 1):
-            a, b, c, d = d, (2 * c + 2 * d) % mod, b, (2 * a + b) % mod
-        return (a + b + c + d) % mod
+            n1379, n46, n28, n0 = 2 * (n46 + n28), n1379 + n0 * 2, n1379, n46
+        return (n1379 + n46 + n28 + n0) % mod
 
     def knightDialer(self, n: int) -> int:
         x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x0 = 1
