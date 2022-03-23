@@ -1198,6 +1198,63 @@ class Solution:
         return max(f)
 
 
+# 54 - Spiral Matrix - MEDIUM
+class Solution:
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        r = c = d = 0
+        m = len(matrix)
+        n = len(matrix[0])
+        ans = []
+        for _ in range(m * n):
+            ans.append(matrix[r][c])
+            matrix[r][c] = 101
+            nr = r + dirs[d][0]
+            nc = c + dirs[d][1]
+            if not 0 <= nr < m or not 0 <= nc < n or matrix[nr][nc] == 101:
+                d = (d + 1) % 4
+            r = r + dirs[d][0]
+            c = c + dirs[d][1]
+        return ans
+
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        ans = []
+        i = j = di = 0
+        dj = 1
+        m = len(matrix)
+        n = len(matrix[0])
+        for _ in range(m * n):
+            ans.append(matrix[i][j])
+            matrix[i][j] = 101
+            if matrix[(i + di) % m][(j + dj) % n] == 101:
+                di, dj = dj, -di
+            i += di
+            j += dj
+        return ans
+
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        ans = list()
+        l = 0
+        r = len(matrix[0]) - 1
+        t = 0
+        b = len(matrix) - 1
+        while l <= r and t <= b:
+            for col in range(l, r + 1):
+                ans.append(matrix[t][col])
+            for row in range(t + 1, b + 1):
+                ans.append(matrix[row][r])
+            if l < r and t < b:
+                for col in range(r - 1, l, -1):
+                    ans.append(matrix[b][col])
+                for row in range(b, t, -1):
+                    ans.append(matrix[row][l])
+            l += 1
+            r -= 1
+            t += 1
+            b -= 1
+        return ans
+
+
 # 55 - Jump Game - MEDIUM
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
