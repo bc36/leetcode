@@ -1,4 +1,4 @@
-import collections, itertools
+import collections, itertools, heapq, functools, math
 from typing import List
 
 
@@ -80,6 +80,54 @@ class Solution:
                 time = rT[i + 1] - rT[i]
                 ans = keys[i + 1]
         return ans
+
+
+# 1648 - Sell Diminishing-Valued Colored Balls - MEDIUM
+class Solution:
+    # O(nlogC) / O(1), C = max(inventory)
+    def maxProfit(self, inventory: List[int], orders: int) -> int:
+        l = 0
+        r = max(inventory)
+        T = -1
+        while l < r:
+            mid = (l + r) // 2
+            count = sum(n - mid for n in inventory if n >= mid)
+            if count <= orders:
+                r = mid
+            else:
+                T = mid + 1
+                l = mid + 1
+        fn = lambda x, y: (x + y) * (y - x + 1) // 2
+        rest = orders - sum(n - T for n in inventory if n >= T)
+        ans = 0
+        for n in inventory:
+            if n >= T:
+                if rest > 0:
+                    ans += fn(T, n)
+                    rest -= 1
+                else:
+                    ans += fn(T + 1, n)
+        return ans % (10**9 + 7)
+
+    # O(nlogn) / O(1)
+    def maxProfit(self, inv: List[int], orders: int) -> int:
+        fn = lambda s, e: (e + s) * (e - s + 1) // 2
+        inv.sort(reverse=True)
+        inv.append(0)
+        ans = 0
+        cnt = 1  # the number of maximum values
+        for i in range(len(inv) - 1):
+            if inv[i] > inv[i + 1]:
+                if cnt * (inv[i] - inv[i + 1]) < orders:
+                    ans += cnt * fn(inv[i + 1] + 1, inv[i])
+                    orders -= cnt * (inv[i] - inv[i + 1])
+                else:
+                    whole, remaining = divmod(orders, cnt)
+                    ans += cnt * fn(inv[i] - whole + 1, inv[i])
+                    ans += remaining * (inv[i] - whole)
+                    break
+            cnt += 1
+        return ans % (10**9 + 7)
 
 
 # 1650 - Lowest Common Ancestor of a Binary Tree III - MEDIUM
