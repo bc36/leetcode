@@ -175,7 +175,7 @@ class Solution:
 
 # 1439 - Find the Kth Smallest Sum of a Matrix With Sorted Rows - HARD
 class Solution:
-    # brute force, O(m * (nk + nk*lognk))
+    # O(m * (nk + nk*lognk)), brute force
     def kthSmallest(self, mat: List[List[int]], k: int) -> int:
         arr = [0]
         for row in mat:
@@ -193,21 +193,40 @@ class Solution:
                 new = pos[:i] + (pos[i] + 1, ) + pos[i + 1:]
                 if pos[i] + 1 < n and new not in seen:
                     seen.add(new)
-                    newScore = score - mat[i][pos[i]] + mat[i][pos[i] + 1]
-                    heapq.heappush(pq, (newScore, new))
+                    sc = score - mat[i][pos[i]] + mat[i][pos[i] + 1]
+                    heapq.heappush(pq, (sc, new))
+            k -= 1
+        return pq[0][0]
+
+    def kthSmallest(self, mat: List[List[int]], k: int) -> int:
+        m = len(mat)
+        n = len(mat[0])
+        pq = [(sum(mat[i][0] for i in range(m)), [0] * m)]
+        seen = {tuple([0] * m)}
+        while k > 1:
+            score, pos = heapq.heappop(pq)
+            for i in range(m):
+                pos[i] += 1
+                if pos[i] < n and tuple(pos) not in seen:
+                    seen.add(tuple(pos))
+                    sc = score - mat[i][pos[i] - 1] + mat[i][pos[i]]
+                    heapq.heappush(pq, (sc, pos[:]))  # pos[:], copy
+                pos[i] -= 1
             k -= 1
         return pq[0][0]
 
     # O(m * k * logm) / O(m)
+    # check() can run up to (m - i + 1) * min(k, n ^ i), 1 <= i <= m times.
+    # And n ^ i can go up to k very quickly, so time complexity will be O(m * k)
     def kthSmallest(self, mat: List[List[int]], k: int) -> int:
-        def check(target, idx, cur):
-            if idx == len(mat):
-                return 1
+        def check(target, i, cur):
+            if i == len(mat):
+                return 1  # why 1: TODO
             count = 0
-            for i in range(len(mat[0])):
-                val = cur + mat[idx][i] - mat[idx][0]
+            for j in range(len(mat[0])):
+                val = cur + mat[i][j] - mat[i][0]
                 if val <= target:
-                    count += check(target, idx + 1, val)
+                    count += check(target, i + 1, val)
                     if count >= k:
                         break
                 else:
@@ -226,6 +245,38 @@ class Solution:
             else:
                 l = m + 1
         return l
+
+    def kthSmallest(self, mat: List[List[int]], k: int) -> int:
+        m, n = len(mat), len(mat[0])
+        left = right = 0
+        for i in range(m):
+            left += mat[i][0]
+            right += mat[i][-1]
+
+        def dfs(mid, i, pre):
+            nonlocal num
+            if pre > mid or i == m or num > k:
+                return
+            dfs(mid, i + 1, pre)  # not choose element in this row
+            for j in range(1, n):  # choose
+                cur = pre - mat[i][0] + mat[i][j]
+                if cur <= mid:
+                    num += 1
+                    dfs(mid, i + 1, cur)
+                else:
+                    break
+            return
+
+        init = left
+        while left < right:
+            mid = (left + right) // 2
+            num = 1
+            dfs(mid, 0, init)
+            if num >= k:
+                right = mid
+            else:
+                left = mid + 1
+        return left
 
 
 # 1446 - Consecutive Characters - EASY
