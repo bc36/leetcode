@@ -218,6 +218,7 @@ class Solution:
 # 432 - All O`one Data Structure - HARD
 # TODO
 
+
 # 435 - Non-overlapping Intervals - MEDIUM
 class Solution:
     def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
@@ -287,30 +288,52 @@ class Solution:
         return ans
 
 
-# 440 - K-th Smallest in Lexicographical Order - HARD - REVIEW
+# 440 - K-th Smallest in Lexicographical Order - HARD
 class Solution:
     def findKthNumber(self, n: int, k: int) -> int:
-        def getCnt(prefix: int, n: int) -> int:
-            cnt, cur, next = 0, prefix, prefix + 1
-            while cur <= n:
-                cnt += min(next, n + 1) - cur
-                cur, next = cur * 10, next * 10
+        def getCnt(prefix: int) -> int:
+            cnt = 0
+            nxt = prefix + 1
+            while prefix <= n:
+                cnt += min(nxt, n + 1) - prefix
+                prefix *= 10
+                nxt *= 10
             return cnt
 
-        cur, prefix = 1, 1
-        while cur < k:
-            cnt = getCnt(prefix, n)
-            if cur + cnt > k:
+        cnt = prefix = 1
+        while cnt < k:
+            add = getCnt(prefix)
+            if cnt + add > k:
                 prefix *= 10
-                cur += 1
+                cnt += 1
             else:
                 prefix += 1
-                cur += cnt
+                cnt += add
         return prefix
+
+    def findKthNumber(self, n: int, k: int) -> int:
+        def cal_steps(n1, n2):
+            step = 0
+            while n1 <= n:
+                step += min(n2, n + 1) - n1
+                n1 *= 10
+                n2 *= 10
+            return step
+
+        cur = 1
+        k -= 1
+        while k:
+            steps = cal_steps(cur, cur + 1)
+            if steps <= k:
+                k -= steps
+                cur += 1
+            else:
+                k -= 1
+                cur *= 10
+        return cur
 
 
 # 441 - Arranging Coins - EASY
-# math
 class Solution:
     def arrangeCoins(self, n: int) -> int:
         for i in range(n):
