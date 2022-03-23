@@ -67,6 +67,42 @@ class Solution:
         return False
 
 
+# 661 - Image Smoother - EASY
+class Solution:
+    def imageSmoother(self, img: List[List[int]]) -> List[List[int]]:
+        m = len(img)
+        n = len(img[0])
+        p = [[0] * (n + 1) for _ in range(m + 1)]
+        a = [[0] * n for _ in range(m)]
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                p[i][j] = p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1] + img[
+                    i - 1][j - 1]
+        for i in range(m):
+            for j in range(n):
+                x1 = max(i - 1, 0)
+                y1 = max(j - 1, 0)
+                x2 = min(i + 2, m)
+                y2 = min(j + 2, n)
+                a[i][j] = (p[x2][y2] - p[x1][y2] - p[x2][y1] + p[x1][y1]) // (
+                    (x2 - x1) * (y2 - y1))
+        return a
+
+    def imageSmoother(self, img: List[List[int]]) -> List[List[int]]:
+        m = len(img)
+        n = len(img[0])
+        ans = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                t, c = 0, 0
+                for x in range(max(i - 1, 0), min(i + 2, m)):
+                    for y in range(max(j - 1, 0), min(j + 2, n)):
+                        t += img[x][y]
+                        c += 1
+                ans[i][j] = t // c
+        return ans
+
+
 # 673 - Number of Longest Increasing Subsequence - MEDIUM
 class Solution:
     # O(n^2)
