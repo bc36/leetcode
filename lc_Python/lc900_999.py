@@ -220,6 +220,58 @@ class Solution:
         return min(dp[-1])
 
 
+# 934 - Shortest Bridge - MEDIUM
+class Solution:
+    def shortestBridge(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        dq = collections.deque()
+
+        # def dfs(i, j):
+        #     grid[i][j] = 2
+        #     for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+        #         if 0 <= x < m and 0 <= y < n and grid[x][y] == 1:
+        #             dfs(x, y)
+        #             dq.append((x, y))
+        #     return
+
+        def dfs(r, c):
+            if 0 <= r < m and 0 <= c < n:
+                if grid[r][c] != 1:
+                    return
+                dq.append((r, c))
+                grid[r][c] = 2
+                dfs(r + 1, c)
+                dfs(r - 1, c)
+                dfs(r, c - 1)
+                dfs(r, c + 1)
+
+        f = False
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == 1:
+                    dq.append((i, j))
+                    dfs(i, j)
+                    f = True
+                    break
+            if f:
+                break
+
+        ans = 0
+        while dq:
+            for _ in range(len(dq)):
+                i, j = dq.popleft()
+                for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                    if 0 <= x < m and 0 <= y < n:
+                        if grid[x][y] == 1:
+                            return ans
+                        elif grid[x][y] == 0:
+                            grid[x][y] = 2
+                            dq.append((x, y))
+            ans += 1
+        return ans
+
+
 # 935 - Knight Dialer - MEDIUM
 class Solution:
     # 0         -> 4 6
