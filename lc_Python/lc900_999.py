@@ -222,6 +222,7 @@ class Solution:
 
 # 934 - Shortest Bridge - MEDIUM
 class Solution:
+    # O(mn) / O(mn)
     def shortestBridge(self, grid: List[List[int]]) -> int:
         m = len(grid)
         n = len(grid[0])

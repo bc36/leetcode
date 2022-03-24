@@ -593,11 +593,13 @@ class Solution:
 # 134 - Gas Station - MEDIUM
 class Solution:
     def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
-        if (sum(gas) - sum(cost) < 0):
+        if sum(gas) < sum(cost):
             return -1
-        surplus, start = 0, 0
+        surplus = start = 0
         for i in range(len(gas)):
             surplus += gas[i] - cost[i]
+            # if surplus < 0 again, it means the answer is at the rest of stations
+            # in other words, the answer is the station next to the last station with -surplus
             if surplus < 0:
                 start = i + 1
                 surplus = 0
@@ -605,13 +607,27 @@ class Solution:
 
     # the answer is the next station of the station with 'minSurplus'
     def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
-        surplus, idx, minSurplus = 0, 0, float("inf")
+        total = idx = 0
+        surplus = float("inf")
         for i in range(len(gas)):
-            surplus += gas[i] - cost[i]
-            if surplus < minSurplus:
+            total += gas[i] - cost[i]
+            if total < surplus:
                 idx = i
-                minSurplus = surplus
-        return (idx + 1) % len(gas) if surplus >= 0 else -1
+                surplus = total
+        return (idx + 1) % len(gas) if total >= 0 else -1
+
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        if sum(gas) < sum(cost):
+            return -1
+        ans = pre = g = 0
+        for i in range(len(gas)):
+            g += gas[i] - cost[i]
+            if g < pre:
+                pre = g
+                # ans = (i + 1) % len(gas)
+                # whether the first place is the answer will be judged at index 0, rather than at the last index
+                ans = i + 1
+        return ans
 
 
 # 136 - Single Number - EASY
