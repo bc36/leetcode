@@ -1481,6 +1481,32 @@ class Solution:
         return ans
 
 
+# 172 - Factorial Trailing Zeroes - MEDIUM
+class Solution:
+    def trailingZeroes(self, n: int) -> int:
+        ans = 0
+        for i in range(5, n + 1, 5):
+            while i % 5 == 0:
+                i //= 5
+                ans += 1
+        return ans
+
+    def trailingZeroes(self, n: int) -> int:
+        if n // 5 == 0:
+            return 0
+        return n // 5 + self.trailingZeroes(n // 5)
+
+    def trailingZeroes(self, n: int) -> int:
+        ans = 0
+        while n >= 5:
+            n //= 5
+            ans += n
+        return ans
+
+    def trailingZeroes(self, n: int) -> int:
+        return n // 5 + n // 25 + n // 125 + n // 625 + n // 3125
+
+
 # 173 - Binary Search Tree Iterator - MEDIUM
 # save all node.val by inorder traversal
 class BSTIterator:

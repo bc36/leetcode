@@ -100,6 +100,51 @@ class Solution:
         return ret
 
 
+# 829 - Consecutive Numbers Sum - HARD
+class Solution:
+    # O(sqrt(2N)) / O(1)
+    def consecutiveNumbersSum(self, n: int) -> int:
+        # N -1 -2 -3 -4 -5.......-k = 0
+        # N = 1 + 2 + 3 +.........+ k
+        # (1 + k)k / 2 = N
+        # k = sqrt(2N)
+        ans = 0
+        i = 1
+        while n > 0:
+            ans += n % i == 0
+            n -= i
+            i += 1
+        return ans
+
+    # N = (x + 1) + (x + 2) + ... + (x + k) = kx + k * (k + 1) / 2
+    # 2 * N = k(2x + k + 1)
+    # 'k' is odd or '2x + k + 1' is odd
+    # TODO
+    # def consecutiveNumbersSum(self, n: int) -> int:
+    #     ans = 1
+    #     for i in range(2, int(math.sqrt(2 * n)) + 1):
+    #         if (n - i * (i - 1) // 2) % i == 0:
+    #             ans += 1
+    #     return ans
+
+    # def consecutiveNumbersSum(self, n: int) -> int:
+    #     ans = 1
+    #     i = 3
+    #     while n % 2 == 0:
+    #         n //= 2
+    #     while i * i <= n:
+    #         count = 0
+    #         while n % i == 0:
+    #             n //= i
+    #             count += 1
+    #         ans *= count + 1
+    #         i += 2
+    #     if n > 1:
+    #         ans *= 2
+    #     return ans
+
+
+# 838 - Push Dominoes - MEDIUM
 class Solution:
     def pushDominoes(self, dominoes: str) -> str:
         while 1:
