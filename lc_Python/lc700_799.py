@@ -86,6 +86,17 @@ class Solution:
                 return mid
         return -1
 
+    def search(self, nums: List[int], target: int) -> int:
+        l = 0
+        r = len(nums) - 1
+        while l < r:
+            m = (l + r) // 2
+            if nums[m] >= target:
+                r = m
+            else:
+                l = m + 1
+        return l if nums[l] == target else -1
+
 
 # 709 -To Lower Case - EASY
 class Solution:

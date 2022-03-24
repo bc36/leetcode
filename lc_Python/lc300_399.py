@@ -38,6 +38,8 @@ class Solution:
         # keep the 'tail' ordered
         # replace smaller element
         # 'tail' may not be the exact LIS, but has the same length
+        # the element after idx is useless at each insert
+        # 'tail' will maintain the maximum length of LIS
         return len(tail)
 
     def lengthOfLIS(self, nums: List[int]) -> int:
