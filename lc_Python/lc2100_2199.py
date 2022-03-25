@@ -62,6 +62,58 @@ class Solution:
         return ans
 
 
+
+
+
+# 2151 - Maximum Good People Based on Statements - HARD
+class Solution:
+    def maximumGood(self, statements: List[List[int]]) -> int:
+        def check(s):
+            cnt = 0
+            for i, v in enumerate(statements):
+                if (s >> i) & 1:
+                    for j in range(len(v)):
+                        if v[j] < 2 and v[j] != (s >> j) & 1:
+                            return 0
+                    cnt += 1
+            return cnt
+
+        mx = 0
+        for s in range(1 << len(statements)):
+            mx = max(mx, check(s))
+        return mx
+
+    def maximumGood(self, statements: List[List[int]]) -> int:
+        def check(i: int) -> int:
+            cnt = 0
+            for j, s in enumerate(statements):
+                if (i >> j) & 1:
+                    if any(v < 2 and v != (i >> k) & 1
+                           for k, v in enumerate(s)):
+                        return 0
+                    cnt += 1
+            return cnt
+
+        return max(check(i) for i in range(1, 1 << len(statements)))
+
+    def maximumGood(self, statements: List[List[int]]) -> int:
+        def check(st):
+            st = set(st)
+            for m in st:
+                for i, s in enumerate(statements[m]):
+                    if (s == 0 and i in st) or (s == 1 and i not in st):
+                        return False
+            return True
+
+        n = len(statements)
+        nums = list(range(n))
+        for i in range(n + 1, 0, -1):
+            for comb in itertools.combinations(nums, i):
+                if check(comb):
+                    return i
+        return 0
+
+
 # 2164 - Sort Even and Odd Indices Independently - EASY
 class Solution:
     def sortEvenOdd(self, nums: List[int]) -> List[int]:
@@ -610,6 +662,7 @@ class Solution:
         for node in nodes:
             if node not in hasParent:
                 return nodes[node]
+
 
 # 2197 - Replace Non-Coprime Numbers in Array - HARD
 class Solution:
