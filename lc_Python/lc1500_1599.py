@@ -1,5 +1,5 @@
 from typing import List
-import collections
+import collections, functools, itertools, heapq, math
 
 
 class TreeNode:
@@ -17,6 +17,20 @@ class Solution:
             ans += numBottles
             numBottles, empty = divmod(empty + numBottles, numExchange)
         return ans
+
+
+# 1523 - Count Odd Numbers in an Interval Range - EASY
+class Solution:
+    def countOdds(self, low: int, high: int) -> int:
+        d = high - low + 1
+        if d & 1:
+            return d // 2 + 1 if high & 1 else d // 2
+        return d // 2
+
+    def countOdds(self, low: int, high: int) -> int:
+        # the number of odd numbers before this one
+        pre = lambda x: (x + 1) >> 1
+        return pre(high) - pre(low - 1)
 
 
 ###############

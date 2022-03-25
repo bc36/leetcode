@@ -373,3 +373,9 @@ class Solution:
     def canBeEqual(self, target: List[int], arr: List[int]) -> bool:
         return collections.Counter(target) == collections.Counter(arr)
         return sorted(target) == sorted(arr)
+
+
+# 1491 - Average Salary Excluding the Minimum and Maximum Salary - EASY
+class Solution:
+    def average(self, s: List[int]) -> float:
+        return (sum(s) - max(s) - min(s)) / (len(s) - 2)
