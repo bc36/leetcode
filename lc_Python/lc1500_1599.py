@@ -58,6 +58,37 @@ class Solution:
         dfs(root)
         return self.ans
 
+    def countPairs(self, root: TreeNode, d: int) -> int:
+        def post(root):
+            if not root:
+                return dict()
+            if not root.left and not root.right:
+                return {1: 1}
+            l = post(root.left)
+            r = post(root.right)
+            for i in l:
+                for j in r:
+                    if i + j <= d:
+                        self.ans += l[i] * r[j]
+            dic = {}
+            for i in l:
+                if i + 1 < d:
+                    dic[i + 1] = dic.get(i + 1, 0) + l[i]
+            for j in r:
+                if j + 1 < d:
+                    dic[j + 1] = dic.get(j + 1, 0) + r[j]
+
+            # dic = collections.defaultdict(int)
+            # for i in l:
+            #     dic[i + 1] += l[i] if i + 1 < d else 0
+            # for j in r:
+            #     dic[j + 1] += r[j] if j + 1 < d else 0
+            return dic
+
+        self.ans = 0
+        post(root)
+        return self.ans
+
 
 # 1567 - Maximum Length of Subarray With Positive Product - MEDIUM
 class Solution:

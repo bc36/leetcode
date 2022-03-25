@@ -296,14 +296,28 @@ class Solution:
             j -= 1
         return True
 
-
-class Solution:
     def validPalindrome(self, s):
         i = 0
         while i < len(s) / 2 and s[i] == s[-(i + 1)]:
             i += 1
         s = s[i:len(s) - i]
         return s[1:] == s[1:][::-1] or s[:-1] == s[:-1][::-1]
+
+
+# 682 - Baseball Game - EASY
+class Solution:
+    def calPoints(self, ops: List[str]) -> int:
+        s = []
+        for ch in ops:
+            if ch == 'D':
+                s.append(2 * s[-1])
+            elif ch == 'C':
+                s.pop()
+            elif ch == '+':
+                s.append(s[-1] + s[-2])
+            else:
+                s.append(int(ch))
+        return sum(s)
 
 
 # 686 - Repeated String Match - MEDIUM
