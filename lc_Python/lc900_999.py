@@ -575,6 +575,16 @@ class Solution:
         return ans
 
 
+# 976 - Largest Perimeter Triangle - EASY
+class Solution:
+    def largestPerimeter(self, a: List[int]) -> int:
+        a.sort()
+        for i in range(len(a) - 1, 1, -1):
+            if a[i - 1] + a[i - 2] > a[i]:
+                return sum(a[i - 2:i + 1])
+        return 0
+
+
 # 977 - Squares of a Sorted Array - EASY
 class Solution:
     def sortedSquares(self, nums: List[int]) -> List[int]:
