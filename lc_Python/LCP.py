@@ -99,8 +99,6 @@ class Solution:
             ans.append(t)
         return ans
 
-
-class Solution:
     def getTriggerTime(self, increase: List[List[int]],
                        requirements: List[List[int]]) -> List[int]:
         m = 100001
@@ -249,24 +247,24 @@ class Solution:
 # LCP 13. 寻宝 - HARD
 class Solution:
     def minimalSteps(self, maze: List[str]) -> int:
-        # 计算（x, y）到maze中其他点的距离，结果保存在ret中
-        def bfs(x: int, y: int) -> List[List[int]]:
-            ret = [[-1] * n for _ in range(m)]
-            ret[x][y] = 0
-            dq = collections.deque([(x, y)])
+        def bfs(i: int, j: int) -> List[List[int]]:
+            r = [[-1] * n for _ in range(m)]
+            r[i][j] = 0
+            dq = collections.deque([(i, j)])
             while dq:
-                i, j = dq.popleft()
-                for nx, ny in [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]:
+                x, y = dq.popleft()
+                for nx, ny in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
                     if 0 <= nx < m and 0 <= ny < n and maze[nx][
-                            ny] != '#' and ret[nx][ny] == -1:
-                        ret[nx][ny] = ret[i][j] + 1
+                            ny] != '#' and r[nx][ny] == -1:
+                        r[nx][ny] = r[x][y] + 1
                         dq.append((nx, ny))
-            return ret
+            return r
 
-        m, n = len(maze), len(maze[0])
+        m = len(maze)
+        n = len(maze[0])
         startX = startY = endX = endY = -1
-        buttons, stones = [], []  # 机关 & 石头
-        # 记录所有特殊信息的位置
+        buttons = []
+        stones = []
         for i in range(m):
             for j in range(n):
                 if maze[i][j] == 'S':
@@ -279,11 +277,12 @@ class Solution:
                     stones.append((i, j))
                 elif maze[i][j] == 'M':
                     buttons.append((i, j))
-        nb, ns = len(buttons), len(stones)
+        nb = len(buttons)
+        ns = len(stones)
         startToAnyPos = bfs(startX, startY)
-        # 若没有机关，最短距离就是(startX, startY)到(endX, endY)的距离
         if nb == 0:
             return startToAnyPos[endX][endY]
+
         # 记录第i个机关到第j个机关的最短距离
         # dist[i][nb]表示到起点的距离， dist[i][nb+1]表示到终点的距离
         dist = [[-1] * (nb + 2) for _ in range(nb)]
@@ -327,6 +326,7 @@ class Solution:
         for i in range(nb):
             if dist[i][nb] == -1 or dist[i][nb + 1] == -1:
                 return -1
+
         # dp数组， -1代表没有遍历到, 1<<nb表示题解中提到的mask, dp[mask][j]表示当前处于第j个机关，总的触发状态为mask所需要的最短路径, 由于有2**nb个状态，因此1<<nb的开销必不可少
         dp = [[-1] * nb for _ in range(1 << nb)]
         # 初识状态，即从start到第i个机关，此时mask的第i位为1，其余位为0
@@ -378,7 +378,6 @@ class Solution:
             Q.append((x, y))
 
             def inBound(x, y):
-                #print(x, y, n, m)
                 return x >= 0 and x < n and y >= 0 and y < m
 
             while Q:
@@ -394,10 +393,11 @@ class Solution:
         nb = len(buttons)
         ns = len(stones)
         startDist = dfs(sx, sy)
-        if nb == 0:  #没有机关
+        if nb == 0:
             return startDist[tx][ty]
-        dd = []  #每个机关出发，到其他所有点的距离:中间结果
-        dist = [[-1] * (nb + 2) for _ in range(nb)]  #每个机关到其他机关的距离，到起点，终点的距离
+
+        dd = []  # 每个机关出发，到其他所有点的距离:中间结果
+        dist = [[-1] * (nb + 2) for _ in range(nb)]  # 每个机关到其他机关的距离，到起点，终点的距离
         for i in range(nb):
             x, y = buttons[i]
             d = dfs(x, y)
@@ -406,7 +406,7 @@ class Solution:
             if dist[i][nb + 1] == -1:
                 return -1
         for i in range(nb):
-            #起点-->第k个石头的距离 + 第k个石头--->第i个机关的距离
+            # 起点-->第k个石头的距离 + 第k个石头--->第i个机关的距离
             tmp = -1
             ddi = dd[i]
             for k in range(ns):
@@ -417,7 +417,7 @@ class Solution:
             dist[i][nb] = tmp
             if dist[i][nb] == -1:
                 return -1
-            #第i个机关-->某个石头的距离 + 这个石头--->第j个机关的距离
+            # 第i个机关-->某个石头的距离 + 这个石头--->第j个机关的距离
             for j in range(i + 1, nb):
                 tmp = -1
                 ddj = dd[j]

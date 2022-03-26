@@ -124,10 +124,10 @@ class Solution:
             mx.append(r)
             mi.append(r)
             while nums[mx[0]] - nums[mi[0]] > limit:
-                if l == mi[0]:
-                    mi.popleft()
                 if l == mx[0]:
                     mx.popleft()
+                if l == mi[0]:
+                    mi.popleft()
                 l += 1
             ans = max(ans, r - l + 1)
             r += 1
@@ -145,15 +145,15 @@ class Solution:
             mx.append(r)
             mi.append(r)
             if nums[mx[0]] - nums[mi[0]] > limit:
-                if mx[0] <= l:
+                if mx[0] == l:
                     mx.popleft()
-                if mi[0] <= l:
+                if mi[0] == l:
                     mi.popleft()
                 l += 1
         # the window will keep the same length and slide 1 step right if not satisfied
         # when the window meet the answer, it will keep the length to the end
         return r - l + 1
-        # # or
+        # or
         return len(nums) - l
 
     # O(n * logn) / O(n)

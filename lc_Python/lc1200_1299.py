@@ -91,6 +91,60 @@ class Solution:
                     ans[conn[j]] = chars[j]
         return ''.join(ans)
 
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        n = len(s)
+        g = [[] for _ in range(n)]
+        for a, b in pairs:
+            g[a].append(b)
+            g[b].append(a)
+        s = list(s)
+        seen = set()
+        for i in range(n):
+            if i not in seen:
+                dq = collections.deque([i])
+                conn = []
+                while dq:
+                    j = dq.popleft()
+                    for k in g[j]:
+                        if k not in seen:
+                            seen.add(k)
+                            dq.append(k)
+                            conn.append(k)
+                char = [s[j] for j in conn]
+                conn.sort()
+                char.sort()
+                for j in range(len(conn)):
+                    s[conn[j]] = char[j]
+        return ''.join(s)
+
+    # uf
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        class UF:
+            def __init__(self, n):
+                self.p = list(range(n))
+
+            def union(self, x, y):
+                self.p[self.find(x)] = self.find(y)
+                return
+
+            def find(self, x):
+                if x != self.p[x]:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+        uf = UF(len(s))
+        ans = []
+        d = collections.defaultdict(list)
+        for a, b in pairs:
+            uf.union(a, b)
+        for i in range(len(s)):
+            d[uf.find(i)].append(s[i])
+        for group in d:
+            d[group].sort(reverse=True)
+        for i in range(len(s)):
+            ans.append(d[uf.find(i)].pop())
+        return ''.join(ans)
+
 
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
 class Solution:
@@ -266,6 +320,18 @@ class Solution:
             else:
                 arr.append(ch)
         return ''.join(arr)
+
+
+# 1281 - Subtract the Product and Sum of Digits of an Integer - EASY
+class Solution:
+    def subtractProductAndSum(self, n: int) -> int:
+        s = 0
+        p = 1
+        while n:
+            s += n % 10
+            p *= n % 10
+            n //= 10
+        return p - s
 
 
 # 1286 - Iterator for Combination - MEDIUM
