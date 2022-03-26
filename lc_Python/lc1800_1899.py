@@ -8,6 +8,23 @@ class Solution:
         return " ".join(s.split()[:k])
 
 
+# 1822 - Sign of the Product of an Array - EASY
+class Solution:
+    def arraySign(self, nums: List[int]) -> int:
+        a = 0
+        for n in nums:
+            if n == 0: return 0
+            a += 1 if n < 0 else 0
+        return -1 if a & 1 else 1
+
+    def arraySign(self, nums: List[int]) -> int:
+        a = 1
+        for n in nums:
+            if n == 0: return 0
+            a *= 1 if n > 0 else -1
+        return a
+
+
 # 1823 - Find the Winner of the Circular Game - MEDIUM
 class Solution:
     def findTheWinner(self, n: int, k: int) -> int:

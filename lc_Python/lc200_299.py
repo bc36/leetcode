@@ -352,44 +352,46 @@ class Solution:
 
 # 210 - Course Schedule II - MEDIUM
 class Solution:
-    def findOrder(self, numCourses: int,
-                  prerequisites: List[List[int]]) -> List[int]:
-        graph, in_d = collections.defaultdict(list), [0] * numCourses
-        for p in prerequisites:
-            graph[p[1]].append(p[0])  # save successor
-            in_d[p[0]] += 1
-        dq, ans = collections.deque([]), []
-        for i in range(len(in_d)):
-            if not in_d[i]:
+    def findOrder(self, num: int, pre: List[List[int]]) -> List[int]:
+        g = collections.defaultdict(list)
+        ind = [0] * num
+        for a, b in pre:
+            g[b].append(a)
+            ind[a] += 1
+        dq = collections.deque()
+        ans = []
+        for i in range(num):
+            if not ind[i]:
                 dq.append(i)
         while dq:
-            node = dq.popleft()
-            ans.append(node)
-            for n in graph[node]:
-                in_d[n] -= 1
-                if in_d[n] == 0:
-                    dq.append(n)
-        return ans if len(ans) == numCourses else []
+            n = dq.popleft()
+            ans.append(n)
+            for j in g[n]:
+                ind[j] -= 1
+                if ind[j] == 0:
+                    dq.append(j)
+        return ans if len(ans) == num else []
 
-    def findOrder(self, numCourses: int,
-                  prerequisites: List[List[int]]) -> List[int]:
+    def findOrder(self, num: int, prerequisites: List[List[int]]) -> List[int]:
         def dfs(v: int) -> bool:
             if visited[v] == -1: return False  # cycle detected
             if visited[v] == 1: return True  # finished, need added
             visited[v] = -1  # mark as visited
-            for x in graph[v]:
+            for x in g[v]:
                 if not dfs(x): return False
             visited[v] = 1  # mark as finished
             ans.append(v)
             return True
 
-        graph = collections.defaultdict(list)
-        visited, ans = [0] * numCourses, []
-        for pair in prerequisites:
-            graph[pair[0]].append(pair[1])  # save predecessor
-        for vertex in range(numCourses):
-            if not dfs(vertex): return []
-        # if build graph with successor, return ans[::-1]
+        g = collections.defaultdict(list)
+        visited = [0] * num
+        ans = []
+        for p in prerequisites:
+            g[p[0]].append(p[1])  # save predecessor
+        for vertex in range(num):
+            if not dfs(vertex):
+                return []
+        # if build 'g' with successor, return ans[::-1]
         # the first vertex will be in the bottom of stack in recursive process
         return ans
 

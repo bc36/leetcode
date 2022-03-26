@@ -50,6 +50,44 @@ class Solution:
         return root1 or root2
 
 
+# 630 - Course Schedule III - HARD
+class Solution:
+    # O(nlogn) / O(n)
+    def scheduleCourse(self, courses: List[List[int]]) -> int:
+        courses.sort(key=lambda c: c[1])
+        pq = []
+        t = 0
+        for d, ddl in courses:
+            t += d
+            if t > ddl:
+                t += heapq.heappushpop(pq, -d)
+                # t -= -heapq.heappushpop(pq, -d)
+            else:
+                heapq.heappush(pq, -d)
+
+            # or
+            # if t + d <= ddl:
+            #     t += d
+            #     heapq.heappush(pq, -d)
+            # elif pq and -pq[0] > d:
+            #     # t += heapq.heappushpop(pq, -d) + d
+            #     t -= -pq[0] - d
+            #     heapq.heappop(pq)
+            #     heapq.heappush(pq, -d)
+        return len(pq)
+
+    def scheduleCourse(self, courses: List[List[int]]) -> int:
+        pq = []
+        t = 0
+        for d, ddl in sorted(courses, key=lambda x: x[1]):
+            if t + d > ddl and pq and -pq[0] > d:
+                t += heapq.heappop(pq)
+            if t + d <= ddl:
+                heapq.heappush(pq, -d)
+                t += d
+        return len(pq)
+
+
 # 653 - Two Sum IV - Input is a BST - EASY
 class Solution:
     def findTarget(self, root: Optional[TreeNode], k: int) -> bool:

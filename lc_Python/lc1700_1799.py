@@ -66,6 +66,7 @@ class Solution:
             else:
                 ans.append(-1)
         return ans
+
     # for-else
     def findBall(self, grid: List[List[int]]) -> List[int]:
         n = len(grid[0])
@@ -174,6 +175,21 @@ class Solution:
                     dq.append((nx, ny))
                     isWater[nx][ny] = isWater[x][y] + 1
         return isWater
+
+
+# 1779 - Find Nearest Point That Has the Same X or Y Coordinate - EASY
+class Solution:
+    def nearestValidPoint(self, x: int, y: int,
+                          points: List[List[int]]) -> int:
+        ans = -1
+        mi = float('inf')
+        for i, (xx, yy) in enumerate(points):
+            if xx == x or yy == y:
+                d = abs(xx - x) + abs(yy - y)
+                if d < mi:
+                    ans = i
+                    mi = d
+        return ans
 
 
 # 1791 - Find Center of Star Graph - EASY
