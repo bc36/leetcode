@@ -194,50 +194,78 @@ class Solution:
 
 
 # 207 - Course Schedule I - MEDIUM
-# [0, 1] you have to first take course 1
 class Solution:
+    # topological sorting -> in-degree == 0 -> next
+    # DAG(Directed Acyclic Graph)
+
     # bfs, adjacency list, indegree, save successor
     def canFinish(self, numCourses: int,
                   prerequisites: List[List[int]]) -> bool:
-        graph = collections.defaultdict(list)  # or {i: set()}
+        g = collections.defaultdict(list)  # or {i: set()}
         in_d = [0] * numCourses  # or {i: 0}
-        for p in (prerequisites):
-            graph[p[1]].append(p[0])  # save successor, no dependence
-            in_d[p[0]] += 1
-        dq, count = collections.deque([]), 0
+        for a, b in prerequisites:
+            g[b].append(a)  # save successor, no dependence
+            in_d[a] += 1
+        dq = collections.deque()
+        count = 0
         for i in range(numCourses):
             if in_d[i] == 0:
                 dq.append(i)
         while dq:
-            node = dq.popleft()
-            # seen.add(node)
+            n = dq.popleft()
+            # seen.add(n)
             count += 1
-            for successor in graph[node]:
-                in_d[successor] -= 1
-                if in_d[successor] == 0:
-                    dq.append(successor)
+            for succ in g[n]:
+                in_d[succ] -= 1
+                if in_d[succ] == 0:
+                    dq.append(succ)
         # return len(seen) == numCourses
         # return not sum(in_d) # not use count or in_d
         return count == numCourses
 
+    # O(m + n) = O(E + V) / O(m + n), m = len(pre)
+    def canFinish(self, num: int, pre: List[List[int]]) -> bool:
+        g = [[] for _ in range(num)]
+        ind = [0] * num
+        for a, b in pre:
+            g[b].append(a)
+            ind[a] += 1
+        dq = collections.deque()
+        for i in range(len(g)):
+            if ind[i] == 0:
+                dq.append(i)
+        total = 0
+        while dq:
+            n = dq.popleft()
+            total += 1
+            for j in g[n]:
+                ind[j] -= 1
+                if ind[j] == 0:
+                    dq.append(j)
+        return total == num
+
     # dfs, whether there is a cycle
     def canFinish(self, numCourses: int,
                   prerequisites: List[List[int]]) -> bool:
-        def hasCycle(v: int) -> bool:  # 0 default
-            if flags[v] == -1: return True  # is being processing
-            if flags[v] == 1: return False  # is processed
-            flags[v] = -1  # is being processing
-            for i in adj[v]:
-                if hasCycle(i): return True
-            flags[v] = 1  # process finished
+        def hasCycle(v: int) -> bool:
+            if f[v] == -1:  # is being processing
+                return True
+            if f[v] == 1:  # is processed
+                return False
+            f[v] = -1  # is being processing
+            for i in g[v]:
+                if hasCycle(i):
+                    return True
+            f[v] = 1  # process finished
             return False
 
-        adj = [[] for _ in range(numCourses)]
-        flags = [0] * numCourses
-        for cur, pre in prerequisites:
-            adj[pre].append(cur)  # save successor
+        g = [[] for _ in range(numCourses)]
+        f = [0] * numCourses
+        for a, b in prerequisites:
+            g[b].append(a)  # save successor
         for i in range(numCourses):
-            if hasCycle(i): return False
+            if hasCycle(i):
+                return False
         return True
 
 
@@ -958,6 +986,25 @@ class Solution:
         l = self.lowestCommonAncestor(root.left, p, q)
         r = self.lowestCommonAncestor(root.right, p, q)
         return root if l and r else l or r
+
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
+                             q: 'TreeNode') -> 'TreeNode':
+        def dfs(root):
+            if not root:
+                return None
+            if root == q or root == p:
+                return root
+            l = dfs(root.left)
+            r = dfs(root.right)
+            if l and r:
+                return root
+            if l == p or l == q:
+                return l
+            if r == p or r == q:
+                return r
+            return l or r
+
+        return dfs(root)
 
     # iterative solution
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
