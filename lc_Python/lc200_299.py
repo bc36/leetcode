@@ -1134,6 +1134,7 @@ class Solution:
             num = mod
         return num
 
+    # x * 100 + y * 10 + z = x * 99 + y * 9 + x + y + z
     def addDigits(self, num: int) -> int:
         if num == 0:
             return 0

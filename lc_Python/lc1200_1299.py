@@ -117,7 +117,12 @@ class Solution:
                     s[conn[j]] = char[j]
         return ''.join(s)
 
-    # uf
+    # union find, disjoint Set
+    # O((E + V) * αV + VlogV) / O(V)
+    # where α is The Inverse Ackermann Function
+    # union: E * αV, find: V * αV, sort: VlogV
+    # V represents the number of vertices (the length of the given string)
+    # E represents the number of edges (the number of pairs)
     def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
         class UF:
             def __init__(self, n):
@@ -144,6 +149,65 @@ class Solution:
         for i in range(len(s)):
             ans.append(d[uf.find(i)].pop())
         return ''.join(ans)
+
+
+class UF:
+    def __init__(self, n):
+        self.r = [i for i in range(n)]
+        self.rank = [1] * n
+
+    def find(self, x):
+        # if self.r[x] != x:
+        #     self.r[x] = self.find(self.r[x])
+        # return self.r[x]
+        if self.r[x] == x:
+            return x
+        return self.find(self.r[x])
+
+    def union(self, x, y):
+        rx = self.find(x)
+        ry = self.find(y)
+        if rx != ry:
+            if self.rank[rx] > self.rank[ry]:
+                self.r[ry] = rx
+                self.rank[rx] += 1
+            else:
+                self.r[rx] = ry
+                self.rank[ry] += 1
+        return
+
+
+class Solution:
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        uf = UF(len(s))
+        for a, b in pairs:
+            uf.union(a, b)
+        g = collections.defaultdict(list)
+        for i in range(len(s)):
+            g[uf.find(i)].append(s[i])
+        for k in g:
+            g[k].sort(reverse=True)
+        ans = []
+        for i in range(len(s)):
+            ans.append(g[uf.find(i)].pop())
+        return ''.join(ans)
+
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        uf = UF(len(s))
+        for a, b in pairs:
+            uf.union(a, b)
+        p = {i: uf.find(i) for i in range(len(s))}
+        conn = collections.defaultdict(list)
+        for i in range(len(s)):
+            conn[p[i]].append(i)
+        s = list(s)
+        for _, v in conn.items():
+            char = [s[i] for i in v]
+            v.sort()
+            char.sort()
+            for i, ch in zip(v, char):
+                s[i] = ch
+        return ''.join(s)
 
 
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
