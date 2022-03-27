@@ -192,6 +192,23 @@ class Solution:
         return ans
 
 
+# 1790 - Check if One String Swap Can Make Strings Equal - EASY
+class Solution:
+    def areAlmostEqual(self, s1: str, s2: str) -> bool:
+        cnt1 = collections.Counter(s1)
+        cnt2 = collections.Counter(s2)
+        if cnt1 != cnt2:
+            return False
+        cnt = 0
+        for c1, c2 in zip(s1, s2):
+            if c1 != c2:
+                cnt += 1
+        if cnt == 0 or cnt == 2:
+            return True
+        else:
+            return False
+
+
 # 1791 - Find Center of Star Graph - EASY
 class Solution:
     def findCenter(self, edges: List[List[int]]) -> int:
