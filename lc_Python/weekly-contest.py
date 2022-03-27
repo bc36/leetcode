@@ -960,3 +960,18 @@ class Solution:
 
 # 线段树, segment tree
 # https://leetcode-cn.com/contest/weekly-contest-285/problems/longest-substring-of-one-repeating-character/
+
+###################
+# 286 / 2022.3.26 #
+###################
+# https://leetcode-cn.com/contest/weekly-contest-286/
+
+# 数学, 构造
+# 左半部分，第q个回文数在前导0允许的情况下是
+# 第10 ^ (intLength // 2 + intLength % 2 - 1) + q - 1个,
+# 恰巧左半部分每一个数都会对应构造出一个回文数来
+# L = 7, the first one: [1000][001], the 376th one: [1375][731]
+# https://leetcode-cn.com/contest/weekly-contest-286/problems/find-palindrome-with-fixed-length/
+
+# 分组背包, 前缀和, dp
+# https://leetcode-cn.com/contest/weekly-contest-286/problems/maximum-value-of-k-coins-from-piles/

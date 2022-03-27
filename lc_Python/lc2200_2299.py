@@ -413,3 +413,130 @@ class Solution:
                 numArrows -= ali[i] + 1
         ans[0] = numArrows
         return ans
+
+
+# 2215 - Find the Difference of Two Arrays - EASY
+class Solution:
+    def findDifference(self, nums1, nums2):
+        s1 = set(nums1)
+        s2 = set(nums2)
+        a = set()
+        b = set()
+        for n in nums1:
+            if n not in s2:
+                a.add(n)
+        for n in nums2:
+            if n not in s1:
+                b.add(n)
+        return [list(a), list(b)]
+
+    def findDifference(self, nums1, nums2):
+        s1, s2 = set(nums1), set(nums2)
+        return [list(s1 - s2), list(s2 - s1)]
+
+    def findDifference(self, nums1, nums2):
+        return [list((s1 := set(nums1)) - (s2 := set(nums2))), list(s2 - s1)]
+
+
+# 2216 - Minimum Deletions to Make Array Beautiful - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    # using the stack to simulate the process.
+    # if the stack size is even, can add any value
+    # if the stack size is odd, can not add the value the same as the top of stack
+    # no need for a stack, use a variable to represent the parity of the stack
+    def minDeletion(self, nums: List[int]) -> int:
+        a = []
+        for n in nums:
+            if len(a) % 2 == 0 or n != a[-1]:
+                a.append(n)
+        return len(nums) - (len(a) - len(a) % 2)
+
+    def minDeletion(self, a: List[int]) -> int:
+        b = []
+        for n in a:
+            if len(b) % 2 == 1 and b[-1] == n:
+                b.pop()
+            b.append(n)
+        if len(b) % 2 == 1:
+            b.pop()
+        return len(a) - len(b)
+
+    def minDeletion(self, nums: List[int]) -> int:
+        ans = []
+        for n in nums:
+            if len(ans) % 2 == 0 or ans[-1] != n:
+                ans.append(n)
+        if len(ans) % 2 == 1:
+            ans.pop()
+        return len(nums) - len(ans)
+
+    # O(n) / O(1), greedy
+    def minDeletion(self, nums: List[int]) -> int:
+        flag = 0
+        ans = 0
+        for i in range(len(nums) - 1):
+            if i % 2 == flag and nums[i] == nums[i + 1]:
+                ans += 1
+                flag = 1 - flag
+        if (len(nums) - ans) % 2 == 1:
+            ans += 1
+        return ans
+
+    # if the number can be the second of the pair, keep it
+    # skip each pair
+    def minDeletion(self, nums: List[int]) -> int:
+        ans = i = 0
+        while i < len(nums) - 1:
+            if nums[i] == nums[i + 1]:
+                ans += 1
+            else:
+                i += 1
+            i += 1
+        if (len(nums) - ans) % 2:
+            ans += 1
+        return ans
+
+    # using a variable 'pre' to record the last element with even index.
+    def minDeletion(self, nums: List[int]) -> int:
+        ans = 0
+        pre = -1
+        for n in nums:
+            if n == pre:
+                ans += 1
+            else:
+                pre = n if pre < 0 else -1
+        return ans + (pre >= 0)
+
+    def minDeletion(self, nums: List[int]) -> int:
+        ans = 0
+        l = None
+        for n in nums:
+            if l is None:
+                l = n
+            elif l != n:
+                l = None
+                ans += 2
+        return len(nums) - ans
+
+
+# 2217 - Find Palindrome With Fixed Length - MEDIUM
+class Solution:
+    # O(n * L) / O(n * L)
+    def kthPalindrome(self, queries: List[int], intLength: int) -> List[int]:
+        base = 10**((intLength - 1) // 2)
+        ans = [-1] * len(queries)
+        for i, q in enumerate(queries):
+            if q <= 9 * base:
+                s = str(base + q - 1)
+                s += s[-2::-1] if intLength % 2 else s[::-1]
+                ans[i] = int(s)
+        return ans
+
+    def kthPalindrome(self, queries: List[int], l: int) -> List[int]:
+        base = 10**((l - 1) // 2)
+        ans = [q - 1 + base for q in queries]
+        for i, a in enumerate(ans):
+            a = str(a) + str(a)[-1 - l % 2::-1]
+            ans[i] = int(a) if len(a) == l else -1
+        return ans

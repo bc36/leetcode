@@ -500,6 +500,23 @@ class Solution:
         return bestThreeSeq
 
 
+# 693 - Binary Number with Alternating Bits - EASY
+class Solution:
+    def hasAlternatingBits(self, n: int) -> bool:
+        p = n & 1
+        n >>= 1
+        while n:
+            if n & 1 == p:
+                return False
+            p = 1 - p
+            n >>= 1
+        return True
+
+    def hasAlternatingBits(self, n: int) -> bool:
+        a = n ^ (n >> 1)
+        return a & (a + 1) == 0
+
+
 # 695 - Max Area of Island - MEDIUM
 class Solution:
     # dfs
