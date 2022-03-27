@@ -88,25 +88,24 @@ class Solution:
     def maxProfit(self, inventory: List[int], orders: int) -> int:
         l = 0
         r = max(inventory)
-        T = -1
+        # find a value where all the balls end up with v or v+1
         while l < r:
             mid = (l + r) // 2
             count = sum(n - mid for n in inventory if n >= mid)
             if count <= orders:
                 r = mid
             else:
-                T = mid + 1
                 l = mid + 1
         fn = lambda x, y: (x + y) * (y - x + 1) // 2
-        rest = orders - sum(n - T for n in inventory if n >= T)
+        rest = orders - sum(n - l for n in inventory if n >= l)
         ans = 0
         for n in inventory:
-            if n >= T:
+            if n >= l:
                 if rest > 0:
-                    ans += fn(T, n)
+                    ans += fn(l, n)
                     rest -= 1
                 else:
-                    ans += fn(T + 1, n)
+                    ans += fn(l + 1, n)
         return ans % (10**9 + 7)
 
     # O(nlogn) / O(1)
@@ -118,13 +117,13 @@ class Solution:
         cnt = 1  # the number of maximum values
         for i in range(len(inv) - 1):
             if inv[i] > inv[i + 1]:
-                if cnt * (inv[i] - inv[i + 1]) < orders:
+                if cnt * (inv[i] - inv[i + 1]) <= orders:
                     ans += cnt * fn(inv[i + 1] + 1, inv[i])
                     orders -= cnt * (inv[i] - inv[i + 1])
                 else:
-                    whole, remaining = divmod(orders, cnt)
-                    ans += cnt * fn(inv[i] - whole + 1, inv[i])
-                    ans += remaining * (inv[i] - whole)
+                    a, b = divmod(orders, cnt)
+                    ans += cnt * fn(inv[i] - a + 1, inv[i])
+                    ans += b * (inv[i] - a)
                     break
             cnt += 1
         return ans % (10**9 + 7)

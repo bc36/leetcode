@@ -701,6 +701,32 @@ class Solution:
         return max_side**2
 
 
+# 224 - Basic Calculator - HARD
+class Solution:
+    def calculate(self, s: str) -> int:
+        ans = n = 0
+        sign = 1
+        a = []
+        for ch in s:
+            if ch.isdigit():
+                n = 10 * n + int(ch)
+            elif ch == "+" or ch == "-":
+                ans += sign * n
+                n = 0
+                sign = 1 if ch == "+" else -1
+            elif ch == "(":
+                a.append(ans)
+                a.append(sign)
+                ans = 0
+                sign = 1
+            elif ch == ")":
+                ans += sign * n
+                n = 0
+                ans *= a.pop()
+                ans += a.pop()
+        return ans + sign * n
+
+
 # 226 - Invert Binary Tree - EASY
 class Solution:
     # breadth-first search
@@ -737,48 +763,60 @@ class Solution:
 # 227 - Basic Calculator II - MEDIUM
 class Solution:
     def calculate(self, s: str) -> int:
-        pre, cur, result, sign = 0, 0, 0, '+'
+        cur = pre = result = 0
+        sign = '+'
         for ch in s + '#':
-            if ch == ' ': continue
-            if ch.isdigit():
-                pre = 10 * pre + int(ch)
+            if ch == ' ':
                 continue
-            if sign == '+':
-                result += cur
-                cur = pre
-            elif sign == '-':
-                result += cur
-                cur = -pre
-            elif sign == '*':
-                cur = cur * pre
-            elif sign == '/':
-                cur = int(cur / pre)
-            pre, sign = 0, ch
-        return result + cur
+            elif ch.isdigit():
+                cur = 10 * cur + int(ch)
+            else:
+                if sign == '+':
+                    result += pre
+                    pre = cur
+                elif sign == '-':
+                    result += pre
+                    pre = -cur
+                elif sign == '*':
+                    pre = pre * cur
+                elif sign == '/':
+                    pre = int(pre / cur)
+                cur = 0
+                sign = ch
+        return result + pre
 
     # stack
     def calculate(self, s: str) -> int:
-        stack, sign, pre = [], '+', 0
+        a = []
+        pre = 0
+        f = '+'
         s += '#'
-
         for ch in s:
             if ch.isdigit():
                 pre = pre * 10 + int(ch)
             elif ch == ' ':
                 continue
             else:
-                if sign == '+':
-                    stack.append(pre)
-                elif sign == '-':
-                    stack.append(-pre)
-                elif sign == '*':
-                    stack.append(stack.pop() * pre)
-                elif sign == '/':
-                    stack.append(stack.pop() // pre)
-                sign = ch
+                if f == '+':
+                    a.append(pre)
+                elif f == '-':
+                    a.append(-pre)
+                elif f == '*':
+                    a.append(a.pop() * pre)
+                elif f == '/':
+                    if a[-1] < 0:
+                        # because: -3 // 2 = -2
+                        # different languages have different implements
+                        # some languages: -3 // 2 = -1, near zore.
+                        a.append(-((-a.pop()) // pre))
+                    else:
+                        a.append(a.pop() // pre)
+                # # or
+                # else:
+                #     a.append(int(a.pop() / pre))
+                f = ch
                 pre = 0
-
-        return sum(stack)
+        return sum(a)
 
 
 # 228 - Summary Ranges - EASY

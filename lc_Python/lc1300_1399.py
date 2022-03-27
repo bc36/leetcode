@@ -285,43 +285,25 @@ class Solution:
     # O(n) / O(n)
     def minJumps(self, arr: List[int]) -> int:
         n = len(arr)
-        idx = collections.defaultdict(list)
+        g = collections.defaultdict(list)
         # save left and right endpoints of the interval with the same value appearing consecutively
         for i in range(n):
             if i in (0, n - 1):
-                idx[arr[i]].append(i)
+                g[arr[i]].append(i)
             elif arr[i] != arr[i - 1] or arr[i] != arr[i + 1]:
-                idx[arr[i]].append(i)
+                g[arr[i]].append(i)
         visited = [True] + [False] * (n - 1)
         dq = collections.deque([(0, 0)])
         while dq:
             i, step = dq.popleft()
-            for j in (idx.get(arr[i], []) + [i - 1, i + 1]):
+            for j in (g.get(arr[i], []) + [i - 1, i + 1]):
                 if 0 <= j < n and not visited[j]:
                     if j == n - 1:
                         return step + 1
                     visited[j] = True
                     dq.append((j, step + 1))
-            idx[arr[i]] = []  # has visited
+            g[arr[i]] = []  # has visited
         return 0
-
-    def minJumps(self, arr: List[int]) -> int:
-        g = collections.defaultdict(list)
-        n = len(arr)
-        for i in range(n):
-            g[arr[i]].append(i)
-        dq = collections.deque([(0, 0)])
-        seen = set([0])
-        while dq:
-            i, step = dq.popleft()
-            if i == n - 1:
-                return step
-            for nxt in g[arr[i]] + [i - 1, i + 1]:
-                if 0 <= nxt < n and nxt not in seen:
-                    seen.add(nxt)
-                    dq.append((nxt, step + 1))
-            del g[arr[i]]
-        return -1
 
     def minJumps(self, arr: List[int]) -> int:
         g = collections.defaultdict(list)
@@ -337,18 +319,56 @@ class Solution:
                 size += 1
         arr = shorter
         visited = {0}
-        q = collections.deque([(0, 0)])
-        while q:
-            idx, step = q.popleft()
+        dq = collections.deque([(0, 0)])
+        while dq:
+            idx, step = dq.popleft()
             if idx == size - 1:
                 return step
             value = arr[idx]
             for j in g[value] + [idx - 1, idx + 1]:
                 if 0 <= j < size and j not in visited:
-                    q.append((j, step + 1))
+                    dq.append((j, step + 1))
                     visited.add(j)
             del g[value]
         return 0
+
+    def minJumps(self, arr: List[int]) -> int:
+        g = collections.defaultdict(list)
+        n = len(arr)
+        for i in range(n):
+            g[arr[i]].append(i)
+        dq = collections.deque([(0, 0)])
+        seen = {0}
+        while dq:
+            i, step = dq.popleft()
+            if i == n - 1:
+                return step
+            for nxt in g[arr[i]] + [i - 1, i + 1]:
+                if 0 <= nxt < n and nxt not in seen:
+                    seen.add(nxt)
+                    dq.append((nxt, step + 1))
+            del g[arr[i]]
+        return -1
+
+    def minJumps(self, arr: List[int]) -> int:
+        g = collections.defaultdict(list)
+        for i in range(len(arr)):
+            g[arr[i]].append(i)
+        dq = collections.deque([0])
+        seen = {0}
+        s = 0
+        while dq:
+            for _ in range(len(dq)):
+                i = dq.popleft()
+                if i == len(arr) - 1:
+                    return s
+                for j in [i - 1, i + 1] + g[arr[i]]:
+                    if 0 <= j < len(arr) and j not in seen:
+                        dq.append(j)
+                        seen.add(j)
+                g[arr[i]] = []
+            s += 1
+        return -1
 
 
 # 1380 - Lucky Numbers in a Matrix - EASY

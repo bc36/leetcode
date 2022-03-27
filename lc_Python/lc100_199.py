@@ -209,20 +209,25 @@ class Solution:
 
 # 116 - Populating Next Right Pointers in Each Node - MEDIUM
 class Solution:
+    # O(n) / O(n)
     def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
         if not root:
-            return root
+            return None
         dq = collections.deque([root])
         while dq:
-            size = len(dq)
-            for i in range(size):
-                node = dq.popleft()
-                if i < size - 1:
-                    node.next = dq[0]
-                if node.left:
-                    dq.append(node.left)
-                if node.right:
-                    dq.append(node.right)
+            sz = len(dq)
+            for i in range(sz):
+                n = dq.popleft()
+                if i < sz - 1:
+                    n.next = dq[0]
+                # if i == sz - 1:
+                #     n.next = None
+                # else:
+                #     n.next = dq[0]
+                if n.left:
+                    dq.append(n.left)
+                if n.right:
+                    dq.append(n.right)
         return root
 
 
