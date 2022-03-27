@@ -10,6 +10,13 @@ class Node:
         self.right = right
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 # 400 - Nth Digit - MEDIUM
 class Solution:
     def findNthDigit(self, n: int) -> int:
@@ -242,6 +249,45 @@ class Solution:
                 can += 1
                 mxr = intervals[i][1]
         return len(intervals) - can
+
+
+# 437 - Path Sum III - MEDIUM
+class Solution:
+    # O(n ^ 2) / O(n)
+    def pathSum(self, root: TreeNode, targetSum: int) -> int:
+        if not root:
+            return 0
+
+        def dfs(root: TreeNode, t: int):
+            if not root: return 0
+            ans = 0
+            if root.val == t:
+                ans += 1
+            ans += dfs(root.left, t - root.val) + dfs(root.right, t - root.val)
+            return ans
+
+        ans = dfs(root, targetSum)
+        ans += self.pathSum(root.left, targetSum)
+        ans += self.pathSum(root.right, targetSum)
+        return ans
+
+    # O(n) / O(n), prefix sum
+    def pathSum(self, root: TreeNode, targetSum: int) -> int:
+        pre = collections.defaultdict(int)
+        pre[0] = 1
+
+        def dfs(root: TreeNode, cur: int):
+            if not root:
+                return 0
+            ans = 0
+            cur += root.val
+            ans += pre[cur - targetSum]
+            pre[cur] += 1
+            ans += dfs(root.left, cur) + dfs(root.right, cur)
+            pre[cur] -= 1
+            return ans
+
+        return dfs(root, 0)
 
 
 # 438 - Find All Anagrams in a String - MEDIUM

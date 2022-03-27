@@ -197,14 +197,73 @@ class Solution:
                 stack.append((n.right, t - n.val))
         return False
 
-    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+    def hasPathSum(self, root: Optional[TreeNode], t: int) -> bool:
         if not root:
             return False
-        if not (root.left or root.right):
-            return root.val == targetSum
-        return self.hasPathSum(root.left,
-                               targetSum - root.val) or self.hasPathSum(
-                                   root.right, targetSum - root.val)
+        if not (root.right or root.left):
+            return root.val == t
+        return self.hasPathSum(root.left, t - root.val) or self.hasPathSum(
+            root.right, t - root.val)
+
+
+# 113 - Path Sum II - MEDIUM
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> List[List[int]]:
+        ans = list()
+        path = list()
+
+        def dfs(root: TreeNode, t: int):
+            if not root: return
+            path.append(root.val)
+            t -= root.val
+            if not root.left and not root.right and t == 0:
+                ans.append(path[:])
+            dfs(root.left, t)
+            dfs(root.right, t)
+            path.pop()
+            return
+
+        dfs(root, targetSum)
+        return ans
+
+    def pathSum(self, root: TreeNode, targetSum: int) -> List[List[int]]:
+        ans = []
+        if not root: 
+            return []
+
+        def dfs(r: TreeNode, path: List[int], t: int):
+            if not r.left and not r.right:
+                if t + r.val == targetSum:
+                    path.append(r.val)
+                    ans.append(path)
+                return
+            if r.left:
+                dfs(r.left, path + [r.val], t + r.val)
+            if r.right:
+                dfs(r.right, path + [r.val], t + r.val)
+            return
+
+        dfs(root, [], 0)
+        return ans
+
+    def pathSum(self, root: TreeNode, targetSum: int) -> List[List[int]]:
+        stack = []
+        ans = []
+        if root:
+            stack.append((root, targetSum, []))
+        while stack:
+            n, t, p = stack.pop()
+            p.append(n.val)
+            if t - n.val == 0 and not (n.left or n.right):
+                n1 = p[:]
+                ans.append(n1)
+            if n.left:
+                n2 = p[:]
+                stack.append((n.left, t - n.val, n2))
+            if n.right:
+                n3 = p[:]
+                stack.append((n.right, t - n.val, n3))
+        return ans
 
 
 # 116 - Populating Next Right Pointers in Each Node - MEDIUM
