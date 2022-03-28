@@ -708,23 +708,34 @@ class Solution:
 
 # 347 - Top K Frequent Elements - MEDIUM
 class Solution:
+    # O(nlogn) / O(n)
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         cnt = collections.Counter(nums)
-        # sorted by value and get the key
         return [i[0] for i in sorted(cnt.items(), key=lambda x: x[1])[-k:]]
         # return [i[0] for i in sorted(cnt.items(), key=lambda x: x[1], reverse=True)[:k]]
 
-
-class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         cnt = collections.Counter(nums)
-        # convert to 'tuple' to sort, because 'dict' is unordered
         times = sorted(cnt.items(), key=lambda k: k[1])
         ans = []
         while k != 0 and len(times) > 0:
             ans.append(times.pop()[0])
             k -= 1
         return ans
+
+    # O(n + Klogn)/ O(n)
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        ans = []
+        cnt = collections.Counter(nums)
+        max_heap = [(-val, key) for key, val in cnt.items()]
+        heapq.heapify(max_heap)  # heapify costs 'n'
+        for _ in range(k):
+            ans.append(heapq.heappop(max_heap)[1])  # heappop costs 'Klogn'
+        return ans
+
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        cnt = collections.Counter(nums)
+        return heapq.nlargest(k, cnt.keys(), key=cnt.get)
 
 
 # 349 - Intersection of Two Arrays - EASY

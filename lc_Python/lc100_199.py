@@ -228,7 +228,7 @@ class Solution:
 
     def pathSum(self, root: TreeNode, targetSum: int) -> List[List[int]]:
         ans = []
-        if not root: 
+        if not root:
             return []
 
         def dfs(r: TreeNode, path: List[int], t: int):
@@ -989,6 +989,7 @@ class Solution:
 
 
 # 146 - LRU Cache - MEDIUM
+# Least Recently Used (LRU) cache.
 class LRUCache:
     def __init__(self, capacity: int):
         self.cap = capacity
@@ -998,7 +999,7 @@ class LRUCache:
     def get(self, key: int) -> int:
         value = self.dic.get(key, -1)
         if value != -1:
-            self.seq.remove(key)
+            self.seq.remove(key)  # O(n)
             self.seq.append(key)
         return value
 
@@ -1006,13 +1007,14 @@ class LRUCache:
         # have the same key
         if key in self.dic:
             self.dic[key] = value
-            self.seq.remove(key)
+            self.seq.remove(key)  # O(n)
             self.seq.append(key)
             return
         # whether cache reach to the capacity
         if len(self.dic) == self.cap:
             delete = self.seq.popleft()
-            self.dic.pop(delete)
+            # self.dic.pop(delete)
+            del self.dic[delete]
         # insert
         self.dic[key] = value
         self.seq.append(key)
@@ -1051,7 +1053,7 @@ class ListNode:
 
 class LRUCache:
     def __init__(self, capacity: int):
-        self.capacity = capacity
+        self.cap = capacity
         self.dic = {}
         self.head = ListNode()
         self.tail = ListNode()
@@ -1094,7 +1096,7 @@ class LRUCache:
             self.dic[key].value = value
             self.move_to_end(key)
         else:
-            if len(self.dic) == self.capacity:
+            if len(self.dic) == self.cap:
                 self.dic.pop(self.head.next.key)
                 self.remove(self.head.next)
             node = ListNode(key, value)
