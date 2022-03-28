@@ -86,16 +86,15 @@ class Solution:
 class Solution:
     def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
         m, n = len(mat), len(mat[0])
-        sums = [[0] * n for _ in range(m)]
+        f = [[0] * n for _ in range(m)]
         for i in range(m):
             for j in range(n):
-                sums[i][j] = sum(mat[i][max(j - k, 0):min(j + k + 1, n)])
+                f[i][j] = sum(mat[i][max(j - k, 0):min(j + k + 1, n)])
         ans = [[0] * n for _ in range(m)]
         for i in range(m):
             for j in range(n):
-                ans[i][j] = sum([
-                    sums[p][j] for p in range(max(i - k, 0), min(i + k + 1, m))
-                ])
+                ans[i][j] = sum(
+                    [f[p][j] for p in range(max(i - k, 0), min(i + k + 1, m))])
         return ans
 
     def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
@@ -109,8 +108,10 @@ class Solution:
         ans = [[0] * n for _ in range(m)]
         for i in range(m):
             for j in range(n):
-                r1, c1, r2, c2 = max(0, i - k), max(0, j - k), min(
-                    m - 1, i + k), min(n - 1, j + k)
+                r1 = max(0, i - k)
+                c1 = max(0, j - k)
+                r2 = min(m - 1, i + k)
+                c2 = min(n - 1, j + k)
                 ans[i][j] = mat[r2][c2] - (
                     mat[r2][c1 - 1]
                     if c1 > 0 else 0) - (mat[r1 - 1][c2] if r1 > 0 else 0) + (
@@ -119,33 +120,34 @@ class Solution:
 
     def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
         m, n = len(mat), len(mat[0])
-        ps = [[0] * (n + 1) for _ in range(m + 1)]
+        f = [[0] * (n + 1) for _ in range(m + 1)]
         for i in range(m):
             for j in range(n):
-                ps[i +
-                   1][j +
-                      1] = mat[i][j] + ps[i][j + 1] + ps[i + 1][j] - ps[i][j]
+                f[i + 1][j +
+                         1] = mat[i][j] + f[i][j + 1] + f[i + 1][j] - f[i][j]
         ans = [[0] * n for _ in range(m)]
         for i in range(m):
             for j in range(n):
-                r1, c1, r2, c2 = max(0, i - k), max(0, j - k), min(
-                    m - 1, i + k), min(n - 1, j + k)
-                ans[i][j] = ps[r2 + 1][c2 + 1] - ps[r2 + 1][c1] - ps[r1][
-                    c2 + 1] + ps[r1][c1]
+                r1 = max(0, i - k)
+                c1 = max(0, j - k)
+                r2 = min(m - 1, i + k)
+                c2 = min(n - 1, j + k)
+                ans[i][j] = f[r2 + 1][c2 + 1] - f[r2 +
+                                                  1][c1] - f[r1][c2 +
+                                                                 1] + f[r1][c1]
         return ans
 
     def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
         m, n = len(mat), len(mat[0])
-        ps = [[0] * (n + 1) for _ in range(m + 1)]
+        f = [[0] * (n + 1) for _ in range(m + 1)]
         for i, j in itertools.product(range(m), range(n)):
-            ps[i + 1][j +
-                      1] = mat[i][j] + ps[i][j + 1] + ps[i + 1][j] - ps[i][j]
+            f[i + 1][j + 1] = mat[i][j] + f[i][j + 1] + f[i + 1][j] - f[i][j]
         ans = [[0] * n for _ in range(m)]
         for i, j in itertools.product(range(m), range(n)):
             r1, c1, r2, c2 = max(0, i - k), max(0,
                                                 j - k), min(m, i + k + 1), min(
                                                     n, j + k + 1)
-            ans[i][j] = ps[r2][c2] - ps[r2][c1] - ps[r1][c2] + ps[r1][c1]
+            ans[i][j] = f[r2][c2] - f[r2][c1] - f[r1][c2] + f[r1][c1]
         return ans
 
 

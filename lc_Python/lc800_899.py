@@ -348,36 +348,11 @@ class Solution:
                 dfs(dic[root.val], root, k - 1)
             return
 
-        ans, dic = [], {}  # k:node.value v:node.parent
+        ans = []
+        dic = {}  # k:node.value v:node.parent
         findParent(root)
         dfs(target, None, k)
         return ans
-
-    # bfs
-    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
-        def connect(parent: TreeNode, child: TreeNode):
-            if parent and child:
-                conn[parent.val].append(child.val)
-                conn[child.val].append(parent.val)
-            if child.left:
-                connect(child, child.left)
-            if child.right:
-                connect(child, child.right)
-
-        conn = collections.defaultdict(list)  # undirected graph
-        connect(None, root)
-        bfs = [target.val]
-        seen = set(bfs)
-        for _ in range(k):
-            new_level = []
-            for node_val in bfs:
-                for connected_node_val in conn[node_val]:
-                    if connected_node_val not in seen:
-                        new_level.append(connected_node_val)
-            bfs = new_level
-            # seen = set(bfs).union(seen) # '.intersection()' <=> '&'
-            seen |= set(bfs)
-        return bfs
 
     def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
         def connected(node: TreeNode):
@@ -397,12 +372,41 @@ class Solution:
                     if v not in visited:
                         dfs(v, step + 1)
             else:
-                res.append(node.val)
+                ans.append(node.val)
+            return
 
-        adj, res, visited = collections.defaultdict(list), [], set()
+        adj = collections.defaultdict(list)
+        ans = []
+        visited = set()
         connected(root)
         dfs(target, 0)
-        return res
+        return ans
+
+    # bfs
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        def connect(parent: TreeNode, child: TreeNode):
+            if parent and child:
+                conn[parent.val].append(child.val)
+                conn[child.val].append(parent.val)
+            if child.left:
+                connect(child, child.left)
+            if child.right:
+                connect(child, child.right)
+
+        conn = collections.defaultdict(list)  # undirected graph
+        connect(None, root)
+        ans = [target.val]
+        seen = set(ans)
+        for _ in range(k):
+            new = []
+            for node_val in ans:
+                for connected_node_val in conn[node_val]:
+                    if connected_node_val not in seen:
+                        new.append(connected_node_val)
+            ans = new
+            # seen = set(ans).union(seen) # '.intersection()' <=> '&'
+            seen |= set(ans)
+        return ans
 
 
 # 875 - Koko Eating Bananas - MEDIUM

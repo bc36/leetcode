@@ -891,6 +891,7 @@ class Solution:
         def push(i: int, j: int):
             if i < len(nums1) and j < len(nums2):
                 heapq.heappush(queue, [nums1[i] + nums2[j], i, j])
+            return
 
         queue, ans = [], []
         push(0, 0)

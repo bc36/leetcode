@@ -306,7 +306,6 @@ class Solution:
 
 
 # 938 - Range Sum of BST - EASY
-# dfs
 class Solution:
     # preorder
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
