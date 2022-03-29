@@ -313,6 +313,35 @@ class Solution:
         return (a + e + i + o + u) % (10**9 + 7)
 
 
+# 1232 - Check If It Is a Straight Line - EASY
+class Solution:
+    # use multiplication '*' instead of division '/'
+    def checkStraightLine(self, c: List[List[int]]) -> bool:
+        x0 = c[0][0]
+        y0 = c[0][1]
+        x1 = c[1][0]
+        y1 = c[1][1]
+        for i in range(2, len(c)):
+            x = c[i][0]
+            y = c[i][1]
+            if (y - y0) * (x1 - x0) != (y1 - y0) * (x - x0):
+                return False
+        return True
+
+    def checkStraightLine(self, c: List[List[int]]) -> bool:
+        dx = c[1][0] - c[0][0]
+        dy = c[1][1] - c[0][1]
+        for i in range(2, len(c)):
+            if (c[i][1] - c[i - 1][1]) * dx != (c[i][0] - c[i - 1][0]) * dy:
+                return False
+        return True
+
+    def checkStraightLine(self, c: List[List[int]]) -> bool:
+        return all(
+            (c[1][1] - c[0][1]) * (c[i][0] - c[0][0]) == (c[i][1] - c[0][1]) *
+            (c[1][0] - c[0][0]) for i in range(2, len(c)))
+
+
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:

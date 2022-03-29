@@ -587,16 +587,16 @@ class Solution:
                            nums2: List[int]) -> List[int]:
         stack = []
         dic = {}  # save the next greater element
-        for num in nums2[::-1]:
-            while stack and num > stack[-1]:
+        for n in nums2[::-1]:
+            while stack and n > stack[-1]:
                 stack.pop()
             if stack:
-                dic[num] = stack[-1]
-            stack.append(num)
-        return [dic.get(num, -1) for num in nums1]
+                dic[n] = stack[-1]
+            stack.append(n)
+        return [dic.get(n, -1) for n in nums1]
         # stack, dic = [], {}
         # for n in nums2:
-        #     while (len(stack) and stack[-1] < n):
+        #     while len(stack) and stack[-1] < n:
         #         dic[stack.pop()] = n
         #     stack.append(n)
         # for i in range(len(nums1)):

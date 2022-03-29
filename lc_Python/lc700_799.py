@@ -506,27 +506,27 @@ class Solution:
             4: [1, 3, 5],
             5: [2, 4]
         }
-        # # 'key' equal to 'toString'
+        # # 'fn' equal to 'toString'
         # def toString(a: List[int]) -> str:
         #     return ''.join([str(x) for x in a])
-        key = lambda a: ''.join([str(x) for x in a])
+        fn = lambda a: ''.join([str(x) for x in a])
         depth = 0
         init = [n for row in board for n in row]
         q = collections.deque([init])
-        seen = set([key(init)])
+        seen = set([fn(init)])
         while q:
             k = len(q)
             for _ in range(k):
                 cur = q.popleft()
-                if key(cur) == '123450':
+                if fn(cur) == '123450':
                     return depth
                 i = cur.index(0)
                 for j in adj[i]:
                     nxt = cur.copy()
                     nxt[i], nxt[j] = nxt[j], nxt[i]
-                    if not key(nxt) in seen:
+                    if not fn(nxt) in seen:
                         q.append(nxt)
-                        seen.add(key(nxt))
+                        seen.add(fn(nxt))
             depth += 1
         return -1
 

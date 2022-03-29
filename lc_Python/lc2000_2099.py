@@ -97,6 +97,34 @@ class Solution:
                 ] if len(original) == m * n else []
 
 
+# 2024 - Maximize the Confusion of an Exam - MEDIUM
+class Solution:
+    def maxConsecutiveAnswers(self, s: str, k: int) -> int:
+        d = collections.defaultdict(int)
+        l = 0
+        for r in range(len(s)):
+            d[s[r]] += 1
+            if min(d['T'], d['F']) > k:
+                d[s[l]] -= 1
+                l += 1
+        return len(s) - l
+        # see lc1438, similar reason
+        # the length of window will not decrease
+        return r - l + 1
+
+    # the length of window will decrease
+    def maxConsecutiveAnswers(self, s: str, k: int) -> int:
+        d = collections.defaultdict(int)
+        l = ans = 0
+        for r in range(len(s)):
+            d[s[r]] += 1
+            while min(d['T'], d['F']) > k:
+                d[s[l]] -= 1
+                l += 1
+            ans = max(ans, r - l + 1)
+        return ans
+
+
 # 2028 - Find Missing Observations - MEDIUM
 class Solution:
     def missingRolls(self, rolls: List[int], mean: int, n: int) -> List[int]:

@@ -1275,6 +1275,9 @@ class Solution:
         return False
 
 
+################
+# 2022.3.28 VO #
+################
 # 56 - Merge Intervals - MEDIUM
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
@@ -1282,7 +1285,6 @@ class Solution:
         intervals.sort()
         i = 0
         while i < len(intervals):
-            # no need to use 'left', since intervals has been sorted
             right = intervals[i][1]
             j = i + 1
             while j < len(intervals) and right >= intervals[j][0]:
@@ -1295,14 +1297,14 @@ class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         ans = []
         intervals = sorted(intervals, key=lambda x: x[0])
-        left, right = intervals[0]
+        l, r = intervals[0]
         for i in range(1, len(intervals)):
-            if intervals[i][0] <= right:
-                right = max(right, intervals[i][1])
+            if intervals[i][0] <= r:
+                r = max(r, intervals[i][1])
             else:
-                ans.append([left, right])
-                left, right = intervals[i]
-        ans.append([left, right])
+                ans.append([l, r])
+                l, r = intervals[i]
+        ans.append([l, r])
         return ans
 
 
