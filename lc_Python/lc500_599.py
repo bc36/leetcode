@@ -497,25 +497,26 @@ class Solution:
 # 542 - 01 Matrix - MEDIUM
 class Solution:
     def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
-        m, n = len(mat), len(mat[0])
-        dq = collections.deque([])
+        m = len(mat)
+        n = len(mat[0])
+        dq = collections.deque()
         for i in range(m):
             for j in range(n):
                 if mat[i][j] == 0:
                     dq.append((i, j))
                 else:
-                    mat[i][j] = '#'  # not visited yet
+                    mat[i][j] = -1
         while dq:
             x, y = dq.popleft()
-            for i, j in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]:
-                if 0 <= i < m and 0 <= j < n and mat[i][j] == '#':
-                    mat[i][j] = mat[x][y] + 1
-                    dq.append((i, j))
+            for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if 0 <= nx < m and 0 <= ny < n and mat[nx][ny] == -1:
+                    dq.append((nx, ny))
+                    mat[nx][ny] = mat[x][y] + 1
         return mat
 
     def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
         m, n = len(mat), len(mat[0])
-        dq = collections.deque([])
+        dq = collections.deque()
         for i in range(m):
             for j in range(n):
                 if mat[i][j] == 0:

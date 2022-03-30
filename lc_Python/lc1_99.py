@@ -1540,6 +1540,23 @@ class Solution:
         return dp[-1][-1]
 
 
+# 65 - Valid Number - HARD
+class Solution:
+    def isNumber(self, s: str) -> bool:
+        try:
+            if 'inf' in str.lower(s):
+                return False
+            _ = float(s)
+            return True
+        except:
+            return False
+
+    def isNumber(self, s: str) -> bool:
+        return re.match(
+            '^[+-]{0,1}(\d+\.\d*|\.\d+|\d+)([eE][+-]{0,1}\d+){0,1}$',
+            s) != None
+
+
 # 67 - Add Binary - EASY
 class Solution:
     def addBinary(self, a: str, b: str) -> str:
@@ -1771,7 +1788,8 @@ class Solution:
 class Solution:
     # zigzag search
     def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
-        j, i = len(matrix[0]) - 1, 0
+        i = 0
+        j = len(matrix[0]) - 1
         while i < len(matrix):
             if matrix[i][j] >= target:
                 while j >= 0:
@@ -2264,6 +2282,15 @@ class Solution:
                 root.right, root, maxv)
 
         return isValid(root, None, None)
+
+    def isValidBST(self, root: TreeNode, lo=float('-inf'),
+                   hi=float('inf')) -> bool:
+        if not root:
+            return True
+        if root.val <= lo or root.val >= hi:
+            return False
+        return self.isValidBST(root.left, lo, root.val) and self.isValidBST(
+            root.right, root.val, hi)
 
     def isValidBST(self, root: TreeNode) -> bool:
         pre, stack = float('-inf'), []

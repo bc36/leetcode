@@ -192,3 +192,21 @@ class Solution:
                         s[i] = ch
                         break
         return ''.join(s[1:-1])
+
+
+# 1588 - Sum of All Odd Length Subarrays - EASY
+class Solution:
+    # O(n ^ 2) / O(n)
+    def sumOddLengthSubarrays(self, arr: List[int]) -> int:
+        n = len(arr)
+        p = [0] * (n + 1)
+        ans = 0
+        for i in range(n):
+            p[i + 1] = p[i] + arr[i]
+        for i in range(n):
+            l = 1
+            while i + l <= n:
+                j = i + l - 1
+                ans += p[j + 1] - p[i]
+                l += 2
+        return ans
