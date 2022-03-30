@@ -62,7 +62,41 @@ class Solution:
         return ans
 
 
+# 2121 - Intervals Between Identical Elements - MEDIUM
+class Solution:
+    # O(n) / O(n), prefix sum + suffix sum
+    def getDistances(self, arr: List[int]) -> List[int]:
+        ans = [0] * len(arr)
+        p = collections.defaultdict(int)
+        for i in range(len(arr)):
+            if arr[i] in p:
+                v, x, cnt = p[arr[i]]
+                p[arr[i]] = (cnt * (i - x) + v, i, cnt + 1)
+            else:
+                p[arr[i]] = (0, i, 1)
+            ans[i] += p[arr[i]][0]
+        s = collections.defaultdict(int)
+        for i in range(len(arr) - 1, -1, -1):
+            if arr[i] in s:
+                v, x, cnt = s[arr[i]]
+                s[arr[i]] = (cnt * (x - i) + v, i, cnt + 1)
+            else:
+                s[arr[i]] = (0, i, 1)
+            ans[i] += s[arr[i]][0]
+        return ans
 
+    def getDistances(self, arr: List[int]) -> List[int]:
+        d = collections.defaultdict(list)
+        for i in range(len(arr)):
+            d[arr[i]].append(i)
+        ans = [0] * len(arr)
+        for v in d.values():
+            p = 0
+            s = sum(v)
+            for i in range(len(v)):
+                ans[v[i]] = v[i] * i - p + (s - p) - v[i] * (len(v) - i)
+                p += v[i]
+        return ans
 
 
 # 2151 - Maximum Good People Based on Statements - HARD
