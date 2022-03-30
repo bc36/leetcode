@@ -189,14 +189,14 @@ class Solution:
     def minTaps(self, n: int, ranges: List[int]) -> int:
         # rg = sorted([(max(0, i - v), min(i + v, n)) for i, v in enumerate(ranges)])
         rg = sorted([[i - v, i + v] for i, v in enumerate(ranges)])
-        ans = i = j = reach = 0
-        while j < n:
-            while i < n + 1 and rg[i][0] <= j:
-                reach = max(reach, rg[i][1])
-                i += 1
-            if j == reach:
+        ans = l = r = reach = 0
+        while r < n:
+            while l < n + 1 and rg[l][0] <= r:
+                reach = max(reach, rg[l][1])
+                l += 1
+            if r == reach:
                 return -1
-            j = reach
+            r = reach
             ans += 1
         return ans
 

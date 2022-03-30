@@ -1123,6 +1123,7 @@ class Solution:
             ans.append(-pq[0][0])
         return ans
 
+    # O(n) / O(n)
     def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
         # keep 'dq' monotonically decreasing
         dq = collections.deque()
