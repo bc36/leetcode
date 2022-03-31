@@ -575,7 +575,7 @@ class Solution:
         return dummy.next
 
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
-        def merge2Lists(l1, l2):
+        def merge2Lists(l1: ListNode, l2: ListNode) -> ListNode:
             if not l1: return l2
             if not l2: return l1
             if l1.val < l2.val:
@@ -585,7 +585,7 @@ class Solution:
                 l2.next = merge2Lists(l1, l2.next)
                 return l2
 
-        def merge(lists, left, right):
+        def merge(lists: List[ListNode], left: int, right: int) -> ListNode:
             if left == right:
                 return lists[left]
             mid = left + (right - left) // 2

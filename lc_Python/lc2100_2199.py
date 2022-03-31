@@ -61,6 +61,28 @@ class Solution:
                 ans += mx - mi
         return ans
 
+    # O(n) / O(n), 
+    # why monotonic stack: sum(ranges) = sum(maxes) - sum(mines)
+    def subArrayRanges(self, nums: List[int]) -> int:
+        ans = 0
+        inf = float('inf')
+        arr = [-inf] + nums + [-inf]
+        s = []
+        for i in range(len(arr)):
+            while s and arr[s[-1]] > arr[i]:
+                j = s.pop()
+                ans -= arr[j] * (i - j) * (j - s[-1])
+            s.append(i)
+
+        arr = [inf] + nums + [inf]
+        s = []
+        for i in range(len(arr)):
+            while s and arr[s[-1]] < arr[i]:
+                j = s.pop()
+                ans += arr[j] * (i - j) * (j - s[-1])
+            s.append(i)
+        return ans
+
 
 # 2121 - Intervals Between Identical Elements - MEDIUM
 class Solution:
@@ -101,6 +123,7 @@ class Solution:
 
 # 2151 - Maximum Good People Based on Statements - HARD
 class Solution:
+    # O(2^n * n^2) / O(1)
     def maximumGood(self, statements: List[List[int]]) -> int:
         def check(s):
             cnt = 0
@@ -112,10 +135,10 @@ class Solution:
                     cnt += 1
             return cnt
 
-        mx = 0
+        ans = 0
         for s in range(1 << len(statements)):
-            mx = max(mx, check(s))
-        return mx
+            ans = max(ans, check(s))
+        return ans
 
     def maximumGood(self, statements: List[List[int]]) -> int:
         def check(i: int) -> int:

@@ -17,6 +17,30 @@ class TreeNode:
         self.right = None
 
 
+# 1606 - Find Servers That Handled Most Number of Requests - HARD
+class Solution:
+    # O(nlogk + k)
+    def busiestServers(self, k: int, a: List[int], l: List[int]) -> List[int]:
+        free = list(range(k))
+        busy = []
+        req = [0] * k
+        for i in range(len(a)):
+            while busy and busy[0][0] <= a[i]:
+                _, x = heapq.heappop(busy)
+                heapq.heappush(free, x + ((i - x - 1) // k + 1) * k)
+                # heapq.heappush(free, i + (x - i) % k)
+                # # the same as below
+                # while x < i:
+                #     x += k
+                # heapq.heappush(free, x)
+            if free:
+                x = heapq.heappop(free) % k
+                req[x] += 1
+                heapq.heappush(busy, (a[i] + l[i], x))
+        m = max(req)
+        return [i for i in range(len(req)) if req[i] == m]
+
+
 # 1609 - Even Odd Tree - MEDIUM
 class Solution:
     # bfs
@@ -68,6 +92,12 @@ class Solution:
             elif ch == ')':
                 left -= 1
         return ans
+
+
+# 1672 - Richest Customer Wealth - EASY
+class Solution:
+    def maximumWealth(self, accounts: List[List[int]]) -> int:
+        return max(sum(a) for a in accounts)
 
 
 # 1629 - Slowest Key - EASY

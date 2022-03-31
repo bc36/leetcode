@@ -533,6 +533,30 @@ class Solution:
                 return a - num - 1
 
 
+# 489 - Robot Room Cleaner - HARD - PREMIUM
+class Solution:
+    def cleanRoom(self, robot):
+        dirs = [-1, 0, 1, 0, -1]
+        seen = set()
+
+        def dfs(x, y, d):
+            robot.clean()
+            seen.add((x, y))
+            for i in range(4):
+                cur = (i + d) % 4
+                nx, ny = x + dirs[cur], y + dirs[cur + 1]
+                if (nx, ny) not in seen and robot.move():
+                    dfs(nx, ny, cur)
+                    robot.turnRight()
+                    robot.turnRight()
+                    robot.move()
+                    robot.turnLeft()
+                    robot.turnLeft()
+                robot.turnRight()
+
+        dfs(robot.row, robot.col, 0)
+
+
 # 495 - Teemo Attacking - EASY
 class Solution:
     def findPoisonedDuration(self, timeSeries: List[int],
