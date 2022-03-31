@@ -494,6 +494,60 @@ class Solution:
         return partition
 
 
+################
+# 2022.3.30 VO #
+################
+# 772 - Basic Calculator III - HARD - PREMIUM
+# Write a calculator with support for +, -, *, / and parentheses.
+# Assume the input expression is valid -> no /0, no 1+-2, no other operator
+# and doesn't contain decimals. ->
+# Also, assume all numbers are within the limit of double.
+# input -> string
+# output -> double
+def calc(exp: str, start=0):
+    stack = []
+    ans = 0
+    cur = 0
+    f = '+'
+    new = exp[start:]
+    new += '#'  # as a stop label
+    for i, ch in enumerate(new):
+        if ch.isdigit():
+            cur = cur * 10 + int(ch)
+        elif ch == '(':
+            if f == '+':
+                stack.append(cur)
+            elif f == '-':
+                stack.append(-cur)
+            elif f == '*':
+                stack.append(stack.pop() * cur)
+            elif f == '/':
+                stack.append(stack.pop() / cur)
+            cur = calc(exp, i + 1)
+        elif ch == ')':
+            return sum(stack) + cur
+        else:
+            if f == '+':
+                stack.append(cur)
+            elif f == '-':
+                stack.append(-cur)
+            elif f == '*':
+                stack.append(stack.pop() * cur)
+            elif f == '/':
+                stack.append(stack.pop() / cur)
+            f = ch
+            cur = 0
+    ans = sum(stack)
+    return ans / 1.0
+
+
+print(calc('1+2'))  # => 3
+print(calc('1+2*3'))  # => 7
+print(calc('1+2*3/3'))  # => 3
+print(calc('1/3+2*3'))  # => 6.333333
+print(calc('1/3*6+2*3'))  # => 8
+
+
 # 773 - Sliding Puzzle - HARD
 class Solution:
     # O((mn)! * mn * 4) / O((mn)! * mn), factorial complexity
