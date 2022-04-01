@@ -177,6 +177,14 @@ class Solution:
         return isWater
 
 
+# 1768 - Merge Strings Alternately - EASY
+class Solution:
+    def mergeAlternately(self, word1: str, word2: str) -> str:
+        return ''.join(
+            a + b
+            for a, b in itertools.zip_longest(word1, word2, fillvalue=''))
+
+
 # 1779 - Find Nearest Point That Has the Same X or Y Coordinate - EASY
 class Solution:
     def nearestValidPoint(self, x: int, y: int,

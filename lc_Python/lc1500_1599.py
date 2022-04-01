@@ -168,6 +168,17 @@ class SparseVector:
         return ans
 
 
+# 1572 - Matrix Diagonal Sum - EASY
+class Solution:
+    def diagonalSum(self, mat: List[List[int]]) -> int:
+        n = len(mat)
+        ans = 0
+        m = n // 2
+        for i in range(n):
+            ans += mat[i][i] + mat[i][n - 1 - i]
+        return ans - mat[m][m] * (n & 1)
+
+
 # 1576 - Replace All ?'s to Avoid Consecutive Repeating Characters - EASY
 class Solution:
     def modifyString(self, s: str) -> str:
