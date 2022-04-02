@@ -204,6 +204,12 @@ class Solution:
         return lca(root)
 
 
+# 1678 - Goal Parser Interpretation - EASY
+class Solution:
+    def interpret(self, c: str) -> str:
+        return c.replace('()', 'o').replace('(al)', 'al')
+
+
 # 1688 - Count of Matches in Tournament - EASY
 class Solution:
     def numberOfMatches(self, n: int) -> int:
