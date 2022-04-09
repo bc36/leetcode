@@ -680,6 +680,29 @@ class Solution:
         return -1
 
 
+# 780 - Reaching Points - HARD
+class Solution:
+    def reachingPoints(self, sx: int, sy: int, tx: int, ty: int) -> bool:
+        while sx < tx and sy < ty:
+            if tx > ty:
+                tx %= ty
+            else:
+                ty %= tx
+        if tx == sx and ty == sy:
+            return True
+        elif tx == sx:
+            return ty > sy and (ty - sy) % tx == 0
+        elif ty == sy:
+            return tx > sx and (tx - sx) % ty == 0
+        return False
+
+    def reachingPoints(self, sx, sy, tx, ty):
+        while sx < tx and sy < ty:
+            tx, ty = tx % ty, ty % tx
+        return sx == tx and sy <= ty and (ty - sy) % sx == 0 or \
+               sy == ty and sx <= tx and (tx - sx) % sy == 0
+
+
 # 784 - Letter Case Permutation - MEDIUM
 class Solution:
     def letterCasePermutation(self, s: str) -> List[str]:
