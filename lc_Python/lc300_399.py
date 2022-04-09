@@ -206,6 +206,216 @@ class Solution:
         return False
 
 
+# 307 - Range Sum Query - Mutable - MEDIUM
+# segment tree
+# O(n + logn) / O(n), constructor: O(n), update / sunRange: O(logn)
+class NumArray:
+    def __init__(self, nums: List[int]):
+        n = len(nums)
+        self.n = n
+        self.t = [0] * (n * 4)
+        self.buildTree(nums, 0, 0, n - 1)
+
+    def buildTree(self, nums: List[int], node: int, s: int, e: int):
+        if s == e:
+            self.t[node] = nums[s]
+            return
+        m = s + (e - s) // 2
+        self.buildTree(nums, node * 2 + 1, s, m)
+        self.buildTree(nums, node * 2 + 2, m + 1, e)
+        self.t[node] = self.t[node * 2 + 1] + self.t[node * 2 + 2]
+        return
+
+    def updateTree(self, node: int, s: int, e: int, idx: int, val: int):
+        if s == e:
+            self.t[node] = val
+            return
+        m = s + (e - s) // 2
+        if idx <= m:
+            self.updateTree(node * 2 + 1, s, m, idx, val)
+        else:
+            self.updateTree(node * 2 + 2, m + 1, e, idx, val)
+        self.t[node] = self.t[node * 2 + 1] + self.t[node * 2 + 2]
+        return
+
+    def queryTree(self, node: int, l: int, r: int, s: int, e: int) -> int:
+        if r < s or l > e:
+            return 0
+        elif s == e:
+            return self.t[node]
+        elif l <= s and e <= r:
+            return self.t[node]
+        else:
+            m = (e + s) // 2
+            return self.queryTree(node * 2 + 1, l, r, s, m) + self.queryTree(
+                node * 2 + 2, l, r, m + 1, e)
+
+    # def queryTree(self, node: int, l: int, r: int, s: int, e: int) -> int:
+    #     if l == s and r == e:
+    #         return self.t[node]
+    #     m = s + (e - s) // 2
+    #     if r <= m:
+    #         return self.queryTree(node * 2 + 1, l, r, s, m)
+    #     if l > m:
+    #         return self.queryTree(node * 2 + 2, l, r, m + 1, e)
+    #     return self.queryTree(node * 2 + 1, l, m, s, m) + self.queryTree(
+    #         node * 2 + 2, m + 1, r, m + 1, e)
+
+    def update(self, index: int, val: int) -> None:
+        self.updateTree(0, 0, self.n - 1, index, val)
+
+    def sumRange(self, left: int, right: int) -> int:
+        return self.queryTree(0, left, right, 0, self.n - 1)
+
+
+# iterative
+class NumArray:
+    def __init__(self, nums: List[int]):
+        self.n = len(nums)
+        self.t = [0] * self.n + nums
+        for i in range(self.n - 1, 0, -1):
+            # self.t[i] = self.t[i << 1] + self.t[i << 1 | 1]
+            self.t[i] = self.t[i * 2] + self.t[i * 2 + 1]
+
+    def update(self, idx: int, val: int) -> None:
+        idx = self.n + idx
+        self.t[idx] = val
+        while idx > 1:
+            # self.t[idx >> 1] = self.t[idx] + self.t[idx ^ 1]
+            self.t[idx // 2] = self.t[idx] + self.t[(idx - 1) if (idx % 2) else
+                                                    (idx + 1)]
+            idx //= 2
+
+    def sumRange(self, left: int, right: int) -> int:
+        left = self.n + left
+        right = self.n + right
+        ans = 0
+        while left <= right:
+            if left % 2:  # if left & 1
+                ans += self.t[left]
+                left += 1
+            left //= 2  # left >>= 1
+
+            if not (right % 2):  # if not (right & 1)
+                ans += self.t[right]
+                right -= 1
+            right //= 2  # right >>= 1
+        return ans
+
+
+# binary indexed trees
+# O(nlogn + logn) / O(n), constructor: O(nlogn), update / sumRange: O(logn)
+class BIT:
+    def __init__(self, n):
+        self.sums = [0] * (n + 1)
+
+    def update(self, i, delta):
+        while i < len(self.sums):
+            self.sums[i] += delta
+            i += i & (-i)
+
+    def query(self, i):
+        res = 0
+        while i > 0:
+            res += self.sums[i]
+            i -= i & (-i)
+        return res
+
+
+class NumArray:
+    def __init__(self, nums):
+        self.bit = BIT(len(nums))
+        for i, num in enumerate(nums):
+            self.bit.update(i + 1, num)
+        self.nums = [0] + nums
+
+    def update(self, i: int, val: int) -> None:
+        self.bit.update(i + 1, val - self.nums[i + 1])
+        self.nums[i + 1] = val
+
+    def sumRange(self, i: int, j: int) -> int:
+        return self.bit.query(j + 1) - self.bit.query(i)
+
+
+class NumArray:
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+        self.tree = [0] * (len(nums) + 1)
+        for i, num in enumerate(nums, 1):
+            self.add(i, num)
+
+    def add(self, index: int, val: int):
+        while index < len(self.tree):
+            self.tree[index] += val
+            index += index & -index
+
+    def prefixSum(self, index) -> int:
+        s = 0
+        while index:
+            s += self.tree[index]
+            index &= index - 1
+        return s
+
+    def update(self, index: int, val: int) -> None:
+        self.add(index + 1, val - self.nums[index])
+        self.nums[index] = val
+
+    def sumRange(self, left: int, right: int) -> int:
+        return self.prefixSum(right + 1) - self.prefixSum(left)
+
+
+# Use self.t to represent Binary Indexed Tree
+class NumArray:
+    def __init__(self, nums):
+        self.n = len(nums)
+        self.nums = nums
+        self.t = [0] * (self.n + 1)
+        for i in range(self.n):
+            k = i + 1
+            while k <= self.n:
+                self.t[k] += nums[i]
+                k += (k & -k)
+
+    def update(self, i: int, val: int) -> None:
+        diff = val - self.nums[i]
+        self.nums[i] = val
+        i += 1
+        while i <= self.n:
+            self.t[i] += diff
+            i += (i & -i)
+
+    def sumRange(self, i: int, j: int) -> int:
+        ans = 0
+        j += 1
+        while j:
+            ans += self.t[j]
+            j -= (j & -j)
+        while i:
+            ans -= self.t[i]
+            i -= (i & -i)
+        return ans
+
+
+# TLE
+class NumArray:
+    def __init__(self, nums):
+        self.update = nums.__setitem__
+        self.sumRange = lambda i, j: sum(nums[i:j + 1])
+
+
+class NumArray:
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+        self.sum = sum(self.nums)
+
+    def update(self, index: int, val: int) -> None:
+        self.sum = self.sum + val - self.nums[index]
+        self.nums[index] = val
+
+    def sumRange(self, left: int, right: int) -> int:
+        return self.sum - sum(self.nums[:left]) - sum(self.nums[right + 1:])
+
+
 # 309 - Best Time to Buy and Sell Stock with Cooldown - MEDIUM
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:

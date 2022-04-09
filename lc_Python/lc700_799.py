@@ -1,5 +1,5 @@
 from typing import List
-import collections, itertools, functools
+import collections, itertools, functools, bisect, math
 
 
 class TreeNode:
@@ -424,6 +424,21 @@ class Solution:
         return dp[-1]
 
 
+# 744 - Find Smallest Letter Greater Than Target - EASY
+class Solution:
+    def nextGreatestLetter(self, letters: List[str], target: str) -> str:
+        for ch in letters:
+            if ch > target:
+                return ch
+        return letters[0]
+
+    def nextGreatestLetter(self, letters: List[str], target: str) -> str:
+        return next((ch for ch in letters if ch > target), letters[0])
+
+    def nextGreatestLetter(self, l: List[str], target: str) -> str:
+        return l[bisect.bisect_right(l, target)] if target < l[-1] else l[0]
+
+
 # 746 - Min Cost Climbing Stairs - EASY
 class Solution:
     def minCostClimbingStairs(self, cost: List[int]) -> int:
@@ -475,7 +490,56 @@ class Solution:
 
 # 749
 
+
 # 750
+# 762 - Prime Number of Set Bits in Binary Representation - EASY
+class Solution:
+    # O((r - l) * sqrt(logr)) / O(1), how many '1': logr, isPrime:sqrt(x)
+    def countPrimeSetBits(self, left: int, right: int) -> int:
+        def count(n: int) -> int:
+            cnt = 0
+            while n:
+                n = n & (n - 1)
+                cnt += 1
+            return cnt
+
+        def isPrime(x: int) -> bool:
+            if x < 2:
+                return False
+            i = 2
+            while i * i <= x:
+                if x % i == 0:
+                    return False
+                i += 1
+            return True
+
+        return sum(isPrime(count(x)) for x in range(left, right + 1))
+
+    # O(r - l) / O(1)
+    # right <= 10^6 < 2^20, so the number of 1's in binary will not exceed 19
+    def countPrimeSetBits(self, left: int, right: int) -> int:
+        primes = {2, 3, 5, 7, 11, 13, 17, 19}
+        '''
+        'bit_count()' is a new feature in python3.10
+        Return the number of ones in the binary representation of the absolute value of the integer
+        
+        def bit_count(self):
+            return bin(self).count("1")
+        '''
+        return sum(i.bit_count() in primes for i in range(left, right + 1))
+
+    # mask = 665772 = 10100010100010101100
+    # mask += 2 ^ x for x in [2 3 5 7 11 13 17 19]
+    def countPrimeSetBits(self, left: int, right: int) -> int:
+        return sum(((1 << x.bit_count()) & 665772) != 0
+                   for x in range(left, right + 1))
+        
+    # for(int num=left;num<=right;++num){
+    #     const int pos=__builtin_popcount(num);
+    #     if(pos==2||pos==3||pos==5||pos==7||pos==11||pos==13||pos==17||pos==19){
+    #         ans++;
+    #     }
+    # }
 
 
 # 763 - Partition Labels - MEDIUM
