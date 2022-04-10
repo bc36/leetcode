@@ -533,7 +533,7 @@ class Solution:
     def countPrimeSetBits(self, left: int, right: int) -> int:
         return sum(((1 << x.bit_count()) & 665772) != 0
                    for x in range(left, right + 1))
-        
+
     # for(int num=left;num<=right;++num){
     #     const int pos=__builtin_popcount(num);
     #     if(pos==2||pos==3||pos==5||pos==7||pos==11||pos==13||pos==17||pos==19){
@@ -885,6 +885,25 @@ class Solution:
     def validTicTacToe(self, board: List[str]) -> bool:
 
         return
+
+
+# 796 - Rotate String - EASY
+class Solution:
+    def rotateString(self, s: str, goal: str) -> bool:
+        for _ in range(len(s)):
+            if s == goal:
+                return True
+            s = ''.join(list(s)[-len(s) + 1:]) + s[0]
+        return False
+
+    def rotateString(self, s: str, goal: str) -> bool:
+        for _ in range(len(s)):
+            if s[_:] + s[:_] == goal:
+                return True
+        return False
+
+    def rotateString(self, s: str, goal: str) -> bool:
+        return len(s) == len(goal) and goal in s + s
 
 
 # 797 - All Paths From Source to Target - MEDIUM

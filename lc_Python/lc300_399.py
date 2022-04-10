@@ -433,27 +433,30 @@ class Solution:
 
 # 310 - Minimum Height Trees - MEDIUM
 class Solution:
+    # O(n) / O(n)
+    # Topological Sorting, find the middle nodes in the longest path of a graph
     def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
         if not edges:
             return [0]
-        graph = collections.defaultdict(set)
-        for u, v in edges:
-            graph[u].add(v)
-            graph[v].add(u)
-        leaves, degree = [], []
+        g = collections.defaultdict(list)
+        for a, b in edges:
+            g[a].append(b)
+            g[b].append(a)
+        leaves = []
+        degree = []
         for i in range(n):
-            if len(graph[i]) == 1:
+            if len(g[i]) == 1:
                 leaves.append(i)
-            degree.append(len(graph[i]))
+            degree.append(len(g[i]))
         while n > 2:
-            new_leaves = []
-            for leaf in leaves:
-                for adj in graph[leaf]:
-                    degree[adj] -= 1
-                    if degree[adj] == 1:
-                        new_leaves.append(adj)
+            new = []
+            for l in leaves:
+                for node in g[l]:
+                    degree[node] -= 1
+                    if degree[node] == 1:
+                        new.append(node)
             n -= len(leaves)
-            leaves = new_leaves
+            leaves = new
         return leaves
 
 
