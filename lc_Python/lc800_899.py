@@ -16,6 +16,33 @@ class TreeNode:
         self.right = right
 
 
+# 804 - Unique Morse Code Words - EASY
+class Solution:
+    def uniqueMorseRepresentations(self, words: List[str]) -> int:
+        dic = {
+            i: v
+            for i, v in enumerate([
+                ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..",
+                ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-",
+                ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."
+            ])
+        }
+        s = set()
+        for w in words:
+            s.add(''.join([dic[ord(ch) - ord('a')] for ch in w]))
+        return len(s)
+
+    def uniqueMorseRepresentations(self, words: List[str]) -> int:
+        morse = [
+            ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..",
+            ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.",
+            "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."
+        ]
+        return len(
+            set("".join(morse[ord(ch) - ord('a')] for ch in word)
+                for word in words))
+
+
 # 807 - Max Increase to Keep City Skyline - MEDIUM
 class Solution:
     def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:

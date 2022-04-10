@@ -223,6 +223,65 @@ class Solution:
 
 
 # 429 - N-ary Tree Level Order Traversal - MEDIUM
+class Solution:
+    def levelOrder(self, root: 'Node') -> List[List[int]]:
+        ans = []
+
+        def dfs(root: 'Node', depth: int):
+            if not root:
+                return
+            if len(ans) <= depth:
+                ans.append([])
+            ans[depth].append(root.val)
+            for ch in root.children:
+                dfs(ch, depth + 1)
+            return
+
+        dfs(root, 0)
+        return ans
+
+    def levelOrder(self, root: 'Node') -> List[List[int]]:
+        ans = []
+
+        def dfs(root: 'Node', lv: int):
+            if not root:
+                return
+            if lv == len(ans):
+                ans.append([root.val])
+            else:
+                ans[lv].append(root.val)
+            for ch in root.children:
+                dfs(ch, lv + 1)
+            return
+
+        dfs(root, 0)
+        return ans
+
+    def levelOrder(self, root: 'Node') -> List[List[int]]:
+        if not root:
+            return []
+        q = [root]
+        ans = []
+        while q:
+            nxt = []
+            cur = []
+            for node in q:
+                cur.append(node.val)
+                nxt += [child for child in node.children]
+            q = nxt
+            ans.append(cur)
+        return ans
+
+    def levelOrder(self, root: 'Node') -> List[List[int]]:
+        if not root:
+            return []
+        q = [root]
+        ans = []
+        while q:
+            ans.append([node.val for node in q])
+            q = [ch for node in q for ch in node.children]
+        return ans
+
 
 # 432 - All O`one Data Structure - HARD
 # TODO
