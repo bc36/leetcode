@@ -492,6 +492,18 @@ class Solution:
         return True
 
 
+# 954 - Array of Doubled Pairs - MEDIUM
+class Solution:
+    # O(n * logn) / O(n)
+    def canReorderDoubled(self, arr: List[int]) -> bool:
+        cnt = collections.Counter(arr)
+        for x in sorted(cnt, key=abs):
+            if cnt[x] > cnt[2 * x]:
+                return False
+            cnt[2 * x] -= cnt[x]
+        return True
+
+
 # 969 - Pancake Sorting - MEDIUM
 class Solution:
     def pancakeSort(self, arr: List[int]) -> List[int]:

@@ -277,14 +277,14 @@ class NumArray:
             # self.t[i] = self.t[i << 1] + self.t[i << 1 | 1]
             self.t[i] = self.t[i * 2] + self.t[i * 2 + 1]
 
-    def update(self, idx: int, val: int) -> None:
-        idx = self.n + idx
-        self.t[idx] = val
-        while idx > 1:
-            # self.t[idx >> 1] = self.t[idx] + self.t[idx ^ 1]
-            self.t[idx // 2] = self.t[idx] + self.t[(idx - 1) if (idx % 2) else
-                                                    (idx + 1)]
-            idx //= 2
+    def update(self, i: int, val: int) -> None:
+        i = self.n + i
+        self.t[i] = val
+        while i > 1:
+            # self.t[i >> 1] = self.t[i] + self.t[i ^ 1]
+            self.t[i // 2] = self.t[i] + self.t[(i - 1) if (i % 2) else
+                                                (i + 1)]
+            i //= 2
 
     def sumRange(self, left: int, right: int) -> int:
         left = self.n + left
@@ -295,7 +295,6 @@ class NumArray:
                 ans += self.t[left]
                 left += 1
             left //= 2  # left >>= 1
-
             if not (right % 2):  # if not (right & 1)
                 ans += self.t[right]
                 right -= 1
