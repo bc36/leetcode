@@ -540,3 +540,156 @@ class Solution:
             a = str(a) + str(a)[-1 - l % 2::-1]
             ans[i] = int(a) if len(a) == l else -1
         return ans
+
+
+# 2231 - Largest Number After Digit Swaps by Parity - EASY
+class Solution:
+    # do not need to care about specific indices
+    def largestInteger(self, num: int):
+        arr = [int(i) for i in str(num)]
+        odd = []
+        even = []
+        for i in arr:
+            if i % 2 == 0:
+                even.append(i)
+            else:
+                odd.append(i)
+        odd.sort()
+        even.sort()
+        ans = 0
+        for i in range(len(str(num))):
+            if arr[i] % 2 == 0:
+                ans = ans * 10 + even.pop()
+            else:
+                ans = ans * 10 + odd.pop()
+        return ans
+
+    def largestInteger(self, num: int) -> int:
+        s = str(num)
+        o, e = [], []
+        for ch in s:
+            if int(ch) % 2:
+                o.append(ch)
+            else:
+                e.append(ch)
+        o.sort()
+        e.sort()
+        ss = ''
+        for ch in s:
+            if int(ch) % 2:
+                ss += o.pop()
+            else:
+                ss += e.pop()
+        return int(ss)
+
+
+# 2232 - Minimize Result by Adding Parentheses to Expression - MEDIUM
+class Solution:
+    def minimizeResult(self, expression: str) -> str:
+        n1, n2 = expression.split('+')
+        m = 1e99
+        ans = None
+        for i in range(len(n1)):
+            a = 1 if i == 0 else int(n1[:i])
+            s1 = str(a) if i != 0 else ''
+            b = int(n1[i:])
+            for j in range(len(n2)):
+                c = int(n2[:j + 1])
+                d = 1 if j == len(n2) - 1 else int(n2[j + 1:])
+                s2 = str(d) if j != len(n2) - 1 else ''
+                p = a * (b + c) * d
+                if p < m:
+                    m = p
+                    ans = '%s(%d+%d)%s' % (s1, b, c, s2)
+        return ans
+
+    def minimizeResult(self, expression: str) -> str:
+        a, b = expression.split('+')
+        m = math.inf
+        ans = None
+        for i in range(len(a)):
+            for j in range(1, len(b) + 1):
+                s = '' if i == 0 else a[:i] + '*'
+                s += '('
+                s += a[i:]
+                s += '+'
+                s += b[:j]
+                s += ')'
+                if j != len(b):
+                    s += '*' + b[j:]
+                cur = eval(s)
+                if cur < m:
+                    m = cur
+                    ans = s
+        return ans.replace('*', '')
+
+
+# 2233 - Maximum Product After K Increments - MEDIUM
+class Solution:
+    def maximumProduct(self, nums: List[int], k: int) -> int:
+        cnt = collections.Counter(nums)
+        pq = [(n, v) for n, v in cnt.items()]
+        heapq.heapify(pq)
+        while k:
+            if k >= pq[0][1]:
+                n, v = heapq.heappop(pq)
+                k -= v
+                n += 1
+                if pq and pq[0][0] == n:
+                    _, vv = heapq.heappop(pq)
+                    heapq.heappush(pq, (n, v + vv))
+                else:
+                    heapq.heappush(pq, (n, v))
+            else:
+                n, v = heapq.heappop(pq)
+                if pq and pq[0][0] == n + 1:
+                    nn, vv = heapq.heappop(pq)
+                    pq.append((nn, vv + k))
+                    pq.append((n, v - k))
+                else:
+                    pq.append((n + 1, k))
+                    pq.append((n, v - k))
+                break
+        ans = 1
+        for i in range(len(pq)):
+            ans *= pq[i][0]**pq[i][1]
+        return ans % (10**9 + 7)
+
+    def maximumProduct(self, nums: List[int], k: int) -> int:
+        cnt = collections.Counter(nums)
+        keys = sorted(list(cnt.keys()))
+        i = keys[0]
+        while k > 0:
+            if k > cnt[i]:
+                k -= cnt[i]
+                cnt[i + 1] += cnt[i]
+                cnt[i] = 0
+                i += 1
+            else:
+                cnt[i + 1] += k
+                cnt[i] -= k
+                k = 0
+        mod = 10**9 + 7
+        ans = 1
+        for i in cnt.keys():
+            if cnt[i] > 0:
+                ans *= i**cnt[i]
+                ans %= mod
+        return ans
+
+    def maximumProduct(self, nums: List[int], k: int) -> int:
+        mod = 10**9 + 7
+        heapq.heapify(nums)
+        while k:
+            heapq.heapreplace(nums, nums[0] + 1)
+            k -= 1
+        ans = 1
+        for n in nums:
+            ans = ans * n % mod
+        return ans
+
+    def maximumProduct(self, nums: List[int], k: int) -> int:
+        heapq.heapify(nums)
+        for _ in range(k):
+            heapq.heapreplace(nums, nums[0] + 1)
+        return functools.reduce(lambda x, y: x * y % 1000000007, nums)
