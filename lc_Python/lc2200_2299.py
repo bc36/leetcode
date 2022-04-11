@@ -542,6 +542,43 @@ class Solution:
         return ans
 
 
+# 2220 - Minimum Bit Flips to Convert Number - EASY
+class Solution:
+    def minBitFlips(self, start: int, goal: int) -> int:
+        s = bin(start)[2:]  # bin() -> O(logn)
+        g = bin(goal)[2:]
+        if len(s) > len(g):
+            g = '0' * (len(s) - len(g)) + g
+        if len(s) < len(g):
+            s = '0' * (len(g) - len(s)) + s
+        ans = 0
+        for i in range(len(s)):
+            if s[i] != g[i]:
+                ans += 1
+        return ans
+
+    # O(logM) / O(1), M = max(start, goal)
+    def minBitFlips(self, start: int, goal: int) -> int:
+        ans = 0
+        xor = start ^ goal
+        while xor:
+            ans += xor & 1
+            xor >>= 1
+        return ans
+
+    def minBitFlips(self, start: int, goal: int) -> int:
+        ans = 0
+        xor = start ^ goal
+        while xor:
+            ans += 1
+            xor &= xor - 1
+        return ans
+
+    # python3.10: int.bit_count()
+    def minBitFlips(self, start: int, goal: int) -> int:
+        return (start ^ goal).bit_count()
+
+
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
 class Solution:
     # do not need to care about specific indices
