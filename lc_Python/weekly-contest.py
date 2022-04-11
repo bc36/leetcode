@@ -976,9 +976,10 @@ class Solution:
 # 分组背包, 前缀和, dp
 # https://leetcode-cn.com/contest/weekly-contest-286/problems/maximum-value-of-k-coins-from-piles/
 
-
-###################
-# 288 / 2022.4.10 #
-###################
+##################
+# 288 / 2022.4.9 #
+##################
 # https://leetcode-cn.com/contest/weekly-contest-288/
 
+# https://leetcode-cn.com/contest/weekly-contest-288/problems/maximum-total-beauty-of-the-gardens/
+# 贪心, 枚举后缀

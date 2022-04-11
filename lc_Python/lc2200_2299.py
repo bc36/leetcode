@@ -693,3 +693,57 @@ class Solution:
         for _ in range(k):
             heapq.heapreplace(nums, nums[0] + 1)
         return functools.reduce(lambda x, y: x * y % 1000000007, nums)
+
+
+# 2234 - Maximum Total Beauty of the Gardens - HARD
+class Solution:
+    # O(n * logn) / O(1)
+    def maximumBeauty(self, f: List[int], newFlowers: int, target: int,
+                      full: int, partial: int) -> int:
+        f.sort()
+        n = len(f)
+        if f[0] >= target:
+            return n * full
+        leftFlowers = newFlowers
+        for i in range(n):
+            leftFlowers -= max(target - f[i], 0)
+            f[i] = min(f[i], target)
+        ans = x = sumFlowers = 0
+        for i in range(n + 1):
+            if leftFlowers >= 0:
+                while x < i and f[x] * x - sumFlowers <= leftFlowers:
+                    sumFlowers += f[x]
+                    x += 1
+                beauty = (n - i) * full
+                if x:  # for division
+                    beauty += min(
+                        (leftFlowers + sumFlowers) // x, target - 1) * partial
+                ans = max(ans, beauty)
+            if i < n:
+                leftFlowers += target - f[i]
+        return ans
+
+    def maximumBeauty(self, f: List[int], newFlowers: int, target: int,
+                      full: int, partial: int) -> int:
+        f = [min(target, x) for x in f]
+        f.sort()
+        n = len(f)
+        if f[0] == target:
+            return full * n
+        if newFlowers >= target * n - sum(f):
+            return max(full * n, full * (n - 1) + partial * (target - 1))
+        cost = [0]
+        for i in range(1, n):
+            pre = cost[-1]
+            cost.append(pre + i * (f[i] - f[i - 1]))
+        j = n - 1
+        while f[j] == target:
+            j -= 1
+        ans = 0
+        while newFlowers >= 0:
+            idx = min(j, bisect.bisect_right(cost, newFlowers) - 1)
+            bar = f[idx] + (newFlowers - cost[idx]) // (idx + 1)
+            ans = max(ans, bar * partial + (n - j - 1) * full)
+            newFlowers -= target - f[j]
+            j -= 1
+        return ans
