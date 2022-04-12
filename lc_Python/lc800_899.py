@@ -44,6 +44,19 @@ class Solution:
 
 
 # 806 - Number of Lines To Write String - EASY
+class Solution:
+    def numberOfLines(self, widths: List[int], s: str) -> List[int]:
+        mx = 100
+        ans = 1
+        cur = 0
+        for ch in s:
+            w = widths[ord(ch) - ord('a')]
+            if cur + w > mx:
+                ans += 1
+                cur = w
+            else:
+                cur += w
+        return [ans, cur]
 
 
 # 807 - Max Increase to Keep City Skyline - MEDIUM
