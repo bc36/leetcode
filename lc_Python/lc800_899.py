@@ -43,6 +43,9 @@ class Solution:
                 for word in words))
 
 
+# 806 - Number of Lines To Write String - EASY
+
+
 # 807 - Max Increase to Keep City Skyline - MEDIUM
 class Solution:
     def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
