@@ -477,26 +477,40 @@ class Solution:
 
 # 2055 - Plates Between Candles - MEDIUM
 class Solution:
-    def platesBetweenCandles(self, s: str, q: List[List[int]]) -> List[int]:
-        preSum = [0] * len(s)
-        left = [0] * len(s)
-        right = [0] * len(s)
-        summ, l, r = 0, -1, -1
-        for i in range(len(s)):
-            if s[i] == '*':
+    def platesBetweenCandles(self, s: str,
+                             queries: List[List[int]]) -> List[int]:
+        n = len(s)
+        preSum = [0] * n
+        summ = 0
+        left = [0] * n
+        l = -1
+        for i, ch in enumerate(s):
+            if ch == '*':
                 summ += 1
             else:
                 l = i
             preSum[i] = summ
             left[i] = l
-        for i in range(len(s) - 1, -1, -1):
+        right = [0] * n
+        r = -1
+        for i in range(n - 1, -1, -1):
             if s[i] == '|':
                 r = i
             right[i] = r
-        ans = [0] * len(q)
-        for i in range(len(q)):
-            l, r = q[i]
-            x, y = right[l], left[r]
+        ans = [0] * len(queries)
+        for i, (x, y) in enumerate(queries):
+            x, y = right[x], left[y]
             if x >= 0 and y >= 0 and x < y:
                 ans[i] = preSum[y] - preSum[x]
+        return ans
+
+    # O(n + Qlogn) / O(n + Q)
+    def platesBetweenCandles(self, s: str,
+                             queries: List[List[int]]) -> List[int]:
+        arr = [i for i, c in enumerate(s) if c == '|']
+        ans = []
+        for a, b in queries:
+            i = bisect.bisect_left(arr, a)
+            j = bisect.bisect_right(arr, b) - 1
+            ans.append((arr[j] - arr[i]) - (j - i) if i < j else 0)
         return ans
