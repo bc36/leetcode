@@ -1207,13 +1207,13 @@ class Solution:
         for i in range(len(points) - 1):
             cnt = collections.Counter()
             for j in range(i + 1, len(points)):
-                dx, dy = points[j][0] - points[i][0], points[j][1] - points[i][
-                    1]
+                dx = points[j][0] - points[i][0]
+                dy = points[j][1] - points[i][1]
                 cnt[dy / dx if dx else math.inf] += 1
             ans = max(ans, max(cnt.values()) + 1)
         return ans
 
-    # O(n ^ 2 * logm) logm: gcd
+    # O(n ^ 2 * logm), gcd: logm
     # python3, math.gcd always return positive number
     def maxPoints(self, points: List[List[int]]) -> int:
         if len(points) < 3:
@@ -1228,10 +1228,10 @@ class Solution:
         for i in range(len(points) - 1):
             d = collections.defaultdict(int)
             for j in range(i + 1, len(points)):
-                a = (points[i][1] - points[j][1])
-                b = (points[i][0] - points[j][0])
-                g = gcd(a, b)
-                d[(a // g, b // g)] += 1
+                dx = points[i][0] - points[j][0]
+                dy = points[i][1] - points[j][1]
+                g = gcd(dy, dx)
+                d[(dy // g, dx // g)] += 1
             ans = max(ans, max(d.values()) + 1)  # plus 'i' self
         return ans
 
