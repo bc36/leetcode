@@ -207,6 +207,62 @@ class Solution:
         return a > b
 
 
+# 2039 - The Time When the Network Becomes Idle - MEDIUM
+class Solution:
+    # O(m + n) / O(m + n), m = len(edges)
+    def networkBecomesIdle(self, edges: List[List[int]], p: List[int]) -> int:
+        n = len(p)
+        g = [[] for _ in range(n)]
+        for u, v in edges:
+            g[u].append(v)
+            g[v].append(u)
+        vis = [False] * n
+        vis[0] = True
+        q = collections.deque([0])
+        ans = 0
+        d = 1
+        while q:
+            for _ in range(len(q)):
+                u = q.popleft()
+                for v in g[u]:
+                    if vis[v]:
+                        continue
+                    vis[v] = True
+                    q.append(v)
+                    ans = max(ans, (d * 2 - 1) // p[v] * p[v] + d * 2 + 1)
+            d += 1
+        return ans
+
+    def networkBecomesIdle(self, edges: List[List[int]], p: List[int]) -> int:
+        g = {}
+        for u, v in edges:
+            g.setdefault(u, []).append(v)
+            g.setdefault(v, []).append(u)
+        dist = [-1] * len(g)
+        dist[0] = 0
+        val = 0
+        q = [0]
+        while q:
+            val += 1
+            new = []
+            for u in q:
+                for v in g[u]:
+                    if dist[v] == -1:
+                        dist[v] = val
+                        new.append(v)
+            q = new
+        ans = 0
+        for i in range(1, len(p)):
+            d = 2 * dist[i]
+            s = 0
+            if d <= p[i]:
+                s = d + 1
+            else:
+                s = d + d - (d - 1) % p[i]
+            ans = max(ans, s)
+        return ans
+
+
 # 2043 - Simple Bank System - MEDIUM
 class Bank:
     def __init__(self, balance: List[int]):
@@ -255,7 +311,7 @@ class Solution:
         backtrack(nums, [])
         return self.ans
 
-    # O(2^n * n) / O(1), Brutal Force
+    # O(2^n * n) / O(1), bitmask
     def countMaxOrSubsets(self, nums: List[int]) -> int:
         ans = 0
         mx = 0
@@ -279,11 +335,9 @@ class Solution:
         @functools.lru_cache(None)
         def dfs(i, cur):
             if cur == target:
-                # not matter choose the rest of numbers or not
                 return 2**(len(nums) - i)
             elif i == len(nums):
                 return 0
-            # not choose 'nums[i]' or choose 'nums[i]'
             return dfs(i + 1, cur) + dfs(i + 1, cur | nums[i])
 
         return dfs(0, 0)
