@@ -293,7 +293,7 @@ class Bank:
 class Solution:
     # O(2^n * n) / O(1)
     def countMaxOrSubsets(self, nums: List[int]) -> int:
-        def backtrack(res, path):
+        def backtrack(arr: List[int], path: List[int]):
             t = 0
             for n in path:
                 t |= n
@@ -302,8 +302,8 @@ class Solution:
                 self.ans = 1
             elif t == self.mx:
                 self.ans += 1
-            for i in range(len(res)):
-                backtrack(res[i + 1:], path + [res[i]])
+            for i in range(len(arr)):
+                backtrack(arr[i + 1:], path + [arr[i]])
             return
 
         self.mx = 0

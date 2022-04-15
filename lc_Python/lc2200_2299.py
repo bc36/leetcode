@@ -579,6 +579,58 @@ class Solution:
         return (start ^ goal).bit_count()
 
 
+# 2221. Find Triangular Sum of an Array - MEDIUM
+class Solution:
+    # O(n ^ 2) / O(1), in place
+    def triangularSum(self, nums: List[int]) -> int:
+        n = len(nums)
+        while n > 1:
+            for i in range(n - 1):
+                nums[i] = (nums[i] + nums[i + 1]) % 10
+            n -= 1
+        return nums[0]
+
+
+# 2222. Number of Ways to Select Buildings - MEDIUM
+class Solution:
+    def numberOfWays(self, s: str) -> int:
+        ans = n0 = n1 = n01 = n10 = 0
+        for ch in s:
+            if ch == '1':
+                n10 += n0
+                ans += n01
+                n1 += 1
+            else:
+                n01 += n1
+                ans += n10
+                n0 += 1
+        return ans
+
+    def numberOfWays(self, s: str) -> int:
+        ans = n0 = 0
+        t0 = s.count('0')
+        for i, ch in enumerate(s):
+            if ch == '1':
+                ans += n0 * (t0 - n0)  # (left '0') * (right '0')
+            else:
+                n1 = i - n0
+                ans += n1 * (len(s) - t0 - n1)  # (left '1') * (right '1')
+                n0 += 1
+        return ans
+
+    # eg: 101, c: '101', b = '10', a = '1'
+    def numberOfWays(self, s: str) -> int:
+        def f(t: str) -> int:
+            a = b = c = 0
+            for ch in s:
+                if ch == t[2]: c += b
+                if ch == t[1]: b += a
+                if ch == t[0]: a += 1
+            return c
+
+        return f('101') + f('010')
+
+
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
 class Solution:
     # do not need to care about specific indices
