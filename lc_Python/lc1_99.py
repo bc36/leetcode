@@ -622,6 +622,17 @@ class Solution:
         return newHead
 
 
+# 28 - Implement strStr() - EASY
+class Solution:
+    def strStr(self, haystack: str, needle: str) -> int:
+        try:
+            return haystack.index(needle)
+        except:
+            return -1
+
+    # KMP
+
+
 # 30 - Substring with Concatenation of All Words - HARD
 class Solution:
     # O((n - k * t) * (k + k * t)), k = len(words), t = word_size
