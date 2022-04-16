@@ -559,6 +559,25 @@ class Solution:
         return ans
 
 
+# 479 - Largest Palindrome Product - HARD
+class Solution:
+    def largestPalindrome(self, n: int) -> int:
+        if n == 1:
+            return 9
+        upper = 10**n - 1
+        for left in range(upper, upper // 10, -1):
+            p = x = left
+            while x:
+                p = p * 10 + x % 10  # 'p' is a Palindrome
+                x //= 10
+            x = upper
+            while x * x >= p:
+                if p % x == 0:
+                    return p % 1337
+                x -= 1
+        return
+
+
 # 475 - Heaters - MEDIUM
 class Solution:
     def findRadius(self, houses: List[int], heaters: List[int]) -> int:
