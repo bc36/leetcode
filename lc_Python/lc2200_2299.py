@@ -836,3 +836,63 @@ class Solution:
             newFlowers -= target - f[j]
             j -= 1
         return ans
+
+
+# 2239 - Find Closest Number to Zero - EASY
+class Solution:
+    def findClosestNumber(self, nums: List[int]) -> int:
+        return sorted(nums, key=lambda x: (abs(x), -x))[0]
+
+        return max([-abs(n), n] for n in nums)[1]
+        return -min([abs(n), -n] for n in nums)[1]
+
+
+# 2240 - Number of Ways to Buy Pens and Pencils - MEDIUM
+class Solution:
+    def waysToBuyPensPencils(self, t: int, c1: int, c2: int) -> int:
+        ans = 0
+        for i in range(0, t + 1, c1):
+            ans += (t - i) // c2 + 1
+        return ans
+
+        return sum(((t - i * c1) // c2 + 1) for i in range(t // c1 + 1))
+        return sum(((t - i) // c2 + 1) for i in range(0, t + 1, c1))
+
+    def waysToBuyPensPencils(self, t: int, c1: int, c2: int) -> int:
+        ans = 0
+        while t >= 0:
+            ans += t // c2 + 1
+            t -= c1
+        return ans
+
+
+# 2241 - Design an ATM Machine - MEDIUM
+class ATM:
+    def __init__(self):
+        self.b = [0, 0, 0, 0, 0]
+        self.m = [20, 50, 100, 200, 500]
+
+    def deposit(self, banknotesCount: List[int]) -> None:
+        for i in range(5):
+            self.b[i] += banknotesCount[i]
+        return
+
+    def withdraw(self, amount: int) -> List[int]:
+        ans = [0, 0, 0, 0, 0]
+        for i in range(4, -1, -1):
+            if amount >= self.m[i] * self.b[i]:
+                amount -= self.m[i] * self.b[i]
+                ans[i] = self.b[i]
+            else:
+                ans[i] = amount // self.m[i]
+                amount %= self.m[i]
+
+        # for i in range(4, -1, -1):
+        #     v = min(self.b[i], amount // self.m[i])
+        #     ans[i] = v
+        #     amount -= v * self.m[i]
+
+        if amount == 0:
+            for i in range(5):
+                self.b[i] -= ans[i]
+        return ans if amount == 0 else [-1]
