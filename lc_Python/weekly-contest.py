@@ -983,3 +983,11 @@ class Solution:
 
 # https://leetcode-cn.com/contest/weekly-contest-288/problems/maximum-total-beauty-of-the-gardens/
 # 贪心, 枚举后缀
+
+# https://leetcode-cn.com/contest/weekly-contest-289/
+
+# 1048 / https://leetcode-cn.com/contest/weekly-contest-289/problems/maximum-trailing-zeros-in-a-cornered-path/
+# 前缀和
+
+# 739 / https://leetcode-cn.com/contest/weekly-contest-289/problems/longest-path-with-different-adjacent-characters/
+# 树形DP, lc1245, lc687

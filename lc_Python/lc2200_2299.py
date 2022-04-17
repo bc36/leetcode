@@ -896,3 +896,268 @@ class ATM:
             for i in range(5):
                 self.b[i] -= ans[i]
         return ans if amount == 0 else [-1]
+
+
+# 2243 - Calculate Digit Sum of a String - EASY
+class Solution:
+    def digitSum(self, s: str, k: int) -> str:
+        while len(s) > k:
+            new = ''
+            for i in range(0, len(s), k):
+                n = int(s[i:i + k])
+                t = 0
+                while n:
+                    t += n % 10
+                    n //= 10
+                new += str(t)
+            s = new
+        return s
+
+
+# 2244 - Minimum Rounds to Complete All Tasks - MEDIUM
+class Solution:
+    def minimumRounds(self, tasks: List[int]) -> int:
+        cnt = collections.Counter(tasks)
+        ans = 0
+        for v in cnt.values():
+            m = v % 6
+            if m == 0 or m == 3:
+                ans += v // 3
+            elif m == 5:
+                ans += v // 3 + 1
+            elif m == 4:
+                ans += (v - 4) // 3 + 2
+            elif m == 2:
+                ans += (v - 2) // 3 + 1
+            else:
+                if v < 6:
+                    return -1
+                else:
+                    ans += (v - 7) // 3 + 3
+        return ans
+
+    def minimumRounds(self, tasks: List[int]) -> int:
+        cnt = collections.Counter(tasks)
+        ans = 0
+        for v in cnt.values():
+            if v == 1:
+                return -1
+            elif v == 2:
+                ans += 1
+            elif v % 3 == 0:
+                ans += v // 3
+            else:
+                ans += v // 3 + 1
+        return ans
+
+    def minimumRounds(self, tasks: List[int]) -> int:
+        freq = collections.Counter(tasks).values()
+        return -1 if 1 in freq else sum((a + 2) // 3 for a in freq)
+
+
+# 2245 - Maximum Trailing Zeros in a Cornered Path - MEDIUM
+class Solution:
+    # O(mn) / O(mn)
+    def maxTrailingZeros(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        t = [[0] * (n + 1) for _ in range(m + 1)]
+        f = [[0] * (n + 1) for _ in range(m + 1)]
+        s = [[[0, 0] for _ in range(n + 1)] for _ in range(m + 1)]
+
+        for i in range(m):
+            for j in range(n):
+                x = grid[i][j]
+                two = five = 0
+                while x % 2 == 0:  # suppose time complexity is constant
+                    two += 1
+                    x //= 2
+                while x % 5 == 0:
+                    five += 1
+                    x //= 5
+                s[i + 1][j + 1][0] = two
+                s[i + 1][j + 1][1] = five
+                t[i + 1][j + 1] = two + t[i + 1][j] + t[i][j + 1] - t[i][j]
+                f[i + 1][j + 1] = five + f[i + 1][j] + f[i][j + 1] - f[i][j]
+
+        ans = 0
+        for i in range(m):
+            for j in range(n):
+                u2 = t[i][j + 1] - t[i][j]
+                d2 = t[-1][j + 1] - t[-1][j] - (t[i + 1][j + 1] - t[i + 1][j])
+                u5 = f[i][j + 1] - f[i][j]
+                d5 = f[-1][j + 1] - f[-1][j] - (f[i + 1][j + 1] - f[i + 1][j])
+
+                l2 = t[i + 1][j] - t[i][j]
+                r2 = t[i + 1][-1] - t[i][-1] - (t[i + 1][j + 1] - t[i][j + 1])
+                l5 = f[i + 1][j] - f[i][j]
+                r5 = f[i + 1][-1] - f[i][-1] - (f[i + 1][j + 1] - f[i][j + 1])
+
+                ul = min(u2 + l2 + s[i + 1][j + 1][0],
+                         u5 + l5 + s[i + 1][j + 1][1])
+                ur = min(u2 + r2 + s[i + 1][j + 1][0],
+                         u5 + r5 + s[i + 1][j + 1][1])
+                dl = min(d2 + l2 + s[i + 1][j + 1][0],
+                         d5 + l5 + s[i + 1][j + 1][1])
+                dr = min(d2 + r2 + s[i + 1][j + 1][0],
+                         d5 + r5 + s[i + 1][j + 1][1])
+
+                mx = max(ul, ur, dl, dr)
+                ans = max(ans, mx)
+        return ans
+
+    # compute 'prefix sum' separately by row and column.
+    def maxTrailingZeros(self, grid: List[List[int]]) -> int:
+        def get_25(v):
+            r = [0, 0]
+            while v % 2 == 0:
+                v = v // 2
+                r[0] += 1
+            while v % 5 == 0:
+                v = v // 5
+                r[1] += 1
+            return r
+
+        m = len(grid)
+        n = len(grid[0])
+        pu = [[[0, 0] for _ in range(n + 1)] for _ in range(m + 1)]  # up
+        pl = [[[0, 0] for _ in range(n + 1)] for _ in range(m + 1)]  # left
+
+        for i in range(m):
+            for j in range(n):
+                x = get_25(grid[i][j])
+                pu[i + 1][j + 1][0] = pu[i][j + 1][0] + x[0]
+                pu[i + 1][j + 1][1] = pu[i][j + 1][1] + x[1]
+                pl[i + 1][j + 1][0] = pl[i + 1][j][0] + x[0]
+                pl[i + 1][j + 1][1] = pl[i + 1][j][1] + x[1]
+
+        ans = 0
+        for i in range(m):
+            for j in range(n):
+                t, f = pu[i + 1][j + 1]
+                ul = min(t + pl[i + 1][j][0], f + pl[i + 1][j][1])
+                ur = min(t + pl[i + 1][-1][0] - pl[i + 1][j + 1][0],
+                         f + pl[i + 1][-1][1] - pl[i + 1][j + 1][1])
+                t = pu[-1][j + 1][0] - pu[i][j + 1][0]
+                f = pu[-1][j + 1][1] - pu[i][j + 1][1]
+                dl = min(t + pl[i + 1][j][0], f + pl[i + 1][j][1])
+                dr = min(t + pl[i + 1][-1][0] - pl[i + 1][j + 1][0],
+                         f + pl[i + 1][-1][1] - pl[i + 1][j + 1][1])
+                ans = max(ans, ul, ur, dl, dr)
+        return ans
+
+
+# 2246 - Longest Path With Different Adjacent Characters - HARD
+class Solution:
+    def longestPath(self, parent: List[int], s: str) -> int:
+        n = len(parent)
+        g = [[] for _ in range(n)]
+        for i in range(1, n):
+            g[parent[i]].append(i)
+        ans = 0
+
+        def dfs(x: int) -> int:
+            nonlocal ans
+            max_len = 0
+            for y in g[x]:
+                length = dfs(y) + 1
+                if s[y] != s[x]:
+                    ans = max(ans, max_len + length)
+                    max_len = max(max_len, length)
+            return max_len
+
+        dfs(0)
+        return ans + 1
+
+    def longestPath(self, parent: List[int], s: str) -> int:
+        children = [[] for _ in range(len(s))]
+        for i, p in enumerate(parent):
+            if p >= 0:
+                children[p].append(i)
+        ans = 0
+
+        def dfs(i: int) -> int:
+            nonlocal ans
+            candi = [0, 0]
+            for j in children[i]:
+                cur = dfs(j)
+                if s[i] != s[j]:
+                    candi.append(cur)
+            candi = heapq.nlargest(2, candi)
+            ans = max(ans, candi[0] + candi[1] + 1)
+            return max(candi) + 1
+
+        dfs(0)
+        return ans
+
+    def longestPath(self, parent: List[int], s: str) -> int:
+        children = collections.defaultdict(list)
+        for i in range(len(parent)):
+            if parent[i] != -1:
+                children[parent[i]].append(i)
+        ans = 0
+
+        def dfs(node):
+            '''Return longest path of all the paths start from node'''
+            nonlocal ans
+            longest = 1
+            first, second = 0, 0
+            for child in children[node]:
+                d = dfs(child)
+                if s[child] != s[node]:
+                    longest = max(longest, d + 1)
+                    if d > first:
+                        second = first
+                        first = d
+                    elif d > second:
+                        second = d
+            ans = max(ans, first + second)
+            return longest
+
+        dfs(0)
+        return ans + 1
+
+    def longestPath(self, parent: List[int], s: str) -> int:
+        g = [[] for _ in range(len(parent))]
+        for i, j in enumerate(parent):
+            if i > 0:
+                g[j].append(i)
+        ans = 1
+
+        def dfs(u, p):
+            nonlocal ans
+            ch = [0, 0]
+            for c in g[u]:
+                if c != p:
+                    x = dfs(c, u)
+                    if s[c] != s[u]:
+                        ch.append(x)
+            ch.sort()
+            ans = max(ans, ch[-1] + ch[-2] + 1)
+            return ch[-1] + 1
+
+        dfs(0, -1)
+        return ans
+
+    def longestPath(self, p: List[int], s: str) -> int:
+        children = [[] for _ in range(len(p))]
+        for i, a in enumerate(p):
+            if a != -1:
+                children[a].append(i)
+        self.ans = 1
+
+        def dfs(x):
+            arr = []
+            for c in children[x]:
+                ns = dfs(c)
+                if s[c] != s[x]:
+                    arr.append(ns)
+            if len(arr) == 0:
+                return 1
+            arr.sort()
+            arr = [0] + arr
+            self.ans = max(self.ans, 1 + arr[-1] + arr[-2])
+            return arr[-1] + 1
+
+        dfs(0)
+        return self.ans
