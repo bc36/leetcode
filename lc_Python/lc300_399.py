@@ -1373,7 +1373,7 @@ class Solution:
                 num = ""
             elif c == "[":
                 elem = NestedInteger()
-                if stack: 
+                if stack:
                     stack[-1].add(elem)
                 stack.append(elem)
             elif c == "]":
@@ -1382,6 +1382,67 @@ class Solution:
                     num = ""
                 last = stack.pop()
         return last if last else NestedInteger(int(num))
+
+
+# 386 - Lexicographical Numbers - MEDIUM
+class Solution:
+    def lexicalOrder(self, n: int) -> List[int]:
+        ans = []
+        num = 1
+        for _ in range(n):
+            ans.append(num)
+            if num * 10 <= n:
+                num *= 10
+            else:
+                while num % 10 == 9 or num >= n:
+                    num //= 10
+                num += 1
+        return ans
+
+    def lexicalOrder(self, n: int) -> List[int]:
+        ans = []
+        cur = 1
+        for _ in range(n):
+            ans.append(cur)
+            if cur * 10 <= n:
+                cur *= 10
+            else:
+                if cur >= n:
+                    cur //= 10
+                cur += 1
+                while cur % 10 == 0:
+                    cur //= 10
+        return ans
+
+    def lexicalOrder(self, n: int) -> List[int]:
+        ans = []
+        a = 1
+        while len(ans) < n:
+            while a <= n:
+                ans.append(a)
+                a *= 10
+            while a % 10 == 9 or a >= n:
+                a //= 10
+            a += 1
+        return ans
+
+    def lexicalOrder(self, n):
+        def dfs(k):
+            if k <= n:
+                ans.append(k)
+                t = 10 * k
+                if t <= n:
+                    for i in range(10):
+                        dfs(t + i)
+            return
+
+        ans = []
+        for i in range(1, 10):
+            dfs(i)
+        return ans
+
+    def lexicalOrder(self, n: int) -> List[int]:
+        return sorted(range(1, n + 1), key=str)
 
 
 # 387 - First Unique Character in a String - EASY

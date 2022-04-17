@@ -1,6 +1,5 @@
-import itertools
 from typing import List, Optional
-import collections, math
+import collections, math, itertools, re
 
 
 class ListNode:
@@ -72,6 +71,41 @@ class Solution:
     def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
         rows, cols = list(map(max, grid)), list(map(max, zip(*grid)))
         return sum(min(i, j) for i in rows for j in cols) - sum(map(sum, grid))
+
+
+# 819 - Most Common Word - EASY
+class Solution:
+    def mostCommonWord(self, p: str, banned: List[str]) -> str:
+        p = p.lower() + '.'
+        w = ''
+        freq = collections.defaultdict(int)
+        banned = set(banned)
+        for ch in p:
+            if ch.isalpha():
+                w += ch
+            else:
+                if w not in banned and len(w) > 0:
+                    freq[w] += 1
+                w = ''
+        return sorted(freq.keys(), key=freq.get)[-1]
+
+    # '\w' matches [a-zA-Z0-9_]
+    def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
+        return collections.Counter(
+            w for w in re.split(r'[^\w]+', paragraph.lower())
+            if w and w not in banned).most_common(1)[0][0]
+
+    def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
+        ban = set(banned)
+        words = re.findall(r'\w+', paragraph.lower())
+        return collections.Counter(w for w in words
+                                   if w not in ban).most_common(1)[0][0]
+
+    def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
+        return max(collections.Counter(
+            re.split(r"[ !?',;.]", paragraph.lower())).items(),
+                   key=lambda x:
+                   (len(x) > 0, x[0] not in set(banned + [""]), x[1]))[0]
 
 
 # 825 - Friends Of Appropriate Ages - MEDIUM
