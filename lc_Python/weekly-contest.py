@@ -990,4 +990,4 @@ class Solution:
 # 前缀和
 
 # 739 / https://leetcode-cn.com/contest/weekly-contest-289/problems/longest-path-with-different-adjacent-characters/
-# 树形DP, lc1245, lc687
+# 树形DP, 树的直径 lc1245, lc687

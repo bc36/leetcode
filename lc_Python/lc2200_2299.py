@@ -631,6 +631,78 @@ class Solution:
         return f('101') + f('010')
 
 
+# 2223 - Sum of Scores of Built Strings - HARD
+class Solution:
+    def sumScores(self, s: str) -> int:
+        visited = set()
+        res = 0
+        for start in range(1, len(s)):
+            if start in visited:
+                continue
+            count = 0
+            for i in range(start, len(s)):
+                if s[i] != s[i - start]:
+                    break
+                count += 1
+            res += count
+            for k in range(2 * start, count + 1, start):
+                res += (count - (k - start))
+                visited.add(k)
+        return res + len(s)
+        
+    # https://oi-wiki.org/string/z-func/
+    def sumScores(self, s: str) -> int:
+        n = len(s)
+        z = [0] * n
+        ans, l, r = n, 0, 0
+        for i in range(1, n):
+            z[i] = max(min(z[i - l], r - i + 1), 0)
+            while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+                l, r = i, i + z[i]
+                z[i] += 1
+            ans += z[i]
+        return ans
+
+    def sumScores(self, s: str) -> int:
+        a = p = 0
+        n = len(s)
+        nxt = [0] * n
+        nxt[0] = n
+        T = s
+        for i in range(1, n):
+            if (i >= p or i + nxt[i - a] >= p):
+                if (i > p):
+                    p = i
+                while (p < n and T[p] == T[p - i]):
+                    p += 1
+                nxt[i] = p - i
+                a = i
+            else:
+                nxt[i] = nxt[i - a]
+        return sum(nxt)
+
+    def sumScores(self, s: str) -> int:
+        def z_function(S):
+            # https://github.com/cheran-senthil/PyRival/blob/master/pyrival/strings/z_algorithm.py
+            # https://cp-algorithms.com/string/z-function.html
+            n = len(S)
+            Z = [0] * n
+            l = r = 0
+            for i in range(1, n):
+                z = Z[i - l]
+                if i + z >= r:
+                    z = max(r - i, 0)
+                    while i + z < n and S[z] == S[i + z]:
+                        z += 1
+                    l, r = i, i + z
+                Z[i] = z
+            Z[0] = n
+            return Z
+
+        lst = z_function(s)
+        return sum(lst)
+
+
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
 class Solution:
     # do not need to care about specific indices
