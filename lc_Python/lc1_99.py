@@ -622,6 +622,45 @@ class Solution:
         return newHead
 
 
+# 27 - Remove Element - EASY
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        if not nums:
+            return 0
+        i = c = 0
+        j = len(nums) - 1
+        while i != j:
+            if nums[i] != val:
+                i += 1
+            else:
+                c += 1
+                nums[i], nums[j] = nums[j], nums[i]
+                j -= 1
+        if nums[i] == val:
+            c += 1
+        return len(nums) - c
+
+    def removeElement(self, nums: List[int], val: int) -> int:
+        j = 0
+        for i in range(len(nums)):
+            if nums[i] != val:
+                nums[j] = nums[i]
+                j += 1
+        return j
+
+    def removeElement(self, nums: List[int], val: int) -> int:
+        n = len(nums)
+        i = 0
+        for _ in range(n):
+            if nums[i] == val:
+                del nums[i]
+                n -= 1
+            else:
+                i += 1
+        return n
+        return len(nums)
+
+
 # 28 - Implement strStr() - EASY
 class Solution:
     def strStr(self, haystack: str, needle: str) -> int:

@@ -108,6 +108,61 @@ class Solution:
                    (len(x) > 0, x[0] not in set(banned + [""]), x[1]))[0]
 
 
+# 821 - Shortest Distance to a Character - EASY
+class Solution:
+    # O(n) / O(n)
+    def shortestToChar(self, s: str, c: str) -> List[int]:
+        n = len(s)
+        ans = [1e4] * n
+        i = 0
+        while i < n:
+            while i < n and s[i] != c:
+                i += 1
+            if i < n and s[i] == c:
+                ans[i] = 0
+                k = 1
+                j = i - 1
+                while j > -1 and ans[j] > k:
+                    ans[j] = k
+                    j -= 1
+                    k += 1
+                k = 1
+                j = i + 1
+                while j < n and ans[j] > k:
+                    ans[j] = k
+                    j += 1
+                    k += 1
+                i += 1
+        return ans
+
+    def shortestToChar(self, s: str, c: str) -> List[int]:
+        pre = float('-inf')
+        ans = []
+        for i in range(len(s)):
+            if s[i] == c:
+                pre = i
+            ans.append(i - pre)
+        pre = float('inf')
+        for i in range(len(s) - 1, -1, -1):
+            if s[i] == c:
+                pre = i
+            ans[i] = min(ans[i], pre - i)
+        return ans
+
+    def shortestToChar(self, s: str, c: str) -> List[int]:
+        n = len(s)
+        ans = [0 if ch == c else n for ch in s]
+        for i in range(1, n):
+            ans[i] = min(ans[i], ans[i - 1] + 1)
+        for i in range(n - 2, -1, -1):
+            ans[i] = min(ans[i], ans[i + 1] + 1)
+        return ans
+
+    def shortestToChar(self, s: str, c: str) -> List[int]:
+        p = [i for i in range(len(s)) if c == s[i]]
+        return [min(abs(x - i) for i in p) for x in range(len(s))]
+
+
 # 825 - Friends Of Appropriate Ages - MEDIUM
 class Solution:
     def numFriendRequests(self, ages: List[int]) -> int:
