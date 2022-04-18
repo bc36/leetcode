@@ -405,8 +405,11 @@ class Solution:
 # 74 / 2022.3.19 #
 ##################
 # https://leetcode-cn.com/contest/biweekly-contest-74/
-
 # https://leetcode-cn.com/contest/biweekly-contest-74/problems/minimum-white-tiles-after-covering-with-carpets/
+
+# https://leetcode-cn.com/contest/biweekly-contest-75/
+# 433 / https://leetcode-cn.com/contest/biweekly-contest-75/problems/sum-of-scores-of-built-strings/
+# z算法, 扩展kmp
 
 # https://leetcode-cn.com/contest/biweekly-contest-76/
 # 439 / https://leetcode-cn.com/contest/biweekly-contest-76/problems/maximum-score-of-a-node-sequence/
