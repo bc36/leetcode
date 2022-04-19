@@ -649,7 +649,7 @@ class Solution:
                 res += (count - (k - start))
                 visited.add(k)
         return res + len(s)
-        
+
     # https://oi-wiki.org/string/z-func/
     def sumScores(self, s: str) -> int:
         n = len(s)
@@ -701,6 +701,19 @@ class Solution:
 
         lst = z_function(s)
         return sum(lst)
+
+
+# 2224 - Minimum Number of Operations to Convert Time - EASY
+class Solution:
+    def convertTime(self, a: str, b: str) -> int:
+        c = int(a[:2]) * 60 + int(a[3:])
+        d = int(b[:2]) * 60 + int(b[3:])
+        e = d - c
+        ans = 0
+        for i in [60, 15, 5, 1]:
+            ans += e // i
+            e %= i
+        return ans
 
 
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
