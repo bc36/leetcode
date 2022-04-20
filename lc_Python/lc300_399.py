@@ -1474,6 +1474,31 @@ class Solution:
         return -1
 
 
+# 388 - Longest Absolute File Path - MEDIUM
+class Solution:
+    def lengthLongestPath(self, s: str) -> int:
+        ans = 0
+        m = {-1: 0}
+        for p in s.split('\n'):
+            depth = p.count('\t')
+            m[depth] = m[depth - 1] + len(p) - depth
+            if p.count('.'):
+                ans = max(ans, m[depth] + depth)  # depth = '/'
+        return ans
+
+    # why this version not work?
+    def lengthLongestPath(self, s: str) -> int:
+        ans = 0
+        m = {-1: 0}
+        for p in s.split('\n'):
+            depth = p.count('\t')
+            m[depth] = m[depth - 1] + len(p)
+            # if it does not have '.', the m[depth] will be wrong
+            if p.count('.'):
+                ans = max(ans, m[depth])
+        return ans
+
+
 # 389 - Find the Difference - EASY
 class Solution:
     def findTheDifference(self, s: str, t: str) -> str:
