@@ -163,6 +163,18 @@ class Solution:
         return [min(abs(x - i) for i in p) for x in range(len(s))]
 
 
+# 824 - Goat Latin - EASY
+class Solution:
+    def toGoatLatin(self, sentence: str) -> str:
+        arr = []
+        for i, s in enumerate(sentence.split()):
+            if s[0] in 'aeiouAEIOU':
+                arr.append(s + 'ma' + 'a' * (i + 1))
+            else:
+                arr.append(s[1:] + s[0] + 'ma' + 'a' * (i + 1))
+        return ' '.join(arr)
+
+
 # 825 - Friends Of Appropriate Ages - MEDIUM
 class Solution:
     def numFriendRequests(self, ages: List[int]) -> int:
