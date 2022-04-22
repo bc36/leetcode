@@ -1607,14 +1607,33 @@ class Solution:
 
 # 396 - Rotate Function - MEDIUM
 class Solution:
+    # O(n) / O(1)
     def maxRotateFunction(self, nums: List[int]) -> int:
-        f, n, numSum = 0, len(nums), sum(nums)
-        for i, num in enumerate(nums):
-            f += i * num
-        ans = f
-        for i in range(n - 1, 0, -1):
-            f = f + numSum - n * nums[i]
-            ans = max(ans, f)
+        n = len(nums)
+        s = sum(nums)
+        dp = [0] * n
+        dp[0] = sum(i * v for i, v in enumerate(nums))
+        for i in range(1, n):
+            dp[i] = dp[i - 1] + s - nums[-i] * n
+        return max(dp)
+
+    def maxRotateFunction(self, nums: List[int]) -> int:
+        mx = cur = sum(i * v for i, v in enumerate(nums))
+        s = sum(nums)
+        n = len(nums)
+        for i in range(1, n):
+            cur += s - n * nums[-i]
+            # mx = max(mx, cur)  # slow
+            mx = cur if cur > mx else mx  # fast
+        return mx
+
+    def maxRotateFunction(self, nums: List[int]) -> int:
+        ans = cur = sum(idx * num for idx, num in enumerate(nums))
+        s = sum(nums)
+        n = len(nums)
+        while nums:
+            cur += s - nums.pop() * n
+            ans = cur if cur > ans else ans
         return ans
 
 
