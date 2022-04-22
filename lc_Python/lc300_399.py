@@ -1605,6 +1605,19 @@ class Solution:
         return ans
 
 
+# 396 - Rotate Function - MEDIUM
+class Solution:
+    def maxRotateFunction(self, nums: List[int]) -> int:
+        f, n, numSum = 0, len(nums), sum(nums)
+        for i, num in enumerate(nums):
+            f += i * num
+        ans = f
+        for i in range(n - 1, 0, -1):
+            f = f + numSum - n * nums[i]
+            ans = max(ans, f)
+        return ans
+
+
 # 397 - Integer Replacement - MEDIUM
 # memo
 class Solution:
