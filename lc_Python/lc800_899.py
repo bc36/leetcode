@@ -553,6 +553,20 @@ class Solution:
         return ans
 
 
+# 868 - Binary Gap - EASY
+class Solution:
+    def binaryGap(self, n: int) -> int:
+        ans = c = 0
+        while n:
+            if n & 1:
+                ans = max(ans, c)
+                c = 1
+            else:
+                c += 1 if c > 0 else 0
+            n >>= 1
+        return ans
+
+
 # 875 - Koko Eating Bananas - MEDIUM
 class Solution:
     # O(n * logm), O(1)
