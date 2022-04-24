@@ -991,3 +991,8 @@ class Solution:
 
 # 739 / https://leetcode-cn.com/contest/weekly-contest-289/problems/longest-path-with-different-adjacent-characters/
 # 树形DP, 树的直径 lc1245, lc687
+
+# https://leetcode-cn.com/contest/weekly-contest-290/
+
+# 1104 / https://leetcode-cn.com/contest/weekly-contest-290/problems/count-number-of-rectangles-containing-each-point/
+# 树状数组, 二维偏序问题, 有序容器 SortedList, 二分排序

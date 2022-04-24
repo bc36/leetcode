@@ -1,5 +1,6 @@
 import bisect, collections, functools, math, itertools, heapq
 from typing import List, Optional
+import sortedcontainers
 
 
 # 2200 - Find All K-Distant Indices in an Array - EASY
@@ -1246,3 +1247,93 @@ class Solution:
 
         dfs(0)
         return self.ans
+
+
+# 2248 - Intersection of Multiple Arrays - EASY
+class Solution:
+    def intersection(self, nums: List[List[int]]) -> List[int]:
+        a = set(nums[0])
+        for i in range(1, len(nums)):
+            b = set(nums[i])
+            a.intersection_update(b)
+        return sorted(list(a))
+
+    def intersection(self, nums: List[List[int]]) -> List[int]:
+        s = set(nums[0])
+        for t in nums[1:]:
+            s &= set(t)
+        return sorted(s)
+
+    def intersection(self, nums: List[List[int]]) -> List[int]:
+        flat = [x for n in nums for x in n]
+        cnt = collections.Counter(flat)
+        ans = [i for i in cnt.keys() if cnt[i] == len(nums)]
+        return sorted(ans)
+
+
+# 2249 - Count Lattice Points Inside a Circle - MEDIUM
+class Solution:
+    def countLatticePoints(self, circles: List[List[int]]) -> int:
+        s = set()
+        ans = 0
+        for x, y, r in circles:
+            d = r**2
+            for i in range(x - r, x + r + 1):
+                for j in range(y - r, y + r + 1):
+                    if (i, j) in s:
+                        continue
+                    else:
+                        # if (i - x)**2 + (j - y)**2 <= d: # slower if the power is small
+                        if (i - x) * (i - x) + (j - y) * (j - y) <= d:
+                            ans += 1
+                            s.add((i, j))
+        return ans
+
+
+# 2250 - Count Number of Rectangles Containing Each Point - MEDIUM
+class Solution:
+    # the range of 'h' is 1 <= h <= 100, much smaller than the range of 'l'
+    def countRectangles(self, rectangles: List[List[int]],
+                        points: List[List[int]]) -> List[int]:
+        ans = []
+        d = collections.defaultdict(list)
+        for l, h in rectangles:  # O(n)
+            d[h].append(l)
+        for h in d:  # O(n * llogl)
+            d[h].sort()
+        for x, y in points:  # O(n * C * logl)
+            count = 0
+            for h in range(y, 101):
+                j = bisect.bisect_left(d[h], x)
+                count += len(d[h]) - j
+            ans.append(count)
+        return ans
+
+    # O(nlogn + mlogm + mlogn) / O(m), n = len(rectangles), m = len(points)
+    def countRectangles(self, rectangles: List[List[int]],
+                        points: List[List[int]]) -> List[int]:
+        rectangles.sort(key=lambda r: -r[1])
+        ans = [0] * len(points)
+        i = 0
+        sl = sortedcontainers.SortedList()
+        for (x, y), id in sorted(zip(points, range(len(points))),
+                                 key=lambda x: -x[0][1]):
+            while i < len(rectangles) and rectangles[i][1] >= y:
+                sl.add(rectangles[i][0])
+                i += 1
+            ans[id] = i - sl.bisect_left(x)
+        return ans
+
+    def countRectangles(self, rectangles: List[List[int]],
+                        points: List[List[int]]) -> List[int]:
+        rectangles.sort()
+        points = sorted([[x, y, i] for i, (x, y) in enumerate(points)])
+        sl = sortedcontainers.SortedList()
+        ans = [0] * len(points)
+        r = len(rectangles) - 1
+        for x, y, i in reversed(points):
+            while r >= 0 and rectangles[r][0] >= x:
+                sl.add(rectangles[r][1])
+                r -= 1
+            ans[i] = len(sl) - sl.bisect_left(y)
+        return ans
