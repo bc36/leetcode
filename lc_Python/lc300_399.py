@@ -1685,3 +1685,47 @@ class Solution:
                     dq.append(number - 1)
             ans += 1
         return ans
+
+
+# 398 - Random Pick Index - MEDIUM
+class Solution:
+    # init: O(n), pick: O(1) / O(n)
+    def __init__(self, nums: List[int]):
+        self.d = collections.defaultdict(list)
+        for i, v in enumerate(nums):
+            self.d[v].append(i)
+
+    def pick(self, target: int) -> int:
+        return random.choice(self.d[target])
+
+
+class Solution:
+    # init: O(1), pick: O(n) / O(1)
+    # Reservoir Sampling: we cannot load all the data at once
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+
+    def pick(self, target: int) -> int:
+        ans = cnt = 0
+        for i, n in enumerate(self.nums):
+            if n == target:
+                cnt += 1
+                if random.randrange(cnt) == 0:
+                    ans = i
+                # if random.randint(1, cnt) == cnt:
+                #     ans = i
+                # if random.randint(1, cnt) == 1:
+                #     ans = i
+        return ans
+
+
+class Solution:
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+
+    def pick(self, target: int) -> int:
+        ans = []
+        for i, n in enumerate(self.nums):
+            if n == target:
+                ans.append(i)
+        return ans[random.randrange(len(ans))]

@@ -717,6 +717,40 @@ class Solution:
         return ans
 
 
+# 2225 - Find Players With Zero or One Losses - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def findWinners(self, matches: List[List[int]]) -> List[List[int]]:
+        win = set()
+        lose = collections.defaultdict(int)
+        for w, l in matches:
+            win.add(w)
+            lose[l] += 1
+        aw = []
+        al = []
+        for w in win:
+            if lose[w] == 0:
+                aw.append(w)
+        for l in lose:
+            if lose[l] == 1:
+                al.append(l)
+        return [sorted(aw), sorted(al)]
+
+    def findWinners(self, matches: List[List[int]]) -> List[List[int]]:
+        freq = collections.defaultdict(int)
+        for w, l in matches:
+            if w not in freq:
+                freq[w] = 0
+            freq[l] += 1
+        ans = [[], []]
+        for k, v in freq.items():
+            if v < 2:
+                ans[v].append(k)
+        ans[0].sort()
+        ans[1].sort()
+        return ans
+
+
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
 class Solution:
     # do not need to care about specific indices
@@ -1307,6 +1341,38 @@ class Solution:
                 j = bisect.bisect_left(d[h], x)
                 count += len(d[h]) - j
             ans.append(count)
+        return ans
+
+    def countRectangles(self, rectangles: List[List[int]],
+                        points: List[List[int]]) -> List[int]:
+        rectangles.sort(key=lambda r: -r[1])
+        ans = [0] * len(points)
+        i = 0
+        xs = []
+        for (x, y), id in sorted(zip(points, range(len(points))),
+                                 key=lambda x: -x[0][1]):
+            start = i
+            while i < len(rectangles) and rectangles[i][1] >= y:
+                xs.append(rectangles[i][0])
+                i += 1
+            if start < i:
+                xs.sort()  # 只有在 xs 插入了新元素时才排序
+            ans[id] = i - bisect.bisect_left(xs, x)
+        return ans
+
+    def countRectangles(self, rectangles: List[List[int]],
+                        points: List[List[int]]) -> List[int]:
+        rectangles.sort(key=lambda r: -r[0])
+        n = len(points)
+        ans = [0] * n
+        cnt = [0] * (max(r[1] for r in rectangles) + 1)
+        i = 0
+        for (x, y), id in sorted(zip(points, range(n)),
+                                 key=lambda x: -x[0][0]):
+            while i < len(rectangles) and rectangles[i][0] >= x:
+                cnt[rectangles[i][1]] += 1
+                i += 1
+            ans[id] = sum(cnt[y:])
         return ans
 
     # O(nlogn + mlogm + mlogn) / O(m), n = len(rectangles), m = len(points)
