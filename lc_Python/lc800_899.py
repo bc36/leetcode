@@ -674,6 +674,34 @@ class Solution:
         return l % (10**9 + 7)
 
 
+# 883 - Projection Area of 3D Shapes - EASY
+class Solution:
+    def projectionArea(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        a = sum(1 if x != 0 else 0 for g in grid for x in g)
+        b = sum(max(g) for g in grid)
+        c = sum(max(grid[i][j] for i in range(n)) for j in range(n))
+        return a + b + c
+
+    # zip + '*' unpack: row -> column
+    def projectionArea(self, grid: List[List[int]]) -> int:
+        a = sum(v > 0 for row in grid for v in row)
+        b = sum(map(max, grid))
+        c = sum(map(max, zip(*grid)))
+        return a + b + c
+
+    def projectionArea(self, grid: List[List[int]]) -> int:
+        return sum(map(max, grid + list(zip(*grid)))) + sum(v > 0 for r in grid
+                                                            for v in r)
+
+    def projectionArea(self, grid: List[List[int]]) -> int:
+        return sum([
+            sum(map(max, grid)),
+            sum(map(max, zip(*grid))),
+            sum(v > 0 for row in grid for v in row)
+        ])
+
+
 # 884 - Uncommon Words from Two Sentences - EASY
 class Solution:
     def uncommonFromSentences(self, s1: str, s2: str) -> List[str]:
