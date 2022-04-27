@@ -132,6 +132,95 @@ class Solution:
         return ans
 
 
+# 417 - Pacific Atlantic Water Flow - MEDIUM
+class Solution:
+    # O(mn) / O(mn)
+    def pacificAtlantic(self, h: List[List[int]]) -> List[List[int]]:
+        def dfs(x, y, ocean):
+            s.add((x, y))
+            if ocean == 'p':
+                pac[x][y] = 1
+            else:
+                atl[x][y] = 1
+            for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
+                if 0 <= nx < m and 0 <= ny < n and (
+                        nx, ny) not in s and h[nx][ny] >= h[x][y]:
+                    dfs(nx, ny, ocean)
+
+        m = len(h)
+        n = len(h[0])
+        s = set()
+        ans = []
+        pac = [[0] * n for _ in range(m)]
+        atl = [[0] * n for _ in range(m)]
+        for i in range(m):
+            dfs(i, 0, 'p')
+        for j in range(1, n):
+            dfs(0, j, 'p')
+        s.clear()
+        for i in range(m):
+            dfs(i, n - 1, 'a')
+        for j in range(n - 1):
+            dfs(m - 1, j, 'a')
+        for i in range(m):
+            for j in range(n):
+                if pac[i][j] == atl[i][j] == 1:
+                    ans.append([i, j])
+        return ans
+
+    def pacificAtlantic(self, h: List[List[int]]) -> List[List[int]]:
+        m = len(h)
+        n = len(h[0])
+        pac = [[0] * n for _ in range(m)]  # the point that pac water can reach
+        atl = [[0] * n for _ in range(m)]
+        ans = []
+
+        def dfs(h, can, r, c):
+            if can[r][c]:
+                return
+            can[r][c] = 1
+            if pac[r][c] and atl[r][c]:
+                ans.append([r, c])
+            if r - 1 >= 0 and h[r - 1][c] >= h[r][c]:
+                dfs(h, can, r - 1, c)
+            if r + 1 < m and h[r + 1][c] >= h[r][c]:
+                dfs(h, can, r + 1, c)
+            if c - 1 >= 0 and h[r][c - 1] >= h[r][c]:
+                dfs(h, can, r, c - 1)
+            if c + 1 < n and h[r][c + 1] >= h[r][c]:
+                dfs(h, can, r, c + 1)
+            return
+
+        for i in range(m):
+            dfs(h, pac, i, 0)  # left
+            dfs(h, atl, i, n - 1)  # right
+        for j in range(n):
+            dfs(h, pac, 0, j)  # up
+            dfs(h, atl, m - 1, j)  # down
+        return ans
+
+    def pacificAtlantic(self, h: List[List[int]]) -> List[List[int]]:
+        m = len(h)
+        n = len(h[0])
+        p_vis = set()
+        a_vis = set()
+
+        def dfs(s: set, x: int, y: int):
+            s.add((x, y))
+            for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
+                if 0 <= nx < m and 0 <= ny < n and (
+                        nx, ny) not in s and h[nx][ny] >= h[x][y]:
+                    dfs(s, nx, ny)
+
+        for i in range(m):
+            dfs(p_vis, i, 0)
+            dfs(a_vis, i, n - 1)
+        for j in range(n):
+            dfs(p_vis, 0, j)
+            dfs(a_vis, m - 1, j)
+        return list(p_vis.intersection(a_vis))
+
+
 # 419 - Battleships in a Board - MEDIUM
 class Solution:
     def countBattleships(self, board):
