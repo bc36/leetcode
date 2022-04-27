@@ -9,6 +9,27 @@ class TreeNode:
         self.right = right
 
 
+# 905 - Sort Array By Parity - EASY
+class Solution:
+    def sortArrayByParity(self, nums: List[int]) -> List[int]:
+        j = len(nums) - 1
+        for i in range(j):
+            while j >= 0 and nums[j] & 1:
+                j -= 1
+            if i >= j:
+                break
+            if nums[i] & 1:
+                nums[i], nums[j] = nums[j], nums[i]
+                j -= 1
+        return nums
+
+    def sortArrayByParity(self, nums: List[int]) -> List[int]:
+        return [n for n in nums if not n & 1] + [n for n in nums if n & 1]
+
+    def sortArrayByParity(self, nums: List[int]) -> List[int]:
+        return sorted(nums, key=lambda x: x & 1)
+
+
 # 911 - Online Election - MEDIUM
 
 
