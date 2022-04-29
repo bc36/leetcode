@@ -1,4 +1,4 @@
-import collections, heapq, functools
+import collections, heapq, functools, bisect
 from typing import List
 
 
@@ -30,7 +30,58 @@ class Solution:
         return sorted(nums, key=lambda x: x & 1)
 
 
+# 908 - Smallest Range I - EASY
+class Solution:
+    def smallestRangeI(self, nums: List[int], k: int) -> int:
+        mi = min(nums)
+        mx = max(nums)
+        if mx - mi <= 2 * k:
+            return 0
+        return mx - mi - 2 * k if mx - mi > 2 * k else 0
+
+    def smallestRangeI(self, nums: List[int], k: int) -> int:
+        return max(0, max(nums) - min(nums) - 2 * k)
+
+
 # 911 - Online Election - MEDIUM
+class TopVotedCandidate:
+    def __init__(self, persons: List[int], times: List[int]):
+        cnt = collections.defaultdict(int)
+        cur = -1
+        cnt[cur] = -1
+        self.lead = []
+        for p in persons:
+            cnt[p] += 1
+            if cnt[p] >= cnt[cur]:
+                cur = p
+            self.lead.append(cur)
+        self.times = times
+
+    def q(self, t: int) -> int:
+        return self.lead[bisect.bisect_right(self.times, t) - 1]
+
+
+class TopVotedCandidate:
+    def __init__(self, persons: List[int], times: List[int]):
+        self.winner = []
+        d = {}
+        cmax = 0
+        for p in persons:
+            if p not in d:
+                d[p] = 1
+            else:
+                d[p] += 1
+            cur = d[p]
+            if cur >= cmax:
+                self.winner.append(p)
+                cmax = cur
+            else:
+                self.winner.append(self.winner[-1])
+        self.time = times
+
+    def q(self, t: int) -> int:
+        q = bisect.bisect_right(self.time, t)
+        return self.winner[q - 1]
 
 
 # 913 - Cat and Mouse — HARD
