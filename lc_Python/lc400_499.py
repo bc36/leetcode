@@ -311,6 +311,65 @@ class Solution:
         return dummy.right
 
 
+# 427 - Construct Quad Tree - MEDIUM
+# Definition for a QuadTree node.
+class QNode:
+    def __init__(self, val, isLeaf, topLeft, topRight, bottomLeft,
+                 bottomRight):
+        self.val = val
+        self.isLeaf = isLeaf
+        self.topLeft = topLeft
+        self.topRight = topRight
+        self.bottomLeft = bottomLeft
+        self.bottomRight = bottomRight
+
+
+class Solution:
+    def construct(self, grid: List[List[int]]) -> 'QNode':
+        def dfs(r0: int, c0: int, r1: int, c1: int) -> 'QNode':
+            if all(grid[i][j] == grid[r0][c0] for i in range(r0, r1)
+                   for j in range(c0, c1)):
+                return QNode(grid[r0][c0], True, None, None, None, None)
+            return QNode(
+                None,  # 'val' can be anything if the node is not a leaf
+                False,
+                dfs(r0, c0, (r0 + r1) // 2, (c0 + c1) // 2),
+                dfs(r0, (c0 + c1) // 2, (r0 + r1) // 2, c1),
+                dfs((r0 + r1) // 2, c0, r1, (c0 + c1) // 2),
+                dfs((r0 + r1) // 2, (c0 + c1) // 2, r1, c1),
+            )
+
+        return dfs(0, 0, len(grid), len(grid))
+
+    def construct(self, grid: List[List[int]]) -> 'QNode':
+        n = len(grid)
+        pre = [[0] * (n + 1) for _ in range(n + 1)]
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                pre[i][j] = pre[i - 1][j] + pre[i][j - 1] - pre[i - 1][
+                    j - 1] + grid[i - 1][j - 1]
+
+        def getSum(r0: int, c0: int, r1: int, c1: int) -> int:
+            return pre[r1][c1] - pre[r1][c0] - pre[r0][c1] + pre[r0][c0]
+
+        def dfs(r0: int, c0: int, r1: int, c1: int) -> 'QNode':
+            total = getSum(r0, c0, r1, c1)
+            if total == 0:
+                return QNode(False, True)
+            if total == (r1 - r0) * (c1 - c0):
+                return QNode(True, True)
+            return QNode(
+                True,  # 'val' can be anything if the node is not a leaf
+                False,
+                dfs(r0, c0, (r0 + r1) // 2, (c0 + c1) // 2),
+                dfs(r0, (c0 + c1) // 2, (r0 + r1) // 2, c1),
+                dfs((r0 + r1) // 2, c0, r1, (c0 + c1) // 2),
+                dfs((r0 + r1) // 2, (c0 + c1) // 2, r1, c1),
+            )
+
+        return dfs(0, 0, n, n)
+
+
 # 429 - N-ary Tree Level Order Traversal - MEDIUM
 class Solution:
     def levelOrder(self, root: 'Node') -> List[List[int]]:

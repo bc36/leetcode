@@ -93,6 +93,50 @@ class Solution:
         return ans
 
 
+# 103 - Binary Tree Zigzag Level Order Traversal - MEDIUM
+class Solution:
+    def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        ans = []
+        dq = collections.deque([root])
+        f = True
+        while dq:
+            lv = collections.deque([])
+            for _ in range(len(dq)):
+                n = dq.popleft()
+                if f:
+                    lv.append(n.val)
+                else:
+                    lv.appendleft(n.val)
+                if n.left:
+                    dq.append(n.left)
+                if n.right:
+                    dq.append(n.right)
+            f = not f
+            ans.append(list(lv))
+        return ans
+
+    def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        ans = []
+        q = [root]
+        f = 0
+        while q:
+            lv = []
+            nxt = []
+            for n in q:
+                lv.append(n.val)
+                if n.left:
+                    nxt.append(n.left)
+                if n.right:
+                    nxt.append(n.right)
+            lv = lv[::-1] if f & 1 else lv
+            ans.append(lv)
+            f += 1
+            q = nxt
+        return ans
+
+
 # 104 - Maximum Depth of Binary Tree - EASY
 class Solution:
     def maxDepth(self, root: TreeNode) -> int:
