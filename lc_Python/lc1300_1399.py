@@ -11,21 +11,20 @@ class TreeNode:
 
 # 1305 - All Elements in Two Binary Search Trees - MEDIUM
 class Solution:
-    # result of inorder traversal of a Binary Search Tree is ascending order
-    # O((m+n) * log(m+n))
+    # O((m+n) * log(m+n)) / O(m + n)
     def getAllElements(self, root1: TreeNode, root2: TreeNode) -> List[int]:
-        def dfs(node):
-            if node:
-                dfs(node.left)
-                valueList.append(node.val)
-                dfs(node.right)
+        def dfs(root: TreeNode):
+            if root:
+                arr.append(root.val)
+                dfs(root.left)
+                dfs(root.right)
 
-        valueList = []
+        arr = []
         dfs(root1)
         dfs(root2)
-        return sorted(valueList)
+        return sorted(arr)
 
-    # O((m+n) * 2)
+    # O((m+n) * 2) / O(m + n)
     def getAllElements(self, root1: TreeNode, root2: TreeNode) -> List[int]:
         def inorder(node: TreeNode, l: List[int]):
             if not node:
@@ -35,10 +34,10 @@ class Solution:
             inorder(node.right, l)
             return
 
-        l1, l2 = [], []
+        l1, l2, ans = [], [], []
         inorder(root1, l1)
         inorder(root2, l2)
-        ans, i, j = [], 0, 0
+        i = j = 0
         while i < len(l1) or j < len(l2):
             if i < len(l1) and (j == len(l2) or l1[i] <= l2[j]):
                 ans.append(l1[i])
