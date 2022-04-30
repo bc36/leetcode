@@ -413,3 +413,6 @@ class Solution:
 
 # https://leetcode-cn.com/contest/biweekly-contest-76/
 # 439 / https://leetcode-cn.com/contest/biweekly-contest-76/problems/maximum-score-of-a-node-sequence/
+
+# https://leetcode-cn.com/contest/biweekly-contest-77
+# 285 / https://leetcode-cn.com/contest/biweekly-contest-77/problems/escape-the-spreading-fire/

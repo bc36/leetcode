@@ -1403,3 +1403,224 @@ class Solution:
                 r -= 1
             ans[i] = len(sl) - sl.bisect_left(y)
         return ans
+
+
+# 2255 - Count Prefixes of a Given String - EASY
+class Solution:
+    def countPrefixes(self, words: List[str], s: str) -> int:
+        ans = 0
+        cnt = collections.Counter(words)
+        for i in range(len(s)):
+            if s[:i + 1] in cnt:
+                ans += cnt[s[:i + 1]]
+        return ans
+
+    def countPrefixes(self, words: List[str], s: str) -> int:
+        return sum(s.startswith(w) for w in words)
+
+
+# 2256 - Minimum Average Difference - MEDIUM
+class Solution:
+    def minimumAverageDifference(self, nums: List[int]) -> int:
+        n = len(nums)
+        p = [0]
+        for i in range(n):
+            p.append(p[i] + nums[i])
+        ans = -1
+        d = math.inf
+        for i in range(n):
+            l = int(p[i + 1] / (i + 1))
+            r = 0
+            if i != n - 1:
+                r = int((p[-1] - p[i + 1]) / (n - i - 1))
+            if abs(l - r) < d:
+                ans = i
+                d = abs(l - r)
+        return ans
+
+    def minimumAverageDifference(self, nums: List[int]) -> int:
+        pre = 0
+        suf = sum(nums)
+        n = len(nums)
+        mindiff = math.inf
+        for i in range(n - 1):
+            pre += nums[i]
+            suf -= nums[i]
+            d = abs(int(pre / (i + 1)) - int(suf / (n - i - 1)))
+            if d < mindiff:
+                mindiff = d
+                ans = i
+        if int(pre + nums[-1]) / n < mindiff:
+            ans = n - 1
+        return ans
+
+
+# 2257 - Count Unguarded Cells in the Grid - MEDIUM
+class Solution:
+    def countUnguarded(self, m: int, n: int, guards: List[List[int]],
+                       walls: List[List[int]]) -> int:
+        # guard: 3 / wall:2 / can be guarded: 1
+        g = [[0] * n for _ in range(m)]
+        for r, c in walls:
+            g[r][c] = 2
+        dq = collections.deque([])
+        for r, c in guards:
+            g[r][c] = 3
+            dq.append((r, c, 1, 0))
+            dq.append((r, c, -1, 0))
+            dq.append((r, c, 0, 1))
+            dq.append((r, c, 0, -1))
+        while dq:
+            for _ in range(len(dq)):
+                x, y, dx, dy = dq.popleft()
+                nx = x + dx
+                ny = y + dy
+                if 0 <= nx < m and 0 <= ny < n and g[nx][ny] < 2:
+                    g[nx][ny] = 1
+                    dq.append((nx, ny, dx, dy))
+        return sum(v == 0 for r in g for v in r)
+
+    def countUnguarded(self, m: int, n: int, guards: List[List[int]],
+                       walls: List[List[int]]) -> int:
+        f = [[0] * n for _ in range(m)]
+        for x, y in walls:
+            f[x][y] = -1
+        for x, y in guards:
+            f[x][y] = -2
+        d = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        for x, y in guards:
+            for dx, dy in d:
+                nx, ny = x, y
+                while True:
+                    nx += dx
+                    ny += dy
+                    if 0 <= nx < m and 0 <= ny < n:
+                        if f[nx][ny] < 0:
+                            break
+                        if f[nx][ny] == 0:
+                            f[nx][ny] = 1
+                    else:
+                        break
+        return sum(v == 0 for r in f for v in r)
+
+
+# 2258 - Escape the Spreading Fire - HARD
+class Solution:
+    def maximumMinutes(self, g: List[List[int]]) -> int:
+        m = len(g)
+        n = len(g[0])
+        d = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        fires = [[i, j, 0] for i in range(m) for j in range(n) if g[i][j] == 1]
+        inf = 10**10
+        g = [[inf if v < 2 else -1 for v in r] for r in g]
+
+        def bfs(queue: List[List[int]], seen: List[List[int]]):
+            for i, j, t in queue:
+                if seen[i][j] < inf:
+                    continue
+                seen[i][j] = t
+                for di, dj in d:
+                    x, y = i + di, j + dj
+                    if 0 <= x < m and 0 <= y < n and \
+                        seen[x][y] >= inf and t + 1 < g[x][y]:
+                        queue.append([x, y, t + 1])
+
+        def die(t: int) -> bool:
+            seen = [[math.inf] * n for _ in range(m)]
+            bfs([[0, 0, t]], seen)
+            return seen[-1][-1] > g[-1][-1]
+
+        bfs(fires, g)
+        g[-1][-1] += 1
+        # return bisect_left(range(10**9 + 1), True, key=die) - 1
+        ans = bisect.bisect_left(range(m * n + 1), 1, key=die) - 1
+        return ans if ans < m * n else 10**9
+
+    # no binary search, just BFS
+    def maximumMinutes(self, g: List[List[int]]) -> int:
+        m = len(g)
+        n = len(g[0])
+        f = [[math.inf] * n for _ in range(m)]
+        s = collections.deque([])
+        for i, r in enumerate(g):
+            for j, v in enumerate(r):
+                if v == 1:
+                    s.append((i, j))
+                    f[i][j] = 0
+        while s:
+            for _ in range(len(s)):
+                x, y = s.popleft()
+                for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if 0 <= nx < m and 0 <= ny < n and f[nx][
+                            ny] == math.inf and g[nx][ny] != 2:
+                        s.append((nx, ny))
+                        f[nx][ny] = f[x][y] + 1
+
+        my = collections.deque([(0, 0)])
+        p = [[math.inf] * n for _ in range(m)]
+        p[0][0] = 0
+        step = 0
+        while my:
+            for _ in range(len(my)):
+                x, y = my.popleft()
+                for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if 0 <= nx < m and 0 <= ny < n and g[nx][ny] != 2 and p[
+                            nx][ny] == math.inf:
+                        if f[nx][ny] == math.inf or step + 1 < f[nx][ny] or (
+                                step + 1 == f[nx][ny] and nx == m - 1
+                                and ny == n - 1):
+                            p[nx][ny] = p[x][y] + 1
+                            my.append((nx, ny))
+            step += 1
+
+        if p[-1][-1] == math.inf:
+            return -1
+        if f[-1][-1] == math.inf:
+            return 10**9
+        if f[-1][-1] == p[-1][-1]:
+            return 0
+        # !
+        diff = f[-1][-1] - p[-1][-1]
+        # if m > 1 and n > 1:
+        d1 = f[-1][-2] - p[-1][-2]
+        d2 = f[-2][-1] - p[-2][-1]
+        if d1 > diff or d2 > diff:
+            return diff
+        return diff - 1
+
+    def maximumMinutes(self, g: List[List[int]]) -> int:
+        m = len(g)
+        n = len(g[0])
+        f = [[-1] * n for _ in range(m)]
+        p = [[-1] * n for _ in range(m)]
+
+        def bfs(dq: collections.deque, board: List[List[int]], is_fire=True):
+            while dq:
+                r, c, step = dq.popleft()
+                board[r][c] = step
+                for nr, nc in [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]]:
+                    if 0 <= nc < n and 0 <= nr < m and board[nr][nc] < 0 and g[nr][nc] != 2 and \
+                        (is_fire or \
+                        f[nr][nc] < 0 or \
+                        f[nr][nc] > step + 1 or \
+                        (f[nr][nc] == step + 1 and nr == m - 1 and nc == n - 1)):
+                        dq.append((nr, nc, step + 1))
+            return
+
+        bfs(collections.deque([(r, c, 0) for r in range(m) for c in range(n) \
+                               if g[r][c] == 1]), f)
+        bfs(collections.deque([(0, 0, 0)]), p, is_fire=False)
+
+        if p[-1][-1] < 0:
+            return -1
+        if f[-1][-1] < 0:
+            return 1000000000
+        if f[-1][-1] == p[-1][-1]:
+            return 0
+        diff = f[-1][-1] - p[-1][-1]
+        # if m > 1 and n > 1:
+        d1 = f[-1][-2] - p[-1][-2]
+        d2 = f[-2][-1] - p[-2][-1]
+        if d1 > diff or d2 > diff:
+            return diff
+        return diff - 1
