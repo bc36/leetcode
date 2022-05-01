@@ -1624,3 +1624,96 @@ class Solution:
         if d1 > diff or d2 > diff:
             return diff
         return diff - 1
+
+
+# 2259 - Remove Digit From Number to Maximize Result - EASY
+class Solution:
+    def removeDigit(self, number: str, digit: str) -> str:
+        ans = ''
+        for i in range(len(number)):
+            if number[i] == digit:
+                s = number[:i] + number[i + 1:]
+                if s > ans:
+                    ans = s
+        return ans
+
+
+# 2260 - Minimum Consecutive Cards to Pick Up - MEDIUM
+class Solution:
+    def minimumCardPickup(self, cards: List[int]) -> int:
+        ans = math.inf
+        d = {}
+        for i, v in enumerate(cards):
+            if v in d and i - d[v] < ans:
+                ans = i - d[v] + 1
+            d[v] = i
+        return -1 if ans == math.inf else ans
+
+
+# 2261 - K Divisible Elements Subarrays - MEDIUM
+class Solution:
+    def countDistinct(self, nums: List[int], k: int, p: int) -> int:
+        n = len(nums)
+        s = set()
+        for i in range(n):
+            arr = []
+            cnt = 0
+            for j in range(i, n):
+                if nums[j] % p == 0:
+                    cnt += 1
+                if cnt > k:
+                    break
+                arr.append(nums[j])
+                s.add(tuple(arr))
+        return len(s)
+
+
+# 2262 - Total Appeal of A String - HARD
+class Solution:
+    # O(n) / O(26)
+    def appealSum(self, s: str) -> int:
+        ans = last = 0
+        pos = [-1] * 26
+        for i, c in enumerate(s):
+            idx = ord(c) - ord('a')
+            last += i - pos[idx]
+            pos[idx] = i
+            ans += last
+        return ans
+
+    def appealSum(self, s: str) -> int:
+        ans = last = 0
+        d = {}
+        for i, c in enumerate(s):
+            if c in d:
+                last += i - d[c]
+            else:
+                last += i + 1
+            d[c] = i
+            ans += last
+        return ans
+
+    def appealSum(self, s: str) -> int:
+        n = len(s)
+        record = {}
+        ans = 0
+        for i, c in enumerate(s):
+            ans += (i - record.get(c, -1)) * (n - i)
+            record[c] = i
+        return ans
+
+    def appealSum(self, s: str) -> int:
+        dp = [0 for _ in range(len(s) + 1)]
+        d = {}
+        for i, c in enumerate(s):
+            dp[i + 1] = dp[i] + i - d.get(c, -1)
+            d[c] = i
+        return sum(dp)
+
+    def appealSum(self, s: str) -> int:
+        last = {}
+        ans = 0
+        for i, c in enumerate(s):
+            last[c] = i + 1
+            ans += sum(last.values())
+        return ans
