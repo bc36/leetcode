@@ -377,6 +377,37 @@ class Solution:
         return (x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x0) % (10**9 + 7)
 
 
+# 937 - Reorder Data in Log Files - EASY
+class Solution:
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        a = []
+        b = []
+        for log in logs:
+            if log[-1].isalpha():
+                a.append(log)
+            else:
+                b.append(log)
+        a.sort(key=lambda x: (x[x.index(' ') + 1:], x[:x.index(' ') + 1]))
+        return a + b
+
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        def comparator(log: str) -> tuple:
+            identity, res = log.split(" ", 1)
+            if res[0].isalpha():
+                return (0, res, identity)
+            else:
+                return (1, "")
+
+        return sorted(logs, key=comparator)
+
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        def comparator(log: str) -> tuple:
+            identity, res = log.split(' ', 1)
+            return (0, res, identity) if res[0].isalpha() else (1, )
+
+        return sorted(logs, key=comparator)
+
+
 # 938 - Range Sum of BST - EASY
 class Solution:
     # preorder

@@ -1,4 +1,4 @@
-import collections, math, random, bisect, itertools, functools, heapq
+import collections, math, random, bisect, itertools, functools, heapq, re
 from typing import List, Optional
 
 
@@ -985,6 +985,17 @@ class Solution:
             # for ch in r.children:
             #     q.append(ch)
         return reversed(ans)
+
+
+# 591 - Tag Validator - HARD
+class Solution:
+    def isValid(self, code: str) -> bool:
+        code = re.sub(r'<!\[CDATA\[.*?\]\]>|t', '-', code)
+        prev = None
+        while code != prev:
+            prev = code
+            code = re.sub(r'<([A-Z]{1,9})>[^<]*</\1>', 't', code)
+        return code == 't'
 
 
 # 594 - Longest Harmonious Subsequence - EASY
