@@ -998,4 +998,6 @@ class Solution:
 # 树状数组, 二维偏序问题, 有序容器 SortedList, 二分排序
 
 # https://leetcode-cn.com/contest/weekly-contest-291
+
 # 1078 / https://leetcode-cn.com/contest/weekly-contest-291/problems/total-appeal-of-a-string/
+# 字符串贡献问题, 动态规划
