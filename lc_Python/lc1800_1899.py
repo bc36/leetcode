@@ -1,5 +1,24 @@
-import collections
+import collections, itertools, functools, math, re
 from typing import List
+
+
+# 1805 - Number of Different Integers in a String - EASY
+class Solution:
+    def numDifferentIntegers(self, word: str) -> int:
+        word = word + 'a'
+        s = set()
+        num = ''
+        for c in word:
+            if c.isdigit():
+                num += c
+            else:
+                if num != '':
+                    s.add(int(num))
+                num = ''
+        return len(s)
+
+    def numDifferentIntegers(self, word: str) -> int:
+        return len(set(map(int, re.findall('\d+', word))))
 
 
 # 1816 - Truncate Sentence - EASY

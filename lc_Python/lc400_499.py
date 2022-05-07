@@ -435,6 +435,31 @@ class Solution:
 # TODO
 
 
+# 433 - Minimum Genetic Mutation - MEDIUM
+class Solution:
+    def minMutation(self, start: str, end: str, bank: List[str]) -> int:
+        bk = set(bank)
+        seen = set()
+        q = [start]
+        step = 0
+        if end not in bk:
+            return -1
+        while q:
+            nxt = []
+            for n in q:
+                for i in range(8):
+                    for g in ['A', 'T', 'C', 'G']:
+                        a = n[:i] + g + n[i + 1:]
+                        if a == end:
+                            return step + 1
+                        if a in bk and a not in seen:
+                            nxt.append(a)
+                            seen.add(a)
+            q = nxt
+            step += 1
+        return -1
+
+
 # 435 - Non-overlapping Intervals - MEDIUM
 class Solution:
     def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:

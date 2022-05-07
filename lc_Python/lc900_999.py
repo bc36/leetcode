@@ -292,6 +292,18 @@ class Solution:
         return min(dp[-1])
 
 
+# 933 - Number of Recent Calls - EASY
+class RecentCounter:
+    def __init__(self):
+        self.dq = collections.deque()
+
+    def ping(self, t: int) -> int:
+        self.dq.append(t)
+        while self.dq[0] < t - 3000:
+            self.dq.popleft()
+        return len(self.dq)
+
+
 # 934 - Shortest Bridge - MEDIUM
 class Solution:
     # O(mn) / O(mn)
