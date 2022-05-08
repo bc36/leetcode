@@ -997,7 +997,15 @@ class Solution:
 # 1104 / https://leetcode-cn.com/contest/weekly-contest-290/problems/count-number-of-rectangles-containing-each-point/
 # 树状数组, 二维偏序问题, 有序容器 SortedList, 二分排序
 
-# https://leetcode-cn.com/contest/weekly-contest-291
+# https://leetcode-cn.com/contest/weekly-contest-291/
 
 # 1078 / https://leetcode-cn.com/contest/weekly-contest-291/problems/total-appeal-of-a-string/
 # 字符串贡献问题, 动态规划
+
+# https://leetcode-cn.com/contest/weekly-contest-292/
+
+# 2057 / https://leetcode-cn.com/contest/weekly-contest-292/problems/count-number-of-texts/
+# dfs, dp, python大数运算取模TLE / MLE
+
+# 928 / https://leetcode-cn.com/contest/weekly-contest-292/problems/check-if-there-is-a-valid-parentheses-string-path/
+# dfs, dp, bfs

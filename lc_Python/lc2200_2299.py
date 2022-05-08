@@ -1,6 +1,13 @@
 import bisect, collections, functools, math, itertools, heapq
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import sortedcontainers
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 2200 - Find All K-Distant Indices in an Array - EASY
@@ -1717,3 +1724,241 @@ class Solution:
             last[c] = i + 1
             ans += sum(last.values())
         return ans
+
+
+# 2264 - Largest 3-Same-Digit Number in String - EASY
+class Solution:
+    def largestGoodInteger(self, num: str) -> str:
+        ans = ''
+        for i in range(1, len(num) - 1):
+            if num[i - 1] == num[i] == num[i + 1]:
+                cur = num[i - 1:i + 2]
+                if ans == '':
+                    ans = cur
+                elif int(cur) > int(ans):
+                    ans = cur
+        return ans
+
+    def largestGoodInteger(self, num: str) -> str:
+        ans = ""
+        for i in range(len(num) - 2):
+            if num[i:i + 3] == num[i] * 3:
+                ans = max(ans, num[i] * 3)
+        return ans
+
+    def largestGoodInteger(self, num: str) -> str:
+        for i in '9876543210':
+            x = i * 3
+            if x in num:
+                return x
+        return ''
+
+
+# 2265 - Count Nodes Equal to Average of Subtree - MEDIUM
+class Solution:
+    def averageOfSubtree(self, root: Optional[TreeNode]) -> int:
+        self.ans = 0
+
+        def post(root: TreeNode) -> Tuple[int, int]:
+            if not root:
+                return 0, 0
+            l, lch = post(root.left)
+            r, rch = post(root.right)
+            t = l + r + root.val
+            tch = lch + rch + 1
+            if root.val == t // tch:
+                self.ans += 1
+            return t, tch
+
+        post(root)
+        return self.ans
+
+
+# 2266 - Count Number of Texts - MEDIUM
+class Solution:
+    def countTexts(self, pressedKeys: str) -> int:
+        mod = 1_000_000_007
+
+        @functools.lru_cache(None)
+        def dfs(n: int, k: int) -> int:
+            """Return number of possible text of n repeated k times."""
+            if n < 0: return 0
+            if n == 0: return 1
+            ans = 0
+            for x in range(1, k + 1):
+                ans = (ans + dfs(n - x, k)) % mod
+            return ans
+
+        ans = 1
+        for key, grp in itertools.groupby(pressedKeys):
+            if key in "79":
+                k = 4
+            else:
+                k = 3
+            ans = (ans * dfs(len(list(grp)), k)) % mod
+        return ans
+
+    def countTexts(self, pressedKeys: str) -> int:
+        @functools.lru_cache(None)
+        def dfs(length: int, k: int) -> int:
+            if length == 0:
+                return 1
+            cur = 0
+            for i in range(k):
+                if i + 1 <= length:
+                    cur = (cur + dfs(length - i - 1, k)) % mod
+
+                    # cur += dfs(length - i - 1, k)
+                    # original version:
+                    #   if there is no modulo operation,
+                    #   then 'cur' is very large and slow to compute
+                    #   TLE in leetcode.cn,
+                    #   MLE in leetcode.com.
+
+            return cur
+
+        pressedKeys += '#'
+        pre = pressedKeys[0]
+        cnt = ans = 1
+        mod = 1000000000 + 7
+        for i in range(1, len(pressedKeys)):
+            if pressedKeys[i] == pre:
+                cnt += 1
+            else:
+                if pre in '79':
+                    ans = (ans * dfs(cnt, 4)) % mod
+                else:
+                    ans = (ans * dfs(cnt, 3)) % mod
+                pre = pressedKeys[i]
+                cnt = 1
+        return ans
+
+    def countTexts(self, pressedKeys: str) -> int:
+        m = [3] * 10
+        m[7] = m[9] = 4
+        dp = [1]
+        mod = 1000000007
+        for i in range(len(pressedKeys)):
+            v = int(pressedKeys[i])
+            cur = 0
+            for j in range(m[v]):
+                if i < j or pressedKeys[i - j] != pressedKeys[i]:
+                    break
+                cur += dp[i - j]
+            cur %= mod
+            dp.append(cur)
+        return dp[-1]
+
+    def countTexts(self, s: str) -> int:
+        mod = int(1e9 + 7)
+        s += "#"
+        p = '*'
+        l = 0
+
+        def fn(p: int, l: int) -> int:
+            if p == '7' or p == '9':
+                a, b, c, d = 1, 0, 0, 0
+                for _ in range(1, l):
+                    a, b, c, d = (a + b + c + d) % mod, a, b, c
+                return (a + b + c + d) % mod
+            else:
+                a, b, c = 1, 0, 0
+                for _ in range(1, l):
+                    a, b, c = (a + b + c) % mod, a, b
+                return (a + b + c) % mod
+
+        ans = 1
+        for c in s:
+            if c == p:
+                l += 1
+            else:
+                ans = ans * fn(p, l) % mod
+                p = c
+                l = 1
+        return ans
+
+
+# 2267 - Check if There Is a Valid Parentheses String Path - HARD
+class Solution:
+    # O(m * n * (m+n)) / O(m * n * (m+n)), (m+n): the number of bracket
+    def hasValidPath(self, grid: List[List[str]]) -> bool:
+        @functools.lru_cache(None)
+        def dfs(i, j, left) -> bool:
+            if i == m - 1 and j == n - 1:
+                return left == 0
+            l = r = False
+            for x, y in [[i + 1, j], [i, j + 1]]:
+                if x < m and y < n:
+                    if grid[x][y] == '(':
+                        # original version:
+                        # l = dfs(x, y, left + 1)
+                        l = l or dfs(x, y, left + 1)
+                        # l |= dfs(x, y, left + 1) # extremely slow
+                    elif left > 0:
+                        r = r or dfs(x, y, left - 1)
+            return l or r
+
+        m = len(grid)
+        n = len(grid[0])
+        if grid[0][0] == ')' or grid[-1][-1] == '(' or (not (m + n) & 1):
+            return False
+        return dfs(0, 0, 1)
+
+    def hasValidPath(self, grid: List[List[str]]) -> bool:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int, diff: int) -> bool:
+            if diff < 0:
+                return False
+            if (i, j) == (m - 1, n - 1):
+                return diff == 0
+            r = False
+            for x, y in [[i + 1, j], [i, j + 1]]:
+                if x < m and y < n:
+                    r = r or dfs(x, y, diff + (1 if grid[x][y] == '(' else -1))
+            return r
+
+        m = len(grid)
+        n = len(grid[0])
+        if grid[0][0] == ')' or grid[-1][-1] == '(' or (not (m + n) & 1):
+            return False
+        # dfs.cache_clear()
+        return dfs(0, 0, 1)
+
+    def hasValidPath(self, grid: List[List[str]]) -> bool:
+        @functools.lru_cache(None)
+        def dfs(r: int, c: int, cnt: int) -> bool:
+            if r >= m or c >= n or cnt < 0:
+                return False
+            if grid[r][c] == '(':
+                cnt += 1
+            else:
+                cnt -= 1
+            if r == m - 1 and c == n - 1:
+                return cnt == 0
+            return dfs(r + 1, c, cnt) or dfs(r, c + 1, cnt)
+
+        m = len(grid)
+        n = len(grid[0])
+        if grid[0][0] == ')' or grid[-1][-1] == '(' or (m + n - 1) % 2:
+            return False
+        return dfs(0, 0, 0)
+
+    def hasValidPath(self, grid: List[List[str]]) -> bool:
+        r = len(grid)
+        c = len(grid[0])
+        if (r + c) % 2 == 0 or grid[0][0] == ')' or grid[r - 1][c - 1] == '(':
+            return False
+        vis = [[[False] * (r + c) for _ in range(c)] for _ in range(r)]
+        vis[0][0][1] = True
+        dq = collections.deque([[0, 0, 1]])
+        while dq:
+            x, y, cnt = dq.popleft()
+            if x == r - 1 and y == c - 1 and cnt == 0:
+                return True
+            for nx, ny in [[x + 1, y], [x, y + 1]]:
+                if nx < r and ny < c:
+                    nt = cnt + 1 if grid[nx][ny] == '(' else cnt - 1
+                    if nt >= 0 and not vis[nx][ny][nt]:
+                        vis[nx][ny][nt] = True
+                        dq.append([nx, ny, nt])
+        return False
