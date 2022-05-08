@@ -626,6 +626,37 @@ class Solution:
                 return i - 1
 
 
+# 442 - Find All Duplicates in an Array - MEDIUM
+class Solution:
+    def findDuplicates(self, nums: List[int]) -> List[int]:
+        s = set()
+        ans = list()
+        for n in nums:
+            if n in s:
+                ans.append(n)
+            else:
+                s.add(n)
+        return ans
+
+    def findDuplicates(self, nums: List[int]) -> List[int]:
+        ans = []
+        for n in nums:
+            # using the sign of number in nums as a marker
+            # using the input array itself as a hash
+            n = abs(n)
+            if nums[n - 1] > 0:
+                nums[n - 1] = -nums[n - 1]  # visited
+            else:
+                ans.append(n)  # the number is already negative
+        return ans
+
+    def findDuplicates(self, nums: List[int]) -> List[int]:
+        for i in range(len(nums)):
+            while nums[i] != nums[nums[i] - 1]:
+                nums[nums[i] - 1], nums[i] = nums[i], nums[nums[i] - 1]
+        return [num for i, num in enumerate(nums) if num - 1 != i]
+
+
 # 443 - String Compression - MEDIUM
 class Solution:
     def compress(self, chars: List[str]) -> int:

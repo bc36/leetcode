@@ -1,4 +1,4 @@
-import bisect, collections, functools, random, operator, math, itertools, re, os, heapq, queue
+import bisect, collections, functools, random, operator, math, itertools, re, os, heapq, queue, gc
 from typing import List, Optional
 '''
 Function usually used
@@ -11,6 +11,8 @@ bit operation
 <<  left shift
 >>  right shift
 '''
+
+gc.disable()
 
 
 class ListNode:
