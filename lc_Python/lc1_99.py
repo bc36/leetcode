@@ -775,9 +775,10 @@ class Solution:
 
 # 34 - Find First and Last Position of Element in Sorted Array - MEDIUM
 class Solution:
-    def searchRange(self, nums, target):
+    def searchRange(self, nums: List[int], t: int) -> List[int]:
         def search(n: int) -> int:
-            lo, hi = 0, len(nums)
+            lo = 0
+            hi = len(nums)
             while lo < hi:
                 mid = (lo + hi) // 2
                 if nums[mid] >= n:
@@ -786,9 +787,13 @@ class Solution:
                     lo = mid + 1
             return lo
 
-        lo = search(target)
-        return [lo, search(target + 1) - 1] if target in nums[lo:lo +
-                                                              1] else [-1, -1]
+        l = search(t)
+        return [l, search(t + 1) - 1] if t in nums[l:l + 1] else [-1, -1]
+
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        l = bisect.bisect_left(nums, target)
+        r = bisect.bisect_right(nums, target)
+        return [l, r - 1] if l != r else [-1, -1]
 
 
 # 35 - Search Insert Position - EASY

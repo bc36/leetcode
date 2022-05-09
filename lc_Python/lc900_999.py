@@ -524,6 +524,23 @@ class Solution:
         return i == j and i != 0 and j != len(arr) - 1
 
 
+# 942 - DI String Match - EASY
+class Solution:
+    def diStringMatch(self, s: str) -> List[int]:
+        i = 0
+        j = len(s)
+        ans = []
+        for c in s:
+            if c == 'I':
+                ans.append(i)
+                i += 1
+            else:
+                ans.append(j)
+                j -= 1
+        ans.append(i)
+        return ans
+
+
 # 946 - Validate Stack Sequences - MEDIUM
 class Solution:
     def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
