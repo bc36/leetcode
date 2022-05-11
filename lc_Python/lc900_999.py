@@ -541,6 +541,12 @@ class Solution:
         return ans
 
 
+# 944 - Delete Columns to Make Sorted - EASY
+class Solution:
+    def minDeletionSize(self, m: List[str]) -> int:
+        return sum(any(a > b for a, b in zip(col, col[1:])) for col in zip(*m))
+
+
 # 946 - Validate Stack Sequences - MEDIUM
 class Solution:
     def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:

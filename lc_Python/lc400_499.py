@@ -711,6 +711,77 @@ class Solution:
         return [i + 1 for i in range(len(nums)) if nums[i] > 0]
 
 
+# 449 - Serialize and Deserialize BST - MEDIUM
+class Codec:
+    # O(nlogn) / O(n)
+    def serialize(self, root: TreeNode) -> str:
+        """Encodes a tree to a single string.
+        """
+        arr = []
+
+        def preorder(root: TreeNode):
+            if not root:
+                return
+            arr.append(str(root.val))
+            preorder(root.left)
+            preorder(root.right)
+            return
+
+        preorder(root)
+        return ','.join(arr)
+
+    def deserialize(self, data: str) -> TreeNode:
+        """Decodes your encoded data to tree.
+        """
+        if not data:
+            return
+
+        def build(p: List[int], i: List[int]) -> TreeNode:
+            if not p:
+                return
+            mid = p[0]
+            idx = i.index(mid)
+            root = TreeNode(mid)
+            root.left = build(p[1:idx + 1], i[:idx])
+            root.right = build(p[idx + 1:], i[idx + 1:])
+            return root
+
+        preorder = list(map(int, data.split(',')))
+        inorder = sorted(preorder)
+        return build(preorder, inorder)
+
+
+class Codec:
+    # O(n) / O(n)
+    def serialize(self, root: TreeNode) -> str:
+        arr = []
+
+        def postorder(root: TreeNode) -> None:
+            if root is None:
+                return
+            postorder(root.left)
+            postorder(root.right)
+            arr.append(root.val)
+            return
+
+        postorder(root)
+        return ' '.join(map(str, arr))
+
+    def deserialize(self, data: str) -> TreeNode:
+        arr = list(map(int, data.split()))
+
+        def build(lower: int, upper: int) -> TreeNode:
+            if arr == [] or arr[-1] < lower or arr[-1] > upper:
+                return None
+            val = arr.pop()
+            root = TreeNode(val)
+            root.right = build(val, upper)
+            root.left = build(lower, val)
+            return root
+
+        return build(-math.inf, math.inf)
+
+
 # 452 - Minimum Number of Arrows to Burst Balloons - MEDIUM
 class Solution:
     def findMinArrowShots(self, points: List[List[int]]) -> int:
