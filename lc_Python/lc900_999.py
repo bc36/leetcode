@@ -629,6 +629,21 @@ class Solution:
                     break
         return True
 
+    def isAlienSorted(self, words: List[str], order: str) -> bool:
+        m = {c: i for i, c in enumerate(order)}
+        for i, w in enumerate(words[:-1]):
+            j = 0
+            while j < len(w):
+                if j == len(words[i + 1]):
+                    return False
+                a = m[w[j]] - m[words[i + 1][j]]
+                if a > 0:
+                    return False
+                elif a < 0:
+                    break
+                j += 1
+        return True
+
 
 # 954 - Array of Doubled Pairs - MEDIUM
 class Solution:
