@@ -1390,9 +1390,9 @@ class Solution:
         left, right = [], []
         for i in intervals:
             if i[1] < s:
-                left.append(i),
+                left.append(i)
             elif i[0] > e:
-                right.append(i),
+                right.append(i)
             else:
                 s = min(s, i[0])
                 e = max(e, i[1])
