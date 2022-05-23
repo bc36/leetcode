@@ -1,6 +1,7 @@
 import bisect, collections, functools, random, operator, math, itertools, re, os, heapq, queue, gc
 from typing import List, Optional
-'''
+
+"""
 Function usually used
 
 bit operation
@@ -10,7 +11,7 @@ bit operation
 ~   bitwise NOT Inverts all the bits (~x = -x-1)
 <<  left shift
 >>  right shift
-'''
+"""
 
 gc.disable()
 
@@ -51,8 +52,9 @@ class Solution:
 
 # 2 - Add Two Numbers - MEDIUM
 class Solution:
-    def addTwoNumbers(self, l1: Optional[ListNode],
-                      l2: Optional[ListNode]) -> Optional[ListNode]:
+    def addTwoNumbers(
+        self, l1: Optional[ListNode], l2: Optional[ListNode]
+    ) -> Optional[ListNode]:
         dummy = ListNode(-1)
         head = dummy
         carry = 0
@@ -72,8 +74,10 @@ class Solution:
         while l1 or l2 or carry:
             a = l1.val if l1 else 0
             b = l2.val if l2 else 0
-            if l1: l1 = l1.next
-            if l2: l2 = l2.next
+            if l1:
+                l1 = l1.next
+            if l2:
+                l2 = l2.next
             head.next = ListNode((a + b + carry) % 10)
             carry = (a + b + carry) // 10
             head = head.next
@@ -84,7 +88,7 @@ class Solution:
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
         res = 0
-        longest_substr = ''
+        longest_substr = ""
         for ch in s:
             if ch not in longest_substr:
                 longest_substr += ch
@@ -92,7 +96,7 @@ class Solution:
                     res += 1
             else:
                 i = longest_substr.find(ch)
-                longest_substr = longest_substr[i + 1:] + ch
+                longest_substr = longest_substr[i + 1 :] + ch
         return res
 
     # sliding window + hashmap
@@ -147,7 +151,7 @@ class Solution:
             while l >= 0 and r < len(s) and s[l] == s[r]:
                 l -= 1
                 r += 1
-            return s[l + 1:r]
+            return s[l + 1 : r]
 
         ans = ""
         for i in range(len(s)):
@@ -172,7 +176,7 @@ class Solution:
                 if s[i] == s[j] and (dp[i + 1][j - 1] or j == i + 1):
                     dp[i][j] = True
                     if j - i + 1 > len(ans):
-                        ans = s[i:j + 1]
+                        ans = s[i : j + 1]
         return ans
 
     def longestPalindrome(self, s: str) -> str:
@@ -191,7 +195,7 @@ class Solution:
                     l = i
                     r = j
 
-        return s[l:r + 1]
+        return s[l : r + 1]
 
 
 # 6 - ZigZag Conversion - MEDIUM
@@ -207,10 +211,11 @@ class Solution:
                 ans.append(s[j + i])
                 if 0 < i < r - 1 and j + t - i < n:
                     ans.append(s[j + t - i])
-        return ''.join(ans)
+        return "".join(ans)
 
     def convert(self, s: str, numRows: int) -> str:
-        if numRows < 2: return s
+        if numRows < 2:
+            return s
         res = ["" for _ in range(numRows)]
         i, flag = 0, -1
         for c in s:
@@ -224,8 +229,9 @@ class Solution:
 # 8 - String to Integer (atoi) - MEDIUM
 class Solution:
     def myAtoi(self, s: str) -> int:
-        return max(min(int(*re.findall('^[\+\-]?\d+', s.lstrip())), 2**31 - 1),
-                   -2**31)
+        return max(
+            min(int(*re.findall("^[\+\-]?\d+", s.lstrip())), 2**31 - 1), -(2**31)
+        )
 
 
 # 11 - Container With Most Water - MEDIUM
@@ -245,9 +251,21 @@ class Solution:
 # 12 - Integer to Roman - MEDIUM
 class Solution:
     def intToRoman(self, num: int) -> str:
-        pairs = (("M", 1000), ("CM", 900), ("D", 500), ("CD", 400), ("C", 100),
-                 ("XC", 90), ("L", 50), ("XL", 40), ("X", 10), ("IX", 9),
-                 ("V", 5), ("IV", 4), ("I", 1))
+        pairs = (
+            ("M", 1000),
+            ("CM", 900),
+            ("D", 500),
+            ("CD", 400),
+            ("C", 100),
+            ("XC", 90),
+            ("L", 50),
+            ("XL", 40),
+            ("X", 10),
+            ("IX", 9),
+            ("V", 5),
+            ("IV", 4),
+            ("I", 1),
+        )
         ret = ""
         for ch, val in pairs:
             ret += (num // val) * ch
@@ -288,14 +306,14 @@ class Solution:
 # 17 - Letter Combinations of a Phone Number - MEDIUM
 class Solution:
     dic = {
-        '2': 'abc',
-        '3': 'def',
-        '4': 'ghi',
-        '5': 'jkl',
-        '6': 'mno',
-        '7': 'pqrs',
-        '8': 'tuv',
-        '9': 'wxyz'
+        "2": "abc",
+        "3": "def",
+        "4": "ghi",
+        "5": "jkl",
+        "6": "mno",
+        "7": "pqrs",
+        "8": "tuv",
+        "9": "wxyz",
     }
 
     def letterCombinations(self, digits: str) -> List[str]:
@@ -304,25 +322,30 @@ class Solution:
             a.append(digits[i])
         if len(a) == 4:
             return [
-                ''.join(i) for i in (itertools.product(self.dic[
-                    a[0]], self.dic[a[1]], self.dic[a[2]], self.dic[a[3]]))
+                "".join(i)
+                for i in (
+                    itertools.product(
+                        self.dic[a[0]], self.dic[a[1]], self.dic[a[2]], self.dic[a[3]]
+                    )
+                )
             ]
         if len(a) == 3:
             return [
-                ''.join(i) for i in (itertools.product(self.dic[
-                    a[0]], self.dic[a[1]], self.dic[a[2]]))
+                "".join(i)
+                for i in (
+                    itertools.product(self.dic[a[0]], self.dic[a[1]], self.dic[a[2]])
+                )
             ]
         if len(a) == 2:
             return [
-                ''.join(i)
-                for i in (itertools.product(self.dic[a[0]], self.dic[a[1]]))
+                "".join(i) for i in (itertools.product(self.dic[a[0]], self.dic[a[1]]))
             ]
         if len(a) == 1:
-            return [''.join(i) for i in (itertools.product(self.dic[a[0]]))]
+            return ["".join(i) for i in (itertools.product(self.dic[a[0]]))]
         return []
 
     def letterCombinations(self, digits: str) -> List[str]:
-        ans = [''] if digits else []
+        ans = [""] if digits else []
         for d in digits:
             cur = []
             for ch in self.dic[d]:
@@ -341,9 +364,10 @@ class Solution:
                 dfs(i + 1, cur + ch)
             return
 
-        if not digits: return []
+        if not digits:
+            return []
         ans = []
-        dfs(0, '')
+        dfs(0, "")
         return ans
 
 
@@ -373,7 +397,7 @@ class Solution:
             return
         for i in range(len(nums) - 3):
             for j in range(i + 1, len(nums) - 2):
-                s = twoSum(nums[j + 1:], target - nums[i] - nums[j])
+                s = twoSum(nums[j + 1 :], target - nums[i] - nums[j])
                 for k in range(len(s)):
                     ans.add((nums[i], nums[j], s[k][0], s[k][1]))
         return ans
@@ -402,7 +426,7 @@ class Solution:
                 return twoSum(nums, t)
             for i in range(len(nums)):
                 if i == 0 or nums[i - 1] != nums[i]:
-                    for subset in kSum(nums[i + 1:], t - nums[i], k - 1):
+                    for subset in kSum(nums[i + 1 :], t - nums[i], k - 1):
                         res.append([nums[i]] + subset)
             return res
 
@@ -412,8 +436,7 @@ class Solution:
 
 # 19 - Remove Nth Node From End of List - MEDIUM
 class Solution:
-    def removeNthFromEnd(self, head: Optional[ListNode],
-                         n: int) -> Optional[ListNode]:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
         self.n = n
         dummy = ListNode(-1, head)
 
@@ -449,7 +472,7 @@ class Solution:
 class Solution:
     # stack
     def isValid(self, s: str) -> bool:
-        dic = {'(': ')', '{': '}', '[': ']'}
+        dic = {"(": ")", "{": "}", "[": "]"}
         stack = []
         for i in s:
             if i in dic:
@@ -470,12 +493,12 @@ class Solution:
     def isValid(self, s: str) -> bool:
         stack = []
         for ch in s:
-            if ch == '(':
-                stack.append(')')
-            elif ch == '[':
-                stack.append(']')
-            elif ch == '{':
-                stack.append('}')
+            if ch == "(":
+                stack.append(")")
+            elif ch == "[":
+                stack.append("]")
+            elif ch == "{":
+                stack.append("}")
             else:
                 if not stack or ch != stack[-1]:
                     return False
@@ -519,13 +542,13 @@ class Solution:
                 ans.append(cur)
                 return
             if left < n:
-                dfs(left + 1, right, cur + '(')
+                dfs(left + 1, right, cur + "(")
             if left > right:
-                dfs(left, right + 1, cur + ')')
+                dfs(left, right + 1, cur + ")")
             return
 
         ans = []
-        dfs(0, 0, '')
+        dfs(0, 0, "")
         return ans
 
     def generateParenthesis(self, n: int) -> List[str]:
@@ -578,8 +601,10 @@ class Solution:
 
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
         def merge2Lists(l1: ListNode, l2: ListNode) -> ListNode:
-            if not l1: return l2
-            if not l2: return l1
+            if not l1:
+                return l2
+            if not l2:
+                return l1
             if l1.val < l2.val:
                 l1.next = merge2Lists(l1.next, l2)
                 return l1
@@ -688,7 +713,7 @@ class Solution:
             seen = dict(cnt)  # new a dict, O(k)
             used = 0
             for j in range(i, i + total, t):  # O(k)
-                w = s[j:j + t]  # O(t)
+                w = s[j : j + t]  # O(t)
                 if w in seen and seen[w] > 0:
                     seen[w] -= 1
                     used += 1
@@ -717,9 +742,9 @@ class Solution:
                         # swap
                         nums[i], nums[pair[1]] = nums[pair[1]], nums[i]
                         # make the rest number ascending order
-                        rightSide = nums[i + 1:]
+                        rightSide = nums[i + 1 :]
                         rightSide.sort()
-                        nums[i + 1:] = rightSide
+                        nums[i + 1 :] = rightSide
                         return
 
             # update 'greater'
@@ -788,7 +813,7 @@ class Solution:
             return lo
 
         l = search(t)
-        return [l, search(t + 1) - 1] if t in nums[l:l + 1] else [-1, -1]
+        return [l, search(t + 1) - 1] if t in nums[l : l + 1] else [-1, -1]
 
     def searchRange(self, nums: List[int], target: int) -> List[int]:
         l = bisect.bisect_left(nums, target)
@@ -818,7 +843,7 @@ class Solution:
         seen = []
         for i, row in enumerate(board):
             for j, c in enumerate(row):
-                if c != '.':
+                if c != ".":
                     seen += [(c, j), (i, c), (i // 3, j // 3, c)]
         return len(seen) == len(set(seen))
 
@@ -828,7 +853,7 @@ class Solution:
         sub = [[False] * 9 for _ in range(9)]
         for i, row in enumerate(board):
             for j, ch in enumerate(row):
-                if ch != '.':
+                if ch != ".":
                     ch = int(ch) - 1
                     if r[i][ch] or c[j][ch] or sub[i // 3 * 3 + j // 3][ch]:
                         return False
@@ -922,17 +947,17 @@ class Solution:
 
 # 40 - Combination Sum II - MEDIUM
 class Solution:
-    def combinationSum2(self, candidates: List[int],
-                        target: int) -> List[List[int]]:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
         def backtrack(begin: int, path: List[int], target: int):
             if target == 0:
                 ans.append(path)
                 return
             for i in range(begin, len(candidates)):
-                if candidates[i] > target: break
-                if i > begin and candidates[i - 1] == candidates[i]: continue
-                backtrack(i + 1, path + [candidates[i]],
-                          target - candidates[i])
+                if candidates[i] > target:
+                    break
+                if i > begin and candidates[i - 1] == candidates[i]:
+                    continue
+                backtrack(i + 1, path + [candidates[i]], target - candidates[i])
             return
 
         ans = []
@@ -1032,13 +1057,13 @@ class Solution:
         # reverse, prepare to output
         while len(ret) > 1 and ret[-1] == 0:
             ret.pop()
-        return ''.join(map(str, ret[::-1]))
+        return "".join(map(str, ret[::-1]))
 
     def multiply(self, num1: str, num2: str) -> str:
         res = 0
         for i, v in enumerate(num1[::-1]):
             for j, u in enumerate(num2[::-1]):
-                res += int(v) * int(u) * (10**(i + j))
+                res += int(v) * int(u) * (10 ** (i + j))
         return str(res)
 
 
@@ -1047,7 +1072,7 @@ class Solution:
     # slow, O(n^2)
     def jump(self, nums: List[int]) -> int:
         n = len(nums)
-        dp = [0] + [float('inf')] * (n - 1)  # dp[i]: minimum step to 'i'
+        dp = [0] + [float("inf")] * (n - 1)  # dp[i]: minimum step to 'i'
         for i in range(n - 1):
             if i + nums[i] >= n - 1:
                 return dp[i] + 1
@@ -1109,7 +1134,7 @@ class Solution:
                 ret.append(path)
                 return
             for i in range(len(res)):
-                backtrack(res[:i] + res[i + 1:], path + [res[i]])
+                backtrack(res[:i] + res[i + 1 :], path + [res[i]])
             return
 
         ret = []
@@ -1153,23 +1178,21 @@ class Solution:
         # horizontal
         for i in range(m):
             for j in range(m // 2):
-                matrix[i][j], matrix[i][m - 1 - j] = matrix[i][m - 1 -
-                                                               j], matrix[i][j]
+                matrix[i][j], matrix[i][m - 1 - j] = matrix[i][m - 1 - j], matrix[i][j]
         # diagonal
         for i in range(m - 1):
             for j in range(m - 1 - i):
-                matrix[i][j], matrix[m - 1 - j][m - 1 -
-                                                i] = matrix[m - 1 -
-                                                            j][m - 1 -
-                                                               i], matrix[i][j]
+                matrix[i][j], matrix[m - 1 - j][m - 1 - i] = (
+                    matrix[m - 1 - j][m - 1 - i],
+                    matrix[i][j],
+                )
         return
 
     def rotate(self, matrix: List[List[int]]) -> None:
         m = len(matrix)
         for i in range(m // 2):
             for j in range(m):
-                matrix[i][j], matrix[m - 1 - i][j] = matrix[m - 1 -
-                                                            i][j], matrix[i][j]
+                matrix[i][j], matrix[m - 1 - i][j] = matrix[m - 1 - i][j], matrix[i][j]
         for i in range(m):
             for j in range(i):
                 matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
@@ -1182,7 +1205,7 @@ class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         dic = collections.defaultdict(list)
         for s in strs:
-            dic[''.join(sorted(s))].append(s)
+            dic["".join(sorted(s))].append(s)
         # ans = []
         # for v in dic.values():
         #     ans.append(v)
@@ -1191,7 +1214,7 @@ class Solution:
 
 
 # 50 - Pow(x, n) - MEDIUM
-'''
+"""
 operators '>>', '&' are just used for 'int' and not used for 'float', '%' can be.
 e.g.: 
 >>> 5.00 >> 1
@@ -1200,7 +1223,7 @@ TypeError: unsupported operand type(s) for >>: 'float' and 'int'
 TypeError: unsupported operand type(s) for &: 'float' and 'int
 >>> 5.00 % 2
 1.0
-'''
+"""
 
 
 class Solution:
@@ -1368,8 +1391,9 @@ class Solution:
 # 57 - Insert Interval - MEDIUM
 class Solution:
     # O(n * logn)
-    def insert(self, intervals: List[List[int]],
-               newInterval: List[int]) -> List[List[int]]:
+    def insert(
+        self, intervals: List[List[int]], newInterval: List[int]
+    ) -> List[List[int]]:
         intervals.append(newInterval)
         intervals.sort()
         ans = []
@@ -1384,8 +1408,9 @@ class Solution:
         return ans
 
     # O(n)
-    def insert(self, intervals: List[List[int]],
-               newInterval: List[int]) -> List[List[int]]:
+    def insert(
+        self, intervals: List[List[int]], newInterval: List[int]
+    ) -> List[List[int]]:
         s, e = newInterval[0], newInterval[1]
         left, right = [], []
         for i in intervals:
@@ -1399,8 +1424,9 @@ class Solution:
         return left + [(s, e)] + right
 
     # O(n)
-    def insert(self, intervals: List[List[int]],
-               newInterval: List[int]) -> List[List[int]]:
+    def insert(
+        self, intervals: List[List[int]], newInterval: List[int]
+    ) -> List[List[int]]:
         ans = []
         i = 0
         while i < len(intervals) and intervals[i][1] < newInterval[0]:
@@ -1487,7 +1513,7 @@ class Solution:
             cur = cur.next
         pre = cur = head
         x = k % l
-        if (x == 0):
+        if x == 0:
             return head
         for _ in range(l - x):
             pre = cur
@@ -1547,14 +1573,17 @@ class Solution:
 # 63 - Unique Paths II - MEDIUM
 class Solution:
     def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
-        if obstacleGrid[0][0] == 1: return 0
+        if obstacleGrid[0][0] == 1:
+            return 0
         m, n = len(obstacleGrid), len(obstacleGrid[0])
         dp = [[0 for _ in range(n)] for _ in range(m)]
         for i in range(m):
-            if obstacleGrid[i][0] == 1: break
+            if obstacleGrid[i][0] == 1:
+                break
             dp[i][0] = 1
         for j in range(n):
-            if obstacleGrid[0][j] == 1: break
+            if obstacleGrid[0][j] == 1:
+                break
             dp[0][j] = 1
         for i in range(1, m):
             for j in range(1, n):
@@ -1601,7 +1630,7 @@ class Solution:
 class Solution:
     def isNumber(self, s: str) -> bool:
         try:
-            if 'inf' in str.lower(s):
+            if "inf" in str.lower(s):
                 return False
             _ = float(s)
             return True
@@ -1609,20 +1638,23 @@ class Solution:
             return False
 
     def isNumber(self, s: str) -> bool:
-        return re.match(
-            '^[+-]{0,1}(\d+\.\d*|\.\d+|\d+)([eE][+-]{0,1}\d+){0,1}$',
-            s) != None
+        return (
+            re.match("^[+-]{0,1}(\d+\.\d*|\.\d+|\d+)([eE][+-]{0,1}\d+){0,1}$", s)
+            != None
+        )
 
 
 # 67 - Add Binary - EASY
 class Solution:
     def addBinary(self, a: str, b: str) -> str:
-        ans, num = '', (int(a, 2) + int(b, 2))
+        ans, num = "", (int(a, 2) + int(b, 2))
         while num:
-            if num & 1: ans += '1'
-            else: ans += '0'
+            if num & 1:
+                ans += "1"
+            else:
+                ans += "0"
             num >>= 1
-        return ans[::-1] if ans else '0'
+        return ans[::-1] if ans else "0"
 
     def addBinary(self, a: str, b: str) -> str:
         x, y = int(a, 2), int(b, 2)
@@ -1683,17 +1715,17 @@ class Solution:
 # 71 - Simplify Path - MEDIUM
 class Solution:
     def simplifyPath(self, path: str) -> str:
-        path = path.split('/')
+        path = path.split("/")
         s = []
         for p in path:
-            if not p or p == '.':
+            if not p or p == ".":
                 continue
-            if p == '..':
+            if p == "..":
                 if s:
                     s.pop()
             else:
                 s.append(p)
-        return '/' + '/'.join(s)
+        return "/" + "/".join(s)
 
     def simplifyPath(self, path: str) -> str:
         stack = []
@@ -1738,8 +1770,7 @@ class Solution:
             dp[0][j] = j
         for i in range(1, m):
             for j in range(1, n):
-                dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j],
-                               dp[i][j - 1]) + 1
+                dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1
                 if word1[i - 1] == word2[j - 1]:
                     dp[i][j] = min(dp[i][j], dp[i - 1][j - 1])
         return dp[m - 1][n - 1]
@@ -1762,9 +1793,8 @@ class Solution:
                 f[i][j] = helper(i - 1, j - 1)
             else:
                 f[i][j] = min(
-                    helper(i - 1, j) + 1,
-                    helper(i, j - 1) + 1,
-                    helper(i - 1, j - 1) + 1)
+                    helper(i - 1, j) + 1, helper(i, j - 1) + 1, helper(i - 1, j - 1) + 1
+                )
             return f[i][j]
 
         return helper(len(word2), len(word1))
@@ -1937,7 +1967,7 @@ class Solution:
                 i += 1
                 needdic[s[i]] += 1
                 need += 1
-        return "" if right > len(s) else s[left:right + 1]
+        return "" if right > len(s) else s[left : right + 1]
 
 
 # 77 - Combinations - MEDIUM
@@ -1955,7 +1985,7 @@ class Solution:
                 # optimize: there are not enough numbers remaining: > 90ms
                 # if len(res) - i < k:
                 #     return
-                backtrack(res[i + 1:], path + [res[i]], k - 1)
+                backtrack(res[i + 1 :], path + [res[i]], k - 1)
             return
 
         ans = []
@@ -2004,11 +2034,11 @@ class Solution:
     # slow, > 6s
     def exist(self, board: List[List[str]], word: str) -> bool:
         def search(x, y, i):
-            if i == len(word) - 1: return True
+            if i == len(word) - 1:
+                return True
             for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
-                if 0 <= nx < m and 0 <= ny < n and board[nx][ny] == word[i +
-                                                                         1]:
-                    board[x][y] = '#'
+                if 0 <= nx < m and 0 <= ny < n and board[nx][ny] == word[i + 1]:
+                    board[x][y] = "#"
                     if search(nx, ny, i + 1):
                         return True
                     board[x][y] = word[i]
@@ -2026,13 +2056,17 @@ class Solution:
     # TODO do not know how it works
     def exist(self, board, word):
         def backtracking(r, c, step=0):
-            if step == len(word): return True
+            if step == len(word):
+                return True
             # Q1: 'word[~step]'
-            if 0 <= r < m and 0 <= c < n and board[r][c] == word[~step] and (
-                    r, c) not in visited:
+            if (
+                0 <= r < m
+                and 0 <= c < n
+                and board[r][c] == word[~step]
+                and (r, c) not in visited
+            ):
                 visited.add((r, c))
-                HashMap[(r, c,
-                         step)] += 1  # Q2: how it works to speed up, why?
+                HashMap[(r, c, step)] += 1  # Q2: how it works to speed up, why?
                 for nr, nc in (r, c + 1), (r, c - 1), (r - 1, c), (r + 1, c):
                     if HashMap[(nr, nc, step + 1)] < n:
                         if backtracking(nr, nc, step + 1):
@@ -2166,8 +2200,7 @@ class Solution:
 
 # 88 - Merge Sorted Array - EASY
 class Solution:
-    def merge(self, nums1: List[int], m: int, nums2: List[int],
-              n: int) -> None:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
         i, j, insertPos = m - 1, n - 1, m + n - 1
         while i >= 0 and j >= 0:
             if nums1[i] > nums2[j]:
@@ -2183,8 +2216,7 @@ class Solution:
             insertPos -= 1
         return
 
-    def merge(self, nums1: List[int], m: int, nums2: List[int],
-              n: int) -> None:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
         nums1[m:] = nums2
         nums1.sort()
         return
@@ -2196,8 +2228,9 @@ class Solution:
         def dfs(nums, path, ret):
             ret.append(path)
             for i in range(len(nums)):
-                if i != 0 and nums[i] == nums[i - 1]: continue
-                dfs(nums[i + 1:], path + [nums[i]], ret)
+                if i != 0 and nums[i] == nums[i - 1]:
+                    continue
+                dfs(nums[i + 1 :], path + [nums[i]], ret)
             return
 
         nums.sort()
@@ -2209,7 +2242,8 @@ class Solution:
         def dfs(nums, index, path, ret):
             ret.append(path)
             for i in range(index, len(nums)):
-                if i > index and nums[i] == nums[i - 1]: continue
+                if i > index and nums[i] == nums[i - 1]:
+                    continue
                 dfs(nums, i + 1, path + [nums[i]], ret)
             return
 
@@ -2233,25 +2267,26 @@ class Solution:
 # 91 - Decode Ways - MEDIUM
 class Solution:
     def numDecodings(self, s: str) -> int:
-        if s[0] == '0': return 0
+        if s[0] == "0":
+            return 0
         dp = [1] + [0] * len(s)
         for i in range(1, len(s) + 1):
-            if s[i - 1] != '0':
+            if s[i - 1] != "0":
                 dp[i] += dp[i - 1]
-            if i > 1 and s[i - 2] != '0' and int(s[i - 2:i]) < 27:
+            if i > 1 and s[i - 2] != "0" and int(s[i - 2 : i]) < 27:
                 dp[i] += dp[i - 2]
         return dp[-1]
 
     @functools.lru_cache(None)
     def numDecodings(self, s: str) -> int:
         if len(s) == 1:
-            return int(s[0] != '0')
+            return int(s[0] != "0")
         if len(s) == 0:
             return 1
         one = two = 0
-        if s[-1] != '0':
+        if s[-1] != "0":
             one += self.numDecodings(s[:-1])
-        if s[-2] != '0' and int(s[-2:]) < 27:
+        if s[-2] != "0" and int(s[-2:]) < 27:
             two += self.numDecodings(s[:-2])
         return one + two
 
@@ -2262,8 +2297,11 @@ class Solution:
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         if not root:
             return []
-        return self.inorderTraversal(
-            root.left) + [root.val] + self.inorderTraversal(root.right)
+        return (
+            self.inorderTraversal(root.left)
+            + [root.val]
+            + self.inorderTraversal(root.right)
+        )
 
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         def inorder(root):
@@ -2319,13 +2357,14 @@ class Solution(object):
 # 98 - Validate Binary Search Tree - MEDIUM
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
-        def valid(root: TreeNode, lower=float('-inf'), upper=float('inf')):
+        def valid(root: TreeNode, lower=float("-inf"), upper=float("inf")):
             if not root:
                 return True
             if root.val <= lower or root.val >= upper:
                 return False
             return valid(root.left, lower, root.val) and valid(
-                root.right, root.val, upper)
+                root.right, root.val, upper
+            )
 
         return valid(root)
 
@@ -2333,24 +2372,25 @@ class Solution:
         def isValid(root, minv, maxv):
             if not root:
                 return True
-            if minv and root.val <= minv.val: return False
-            if maxv and root.val >= maxv.val: return False
-            return isValid(root.left, minv, root) and isValid(
-                root.right, root, maxv)
+            if minv and root.val <= minv.val:
+                return False
+            if maxv and root.val >= maxv.val:
+                return False
+            return isValid(root.left, minv, root) and isValid(root.right, root, maxv)
 
         return isValid(root, None, None)
 
-    def isValidBST(self, root: TreeNode, lo=float('-inf'),
-                   hi=float('inf')) -> bool:
+    def isValidBST(self, root: TreeNode, lo=float("-inf"), hi=float("inf")) -> bool:
         if not root:
             return True
         if root.val <= lo or root.val >= hi:
             return False
         return self.isValidBST(root.left, lo, root.val) and self.isValidBST(
-            root.right, root.val, hi)
+            root.right, root.val, hi
+        )
 
     def isValidBST(self, root: TreeNode) -> bool:
-        pre, stack = float('-inf'), []
+        pre, stack = float("-inf"), []
         while root or stack:
             if root:
                 stack.append(root)

@@ -10,7 +10,7 @@ class Solution:
             if word[i] == ch:
                 idx = i
                 break
-        return word[:idx + 1][::-1] + word[idx + 1:]
+        return word[: idx + 1][::-1] + word[idx + 1 :]
 
     def reversePrefix(self, word: str, ch: str) -> str:
         i = word.find(ch) + 1
@@ -83,18 +83,20 @@ class Solution:
 
 # 2022 - Convert 1D Array Into 2D Array - EASY
 class Solution:
-    def construct2DArray(self, original: List[int], m: int,
-                         n: int) -> List[List[int]]:
-        if len(original) != m * n: return []
+    def construct2DArray(self, original: List[int], m: int, n: int) -> List[List[int]]:
+        if len(original) != m * n:
+            return []
         ans = []
         for i in range(0, len(original), n):
-            ans.append([x for x in original[i:i + n]])
+            ans.append([x for x in original[i : i + n]])
         return ans
 
-    def construct2DArray(self, original: List[int], m: int,
-                         n: int) -> List[List[int]]:
-        return [original[i:i + n] for i in range(0, len(original), n)
-                ] if len(original) == m * n else []
+    def construct2DArray(self, original: List[int], m: int, n: int) -> List[List[int]]:
+        return (
+            [original[i : i + n] for i in range(0, len(original), n)]
+            if len(original) == m * n
+            else []
+        )
 
 
 # 2024 - Maximize the Confusion of an Exam - MEDIUM
@@ -104,7 +106,7 @@ class Solution:
         l = 0
         for r in range(len(s)):
             d[s[r]] += 1
-            if min(d['T'], d['F']) > k:
+            if min(d["T"], d["F"]) > k:
                 d[s[l]] -= 1
                 l += 1
         return len(s) - l
@@ -118,7 +120,7 @@ class Solution:
         l = ans = 0
         for r in range(len(s)):
             d[s[r]] += 1
-            while min(d['T'], d['F']) > k:
+            while min(d["T"], d["F"]) > k:
                 d[s[l]] -= 1
                 l += 1
             ans = max(ans, r - l + 1)
@@ -200,9 +202,9 @@ class Solution:
     def winnerOfGame(self, c: str) -> bool:
         a = b = 0
         for i in range(1, len(c) - 1):
-            if c[i - 1] == c[i] == c[i + 1] == 'A':
+            if c[i - 1] == c[i] == c[i + 1] == "A":
                 a += 1
-            elif c[i - 1] == c[i] == c[i + 1] == 'B':
+            elif c[i - 1] == c[i] == c[i + 1] == "B":
                 b += 1
         return a > b
 
@@ -303,7 +305,7 @@ class Solution:
             elif t == self.mx:
                 self.ans += 1
             for i in range(len(arr)):
-                backtrack(arr[i + 1:], path + [arr[i]])
+                backtrack(arr[i + 1 :], path + [arr[i]])
             return
 
         self.mx = 0
@@ -335,7 +337,7 @@ class Solution:
         @functools.lru_cache(None)
         def dfs(i, cur):
             if cur == target:
-                return 2**(len(nums) - i)
+                return 2 ** (len(nums) - i)
             elif i == len(nums):
                 return 0
             return dfs(i + 1, cur) + dfs(i + 1, cur | nums[i])
@@ -363,8 +365,9 @@ class Solution:
 
 # 2045 - Second Minimum Time to Reach Destination - HARD
 class Solution:
-    def secondMinimum(self, n: int, edges: List[List[int]], time: int,
-                      change: int) -> int:
+    def secondMinimum(
+        self, n: int, edges: List[List[int]], time: int, change: int
+    ) -> int:
         g = [[] for _ in range(n + 1)]
         for u, v in edges:
             g[u].append(v)
@@ -397,8 +400,9 @@ class Solution:
         return ans
 
     # TODO
-    def secondMinimum(self, n: int, edges: List[List[int]], time: int,
-                      change: int) -> int:
+    def secondMinimum(
+        self, n: int, edges: List[List[int]], time: int, change: int
+    ) -> int:
         dis, dis2 = [float("inf")] * (n + 1), [float("inf")] * (n + 1)
         graph = collections.defaultdict(list)
         for u, v in edges:
@@ -425,8 +429,8 @@ class Solution:
 class Solution:
     def countValidWords(self, sentence: str) -> int:
         return sum(
-            bool(re.match(r'[a-z]*([a-z]-[a-z]+)?[!.,]?$', w))
-            for w in sentence.split())
+            bool(re.match(r"[a-z]*([a-z]-[a-z]+)?[!.,]?$", w)) for w in sentence.split()
+        )
 
     def countValidWords(self, sentence: str) -> int:
         def valid(s: str) -> bool:
@@ -434,9 +438,14 @@ class Solution:
             for i, ch in enumerate(s):
                 if ch.isdigit() or ch in "!.," and i < len(s) - 1:
                     return False
-                if ch == '-':
-                    if hasHyphens or i == 0 or i == len(s) - 1 or not s[
-                            i - 1].islower() or not s[i + 1].islower():
+                if ch == "-":
+                    if (
+                        hasHyphens
+                        or i == 0
+                        or i == len(s) - 1
+                        or not s[i - 1].islower()
+                        or not s[i + 1].islower()
+                    ):
                         return False
                     hasHyphens = True
             return True
@@ -491,8 +500,9 @@ class Solution:
             left = dfs(g[node][0]) if g[node] else 0
             right = dfs(g[node][1]) if len(g[node]) == 2 else 0
             nonlocal mx, ans
-            if (score := max(1, (n - left - right - 1)) * max(1, left) *
-                    max(1, right)) > mx:
+            if (
+                score := max(1, (n - left - right - 1)) * max(1, left) * max(1, right)
+            ) > mx:
                 mx, ans = score, 1
             elif score == mx:
                 ans += 1
@@ -531,15 +541,14 @@ class Solution:
 
 # 2055 - Plates Between Candles - MEDIUM
 class Solution:
-    def platesBetweenCandles(self, s: str,
-                             queries: List[List[int]]) -> List[int]:
+    def platesBetweenCandles(self, s: str, queries: List[List[int]]) -> List[int]:
         n = len(s)
         preSum = [0] * n
         summ = 0
         left = [0] * n
         l = -1
         for i, ch in enumerate(s):
-            if ch == '*':
+            if ch == "*":
                 summ += 1
             else:
                 l = i
@@ -548,7 +557,7 @@ class Solution:
         right = [0] * n
         r = -1
         for i in range(n - 1, -1, -1):
-            if s[i] == '|':
+            if s[i] == "|":
                 r = i
             right[i] = r
         ans = [0] * len(queries)
@@ -559,9 +568,8 @@ class Solution:
         return ans
 
     # O(n + Qlogn) / O(n + Q)
-    def platesBetweenCandles(self, s: str,
-                             queries: List[List[int]]) -> List[int]:
-        arr = [i for i, c in enumerate(s) if c == '|']
+    def platesBetweenCandles(self, s: str, queries: List[List[int]]) -> List[int]:
+        arr = [i for i, c in enumerate(s) if c == "|"]
         ans = []
         for a, b in queries:
             i = bisect.bisect_left(arr, a)

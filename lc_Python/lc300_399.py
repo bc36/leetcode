@@ -18,41 +18,41 @@ class ListNode:
 class NestedInteger:
     def __init__(self, value=None):
         """
-       If value is not specified, initializes an empty list.
-       Otherwise initializes a single integer equal to value.
-       """
+        If value is not specified, initializes an empty list.
+        Otherwise initializes a single integer equal to value.
+        """
 
     def isInteger(self):
         """
-       @return True if this NestedInteger holds a single integer, rather than a nested list.
-       :rtype bool
-       """
+        @return True if this NestedInteger holds a single integer, rather than a nested list.
+        :rtype bool
+        """
 
     def add(self, elem):
         """
-       Set this NestedInteger to hold a nested list and adds a nested integer elem to it.
-       :rtype void
-       """
+        Set this NestedInteger to hold a nested list and adds a nested integer elem to it.
+        :rtype void
+        """
 
     def setInteger(self, value):
         """
-       Set this NestedInteger to hold a single integer equal to value.
-       :rtype void
-       """
+        Set this NestedInteger to hold a single integer equal to value.
+        :rtype void
+        """
 
     def getInteger(self):
         """
-       @return the single integer that this NestedInteger holds, if it holds a single integer
-       Return None if this NestedInteger holds a nested list
-       :rtype int
-       """
+        @return the single integer that this NestedInteger holds, if it holds a single integer
+        Return None if this NestedInteger holds a nested list
+        :rtype int
+        """
 
     def getList(self):
         """
-       @return the nested list that this NestedInteger holds, if it holds a nested list
-       Return None if this NestedInteger holds a single integer
-       :rtype List[NestedInteger]
-       """
+        @return the nested list that this NestedInteger holds, if it holds a nested list
+        Return None if this NestedInteger holds a single integer
+        :rtype List[NestedInteger]
+        """
 
 
 # 300 - Longest Increasing Subsequence - MEDIUM
@@ -104,9 +104,9 @@ class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
         l = r = 0
         for c in s:
-            if c == '(':
+            if c == "(":
                 l += 1
-            elif c == ')':
+            elif c == ")":
                 if l:
                     l -= 1
                 else:
@@ -123,11 +123,11 @@ class Solution:
             if cr > cl or dl < 0 or dr < 0:
                 return
             ch = s[idx]
-            if ch == '(':
+            if ch == "(":
                 dfs(idx + 1, cl, cr, dl - 1, dr, path)
-            elif ch == ')':
+            elif ch == ")":
                 dfs(idx + 1, cl, cr, dl, dr - 1, path)
-            dfs(idx + 1, cl + (ch == '('), cr + (ch == ')'), dl, dr, path + ch)
+            dfs(idx + 1, cl + (ch == "("), cr + (ch == ")"), dl, dr, path + ch)
 
         dfs(0, 0, 0, l, r, "")
         return ans
@@ -174,14 +174,21 @@ class NumMatrix:
         #     self.presum[0][j] = matrix[0][j] + self.presum[0][j - 1]
         for i in range(m):
             for j in range(n):
-                self.presum[i + 1][j + 1] = matrix[i][j] + self.presum[i][
-                    j + 1] + self.presum[i + 1][j] - self.presum[i][j]
+                self.presum[i + 1][j + 1] = (
+                    matrix[i][j]
+                    + self.presum[i][j + 1]
+                    + self.presum[i + 1][j]
+                    - self.presum[i][j]
+                )
         return
 
     def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
-        return self.presum[row2 + 1][col2 + 1] - self.presum[
-            row2 + 1][col1] - self.presum[row1][col2 +
-                                                1] + self.presum[row1][col1]
+        return (
+            self.presum[row2 + 1][col2 + 1]
+            - self.presum[row2 + 1][col1]
+            - self.presum[row1][col2 + 1]
+            + self.presum[row1][col1]
+        )
 
 
 class NumMatrix:
@@ -196,10 +203,12 @@ class NumMatrix:
         self.matrix = matrix
 
     def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
-        return self.matrix[row2][col2] - (
-            self.matrix[row1 - 1][col2] if row1 > 0 else 0
-        ) - (self.matrix[row2][col1 - 1] if col1 > 0 else 0) + (
-            self.matrix[row1 - 1][col1 - 1] if row1 > 0 and col1 > 0 else 0)
+        return (
+            self.matrix[row2][col2]
+            - (self.matrix[row1 - 1][col2] if row1 > 0 else 0)
+            - (self.matrix[row2][col1 - 1] if col1 > 0 else 0)
+            + (self.matrix[row1 - 1][col1 - 1] if row1 > 0 and col1 > 0 else 0)
+        )
 
 
 # 306 - Additive Number - MEDIUM
@@ -208,9 +217,9 @@ class Solution:
         for i in range(1, len(num)):
             for j in range(i + 1, len(num)):
                 first, second, remaining = num[:i], num[i:j], num[j:]
-                if (first.startswith('0')
-                        and first != '0') or (second.startswith('0')
-                                              and second != '0'):
+                if (first.startswith("0") and first != "0") or (
+                    second.startswith("0") and second != "0"
+                ):
                     continue
                 while remaining:
                     third = str(int(first) + int(second))
@@ -218,17 +227,16 @@ class Solution:
                         break
                     first = second
                     second = third
-                    remaining = remaining[len(third):]
+                    remaining = remaining[len(third) :]
                 if not remaining:
                     return True
         return False
 
     def isAdditiveNumber(self, num: str) -> bool:
         def check(i, j):
-            a = num[:i + 1]
-            b = num[i + 1:j + 1]
-            if (a.startswith('0') and a != '0') or (b.startswith('0')
-                                                    and b != '0'):
+            a = num[: i + 1]
+            b = num[i + 1 : j + 1]
+            if (a.startswith("0") and a != "0") or (b.startswith("0") and b != "0"):
                 return False
             c = str(int(a) + int(b))
             temp = a + b + c
@@ -288,7 +296,8 @@ class NumArray:
         else:
             m = (e + s) // 2
             return self.queryTree(node * 2 + 1, l, r, s, m) + self.queryTree(
-                node * 2 + 2, l, r, m + 1, e)
+                node * 2 + 2, l, r, m + 1, e
+            )
 
     # def queryTree(self, node: int, l: int, r: int, s: int, e: int) -> int:
     #     if l == s and r == e:
@@ -322,8 +331,7 @@ class NumArray:
         self.t[i] = val
         while i > 1:
             # self.t[i >> 1] = self.t[i] + self.t[i ^ 1]
-            self.t[i // 2] = self.t[i] + self.t[(i - 1) if (i % 2) else
-                                                (i + 1)]
+            self.t[i // 2] = self.t[i] + self.t[(i - 1) if (i % 2) else (i + 1)]
             i //= 2
 
     def sumRange(self, left: int, right: int) -> int:
@@ -413,7 +421,7 @@ class NumArray:
             k = i + 1
             while k <= self.n:
                 self.t[k] += nums[i]
-                k += (k & -k)
+                k += k & -k
 
     def update(self, i: int, val: int) -> None:
         diff = val - self.nums[i]
@@ -421,17 +429,17 @@ class NumArray:
         i += 1
         while i <= self.n:
             self.t[i] += diff
-            i += (i & -i)
+            i += i & -i
 
     def sumRange(self, i: int, j: int) -> int:
         ans = 0
         j += 1
         while j:
             ans += self.t[j]
-            j -= (j & -j)
+            j -= j & -j
         while i:
             ans -= self.t[i]
-            i -= (i & -i)
+            i -= i & -i
         return ans
 
 
@@ -439,7 +447,7 @@ class NumArray:
 class NumArray:
     def __init__(self, nums):
         self.update = nums.__setitem__
-        self.sumRange = lambda i, j: sum(nums[i:j + 1])
+        self.sumRange = lambda i, j: sum(nums[i : j + 1])
 
 
 class NumArray:
@@ -452,7 +460,7 @@ class NumArray:
         self.nums[index] = val
 
     def sumRange(self, left: int, right: int) -> int:
-        return self.sum - sum(self.nums[:left]) - sum(self.nums[right + 1:])
+        return self.sum - sum(self.nums[:left]) - sum(self.nums[right + 1 :])
 
 
 # 309 - Best Time to Buy and Sell Stock with Cooldown - MEDIUM
@@ -513,7 +521,7 @@ class Solution:
                 left = nums[i - 1] if i - 1 >= 0 else 1
                 right = nums[i + 1] if i + 1 < len(nums) else 1
                 cur += left * nums[i] * right
-                backtrack(nums[:i - 1] + nums[i + 1:], cur)
+                backtrack(nums[: i - 1] + nums[i + 1 :], cur)
             return
 
         nums = [n for n in nums if n]
@@ -524,19 +532,20 @@ class Solution:
     def maxCoins(self, A: List[int]) -> int:
         # a test case that all elements are '100'
         if len(A) > 1 and len(set(A)) == 1:
-            return (A[0]**3) * (len(A) - 2) + A[0]**2 + A[0]
+            return (A[0] ** 3) * (len(A) - 2) + A[0] ** 2 + A[0]
         A, n = [1] + A + [1], len(A) + 2
         dp = [[0] * n for _ in range(n)]
         # why bottom to up: must solve subquestion first
         for i in range(n - 2, -1, -1):
             for j in range(i + 2, n):
-                dp[i][j] = max(A[i] * A[k] * A[j] + dp[i][k] + dp[k][j]
-                               for k in range(i + 1, j))
+                dp[i][j] = max(
+                    A[i] * A[k] * A[j] + dp[i][k] + dp[k][j] for k in range(i + 1, j)
+                )
         return dp[0][n - 1]
 
     def maxCoins(self, nums: List[int]) -> int:
         if len(nums) > 1 and len(set(nums)) == 1:  # speed up
-            return (nums[0]**3) * (len(nums) - 2) + nums[0]**2 + nums[0]
+            return (nums[0] ** 3) * (len(nums) - 2) + nums[0] ** 2 + nums[0]
         nums = [1] + nums + [1]
         # or: nums = [1] + [n for n in nums if n] + [1]
         dp = [[0] * len(nums) for _ in range(len(nums))]
@@ -544,8 +553,8 @@ class Solution:
             for j in range(i + 2, len(nums)):
                 for k in range(i + 1, j):
                     dp[i][j] = max(
-                        dp[i][j],
-                        dp[i][k] + dp[k][j] + nums[i] * nums[k] * nums[j])
+                        dp[i][j], dp[i][k] + dp[k][j] + nums[i] * nums[k] * nums[j]
+                    )
         return dp[0][-1]
 
     def maxCoins(self, nums: List[int]) -> int:
@@ -671,18 +680,17 @@ class Solution:
 # 322 - Coin Change - MEDIUM
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
-        dp = [0] + [float('inf')] * amount
+        dp = [0] + [float("inf")] * amount
         for i in range(1, amount + 1):
-            dp[i] = min(dp[i - c] if i - c >= 0 else float('inf')
-                        for c in coins) + 1
-        return dp[-1] if dp[-1] != float('inf') else -1
+            dp[i] = min(dp[i - c] if i - c >= 0 else float("inf") for c in coins) + 1
+        return dp[-1] if dp[-1] != float("inf") else -1
 
     def coinChange(self, coins, amount):
-        dp = [0] + [float('inf')] * amount
+        dp = [0] + [float("inf")] * amount
         for coin in coins:
             for i in range(coin, amount + 1):
                 dp[i] = min(dp[i], dp[i - coin] + 1)
-        return dp[-1] if dp[-1] != float('inf') else -1
+        return dp[-1] if dp[-1] != float("inf") else -1
 
     def coinChange(self, coins: List[int], amount: int) -> int:
         ans, dq, visited = 0, collections.deque([amount]), set()
@@ -715,8 +723,10 @@ class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
         @functools.lru_cache(None)
         def dp(amount: int) -> int:
-            if amount == 0: return 0
-            if amount < 0: return float("inf")
+            if amount == 0:
+                return 0
+            if amount < 0:
+                return float("inf")
             return min(dp(amount - coin) + 1 for coin in coins)
 
         return dp(amount) if dp(amount) != float("inf") else -1
@@ -761,8 +771,9 @@ class Solution:
 # 334 - Increasing Triplet Subsequence - MEDIUM
 class Solution:
     def increasingTriplet(self, nums: List[int]) -> bool:
-        if len(nums) < 3: return False
-        first, second = float('inf'), float('inf')
+        if len(nums) < 3:
+            return False
+        first, second = float("inf"), float("inf")
         for n in nums:
             if n <= first:
                 first = n
@@ -809,8 +820,7 @@ class Solution:
         left = self.rob_tree(node.left)
         right = self.rob_tree(node.right)
         val1 = node.val + left[1] + right[1]  # rob node
-        val2 = max(left[0], left[1]) + max(right[0],
-                                           right[1])  # not rob this node
+        val2 = max(left[0], left[1]) + max(right[0], right[1])  # not rob this node
         return (val1, val2)
 
 
@@ -873,19 +883,17 @@ class Solution:
             depth += 1
         return ans
 
-    '''
+    """
     flatten trick about a list of lists
     >>> sum([[1, 2], [2, 4]], [])
     [1, 2, 2, 4]
-    '''
+    """
 
     def depthSum(self, nestedList):
         depth, ret = 1, 0
         while nestedList:
-            ret += depth * sum(
-                [x.getInteger() for x in nestedList if x.isInteger()])
-            nestedList = sum(
-                [x.getList() for x in nestedList if not x.isInteger()], [])
+            ret += depth * sum([x.getInteger() for x in nestedList if x.isInteger()])
+            nestedList = sum([x.getList() for x in nestedList if not x.isInteger()], [])
             depth += 1
         return ret
 
@@ -906,7 +914,7 @@ class Solution:
         if mod == 0:
             return 3**d
         if mod == 1:
-            return 3**(d - 1) * 4
+            return 3 ** (d - 1) * 4
         return 3**d * 2
 
 
@@ -994,7 +1002,7 @@ class Solution:
         ans = []
         for num in nums2:
             if cnt[num] > 0:
-                ans += num,
+                ans += (num,)
                 cnt[num] -= 1
         return ans
 
@@ -1108,7 +1116,7 @@ class Solution:
 # 372 Super Pow
 class Solution:
     def superPow(self, a: int, b: List[int]) -> int:
-        return pow(a, int(''.join(map(str, b))), 1337)
+        return pow(a, int("".join(map(str, b))), 1337)
 
 
 class Solution:
@@ -1130,8 +1138,9 @@ class Solution:
 
 # 373 - Find K Pairs with Smallest Sums - MEDIUM
 class Solution:
-    def kSmallestPairs(self, nums1: List[int], nums2: List[int],
-                       k: int) -> List[List[int]]:
+    def kSmallestPairs(
+        self, nums1: List[int], nums2: List[int], k: int
+    ) -> List[List[int]]:
         def push(i: int, j: int):
             if i < len(nums1) and j < len(nums2):
                 heapq.heappush(queue, [nums1[i] + nums2[j], i, j])
@@ -1147,11 +1156,11 @@ class Solution:
                 push(i + 1, 0)
         return ans
 
-    def kSmallestPairs(self, nums1: List[int], nums2: List[int],
-                       k: int) -> List[List[int]]:
+    def kSmallestPairs(
+        self, nums1: List[int], nums2: List[int], k: int
+    ) -> List[List[int]]:
         ans = []
-        queue = [(nums1[i] + nums2[0], i, 0)
-                 for i in range(min(k, len(nums1)))]
+        queue = [(nums1[i] + nums2[0], i, 0) for i in range(min(k, len(nums1)))]
         while queue and len(ans) < k:
             _, i, j = heapq.heappop(queue)
             ans.append([nums1[i], nums2[j]])
@@ -1225,8 +1234,7 @@ class Solution:
             while i >= 1:
                 # calculate every split point
                 for k in range(i + 1, j):
-                    dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j]),
-                                   dp[i][j])
+                    dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j]), dp[i][j])
                 # calculate both sides
                 dp[i][j] = min(dp[i][j], i + dp[i + 1][j], j + dp[i][j - 1])
                 dp[i][j] = min(dp[i][j], j + dp[i][j - 1])
@@ -1238,8 +1246,7 @@ class Solution:
         dp = [[0] * (n + 1) for _ in range(n + 1)]
         for i in range(n - 1, 0, -1):
             for j in range(i + 1, n + 1):
-                dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j])
-                               for k in range(i, j))
+                dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j]) for k in range(i, j))
         return dp[1][n]
 
 
@@ -1313,8 +1320,7 @@ class Solution:
 # 383 - Ransom Note - EASY
 class Solution:
     def canConstruct(self, ransomNote: str, magazine: str) -> bool:
-        return not collections.Counter(ransomNote) - collections.Counter(
-            magazine)
+        return not collections.Counter(ransomNote) - collections.Counter(magazine)
 
 
 # 384 - Shuffle an Array - MEDIUM
@@ -1450,12 +1456,12 @@ class Solution:
     # fastest
     def firstUniqChar(self, s: str) -> int:
         candi = [chr(i) for i in range(97, 123)]
-        ans = float('inf')
+        ans = float("inf")
         for ch in candi:
             if ch in s and s.find(ch) == s.rfind(ch):
                 if ans > s.find(ch):
                     ans = s.find(ch)
-        return ans if ans != float('inf') else -1
+        return ans if ans != float("inf") else -1
 
     # dict is ordered after Python3.6
     def firstUniqChar(self, s: str) -> int:
@@ -1468,7 +1474,7 @@ class Solution:
     def firstUniqChar(self, s: str) -> int:
         dic = {}
         for i, ch in enumerate(s):
-            if (not dic.get(ch)) and (ch not in s[i + 1:]):
+            if (not dic.get(ch)) and (ch not in s[i + 1 :]):
                 return i
             dic[ch] = True
         return -1
@@ -1479,10 +1485,10 @@ class Solution:
     def lengthLongestPath(self, s: str) -> int:
         ans = 0
         m = {-1: 0}
-        for p in s.split('\n'):
-            depth = p.count('\t')
+        for p in s.split("\n"):
+            depth = p.count("\t")
             m[depth] = m[depth - 1] + len(p) - depth
-            if p.count('.'):
+            if p.count("."):
                 ans = max(ans, m[depth] + depth)  # depth = '/'
         return ans
 
@@ -1490,11 +1496,11 @@ class Solution:
     def lengthLongestPath(self, s: str) -> int:
         ans = 0
         m = {-1: 0}
-        for p in s.split('\n'):
-            depth = p.count('\t')
+        for p in s.split("\n"):
+            depth = p.count("\t")
             m[depth] = m[depth - 1] + len(p)
             # if it does not have '.', the m[depth] will be wrong
-            if p.count('.'):
+            if p.count("."):
                 ans = max(ans, m[depth])
         return ans
 
@@ -1514,13 +1520,14 @@ class Solution:
 class Solution(object):
     def lastRemaining(self, n):
         def helper(n: int, isLeft: bool) -> int:
-            if (n == 1): return 1
+            if n == 1:
+                return 1
             # if started from left side the odd elements will be removed, the only remaining ones will the the even i.e.
             # [1 2 3 4 5 6 7 8 9] => [2 4 6 8] => 2*[1 2 3 4]
             if isLeft:
                 return 2 * helper(n // 2, False)
             # same as left side the odd elements will be removed
-            elif (n % 2 == 1):
+            elif n % 2 == 1:
                 return 2 * helper(n // 2, True)
             # even elements will be removed and the only left ones will be [1 2 3 4 5 6] => [1 3 5] => 2*[1 2 3] - 1
             else:
@@ -1587,14 +1594,14 @@ class Solution:
 # 394 - Decode String - MEDIUM
 class Solution:
     def decodeString(self, s: str) -> str:
-        stack, time, ans = [], 0, ''
+        stack, time, ans = [], 0, ""
         for ch in s:
-            if ch == '[':
+            if ch == "[":
                 stack.append(ans)
                 stack.append(time)
-                ans = ''
+                ans = ""
                 time = 0
-            elif ch == ']':
+            elif ch == "]":
                 pre_num = stack.pop()
                 pre_string = stack.pop()
                 ans = pre_string + pre_num * ans
@@ -1651,8 +1658,9 @@ class Solution:
         if n % 2 == 0:
             self.cache[n] = 1 + self.integerReplacement(n // 2)
         else:
-            self.cache[n] = 2 + min(self.integerReplacement(n // 2),
-                                    self.integerReplacement(n // 2 + 1))
+            self.cache[n] = 2 + min(
+                self.integerReplacement(n // 2), self.integerReplacement(n // 2 + 1)
+            )
         return self.cache[n]
 
 
@@ -1663,8 +1671,9 @@ class Solution:
             return 0
         if n % 2 == 0:
             return 1 + self.integerReplacement(n // 2)
-        return 2 + min(self.integerReplacement(n // 2),
-                       self.integerReplacement(n // 2 + 1))
+        return 2 + min(
+            self.integerReplacement(n // 2), self.integerReplacement(n // 2 + 1)
+        )
 
 
 # bfs

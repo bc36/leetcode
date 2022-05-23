@@ -339,12 +339,12 @@ class Solution:
     def wordCount(self, sw: List[str], tw: List[str]) -> int:
         dic = collections.defaultdict(set)
         for i in range(len(sw)):
-            dic[len(sw[i])].add(''.join(sorted(sw[i])))
+            dic[len(sw[i])].add("".join(sorted(sw[i])))
         ans = 0
         for i in range(len(tw)):
-            s = ''.join(sorted(tw[i]))
+            s = "".join(sorted(tw[i]))
             for j in range(len(s)):
-                if s[:j] + s[j + 1:] in dic[len(s) - 1]:
+                if s[:j] + s[j + 1 :] in dic[len(s) - 1]:
                     ans += 1
                     break
         return ans
@@ -368,7 +368,7 @@ class Solution:
         def word2int(s):
             n = 0
             for ch in s:
-                n |= 1 << (ord(ch) - ord('a'))
+                n |= 1 << (ord(ch) - ord("a"))
             return n
 
         for i in startWords:
@@ -388,8 +388,7 @@ class Solution:
 # 5979. 全部开花的最早一天
 # 长的慢的先种, 播种的时间不能避免, 直接加
 class Solution:
-    def earliestFullBloom(self, plantTime: List[int],
-                          growTime: List[int]) -> int:
+    def earliestFullBloom(self, plantTime: List[int], growTime: List[int]) -> int:
         data = list(zip(plantTime, growTime))
         data.sort(key=lambda x: -x[1])  # sort by grow time in descending order
         # data.sort(key=lambda x: x[1], reverse=True)
@@ -400,8 +399,7 @@ class Solution:
             ans = max(ans, allPlantTime + grow)
         return ans
 
-    def earliestFullBloom(self, plantTime: List[int],
-                          growTime: List[int]) -> int:
+    def earliestFullBloom(self, plantTime: List[int], growTime: List[int]) -> int:
         heap = []
         for i in range(0, len(plantTime)):
             heapq.heappush(heap, (-growTime[i], plantTime[i]))
@@ -446,9 +444,14 @@ class Solution:
         a, m = [0] * len(questions), 0
         for i in range(len(questions) - 1, -1, -1):
             a[i] = max(
-                m, questions[i][0] +
-                (0 if i + questions[i][1] + 1 >= len(questions) else
-                 a[i + questions[i][1] + 1]))
+                m,
+                questions[i][0]
+                + (
+                    0
+                    if i + questions[i][1] + 1 >= len(questions)
+                    else a[i + questions[i][1] + 1]
+                ),
+            )
             m = a[i]
         return a[0]
 
@@ -463,8 +466,7 @@ class Solution:
                 cnt[i] = max(questions[i][0], cnt[i + 1])
             # 否则就是选了它, 后面还有可选的
             else:
-                cnt[i] = max(questions[i][0] + cnt[i + questions[i][1] + 1],
-                             cnt[i + 1])
+                cnt[i] = max(questions[i][0] + cnt[i + questions[i][1] + 1], cnt[i + 1])
         return cnt[0]
 
     def mostPoints(self, questions: List[List[int]]) -> int:
@@ -558,8 +560,9 @@ class Solution:
 # 所以需要倒序, 乘法满足取余恒等. 除法取余: 逆元
 # 所有要做减法求模的行为要小心结果为负数，我们减法之前先加上 mod，保证结果为正
 class Solution:
-    def subStrHash(self, s: str, power: int, modulo: int, k: int,
-                   hashValue: int) -> str:
+    def subStrHash(
+        self, s: str, power: int, modulo: int, k: int, hashValue: int
+    ) -> str:
         ans = m = 0
         p, n = 1, len(s)
         for i in range(n - 1, n - k - 1, -1):
@@ -568,11 +571,10 @@ class Solution:
         if m == hashValue:
             ans = n - k
         for i in range(i - 1, -1, -1):
-            m = (m * power + ord(s[i]) - 96 -
-                 (ord(s[i + k]) - 96) * p) % modulo
+            m = (m * power + ord(s[i]) - 96 - (ord(s[i + k]) - 96) * p) % modulo
             if m == hashValue:
                 ans = i
-        return s[ans:ans + k]
+        return s[ans : ans + k]
 
 
 # https://leetcode-cn.com/problems/groups-of-strings/
@@ -592,7 +594,7 @@ class Solution:
 
         words.sort(key=lambda word: len(word))
         for i in range(len(words)):
-            words[i] = ''.join(sorted(words[i]))
+            words[i] = "".join(sorted(words[i]))
         hashtable = {words[i]: i for i in range(len(words))}
         visited = {}
         for i, word in enumerate(words):
@@ -603,7 +605,7 @@ class Solution:
                 union(i, hashtable[word])
                 continue
             for j in range(len(word)):
-                cur = word[:j] + word[j + 1:]
+                cur = word[:j] + word[j + 1 :]
                 if cur in hashtable:
                     union(i, hashtable[cur])
                 if cur in visited:
@@ -632,8 +634,10 @@ class UnionFind:
 
     def union_sets(self, x: int, y: int) -> bool:
         x, y = self.find_set(x), self.find_set(y)
-        if x == y: return False
-        if self.size[x] < self.size[y]: x, y = y, x
+        if x == y:
+            return False
+        if self.size[x] < self.size[y]:
+            x, y = y, x
         self.fa[y] = x
         self.size[x] += self.size[y]
         return True
@@ -716,7 +720,7 @@ class Bitset:
         return self.ones
 
     def toString(self) -> str:
-        ans = ''
+        ans = ""
         for i in self.arr:
             ans += str(i ^ self.reverse)
         return ans
@@ -729,7 +733,7 @@ class Solution:
         n = ans = len(s)
         pre = 0
         for idx, char in enumerate(s):
-            if char == '1':
+            if char == "1":
                 pre = min(pre + 2, idx + 1)
             ans = min(ans, pre + n - idx - 1)
         return ans
@@ -752,15 +756,20 @@ class Solution:
 
         @functools.lru_cache(None)
         def dfs(i, mask=0):
-            if i == n: return 0
+            if i == n:
+                return 0
             res = 0
             for slot in range(numSlots):
                 if not (mask >> (slot * 2) & 1):
-                    res = max(res, (nums[i] & (slot + 1)) +
-                              dfs(i + 1, mask | (1 << slot * 2)))
+                    res = max(
+                        res, (nums[i] & (slot + 1)) + dfs(i + 1, mask | (1 << slot * 2))
+                    )
                 elif not (mask >> (slot * 2) & 2):
-                    res = max(res, (nums[i] & (slot + 1)) +
-                              dfs(i + 1, mask | (1 << (slot * 2 + 1))))
+                    res = max(
+                        res,
+                        (nums[i] & (slot + 1))
+                        + dfs(i + 1, mask | (1 << (slot * 2 + 1))),
+                    )
             return res
 
         return dfs(0)
@@ -769,7 +778,8 @@ class Solution:
         @functools.lru_cache(None)
         def fn(k, m):
             """Return max AND sum."""
-            if k == len(nums): return 0
+            if k == len(nums):
+                return 0
             ans = 0
             for i in range(numSlots):
                 if m & 1 << 2 * i == 0 or m & 1 << 2 * i + 1 == 0:
@@ -790,7 +800,7 @@ class Solution:
             if i == len(nums):
                 return 0
             for slot in range(1, numSlots + 1):
-                b = 3**(slot - 1)
+                b = 3 ** (slot - 1)
                 if mask // b % 3 > 0:
                     res = max(res, (nums[i] & slot) + dp(i + 1, mask - b))
             return res
@@ -1012,3 +1022,7 @@ class Solution:
 
 
 # https://leetcode-cn.com/contest/weekly-contest-293/
+# 542 / https://leetcode.cn/contest/weekly-contest-293/problems/count-integers-in-intervals/
+
+# https://leetcode-cn.com/contest/weekly-contest-294/
+# 146 / https://leetcode.cn/contest/weekly-contest-294/problems/sum-of-total-strength-of-wizards/

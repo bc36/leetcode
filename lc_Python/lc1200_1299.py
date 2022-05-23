@@ -11,7 +11,7 @@ class ListNode:
 # 1200 - Minimum Absolute Difference - EASY
 class Solution:
     def minimumAbsDifference(self, arr: List[int]) -> List[List[int]]:
-        diff = float('inf')
+        diff = float("inf")
         arr.sort()
         for i in range(len(arr) - 1):
             diff = min(arr[i + 1] - arr[i], diff)
@@ -30,8 +30,7 @@ class Solution:
     def minimumAbsDifference(self, a: List[int]) -> List[List[int]]:
         a.sort()
         diff = min(a[i] - a[i - 1] for i in range(1, len(a)))
-        return [[a[i - 1], a[i]] for i in range(1, len(a))
-                if a[i] - a[i - 1] == diff]
+        return [[a[i - 1], a[i]] for i in range(1, len(a)) if a[i] - a[i - 1] == diff]
 
 
 # 1202 - Smallest String With Swaps - MEDIUM
@@ -62,7 +61,7 @@ class Solution:
                 val = sorted(ans[x] for x in conn)
                 for j, ch in zip(idx, val):
                     ans[j] = ch
-        return ''.join(ans)
+        return "".join(ans)
 
     def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
         def dfs(i):
@@ -89,7 +88,7 @@ class Solution:
                 chars.sort()
                 for j in range(len(conn)):
                     ans[conn[j]] = chars[j]
-        return ''.join(ans)
+        return "".join(ans)
 
     def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
         n = len(s)
@@ -115,7 +114,7 @@ class Solution:
                 char.sort()
                 for j in range(len(conn)):
                     s[conn[j]] = char[j]
-        return ''.join(s)
+        return "".join(s)
 
     # union find, disjoint Set
     # O((E + V) * αV + VlogV) / O(V)
@@ -148,7 +147,7 @@ class Solution:
             d[group].sort(reverse=True)
         for i in range(len(s)):
             ans.append(d[uf.find(i)].pop())
-        return ''.join(ans)
+        return "".join(ans)
 
 
 class UF:
@@ -190,7 +189,7 @@ class Solution:
         ans = []
         for i in range(len(s)):
             ans.append(g[uf.find(i)].pop())
-        return ''.join(ans)
+        return "".join(ans)
 
     def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
         uf = UF(len(s))
@@ -207,7 +206,7 @@ class Solution:
             char.sort()
             for i, ch in zip(v, char):
                 s[i] = ch
-        return ''.join(s)
+        return "".join(s)
 
 
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
@@ -247,8 +246,7 @@ class Solution:
             t = grid[i][j]
             grid[i][j] = 0
             for dx, dy in dire:
-                if 0 <= i + dx < m and 0 <= j + dy < n and grid[i + dx][
-                        j + dy] != 0:
+                if 0 <= i + dx < m and 0 <= j + dy < n and grid[i + dx][j + dy] != 0:
                     backtrack(i + dx, j + dy, total + grid[i + dx][j + dy])
             grid[i][j] = t
             return
@@ -278,8 +276,7 @@ class Solution:
                 ans = count
             for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
                 nx, ny = x + dx, y + dy
-                if 0 <= nx < m and 0 <= ny < n and seen[nx][ny] and grid[nx][
-                        ny]:
+                if 0 <= nx < m and 0 <= ny < n and seen[nx][ny] and grid[nx][ny]:
                     seen[nx][ny] = 0
                     backtrack(nx, ny, count + grid[nx][ny], seen)
                     seen[nx][ny] = 1
@@ -338,8 +335,10 @@ class Solution:
 
     def checkStraightLine(self, c: List[List[int]]) -> bool:
         return all(
-            (c[1][1] - c[0][1]) * (c[i][0] - c[0][0]) == (c[i][1] - c[0][1]) *
-            (c[1][0] - c[0][0]) for i in range(2, len(c)))
+            (c[1][1] - c[0][1]) * (c[i][0] - c[0][0])
+            == (c[i][1] - c[0][1]) * (c[1][0] - c[0][0])
+            for i in range(2, len(c))
+        )
 
 
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
@@ -368,43 +367,43 @@ class Solution:
         left = []
         s = list(s)
         for i in range(len(s)):
-            if s[i] == '(':
+            if s[i] == "(":
                 left.append(i)
-            elif s[i] == ')':
+            elif s[i] == ")":
                 if not left:
-                    s[i] = ''
+                    s[i] = ""
                 else:
                     left.pop()
         for i in left:
-            s[i] = ''
-        return ''.join(s)
+            s[i] = ""
+        return "".join(s)
 
     def minRemoveToMakeValid(self, s: str) -> str:
         arr = list(s)
         stack = []
         for i, ch in enumerate(s):
-            if ch == '(':
+            if ch == "(":
                 stack.append(i)
-            elif ch == ')':
+            elif ch == ")":
                 if stack:
                     stack.pop()  # pop the rightmost '('
                 else:
-                    arr[i] = ''  # remove extra ')', the leftmsot ')'
+                    arr[i] = ""  # remove extra ')', the leftmsot ')'
         while stack:
-            arr[stack.pop()] = ''  # remove extra '('
-        return ''.join(arr)
+            arr[stack.pop()] = ""  # remove extra '('
+        return "".join(arr)
 
     def minRemoveToMakeValid(self, s: str) -> str:
         arr = []
         l = 0
-        r = s.count(')')
+        r = s.count(")")
         for ch in s:
-            if ch == '(':
+            if ch == "(":
                 if r > 0:
                     arr.append(ch)
                     l += 1
                     r -= 1
-            elif ch == ')':
+            elif ch == ")":
                 if l > 0:
                     arr.append(ch)
                     l -= 1
@@ -412,7 +411,7 @@ class Solution:
                     r -= 1
             else:
                 arr.append(ch)
-        return ''.join(arr)
+        return "".join(arr)
 
 
 # 1281 - Subtract the Product and Sum of Digits of an Integer - EASY
@@ -431,10 +430,11 @@ class Solution:
 class CombinationIterator:
     def __init__(self, characters: str, combinationLength: int):
         self.dq = collections.deque(
-            itertools.combinations(characters, combinationLength))
+            itertools.combinations(characters, combinationLength)
+        )
 
     def next(self) -> str:
-        return ''.join(self.dq.popleft())
+        return "".join(self.dq.popleft())
 
     def hasNext(self) -> bool:
         return len(self.dq) > 0

@@ -52,13 +52,19 @@ class Solution:
             for _ in range(len(dq)):
                 n = dq.popleft()
                 if is_even:
-                    if n.val % 2 == 0: return False
-                    if pre and pre.val >= n.val: return False
+                    if n.val % 2 == 0:
+                        return False
+                    if pre and pre.val >= n.val:
+                        return False
                 else:
-                    if n.val % 2 == 1: return False
-                    if pre and pre.val <= n.val: return False
-                if n.left: dq.append(n.left)
-                if n.right: dq.append(n.right)
+                    if n.val % 2 == 1:
+                        return False
+                    if pre and pre.val <= n.val:
+                        return False
+                if n.left:
+                    dq.append(n.left)
+                if n.right:
+                    dq.append(n.right)
                 pre = n
             is_even = not is_even  # bool value cannot use '~' to inverse
         return True
@@ -66,10 +72,13 @@ class Solution:
     def isEvenOddTree(self, root: TreeNode) -> bool:
         l, nodes = 0, [root]
         while nodes:
-            nxt, cur = [], float('inf') if l % 2 else 0
+            nxt, cur = [], float("inf") if l % 2 else 0
             for n in nodes:
-                if (l % 2 == n.val % 2) or (l % 2 and cur <= n.val) or (
-                    (not l % 2) and cur >= n.val):
+                if (
+                    (l % 2 == n.val % 2)
+                    or (l % 2 and cur <= n.val)
+                    or ((not l % 2) and cur >= n.val)
+                ):
                     return False
                 cur = n.val
                 if n.left:
@@ -86,10 +95,10 @@ class Solution:
     def maxDepth(self, s: str) -> int:
         ans = left = 0
         for ch in s:
-            if ch == '(':
+            if ch == "(":
                 left += 1
                 ans = max(ans, left)
-            elif ch == ')':
+            elif ch == ")":
                 left -= 1
         return ans
 
@@ -105,8 +114,11 @@ class Solution:
     def slowestKey(self, rT: List[int], keys: str) -> str:
         ans, time = keys[0], rT[0]
         for i in range(len(rT) - 1):
-            if rT[i + 1] - rT[i] > time or rT[i + 1] - rT[i] == time and keys[
-                    i + 1] > ans:
+            if (
+                rT[i + 1] - rT[i] > time
+                or rT[i + 1] - rT[i] == time
+                and keys[i + 1] > ans
+            ):
                 time = rT[i + 1] - rT[i]
                 ans = keys[i + 1]
         return ans
@@ -161,7 +173,7 @@ class Solution:
 
 # 1650 - Lowest Common Ancestor of a Binary Tree III - MEDIUM
 class Solution:
-    def lowestCommonAncestor(self, p: 'Node', q: 'Node') -> 'Node':
+    def lowestCommonAncestor(self, p: "Node", q: "Node") -> "Node":
         path = set()
         while p:
             path.add(p)
@@ -171,7 +183,7 @@ class Solution:
         return q
 
     # like running in a cycle
-    def lowestCommonAncestor(self, p: 'Node', q: 'Node') -> 'Node':
+    def lowestCommonAncestor(self, p: "Node", q: "Node") -> "Node":
         p1, p2 = p, q
         while p1 != p2:
             p1 = p1.parent if p1.parent else q
@@ -188,8 +200,9 @@ class Solution:
 
 # 1676 - Lowest Common Ancestor of a Binary Tree IV - MEDIUM
 class Solution:
-    def lowestCommonAncestor(self, root: 'TreeNode',
-                             nodes: 'List[TreeNode]') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", nodes: "List[TreeNode]"
+    ) -> "TreeNode":
         nodes = set(nodes)
 
         def lca(root):
@@ -207,7 +220,7 @@ class Solution:
 # 1678 - Goal Parser Interpretation - EASY
 class Solution:
     def interpret(self, c: str) -> str:
-        return c.replace('()', 'o').replace('(al)', 'al')
+        return c.replace("()", "o").replace("(al)", "al")
 
 
 # 1688 - Count of Matches in Tournament - EASY

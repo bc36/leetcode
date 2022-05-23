@@ -5,20 +5,20 @@ from typing import List
 # 1805 - Number of Different Integers in a String - EASY
 class Solution:
     def numDifferentIntegers(self, word: str) -> int:
-        word = word + 'a'
+        word = word + "a"
         s = set()
-        num = ''
+        num = ""
         for c in word:
             if c.isdigit():
                 num += c
             else:
-                if num != '':
+                if num != "":
                     s.add(int(num))
-                num = ''
+                num = ""
         return len(s)
 
     def numDifferentIntegers(self, word: str) -> int:
-        return len(set(map(int, re.findall('\d+', word))))
+        return len(set(map(int, re.findall("\d+", word))))
 
 
 # 1816 - Truncate Sentence - EASY
@@ -32,14 +32,16 @@ class Solution:
     def arraySign(self, nums: List[int]) -> int:
         a = 0
         for n in nums:
-            if n == 0: return 0
+            if n == 0:
+                return 0
             a += 1 if n < 0 else 0
         return -1 if a & 1 else 1
 
     def arraySign(self, nums: List[int]) -> int:
         a = 1
         for n in nums:
-            if n == 0: return 0
+            if n == 0:
+                return 0
             a *= 1 if n > 0 else -1
         return a
 
@@ -47,7 +49,7 @@ class Solution:
 # 1823 - Find the Winner of the Circular Game - MEDIUM
 class Solution:
     def findTheWinner(self, n: int, k: int) -> int:
-        nxt = 0,
+        nxt = (0,)
         arr = [i for i in range(1, n + 1)]
         while len(arr) > 1:
             lost = (nxt + k - 1) % len(arr)

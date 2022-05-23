@@ -11,8 +11,9 @@ class TreeNode:
 
 # 1001 - Grid Illumination - HARD
 class Solution:
-    def gridIllumination(self, n: int, lamps: List[List[int]],
-                         queries: List[List[int]]) -> List[int]:
+    def gridIllumination(
+        self, n: int, lamps: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
         op = set()
         row = collections.defaultdict(int)
         col = collections.defaultdict(int)
@@ -36,9 +37,17 @@ class Solution:
                 ans.append(0)
                 continue
             # shut down
-            for x, y in [(i - 1, j - 1), (i - 1, j), (i - 1, j + 1),
-                         (i, j - 1), (i, j), (i, j + 1), (i + 1, j - 1),
-                         (i + 1, j), (i + 1, j + 1)]:
+            for x, y in [
+                (i - 1, j - 1),
+                (i - 1, j),
+                (i - 1, j + 1),
+                (i, j - 1),
+                (i, j),
+                (i, j + 1),
+                (i + 1, j - 1),
+                (i + 1, j),
+                (i + 1, j + 1),
+            ]:
                 if (x, y) in op:
                     op.remove((x, y))
                     row[x] -= 1
@@ -66,9 +75,9 @@ class Solution:
 # 1009 - Complement of Base 10 Integer - EASY
 class Solution:
     def bitwiseComplement(self, n: int) -> int:
-        ans = ''
+        ans = ""
         while n:
-            ans += '0' if n & 1 else '1'
+            ans += "0" if n & 1 else "1"
             n >>= 1
         return int(ans[::-1], 2) if ans else 1
 
@@ -79,7 +88,8 @@ class Solution:
         return x ^ n  # XOR
 
     def bitwiseComplement(self, n: int) -> int:
-        if not n: return 1
+        if not n:
+            return 1
         mask = n
         mask |= mask >> 1
         mask |= mask >> 2
@@ -132,10 +142,12 @@ class Solution:
 class Solution:
     # time consuming, just because Python supports arbitrarily large numbers
     def smallestRepunitDivByK(self, k: int) -> int:
-        if not k % 2 or not k % 5: return -1
+        if not k % 2 or not k % 5:
+            return -1
         ans, l = 1, 1
         while True:
-            if ans % k == 0: return l
+            if ans % k == 0:
+                return l
             l += 1
             ans = 10 * ans + 1
 
@@ -144,21 +156,25 @@ class Solution:
     # 10kq is divisible by k, so for 10*n + 1 to be divisible by k, it all depends on if 10r + 1 is divisible by k.
     # Therefore, we only have to keep track of r!
     def smallestRepunitDivByK(self, k: int) -> int:
-        if not k % 2 or not k % 5: return -1
+        if not k % 2 or not k % 5:
+            return -1
         r = length = 1
         while True:
             r = r % k
-            if not r: return length
+            if not r:
+                return length
             length += 1
             r = 10 * r + 1
 
     # k possible remainders from 0 to k-1
     def smallestRepunitDivByK(self, k: int) -> int:
-        if k % 2 == 0 or k % 5 == 0: return -1
+        if k % 2 == 0 or k % 5 == 0:
+            return -1
         n = 1
         for i in range(k):
             r = n % k
-            if r == 0: return i + 1
+            if r == 0:
+                return i + 1
             n = r * 10 + 1
 
 
@@ -173,11 +189,15 @@ class Solution:
 
         ans, m, n = 0, len(grid), len(grid[0])
         for i in range(m):
-            if grid[i][0] == 1: dfs(i, 0)
-            if grid[i][n - 1] == 1: dfs(i, n - 1)
+            if grid[i][0] == 1:
+                dfs(i, 0)
+            if grid[i][n - 1] == 1:
+                dfs(i, n - 1)
         for j in range(n):
-            if grid[0][j] == 1: dfs(0, j)
-            if grid[m - 1][j] == 1: dfs(m - 1, j)
+            if grid[0][j] == 1:
+                dfs(0, j)
+            if grid[m - 1][j] == 1:
+                dfs(m - 1, j)
         for i in range(m):
             for j in range(n):
                 if grid[i][j]:
@@ -197,16 +217,21 @@ class Solution:
 
         m, n = len(grid), len(grid[0])
         for i in range(m):
-            if grid[i][0] == 1: bfs(i, 0)
-            if grid[i][n - 1] == 1: bfs(i, n - 1)
+            if grid[i][0] == 1:
+                bfs(i, 0)
+            if grid[i][n - 1] == 1:
+                bfs(i, n - 1)
         for j in range(n):
-            if grid[0][j] == 1: bfs(0, j)
-            if grid[m - 1][j] == 1: bfs(m - 1, j)
+            if grid[0][j] == 1:
+                bfs(0, j)
+            if grid[m - 1][j] == 1:
+                bfs(m - 1, j)
 
         ans = 0
         for i in range(m):
             for j in range(n):
-                if grid[i][j]: ans += 1
+                if grid[i][j]:
+                    ans += 1
         return ans
 
 
@@ -227,7 +252,8 @@ class Solution:
 
     def sumRootToLeaf(self, root: TreeNode) -> int:
         def dfs(root: TreeNode, pre: str):
-            if not root: return
+            if not root:
+                return
             if not root.left and not root.right:
                 self.ans += int(pre + str(root.val), 2)
                 return
@@ -236,15 +262,16 @@ class Solution:
             return
 
         self.ans = 0
-        dfs(root, '')
+        dfs(root, "")
         return self.ans
 
     def sumRootToLeaf(self, root: TreeNode, val=0) -> int:
-        if not root: return 0
+        if not root:
+            return 0
         val = val * 2 + root.val
-        if root.left == root.right == None: return val
-        return self.sumRootToLeaf(root.left, val) + self.sumRootToLeaf(
-            root.right, val)
+        if root.left == root.right == None:
+            return val
+        return self.sumRootToLeaf(root.left, val) + self.sumRootToLeaf(root.right, val)
 
 
 # 1026 - Maximum Difference Between Node and Ancestor - MEDIUM
@@ -255,13 +282,12 @@ class Solution:
 
         def dfs(root):
             if not root:
-                return float('inf'), -float('inf')
+                return float("inf"), -float("inf")
             lmin, lmax = dfs(root.left)
             rmin, rmax = dfs(root.right)
             rootmin = min(root.val, lmin, rmin)
             rootmax = max(root.val, lmax, rmax)
-            self.ans = max(self.ans, abs(root.val - rootmin),
-                           abs(root.val - rootmax))
+            self.ans = max(self.ans, abs(root.val - rootmin), abs(root.val - rootmax))
             return rootmin, rootmax
 
         dfs(root)
@@ -279,36 +305,45 @@ class Solution:
         return dfs(root, root.val, root.val)
 
     # top to down, pass the minimum and maximum values to the children
-    def maxAncestorDiff(self,
-                        root: TreeNode,
-                        mn: int = 100000,
-                        mx: int = 0) -> int:
-        return max(self.maxAncestorDiff(root.left, min(mn, root.val), max(mx, root.val)), \
-            self.maxAncestorDiff(root.right, min(mn, root.val), max(mx, root.val))) \
-            if root else mx - mn
+    def maxAncestorDiff(self, root: TreeNode, mn: int = 100000, mx: int = 0) -> int:
+        return (
+            max(
+                self.maxAncestorDiff(root.left, min(mn, root.val), max(mx, root.val)),
+                self.maxAncestorDiff(root.right, min(mn, root.val), max(mx, root.val)),
+            )
+            if root
+            else mx - mn
+        )
 
     def maxAncestorDiff(self, root: TreeNode) -> int:
-        if not root: return 0
-        stack = [(root, root.val, root.val)]  #stack, parent, child
+        if not root:
+            return 0
+        stack = [(root, root.val, root.val)]  # stack, parent, child
         res = 0
         while stack:
             node, parent, child = stack.pop()
             res = max(res, abs(parent - child))
             if node.left:
                 stack.append(
-                    (node.left, max(parent,
-                                    node.left.val), min(child, node.left.val)))
+                    (node.left, max(parent, node.left.val), min(child, node.left.val))
+                )
             if node.right:
-                stack.append((node.right, max(parent, node.right.val),
-                              min(child, node.right.val)))
+                stack.append(
+                    (
+                        node.right,
+                        max(parent, node.right.val),
+                        min(child, node.right.val),
+                    )
+                )
         return res
 
 
 # 1034 - Coloring A Border - MEDIUM
 class Solution:
     # bfs
-    def colorBorder(self, grid: List[List[int]], row: int, col: int,
-                    color: int) -> List[List[int]]:
+    def colorBorder(
+        self, grid: List[List[int]], row: int, col: int, color: int
+    ) -> List[List[int]]:
         position, borders, originalColor = [(row, col)], [], grid[row][col]
         visited = [[False] * len(grid[0]) for _ in range(len(grid))]
         visited[row][col] = True
@@ -316,8 +351,11 @@ class Solution:
             x, y = position.pop()
             isBorder = False
             for nx, ny in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]:
-                if not (0 <= nx < len(grid) and 0 <= ny < len(grid[0])
-                        and grid[nx][ny] == originalColor):
+                if not (
+                    0 <= nx < len(grid)
+                    and 0 <= ny < len(grid[0])
+                    and grid[nx][ny] == originalColor
+                ):
                     isBorder = True
                 elif not visited[nx][ny]:
                     visited[nx][ny] = True
@@ -329,8 +367,9 @@ class Solution:
         return grid
 
     # bfs
-    def colorBorder(self, grid: List[List[int]], row: int, col: int,
-                    color: int) -> List[List[int]]:
+    def colorBorder(
+        self, grid: List[List[int]], row: int, col: int, color: int
+    ) -> List[List[int]]:
         m, n = len(grid), len(grid[0])
         bfs, component, border = [[row, col]], set([(row, col)]), set()
         while bfs:
@@ -348,19 +387,18 @@ class Solution:
         return grid
 
     # dfs
-    def colorBorder(self, grid: List[List[int]], row: int, col: int,
-                    color: int) -> List[List[int]]:
+    def colorBorder(
+        self, grid: List[List[int]], row: int, col: int, color: int
+    ) -> List[List[int]]:
         visited, m, n = set(), len(grid), len(grid[0])
 
         def dfs(x: int, y: int) -> bool:
             if (x, y) in visited:
                 return True
-            if not (0 <= x < m and 0 <= y < n
-                    and grid[x][y] == grid[row][col]):
+            if not (0 <= x < m and 0 <= y < n and grid[x][y] == grid[row][col]):
                 return False
             visited.add((x, y))
-            if dfs(x + 1, y) + dfs(x - 1, y) + dfs(x, y + 1) + dfs(x,
-                                                                   y - 1) < 4:
+            if dfs(x + 1, y) + dfs(x - 1, y) + dfs(x, y + 1) + dfs(x, y - 1) < 4:
                 grid[x][y] = color
             return True
 
@@ -372,11 +410,13 @@ class Solution:
 class Solution:
     # bfs: determine if the start and end points are surrounded
     #      since the amount of data is large
-    def isEscapePossible(self, blocked: List[List[int]], source: List[int],
-                         target: List[int]) -> bool:
+    def isEscapePossible(
+        self, blocked: List[List[int]], source: List[int], target: List[int]
+    ) -> bool:
         self.blocked_set = set([(r, c) for r, c in blocked])
         bn = len(self.blocked_set)
-        if bn <= 1: return True
+        if bn <= 1:
+            return True
         self.maxblock = bn * (bn - 1) // 2
         return self.bfs(source, target) and self.bfs(target, source)
 
@@ -396,15 +436,19 @@ class Solution:
                 if r == tr and c == tc:
                     return True
                 for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):
-                    if 0 <= nr < row and 0 <= nc < col and (
-                        (nr, nc) not in self.blocked_set) and ((nr, nc)
-                                                               not in visited):
+                    if (
+                        0 <= nr < row
+                        and 0 <= nc < col
+                        and ((nr, nc) not in self.blocked_set)
+                        and ((nr, nc) not in visited)
+                    ):
                         dq.append((nr, nc))
                         visited.add((nr, nc))
         return False
 
-    def isEscapePossible(self, blocked: List[List[int]], source: List[int],
-                         target: List[int]) -> bool:
+    def isEscapePossible(
+        self, blocked: List[List[int]], source: List[int], target: List[int]
+    ) -> bool:
         blocked = {tuple(p) for p in blocked}
         # > 400ms
         # blocked_set = set([(r, c) for r, c in blocked])
@@ -417,14 +461,20 @@ class Solution:
             for x0, y0 in bfs:
                 for i, j in [[0, 1], [1, 0], [-1, 0], [0, -1]]:
                     x, y = x0 + i, y0 + j
-                    if 0 <= x < 10**6 and 0 <= y < 10**6 and (
-                            x, y) not in seen and (x, y) not in blocked:
-                        if [x, y] == target: return True
+                    if (
+                        0 <= x < 10**6
+                        and 0 <= y < 10**6
+                        and (x, y) not in seen
+                        and (x, y) not in blocked
+                    ):
+                        if [x, y] == target:
+                            return True
                         bfs.append([x, y])
                         seen.add((x, y))
                 # > 2000ms
                 # if len(bfs) == 20000: return True
-                if len(bfs) > size: return True
+                if len(bfs) > size:
+                    return True
             return False
 
         return bfs(source, target) and bfs(target, source)
@@ -435,9 +485,12 @@ class Solution:
     def isRobotBounded(self, instructions: str) -> bool:
         x, y, dx, dy = 0, 0, 0, 1
         for i in instructions:
-            if i == 'R': dx, dy = dy, -dx
-            if i == 'L': dx, dy = -dy, dx
-            if i == 'G': x, y = x + dx, y + dy
+            if i == "R":
+                dx, dy = dy, -dx
+            if i == "L":
+                dx, dy = -dy, dx
+            if i == "G":
+                x, y = x + dx, y + dy
         return (x, y) == (0, 0) or not (dx == 0 and dy > 0)
 
 
@@ -464,7 +517,7 @@ class Solution:
             else:
                 end += 1
                 ls[end] = ch
-        return "".join(ls[:end + 1])
+        return "".join(ls[: end + 1])
 
 
 # 1078 - Occurrences After Bigram - EASY
@@ -480,7 +533,7 @@ class Solution:
 # 1185 - Day of the Week - EASY
 class Solution:
     def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
-        return datetime.date(year, month, day).strftime('%A')
+        return datetime.date(year, month, day).strftime("%A")
 
     # Zelle formula
     days = [
@@ -506,18 +559,30 @@ class Solution:
 class Solution:
     # TLE, not suitable for 'dfs', be careful with 'visited2'(cycle)
     def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
-        if grid[-1][-1] == 1 or grid[0][0] == 1: return -1
+        if grid[-1][-1] == 1 or grid[0][0] == 1:
+            return -1
 
         def dfs(x, y, step, visited):
             n = len(grid)
             if x == y == n - 1:
                 self.ans = min(self.ans, step)
                 return
-            for i, j in ((x - 1, y - 1), (x - 1, y), (x - 1, y + 1),
-                         (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
-                         (x + 1, y + 1)):
-                if 0 <= i < n and 0 <= j < n and grid[i][j] == 0 and (
-                        i, j) not in visited:
+            for i, j in (
+                (x - 1, y - 1),
+                (x - 1, y),
+                (x - 1, y + 1),
+                (x, y - 1),
+                (x, y + 1),
+                (x + 1, y - 1),
+                (x + 1, y),
+                (x + 1, y + 1),
+            ):
+                if (
+                    0 <= i < n
+                    and 0 <= j < n
+                    and grid[i][j] == 0
+                    and (i, j) not in visited
+                ):
                     visited.add((i, j))
                     visited2 = copy.deepcopy(visited)
                     dfs(i, j, step + 1, visited2)
@@ -529,16 +594,25 @@ class Solution:
 
     # bfs, O(n^2) + O(n)
     def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
-        if grid[-1][-1] == 1 or grid[0][0] == 1: return -1
+        if grid[-1][-1] == 1 or grid[0][0] == 1:
+            return -1
         dq, n = collections.deque([(0, 0, 1)]), len(grid)
         # no need to use 'visited', space complexity from O(n^2) to O(n)
         grid[0][0] = 1
         while dq:
             x, y, step = dq.popleft()
-            if x == y == n - 1: return step
-            for i, j in ((x - 1, y - 1), (x - 1, y), (x - 1, y + 1),
-                         (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
-                         (x + 1, y + 1)):
+            if x == y == n - 1:
+                return step
+            for i, j in (
+                (x - 1, y - 1),
+                (x - 1, y),
+                (x - 1, y + 1),
+                (x, y - 1),
+                (x, y + 1),
+                (x + 1, y - 1),
+                (x + 1, y),
+                (x + 1, y + 1),
+            ):
                 if 0 <= i < n and 0 <= j < n and grid[i][j] == 0:
                     grid[i][j] = 1
                     dq.append((i, j, step + 1))

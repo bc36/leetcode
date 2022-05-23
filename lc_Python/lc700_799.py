@@ -101,13 +101,14 @@ class Solution:
 # 709 -To Lower Case - EASY
 class Solution:
     def toLowerCase(self, s: str) -> str:
-        '''
+        """
         upper, lower exchange: asc ^= 32;
         upper, lower to lower: asc |= 32;
         lower, upper to upper: asc &= -33
-        '''
+        """
         return "".join(
-            chr(asc | 32) if 65 <= (asc := ord(ch)) <= 90 else ch for ch in s)
+            chr(asc | 32) if 65 <= (asc := ord(ch)) <= 90 else ch for ch in s
+        )
         return s.lower()
 
 
@@ -140,8 +141,7 @@ class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:
         sell, buy = 0, -prices[0]
         for i in range(1, len(prices)):
-            sell, buy = max(sell,
-                            buy + prices[i] - fee), max(buy, sell - prices[i])
+            sell, buy = max(sell, buy + prices[i] - fee), max(buy, sell - prices[i])
         return sell
 
 
@@ -177,8 +177,8 @@ class Solution:
     # O(n + n * 30), brute force
     def longestWord(self, words: List[str]) -> str:
         if not words:
-            return ''
-        ans = ''
+            return ""
+        ans = ""
         s = set(words)
         for w in words:
             if len(w) > len(ans) or (len(w) == len(ans) and w < ans):
@@ -193,8 +193,8 @@ class Solution:
     def longestWord(self, words: List[str]) -> str:
         # ordered by lexicographical, then ordered by length
         words.sort()
-        s = set([''])
-        ans = ''
+        s = set([""])
+        ans = ""
         for w in words:
             if w[:-1] in s:
                 s.add(w)
@@ -232,7 +232,7 @@ class TrieNode:
     def __init__(self):
         self.children = collections.defaultdict(TrieNode)
         self.isEnd = False
-        self.word = ''
+        self.word = ""
 
 
 class Trie:
@@ -248,7 +248,7 @@ class Trie:
 
     def bfs(self):
         dq = collections.deque([self.root])
-        ans = ''
+        ans = ""
         while dq:
             node = dq.popleft()
             for ch in node.children.values():
@@ -280,7 +280,8 @@ class Solution:
                         if acc == p:
                             # the same person
                             dic[account[0]][i] = dic[account[0]][i].union(
-                                set(account[1:]))
+                                set(account[1:])
+                            )
                             return True
             return False
 
@@ -349,8 +350,9 @@ class Solution:
 # 733 - Flood Fill - EASY
 class Solution:
     # bfs
-    def floodFill(self, image: List[List[int]], sr: int, sc: int,
-                  newColor: int) -> List[List[int]]:
+    def floodFill(
+        self, image: List[List[int]], sr: int, sc: int, newColor: int
+    ) -> List[List[int]]:
         if image[sr][sc] == newColor:
             return image
         position, originalColor = [(sr, sc)], image[sr][sc]
@@ -358,17 +360,18 @@ class Solution:
             pos = position.pop()
             image[pos[0]][pos[1]] = newColor
             for m in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                if 0 <= pos[0] + m[0] < len(
-                        image) and 0 <= pos[1] + m[1] < len(
-                            image[0]) and image[pos[0] +
-                                                m[0]][pos[1] +
-                                                      m[1]] == originalColor:
+                if (
+                    0 <= pos[0] + m[0] < len(image)
+                    and 0 <= pos[1] + m[1] < len(image[0])
+                    and image[pos[0] + m[0]][pos[1] + m[1]] == originalColor
+                ):
                     position.append((pos[0] + m[0], pos[1] + m[1]))
         return image
 
     # dfs
-    def floodFill(self, image: List[List[int]], sr: int, sc: int,
-                  newColor: int) -> List[List[int]]:
+    def floodFill(
+        self, image: List[List[int]], sr: int, sc: int, newColor: int
+    ) -> List[List[int]]:
         if image[sr][sc] == newColor:
             return image
         originalColor = image[sr][sc]
@@ -376,9 +379,11 @@ class Solution:
         def dfs(row: int, col: int):
             image[row][col] = newColor
             for m in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                if 0 <= row + m[0] < len(image) and 0 <= col + m[1] < len(
-                        image[0]) and image[row + m[0]][col +
-                                                        m[1]] == originalColor:
+                if (
+                    0 <= row + m[0] < len(image)
+                    and 0 <= col + m[1] < len(image[0])
+                    and image[row + m[0]][col + m[1]] == originalColor
+                ):
                     dfs(row + m[0], col + m[1])
             return
 
@@ -386,15 +391,19 @@ class Solution:
         return image
 
     # recursive
-    def floodFill(self, image: List[List[int]], sr: int, sc: int,
-                  newColor: int) -> List[List[int]]:
+    def floodFill(
+        self, image: List[List[int]], sr: int, sc: int, newColor: int
+    ) -> List[List[int]]:
         if image[sr][sc] == newColor:
             return image
         originalColor = image[sr][sc]
         image[sr][sc] = newColor
         for x, y in [(sr + 1, sc), (sr - 1, sc), (sr, sc + 1), (sr, sc - 1)]:
-            if 0 <= x < len(image) and 0 <= y < len(
-                    image[0]) and image[x][y] == originalColor:
+            if (
+                0 <= x < len(image)
+                and 0 <= y < len(image[0])
+                and image[x][y] == originalColor
+            ):
                 self.floodFill(image, x, y, newColor)
         return image
 
@@ -463,29 +472,25 @@ class Solution:
 
 # 748 - Shortest Completing Word - EASY
 class Solution:
-    def shortestCompletingWord(self, licensePlate: str,
-                               words: List[str]) -> str:
+    def shortestCompletingWord(self, licensePlate: str, words: List[str]) -> str:
         licensePlate = [
-            x for x in licensePlate.lower() if ord('a') <= ord(x) <= ord('z')
+            x for x in licensePlate.lower() if ord("a") <= ord(x) <= ord("z")
         ]
         s, cnt = set(licensePlate), collections.Counter(licensePlate)
         for word in sorted(words, key=lambda word: len(word)):
-            word = [x for x in word.lower() if ord('a') <= ord(x) <= ord('z')]
-            '''
+            word = [x for x in word.lower() if ord("a") <= ord(x) <= ord("z")]
+            """
             Counter(word) - cnt: means that cnt(word) strictly larger than cnt
             not including the case: cnt(word) == cnt
-            '''
-            if set(word).intersection(
-                    s) == s and not cnt - collections.Counter(word):
+            """
+            if set(word).intersection(s) == s and not cnt - collections.Counter(word):
                 return "".join(word)
         return ""
 
     # not use set, counter all character in each word, a little bit slow
-    def shortestCompletingWord(self, licensePlate: str,
-                               words: List[str]) -> str:
+    def shortestCompletingWord(self, licensePlate: str, words: List[str]) -> str:
         pc = collections.Counter(filter(str.isalpha, licensePlate.lower()))
-        return min([w for w in words if collections.Counter(w) & pc == pc],
-                   key=len)
+        return min([w for w in words if collections.Counter(w) & pc == pc], key=len)
 
 
 # 749
@@ -519,20 +524,19 @@ class Solution:
     # right <= 10^6 < 2^20, so the number of 1's in binary will not exceed 19
     def countPrimeSetBits(self, left: int, right: int) -> int:
         primes = {2, 3, 5, 7, 11, 13, 17, 19}
-        '''
+        """
         'bit_count()' is a new feature in python3.10
         Return the number of ones in the binary representation of the absolute value of the integer
         
         def bit_count(self):
             return bin(self).count("1")
-        '''
+        """
         return sum(i.bit_count() in primes for i in range(left, right + 1))
 
     # mask = 665772 = 10100010100010101100
     # mask += 2 ^ x for x in [2 3 5 7 11 13 17 19]
     def countPrimeSetBits(self, left: int, right: int) -> int:
-        return sum(((1 << x.bit_count()) & 665772) != 0
-                   for x in range(left, right + 1))
+        return sum(((1 << x.bit_count()) & 665772) != 0 for x in range(left, right + 1))
 
     # for(int num=left;num<=right;++num){
     #     const int pos=__builtin_popcount(num);
@@ -572,32 +576,32 @@ def calc(exp: str, start=0):
     stack = []
     ans = 0
     cur = 0
-    f = '+'
+    f = "+"
     new = exp[start:]
-    new += '#'  # as a stop label
+    new += "#"  # as a stop label
     for i, ch in enumerate(new):
         if ch.isdigit():
             cur = cur * 10 + int(ch)
-        elif ch == '(':
-            if f == '+':
+        elif ch == "(":
+            if f == "+":
                 stack.append(cur)
-            elif f == '-':
+            elif f == "-":
                 stack.append(-cur)
-            elif f == '*':
+            elif f == "*":
                 stack.append(stack.pop() * cur)
-            elif f == '/':
+            elif f == "/":
                 stack.append(stack.pop() / cur)
             cur = calc(exp, i + 1)
-        elif ch == ')':
+        elif ch == ")":
             return sum(stack) + cur
         else:
-            if f == '+':
+            if f == "+":
                 stack.append(cur)
-            elif f == '-':
+            elif f == "-":
                 stack.append(-cur)
-            elif f == '*':
+            elif f == "*":
                 stack.append(stack.pop() * cur)
-            elif f == '/':
+            elif f == "/":
                 stack.append(stack.pop() / cur)
             f = ch
             cur = 0
@@ -605,29 +609,22 @@ def calc(exp: str, start=0):
     return ans / 1.0
 
 
-print(calc('1+2'))  # => 3
-print(calc('1+2*3'))  # => 7
-print(calc('1+2*3/3'))  # => 3
-print(calc('1/3+2*3'))  # => 6.333333
-print(calc('1/3*6+2*3'))  # => 8
+print(calc("1+2"))  # => 3
+print(calc("1+2*3"))  # => 7
+print(calc("1+2*3/3"))  # => 3
+print(calc("1/3+2*3"))  # => 6.333333
+print(calc("1/3*6+2*3"))  # => 8
 
 
 # 773 - Sliding Puzzle - HARD
 class Solution:
     # O((mn)! * mn * 4) / O((mn)! * mn), factorial complexity
     def slidingPuzzle(self, board: List[List[int]]) -> int:
-        adj = {
-            0: [1, 3],
-            1: [0, 2, 4],
-            2: [1, 5],
-            3: [0, 4],
-            4: [1, 3, 5],
-            5: [2, 4]
-        }
+        adj = {0: [1, 3], 1: [0, 2, 4], 2: [1, 5], 3: [0, 4], 4: [1, 3, 5], 5: [2, 4]}
         # # 'fn' equal to 'toString'
         # def toString(a: List[int]) -> str:
         #     return ''.join([str(x) for x in a])
-        fn = lambda a: ''.join([str(x) for x in a])
+        fn = lambda a: "".join([str(x) for x in a])
         depth = 0
         init = [n for row in board for n in row]
         q = collections.deque([init])
@@ -636,7 +633,7 @@ class Solution:
             k = len(q)
             for _ in range(k):
                 cur = q.popleft()
-                if fn(cur) == '123450':
+                if fn(cur) == "123450":
                     return depth
                 i = cur.index(0)
                 for j in adj[i]:
@@ -649,26 +646,19 @@ class Solution:
         return -1
 
     def slidingPuzzle(self, board: List[List[int]]) -> int:
-        d = {
-            0: [1, 3],
-            1: [0, 2, 4],
-            2: [1, 5],
-            3: [0, 4],
-            4: [1, 3, 5],
-            5: [2, 4]
-        }
+        d = {0: [1, 3], 1: [0, 2, 4], 2: [1, 5], 3: [0, 4], 4: [1, 3, 5], 5: [2, 4]}
 
         def neighbors(s: str):
-            i = s.find('0')
+            i = s.find("0")
             res = []
             for j in d[i]:
                 t = list(s)
                 t[i], t[j] = t[j], t[i]
-                res += ''.join(t),
+                res += ("".join(t),)
             return res
 
-        start = ''.join([str(n) for row in board for n in row])
-        target = '123450'
+        start = "".join([str(n) for row in board for n in row])
+        target = "123450"
         dq = collections.deque([(start, 0)])
         seen = {start}
         while dq:
@@ -678,12 +668,12 @@ class Solution:
             for n in neighbors(cur):
                 if n not in seen:
                     seen.add(n)
-                    dq += (n, step + 1),
+                    dq += ((n, step + 1),)
         return -1
 
     def slidingPuzzle(self, board: List[List[int]]) -> int:
-        s = ''.join(str(n) for row in board for n in row)
-        dq = collections.deque([(s, s.index('0'))])
+        s = "".join(str(n) for row in board for n in row)
+        dq = collections.deque([(s, s.index("0"))])
         seen = {s}
         r = len(board)
         c = len(board[0])
@@ -691,14 +681,14 @@ class Solution:
         while dq:
             for _ in range(len(dq)):
                 cur, i = dq.popleft()
-                if cur == '123450':
+                if cur == "123450":
                     return steps
                 x, y = i // c, i % c
                 for nx, ny in (x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y):
                     if 0 <= nx < r and 0 <= ny < c:
                         l = [ch for ch in cur]
-                        l[i], l[nx * c + ny] = l[nx * c + ny], '0'
-                        s = ''.join(l)
+                        l[i], l[nx * c + ny] = l[nx * c + ny], "0"
+                        s = "".join(l)
                         if s not in seen:
                             seen.add(s)
                             dq.append((s, nx * c + ny))
@@ -763,14 +753,20 @@ class Solution:
     def reachingPoints(self, sx, sy, tx, ty):
         while sx < tx and sy < ty:
             tx, ty = tx % ty, ty % tx
-        return sx == tx and sy <= ty and (ty - sy) % sx == 0 or \
-               sy == ty and sx <= tx and (tx - sx) % sy == 0
+        return (
+            sx == tx
+            and sy <= ty
+            and (ty - sy) % sx == 0
+            or sy == ty
+            and sx <= tx
+            and (tx - sx) % sy == 0
+        )
 
 
 # 784 - Letter Case Permutation - MEDIUM
 class Solution:
     def letterCasePermutation(self, s: str) -> List[str]:
-        ans = ['']
+        ans = [""]
         for ch in s:
             if ch.isalpha():
                 ans = [i + j for i in ans for j in [ch.upper(), ch.lower()]]
@@ -859,11 +855,11 @@ class Solution:
             while cnt.get(ch, 0) and cnt[ch] > 0:
                 ans += ch
                 cnt[ch] -= 1
-        '''
+        """
         'ch' will have been assigned value and can be called,
         even if it in the last for loop and for loop ended
         print(ch)
-        '''
+        """
         for ch in cnt:
             while cnt[ch] != 0:
                 ans += ch
@@ -893,7 +889,7 @@ class Solution:
         for _ in range(len(s)):
             if s == goal:
                 return True
-            s = ''.join(list(s)[-len(s) + 1:]) + s[0]
+            s = "".join(list(s)[-len(s) + 1 :]) + s[0]
         return False
 
     def rotateString(self, s: str, goal: str) -> bool:

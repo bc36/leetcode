@@ -18,10 +18,7 @@ class Solution:
         cnt, mod = collections.Counter(nums), 10**9 + 7
         d = collections.defaultdict(int)
         d[1] = (1 << cnt[1]) % mod
-        for p in [
-                2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19, 21, 22, 23, 26, 29,
-                30
-        ]:
+        for p in [2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19, 21, 22, 23, 26, 29, 30]:
             for x in list(d):
                 # RuntimeError: dictionary changed size during iteration
                 #     for x in d:
@@ -38,7 +35,8 @@ class Solution:
         dp = [0] * (1 << m)
         dp[0] = 1
         for num in cnt:
-            if num == 1: continue
+            if num == 1:
+                continue
             if any(num % (p * p) == 0 for p in prime):
                 continue
             mask = 0
@@ -46,7 +44,7 @@ class Solution:
                 if num % prime[i] == 0:
                     mask |= 1 << i
             for state in range(1 << m):
-                if state & mask == 0: # no reused prime number
+                if state & mask == 0:  # no reused prime number
                     dp[state | mask] += dp[state] * cnt[num]
                     dp[state | mask] %= mod
         return (1 << cnt[1]) * (sum(dp) - 1) % mod  # minus dp[0]
@@ -60,12 +58,15 @@ class Solution:
         dp[0] = 1
         cnt = collections.Counter(nums)
         for n in cnt:
-            if n == 1: continue
-            if n % 4 == 0 or n % 9 == 0 or n == 25: continue
+            if n == 1:
+                continue
+            if n % 4 == 0 or n % 9 == 0 or n == 25:
+                continue
             # mask == a set of primes where primes[i] is included if bitmask[i] == 1
             mask = sum(1 << i for i, p in enumerate(primes) if n % p == 0)
             for i in range(1 << 10):
-                if i & mask: continue
+                if i & mask:
+                    continue
                 # no reused prime number
                 dp[i | mask] = (dp[i | mask] + cnt[n] * dp[i]) % mod
         return (1 << cnt[1]) * (sum(dp) - 1) % mod  # minus dp[0]
@@ -73,16 +74,14 @@ class Solution:
     def numberOfGoodSubsets(self, nums: List[int]) -> int:
         p = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
         cnt = collections.Counter(nums)
-        bm = [
-            sum(1 << i for i, p in enumerate(p) if x % p == 0)
-            for x in range(31)
-        ]
+        bm = [sum(1 << i for i, p in enumerate(p) if x % p == 0) for x in range(31)]
         bad = set([4, 8, 9, 12, 16, 18, 20, 24, 25, 27, 28])
         m = 10**9 + 7
 
         @functools.lru_cache(None)
         def dp(mask, num):
-            if num == 1: return 1
+            if num == 1:
+                return 1
             ans = dp(mask, num - 1)
             if num not in bad and mask | bm[num] == mask:
                 ans += dp(mask ^ bm[num], num - 1) * cnt[num]

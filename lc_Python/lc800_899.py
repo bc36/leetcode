@@ -20,26 +20,74 @@ class Solution:
     def uniqueMorseRepresentations(self, words: List[str]) -> int:
         dic = {
             i: v
-            for i, v in enumerate([
-                ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..",
-                ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-",
-                ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."
-            ])
+            for i, v in enumerate(
+                [
+                    ".-",
+                    "-...",
+                    "-.-.",
+                    "-..",
+                    ".",
+                    "..-.",
+                    "--.",
+                    "....",
+                    "..",
+                    ".---",
+                    "-.-",
+                    ".-..",
+                    "--",
+                    "-.",
+                    "---",
+                    ".--.",
+                    "--.-",
+                    ".-.",
+                    "...",
+                    "-",
+                    "..-",
+                    "...-",
+                    ".--",
+                    "-..-",
+                    "-.--",
+                    "--..",
+                ]
+            )
         }
         s = set()
         for w in words:
-            s.add(''.join([dic[ord(ch) - ord('a')] for ch in w]))
+            s.add("".join([dic[ord(ch) - ord("a")] for ch in w]))
         return len(s)
 
     def uniqueMorseRepresentations(self, words: List[str]) -> int:
         morse = [
-            ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..",
-            ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.",
-            "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."
+            ".-",
+            "-...",
+            "-.-.",
+            "-..",
+            ".",
+            "..-.",
+            "--.",
+            "....",
+            "..",
+            ".---",
+            "-.-",
+            ".-..",
+            "--",
+            "-.",
+            "---",
+            ".--.",
+            "--.-",
+            ".-.",
+            "...",
+            "-",
+            "..-",
+            "...-",
+            ".--",
+            "-..-",
+            "-.--",
+            "--..",
         ]
         return len(
-            set("".join(morse[ord(ch) - ord('a')] for ch in word)
-                for word in words))
+            set("".join(morse[ord(ch) - ord("a")] for ch in word) for word in words)
+        )
 
 
 # 806 - Number of Lines To Write String - EASY
@@ -49,7 +97,7 @@ class Solution:
         ans = 1
         cur = 0
         for ch in s:
-            w = widths[ord(ch) - ord('a')]
+            w = widths[ord(ch) - ord("a")]
             if cur + w > mx:
                 ans += 1
                 cur = w
@@ -65,19 +113,31 @@ class Solution:
         col_maxes = [max(col) for col in zip(*grid)]
 
         return sum(
-            min(row_maxes[r], col_maxes[c]) - val for r, row in enumerate(grid)
-            for c, val in enumerate(row))
+            min(row_maxes[r], col_maxes[c]) - val
+            for r, row in enumerate(grid)
+            for c, val in enumerate(row)
+        )
 
     def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
         rows, cols = list(map(max, grid)), list(map(max, zip(*grid)))
         return sum(min(i, j) for i in rows for j in cols) - sum(map(sum, grid))
 
 
+# 812 - Largest Triangle Area - EASY
+class Solution:
+    # heron's formula
+    def largestTriangleArea(self, points: List[List[int]]) -> float:
+        return max(
+            abs(x1 * y2 + x2 * y3 + x3 * y1 - x1 * y3 - x2 * y1 - x3 * y2) / 2
+            for (x1, y1), (x2, y2), (x3, y3) in itertools.combinations(points, 3)
+        )
+
+
 # 819 - Most Common Word - EASY
 class Solution:
     def mostCommonWord(self, p: str, banned: List[str]) -> str:
-        p = p.lower() + '.'
-        w = ''
+        p = p.lower() + "."
+        w = ""
         freq = collections.defaultdict(int)
         banned = set(banned)
         for ch in p:
@@ -86,26 +146,27 @@ class Solution:
             else:
                 if w not in banned and len(w) > 0:
                     freq[w] += 1
-                w = ''
+                w = ""
         return sorted(freq.keys(), key=freq.get)[-1]
 
     # '\w' matches [a-zA-Z0-9_]
     def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
         return collections.Counter(
-            w for w in re.split(r'[^\w]+', paragraph.lower())
-            if w and w not in banned).most_common(1)[0][0]
+            w for w in re.split(r"[^\w]+", paragraph.lower()) if w and w not in banned
+        ).most_common(1)[0][0]
 
     def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
         ban = set(banned)
-        words = re.findall(r'\w+', paragraph.lower())
-        return collections.Counter(w for w in words
-                                   if w not in ban).most_common(1)[0][0]
+        words = re.findall(r"\w+", paragraph.lower())
+        return collections.Counter(w for w in words if w not in ban).most_common(1)[0][
+            0
+        ]
 
     def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
-        return max(collections.Counter(
-            re.split(r"[ !?',;.]", paragraph.lower())).items(),
-                   key=lambda x:
-                   (len(x) > 0, x[0] not in set(banned + [""]), x[1]))[0]
+        return max(
+            collections.Counter(re.split(r"[ !?',;.]", paragraph.lower())).items(),
+            key=lambda x: (len(x) > 0, x[0] not in set(banned + [""]), x[1]),
+        )[0]
 
 
 # 821 - Shortest Distance to a Character - EASY
@@ -136,13 +197,13 @@ class Solution:
         return ans
 
     def shortestToChar(self, s: str, c: str) -> List[int]:
-        pre = float('-inf')
+        pre = float("-inf")
         ans = []
         for i in range(len(s)):
             if s[i] == c:
                 pre = i
             ans.append(i - pre)
-        pre = float('inf')
+        pre = float("inf")
         for i in range(len(s) - 1, -1, -1):
             if s[i] == c:
                 pre = i
@@ -168,11 +229,11 @@ class Solution:
     def toGoatLatin(self, sentence: str) -> str:
         arr = []
         for i, s in enumerate(sentence.split()):
-            if s[0] in 'aeiouAEIOU':
-                arr.append(s + 'ma' + 'a' * (i + 1))
+            if s[0] in "aeiouAEIOU":
+                arr.append(s + "ma" + "a" * (i + 1))
             else:
-                arr.append(s[1:] + s[0] + 'ma' + 'a' * (i + 1))
-        return ' '.join(arr)
+                arr.append(s[1:] + s[0] + "ma" + "a" * (i + 1))
+        return " ".join(arr)
 
 
 # 825 - Friends Of Appropriate Ages - MEDIUM
@@ -182,8 +243,7 @@ class Solution:
             return not (b <= 0.5 * a + 7 or b > a or b > 100 and a < 100)
 
         c = collections.Counter(ages)
-        return sum(
-            request(a, b) * c[a] * (c[b] - (a == b)) for a in c for b in c)
+        return sum(request(a, b) * c[a] * (c[b] - (a == b)) for a in c for b in c)
 
     def numFriendRequests(self, ages: List[int]) -> int:
         cnt = collections.Counter(ages)
@@ -292,13 +352,13 @@ class Solution:
 class Solution:
     def pushDominoes(self, dominoes: str) -> str:
         while 1:
-            new = dominoes.replace('R.L', 'S')
-            new = new.replace('.L', 'LL').replace('R.', 'RR')
+            new = dominoes.replace("R.L", "S")
+            new = new.replace(".L", "LL").replace("R.", "RR")
             if new == dominoes:
                 break
             else:
                 dominoes = new
-        return dominoes.replace('S', 'R.L')
+        return dominoes.replace("S", "R.L")
 
     def pushDominoes(self, d: str) -> str:
         n = len(d)
@@ -306,20 +366,19 @@ class Solution:
         records = [[math.inf, math.inf] for _ in range(n)]
         cur = -math.inf
         for i in range(n):
-            if d[i] == 'R':
+            if d[i] == "R":
                 cur = i
-            elif d[i] == 'L':
+            elif d[i] == "L":
                 cur = -math.inf
             records[i][1] = i - cur
         cur = math.inf
         for i in range(n - 1, -1, -1):
-            if d[i] == 'L':
+            if d[i] == "L":
                 cur = i
-            elif d[i] == 'R':
+            elif d[i] == "R":
                 cur = math.inf
             records[i][0] = cur - i
-        return "".join('.' if l == r else ('R' if l > r else 'L')
-                       for l, r in records)
+        return "".join("." if l == r else ("R" if l > r else "L") for l, r in records)
 
 
 # 844 - Backspace String Compare - EASY
@@ -327,21 +386,25 @@ class Solution:
     def backspaceCompare(self, s: str, t: str) -> bool:
         a, b = [], []
         for ch in s:
-            if ch == '#':
-                if a: a.pop()
-            else: a.append(ch)
+            if ch == "#":
+                if a:
+                    a.pop()
+            else:
+                a.append(ch)
         for ch in t:
-            if ch == '#':
-                if b: b.pop()
-            else: b.append(ch)
+            if ch == "#":
+                if b:
+                    b.pop()
+            else:
+                b.append(ch)
         return a == b
 
     # O(n) + O(1): reversed, save '#'
     def backspaceCompare(self, s: str, t: str) -> bool:
         def build(s: str) -> str:
-            skip, a = 0, ''
+            skip, a = 0, ""
             for ch in reversed(s):
-                if ch == '#':
+                if ch == "#":
                     skip += 1
                 elif skip:
                     skip -= 1
@@ -411,8 +474,7 @@ class Solution:
 
 # 851 - Loud and Rich - MEDIUM
 class Solution:
-    def loudAndRich(self, richer: List[List[int]],
-                    quiet: List[int]) -> List[int]:
+    def loudAndRich(self, richer: List[List[int]], quiet: List[int]) -> List[int]:
         n = len(quiet)
         g, ans = [[] for _ in range(n)], [-1] * n
         for r in richer:
@@ -431,8 +493,7 @@ class Solution:
             dfs(i)
         return ans
 
-    def loudAndRich(self, richer: List[List[int]],
-                    quiet: List[int]) -> List[int]:
+    def loudAndRich(self, richer: List[List[int]], quiet: List[int]) -> List[int]:
         n = len(quiet)
         g = [[] for _ in range(n)]
         inDeg = [0] * n
@@ -691,15 +752,18 @@ class Solution:
         return a + b + c
 
     def projectionArea(self, grid: List[List[int]]) -> int:
-        return sum(map(max, grid + list(zip(*grid)))) + sum(v > 0 for r in grid
-                                                            for v in r)
+        return sum(map(max, grid + list(zip(*grid)))) + sum(
+            v > 0 for r in grid for v in r
+        )
 
     def projectionArea(self, grid: List[List[int]]) -> int:
-        return sum([
-            sum(map(max, grid)),
-            sum(map(max, zip(*grid))),
-            sum(v > 0 for row in grid for v in row)
-        ])
+        return sum(
+            [
+                sum(map(max, grid)),
+                sum(map(max, zip(*grid))),
+                sum(v > 0 for row in grid for v in row),
+            ]
+        )
 
 
 # 884 - Uncommon Words from Two Sentences - EASY

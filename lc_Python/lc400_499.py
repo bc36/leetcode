@@ -29,7 +29,7 @@ class Solution:
     def findNthDigit(self, n):
         n -= 1
         for digits in range(1, 11):
-            first = 10**(digits - 1)
+            first = 10 ** (digits - 1)
             if n < 9 * first * digits:
                 return int(str(first + n / digits)[n % digits])
             n -= 9 * first * digits
@@ -46,7 +46,7 @@ class Solution:
             stack.append(d)
         if k > 0:
             stack = stack[:-k]
-        return ''.join(stack).lstrip('0') or "0"
+        return "".join(stack).lstrip("0") or "0"
 
 
 # 408 - Valid Word Abbreviation - EASY
@@ -84,7 +84,7 @@ class Solution:
     def longestPalindrome(self, s: str) -> int:
         arr = [0] * 128
         for ch in s:
-            arr[ord(ch) - ord('a')] += 1
+            arr[ord(ch) - ord("a")] += 1
         odd = 0
         for n in arr:
             odd += n & 1
@@ -138,13 +138,17 @@ class Solution:
     def pacificAtlantic(self, h: List[List[int]]) -> List[List[int]]:
         def dfs(x, y, ocean):
             s.add((x, y))
-            if ocean == 'p':
+            if ocean == "p":
                 pac[x][y] = 1
             else:
                 atl[x][y] = 1
             for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
-                if 0 <= nx < m and 0 <= ny < n and (
-                        nx, ny) not in s and h[nx][ny] >= h[x][y]:
+                if (
+                    0 <= nx < m
+                    and 0 <= ny < n
+                    and (nx, ny) not in s
+                    and h[nx][ny] >= h[x][y]
+                ):
                     dfs(nx, ny, ocean)
 
         m = len(h)
@@ -154,14 +158,14 @@ class Solution:
         pac = [[0] * n for _ in range(m)]
         atl = [[0] * n for _ in range(m)]
         for i in range(m):
-            dfs(i, 0, 'p')
+            dfs(i, 0, "p")
         for j in range(1, n):
-            dfs(0, j, 'p')
+            dfs(0, j, "p")
         s.clear()
         for i in range(m):
-            dfs(i, n - 1, 'a')
+            dfs(i, n - 1, "a")
         for j in range(n - 1):
-            dfs(m - 1, j, 'a')
+            dfs(m - 1, j, "a")
         for i in range(m):
             for j in range(n):
                 if pac[i][j] == atl[i][j] == 1:
@@ -208,8 +212,12 @@ class Solution:
         def dfs(s: set, x: int, y: int):
             s.add((x, y))
             for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
-                if 0 <= nx < m and 0 <= ny < n and (
-                        nx, ny) not in s and h[nx][ny] >= h[x][y]:
+                if (
+                    0 <= nx < m
+                    and 0 <= ny < n
+                    and (nx, ny) not in s
+                    and h[nx][ny] >= h[x][y]
+                ):
                     dfs(s, nx, ny)
 
         for i in range(m):
@@ -227,10 +235,12 @@ class Solution:
         total = 0
         for i in range(len(board)):
             for j in range(len(board[0])):
-                if board[i][j] == 'X':
+                if board[i][j] == "X":
                     flag = 1
-                    if j > 0 and board[i][j - 1] == 'X': flag = 0
-                    if i > 0 and board[i - 1][j] == 'X': flag = 0
+                    if j > 0 and board[i][j - 1] == "X":
+                        flag = 0
+                    if i > 0 and board[i - 1][j] == "X":
+                        flag = 0
                     total += flag
         return total
 
@@ -291,7 +301,7 @@ class Solution:
 # 426 - Convert Binary Search Tree to Sorted Doubly Linked List - MEDIUM
 # inorder, bfs
 class Solution:
-    def treeToDoublyList(self, root: 'Node') -> 'Node':
+    def treeToDoublyList(self, root: "Node") -> "Node":
         if not root:
             return None
         dummy = Node(-1)
@@ -314,8 +324,7 @@ class Solution:
 # 427 - Construct Quad Tree - MEDIUM
 # Definition for a QuadTree node.
 class QNode:
-    def __init__(self, val, isLeaf, topLeft, topRight, bottomLeft,
-                 bottomRight):
+    def __init__(self, val, isLeaf, topLeft, topRight, bottomLeft, bottomRight):
         self.val = val
         self.isLeaf = isLeaf
         self.topLeft = topLeft
@@ -325,10 +334,11 @@ class QNode:
 
 
 class Solution:
-    def construct(self, grid: List[List[int]]) -> 'QNode':
-        def dfs(r0: int, c0: int, r1: int, c1: int) -> 'QNode':
-            if all(grid[i][j] == grid[r0][c0] for i in range(r0, r1)
-                   for j in range(c0, c1)):
+    def construct(self, grid: List[List[int]]) -> "QNode":
+        def dfs(r0: int, c0: int, r1: int, c1: int) -> "QNode":
+            if all(
+                grid[i][j] == grid[r0][c0] for i in range(r0, r1) for j in range(c0, c1)
+            ):
                 return QNode(grid[r0][c0], True, None, None, None, None)
             return QNode(
                 None,  # 'val' can be anything if the node is not a leaf
@@ -341,18 +351,22 @@ class Solution:
 
         return dfs(0, 0, len(grid), len(grid))
 
-    def construct(self, grid: List[List[int]]) -> 'QNode':
+    def construct(self, grid: List[List[int]]) -> "QNode":
         n = len(grid)
         pre = [[0] * (n + 1) for _ in range(n + 1)]
         for i in range(1, n + 1):
             for j in range(1, n + 1):
-                pre[i][j] = pre[i - 1][j] + pre[i][j - 1] - pre[i - 1][
-                    j - 1] + grid[i - 1][j - 1]
+                pre[i][j] = (
+                    pre[i - 1][j]
+                    + pre[i][j - 1]
+                    - pre[i - 1][j - 1]
+                    + grid[i - 1][j - 1]
+                )
 
         def getSum(r0: int, c0: int, r1: int, c1: int) -> int:
             return pre[r1][c1] - pre[r1][c0] - pre[r0][c1] + pre[r0][c0]
 
-        def dfs(r0: int, c0: int, r1: int, c1: int) -> 'QNode':
+        def dfs(r0: int, c0: int, r1: int, c1: int) -> "QNode":
             total = getSum(r0, c0, r1, c1)
             if total == 0:
                 return QNode(False, True)
@@ -372,10 +386,10 @@ class Solution:
 
 # 429 - N-ary Tree Level Order Traversal - MEDIUM
 class Solution:
-    def levelOrder(self, root: 'Node') -> List[List[int]]:
+    def levelOrder(self, root: "Node") -> List[List[int]]:
         ans = []
 
-        def dfs(root: 'Node', depth: int):
+        def dfs(root: "Node", depth: int):
             if not root:
                 return
             if len(ans) <= depth:
@@ -388,10 +402,10 @@ class Solution:
         dfs(root, 0)
         return ans
 
-    def levelOrder(self, root: 'Node') -> List[List[int]]:
+    def levelOrder(self, root: "Node") -> List[List[int]]:
         ans = []
 
-        def dfs(root: 'Node', lv: int):
+        def dfs(root: "Node", lv: int):
             if not root:
                 return
             if lv == len(ans):
@@ -405,7 +419,7 @@ class Solution:
         dfs(root, 0)
         return ans
 
-    def levelOrder(self, root: 'Node') -> List[List[int]]:
+    def levelOrder(self, root: "Node") -> List[List[int]]:
         if not root:
             return []
         q = [root]
@@ -420,7 +434,7 @@ class Solution:
             ans.append(cur)
         return ans
 
-    def levelOrder(self, root: 'Node') -> List[List[int]]:
+    def levelOrder(self, root: "Node") -> List[List[int]]:
         if not root:
             return []
         q = [root]
@@ -448,8 +462,8 @@ class Solution:
             nxt = []
             for n in q:
                 for i in range(8):
-                    for g in ['A', 'T', 'C', 'G']:
-                        a = n[:i] + g + n[i + 1:]
+                    for g in ["A", "T", "C", "G"]:
+                        a = n[:i] + g + n[i + 1 :]
                         if a == end:
                             return step + 1
                         if a in bk and a not in seen:
@@ -493,7 +507,8 @@ class Solution:
             return 0
 
         def dfs(root: TreeNode, t: int):
-            if not root: return 0
+            if not root:
+                return 0
             ans = 0
             if root.val == t:
                 ans += 1
@@ -532,14 +547,14 @@ class Solution:
             return []
         ans, ss, pp = [], [0] * 26, [0] * 26
         for i in range(len(p)):
-            ss[ord(s[i]) - ord('a')] += 1
-            pp[ord(p[i]) - ord('a')] += 1
+            ss[ord(s[i]) - ord("a")] += 1
+            pp[ord(p[i]) - ord("a")] += 1
         if ss == pp:
             ans.append(0)
         k = len(p)
         for i in range(len(p), len(s)):
-            ss[ord(s[i]) - ord('a')] += 1
-            ss[ord(s[i - k]) - ord('a')] -= 1
+            ss[ord(s[i]) - ord("a")] += 1
+            ss[ord(s[i - k]) - ord("a")] -= 1
             if ss == pp:
                 ans.append(i - k + 1)
         return ans
@@ -552,15 +567,15 @@ class Solution:
         p_cnt = [0] * 26
         s_cnt = [0] * 26
         for i in range(len(p)):
-            p_cnt[ord(p[i]) - ord('a')] += 1
+            p_cnt[ord(p[i]) - ord("a")] += 1
 
         left = 0
         for right in range(len(s)):
-            cur_right = ord(s[right]) - ord('a')
+            cur_right = ord(s[right]) - ord("a")
             s_cnt[cur_right] += 1
             while s_cnt[cur_right] > p_cnt[cur_right]:
                 # move left pointer to satisfy 's_cnt[cur_right] == p_cnt[cur_right]'
-                cur_left = ord(s[left]) - ord('a')
+                cur_left = ord(s[left]) - ord("a")
                 s_cnt[cur_left] -= 1
                 left += 1
             if right - left + 1 == len(p):
@@ -684,7 +699,7 @@ class Solution:
             chars[l] = chars[r]
             if count > 1:
                 s = str(count)
-                chars[l + 1:l + 1 + len(s)] = s
+                chars[l + 1 : l + 1 + len(s)] = s
                 l += len(s)
             l += 1
             r += 1
@@ -715,8 +730,7 @@ class Solution:
 class Codec:
     # O(nlogn) / O(n)
     def serialize(self, root: TreeNode) -> str:
-        """Encodes a tree to a single string.
-        """
+        """Encodes a tree to a single string."""
         arr = []
 
         def preorder(root: TreeNode):
@@ -728,11 +742,10 @@ class Codec:
             return
 
         preorder(root)
-        return ','.join(arr)
+        return ",".join(arr)
 
     def deserialize(self, data: str) -> TreeNode:
-        """Decodes your encoded data to tree.
-        """
+        """Decodes your encoded data to tree."""
         if not data:
             return
 
@@ -742,11 +755,11 @@ class Codec:
             mid = p[0]
             idx = i.index(mid)
             root = TreeNode(mid)
-            root.left = build(p[1:idx + 1], i[:idx])
-            root.right = build(p[idx + 1:], i[idx + 1:])
+            root.left = build(p[1 : idx + 1], i[:idx])
+            root.right = build(p[idx + 1 :], i[idx + 1 :])
             return root
 
-        preorder = list(map(int, data.split(',')))
+        preorder = list(map(int, data.split(",")))
         inorder = sorted(preorder)
         return build(preorder, inorder)
 
@@ -765,7 +778,7 @@ class Codec:
             return
 
         postorder(root)
-        return ' '.join(map(str, arr))
+        return " ".join(map(str, arr))
 
     def deserialize(self, data: str) -> TreeNode:
         arr = list(map(int, data.split()))
@@ -786,7 +799,7 @@ class Codec:
 class Solution:
     def findMinArrowShots(self, points: List[List[int]]) -> int:
         points = sorted(points, key=lambda x: x[1])
-        ans, end = 0, float('-inf')
+        ans, end = 0, float("-inf")
         for p in points:
             if p[0] > end:
                 ans += 1
@@ -796,8 +809,9 @@ class Solution:
 
 # 454 - 4Sum II - MEDIUM
 class Solution:
-    def fourSumCount(self, nums1: List[int], nums2: List[int],
-                     nums3: List[int], nums4: List[int]) -> int:
+    def fourSumCount(
+        self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]
+    ) -> int:
         dic = collections.defaultdict(int)
         for n1 in nums1:
             for n2 in nums2:
@@ -808,8 +822,9 @@ class Solution:
                 ans += dic[-n3 - n4]
         return ans
 
-    def fourSumCount(self, nums1: List[int], nums2: List[int],
-                     nums3: List[int], nums4: List[int]) -> int:
+    def fourSumCount(
+        self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]
+    ) -> int:
         ab = collections.Counter(a + b for a in nums1 for b in nums2)
         return sum(ab[-c - d] for c in nums3 for d in nums4)
 
@@ -856,7 +871,7 @@ class Solution:
 # 475 - Heaters - MEDIUM
 class Solution:
     def findRadius(self, houses: List[int], heaters: List[int]) -> int:
-        heaters = heaters + [float('-inf'), float('inf')]
+        heaters = heaters + [float("-inf"), float("inf")]
         houses.sort()
         heaters.sort()
         ans, i = 0, 0
@@ -914,16 +929,14 @@ class Solution:
 
 # 495 - Teemo Attacking - EASY
 class Solution:
-    def findPoisonedDuration(self, timeSeries: List[int],
-                             duration: int) -> int:
+    def findPoisonedDuration(self, timeSeries: List[int], duration: int) -> int:
         ans = 0
         for i in range(1, len(timeSeries)):
             ans += min(duration, timeSeries[i] - timeSeries[i - 1])
         return ans + duration
 
     # reduce the number of function calls can speed up the operation
-    def findPoisonedDuration(self, timeSeries: List[int],
-                             duration: int) -> int:
+    def findPoisonedDuration(self, timeSeries: List[int], duration: int) -> int:
         ans = 0
         lastTime = timeSeries[0]
         for i in timeSeries[1:]:
@@ -938,8 +951,7 @@ class Solution:
 # 496 - Next Greater Element I - EASY
 class Solution:
     # brutal-force solution
-    def nextGreaterElement(self, nums1: List[int],
-                           nums2: List[int]) -> List[int]:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
         m, n = len(nums1), len(nums2)
         ret = [0] * m
         for i in range(m):
@@ -951,8 +963,7 @@ class Solution:
         return ret
 
     # stack
-    def nextGreaterElement(self, nums1: List[int],
-                           nums2: List[int]) -> List[int]:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
         stack = []
         dic = {}  # save the next greater element
         for i in range(len(nums2) - 1, -1, -1):
@@ -962,8 +973,7 @@ class Solution:
             stack.append(nums2[i])
         return [dic[n1] for n1 in nums1]
 
-    def nextGreaterElement(self, nums1: List[int],
-                           nums2: List[int]) -> List[int]:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
         stack = []
         dic = {}  # save the next greater element
         for n in nums2[::-1]:

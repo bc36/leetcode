@@ -55,11 +55,9 @@ class Solution:
 
         def dfs(idx: int):
             visited.add(idx)
-            if 0 <= idx + arr[idx] < len(
-                    arr) and idx + arr[idx] not in visited:
+            if 0 <= idx + arr[idx] < len(arr) and idx + arr[idx] not in visited:
                 dfs(idx + arr[idx])
-            if 0 <= idx - arr[idx] < len(
-                    arr) and idx - arr[idx] not in visited:
+            if 0 <= idx - arr[idx] < len(arr) and idx - arr[idx] not in visited:
                 dfs(idx - arr[idx])
             if not arr[idx]:
                 self.ans = True
@@ -88,12 +86,13 @@ class Solution:
         f = [[0] * n for _ in range(m)]
         for i in range(m):
             for j in range(n):
-                f[i][j] = sum(mat[i][max(j - k, 0):min(j + k + 1, n)])
+                f[i][j] = sum(mat[i][max(j - k, 0) : min(j + k + 1, n)])
         ans = [[0] * n for _ in range(m)]
         for i in range(m):
             for j in range(n):
                 ans[i][j] = sum(
-                    [f[p][j] for p in range(max(i - k, 0), min(i + k + 1, m))])
+                    [f[p][j] for p in range(max(i - k, 0), min(i + k + 1, m))]
+                )
         return ans
 
     def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
@@ -111,10 +110,12 @@ class Solution:
                 c1 = max(0, j - k)
                 r2 = min(m - 1, i + k)
                 c2 = min(n - 1, j + k)
-                ans[i][j] = mat[r2][c2] - (
-                    mat[r2][c1 - 1]
-                    if c1 > 0 else 0) - (mat[r1 - 1][c2] if r1 > 0 else 0) + (
-                        mat[r1 - 1][c1 - 1] if r1 > 0 and c1 > 0 else 0)
+                ans[i][j] = (
+                    mat[r2][c2]
+                    - (mat[r2][c1 - 1] if c1 > 0 else 0)
+                    - (mat[r1 - 1][c2] if r1 > 0 else 0)
+                    + (mat[r1 - 1][c1 - 1] if r1 > 0 and c1 > 0 else 0)
+                )
         return ans
 
     def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
@@ -122,8 +123,7 @@ class Solution:
         f = [[0] * (n + 1) for _ in range(m + 1)]
         for i in range(m):
             for j in range(n):
-                f[i + 1][j +
-                         1] = mat[i][j] + f[i][j + 1] + f[i + 1][j] - f[i][j]
+                f[i + 1][j + 1] = mat[i][j] + f[i][j + 1] + f[i + 1][j] - f[i][j]
         ans = [[0] * n for _ in range(m)]
         for i in range(m):
             for j in range(n):
@@ -131,9 +131,9 @@ class Solution:
                 c1 = max(0, j - k)
                 r2 = min(m - 1, i + k)
                 c2 = min(n - 1, j + k)
-                ans[i][j] = f[r2 + 1][c2 + 1] - f[r2 +
-                                                  1][c1] - f[r1][c2 +
-                                                                 1] + f[r1][c1]
+                ans[i][j] = (
+                    f[r2 + 1][c2 + 1] - f[r2 + 1][c1] - f[r1][c2 + 1] + f[r1][c1]
+                )
         return ans
 
     def matrixBlockSum(self, mat: List[List[int]], k: int) -> List[List[int]]:
@@ -143,9 +143,12 @@ class Solution:
             f[i + 1][j + 1] = mat[i][j] + f[i][j + 1] + f[i + 1][j] - f[i][j]
         ans = [[0] * n for _ in range(m)]
         for i, j in itertools.product(range(m), range(n)):
-            r1, c1, r2, c2 = max(0, i - k), max(0,
-                                                j - k), min(m, i + k + 1), min(
-                                                    n, j + k + 1)
+            r1, c1, r2, c2 = (
+                max(0, i - k),
+                max(0, j - k),
+                min(m, i + k + 1),
+                min(n, j + k + 1),
+            )
             ans[i][j] = f[r2][c2] - f[r2][c1] - f[r1][c2] + f[r1][c1]
         return ans
 
@@ -297,7 +300,7 @@ class Solution:
         dq = collections.deque([(0, 0)])
         while dq:
             i, step = dq.popleft()
-            for j in (g.get(arr[i], []) + [i - 1, i + 1]):
+            for j in g.get(arr[i], []) + [i - 1, i + 1]:
                 if 0 <= j < n and not visited[j]:
                     if j == n - 1:
                         return step + 1

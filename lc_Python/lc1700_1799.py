@@ -148,12 +148,13 @@ class Solution:
 # 1763 - Longest Nice Substring - EASY
 class Solution:
     def longestNiceSubstring(self, s: str) -> str:
-        if not s: return ""
+        if not s:
+            return ""
         ss = set(s)
         for i, c in enumerate(s):
             if c.swapcase() not in ss:
                 s0 = self.longestNiceSubstring(s[:i])
-                s1 = self.longestNiceSubstring(s[i + 1:])
+                s1 = self.longestNiceSubstring(s[i + 1 :])
                 return max(s0, s1, key=len)
         return s
 
@@ -180,17 +181,16 @@ class Solution:
 # 1768 - Merge Strings Alternately - EASY
 class Solution:
     def mergeAlternately(self, word1: str, word2: str) -> str:
-        return ''.join(
-            a + b
-            for a, b in itertools.zip_longest(word1, word2, fillvalue=''))
+        return "".join(
+            a + b for a, b in itertools.zip_longest(word1, word2, fillvalue="")
+        )
 
 
 # 1779 - Find Nearest Point That Has the Same X or Y Coordinate - EASY
 class Solution:
-    def nearestValidPoint(self, x: int, y: int,
-                          points: List[List[int]]) -> int:
+    def nearestValidPoint(self, x: int, y: int, points: List[List[int]]) -> int:
         ans = -1
-        mi = float('inf')
+        mi = float("inf")
         for i, (xx, yy) in enumerate(points):
             if xx == x or yy == y:
                 d = abs(xx - x) + abs(yy - y)

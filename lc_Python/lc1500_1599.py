@@ -107,8 +107,10 @@ class Solution:
     def getMaxLen(self, nums: List[int]) -> int:
         n = len(nums)
         pos, neg = [0] * n, [0] * n
-        if nums[0] > 0: pos[0] = 1
-        if nums[0] < 0: neg[0] = 1
+        if nums[0] > 0:
+            pos[0] = 1
+        if nums[0] < 0:
+            neg[0] = 1
         ans = pos[0]
         for i in range(1, n):
             if nums[i] > 0:
@@ -123,8 +125,10 @@ class Solution:
     def getMaxLen(self, nums: List[int]) -> int:
         n = len(nums)
         pos, neg = 0, 0
-        if nums[0] > 0: pos = 1
-        if nums[0] < 0: neg = 1
+        if nums[0] > 0:
+            pos = 1
+        if nums[0] < 0:
+            neg = 1
         ans = pos
         for i in range(1, n):
             if nums[i] > 0:
@@ -160,7 +164,7 @@ class SparseVector:
     def __init__(self, nums: List[int]):
         self.nums = {k: num for k, num in enumerate(nums) if num != 0}
 
-    def dotProduct(self, vec: 'SparseVector') -> int:
+    def dotProduct(self, vec: "SparseVector") -> int:
         ans = 0
         for key, value in self.nums.items():
             if key in vec.nums:
@@ -182,27 +186,26 @@ class Solution:
 # 1576 - Replace All ?'s to Avoid Consecutive Repeating Characters - EASY
 class Solution:
     def modifyString(self, s: str) -> str:
-        alpha = 'abcdefghijklmnopqrstuvwxyz'
-        s = ['#'] + list(s) + ['#']
+        alpha = "abcdefghijklmnopqrstuvwxyz"
+        s = ["#"] + list(s) + ["#"]
         for i in range(1, len(s) - 1):
-            if s[i] == '?':
+            if s[i] == "?":
                 new = i
-                while s[i - 1] == alpha[new % 26] or s[i + 1] == alpha[new %
-                                                                       26]:
+                while s[i - 1] == alpha[new % 26] or s[i + 1] == alpha[new % 26]:
                     new += 1
                 s[i] = alpha[new % 26]
-        return ''.join(s[1:-1])
+        return "".join(s[1:-1])
 
     def modifyString(self, s: str) -> str:
-        alpha = 'abc'
-        s = ['#'] + list(s) + ['#']
+        alpha = "abc"
+        s = ["#"] + list(s) + ["#"]
         for i in range(1, len(s) - 1):
-            if s[i] == '?':
+            if s[i] == "?":
                 for ch in alpha:
                     if s[i - 1] != ch and s[i + 1] != ch:
                         s[i] = ch
                         break
-        return ''.join(s[1:-1])
+        return "".join(s[1:-1])
 
 
 # 1588 - Sum of All Odd Length Subarrays - EASY

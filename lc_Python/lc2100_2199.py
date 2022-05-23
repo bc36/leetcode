@@ -61,11 +61,11 @@ class Solution:
                 ans += mx - mi
         return ans
 
-    # O(n) / O(n), 
+    # O(n) / O(n),
     # why monotonic stack: sum(ranges) = sum(maxes) - sum(mines)
     def subArrayRanges(self, nums: List[int]) -> int:
         ans = 0
-        inf = float('inf')
+        inf = float("inf")
         arr = [-inf] + nums + [-inf]
         s = []
         for i in range(len(arr)):
@@ -145,8 +145,7 @@ class Solution:
             cnt = 0
             for j, s in enumerate(statements):
                 if (i >> j) & 1:
-                    if any(v < 2 and v != (i >> k) & 1
-                           for k, v in enumerate(s)):
+                    if any(v < 2 and v != (i >> k) & 1 for k, v in enumerate(s)):
                         return 0
                     cnt += 1
             return cnt
@@ -186,12 +185,12 @@ class Solution:
     def smallestNumber(self, num: int) -> int:
         if num > 0:
             l = list(str(num))
-            zero = l.count('0')
+            zero = l.count("0")
             n = sorted(l)
             f = False
             ans = 0
             for i in n:
-                if i == '0':
+                if i == "0":
                     continue
                 else:
                     if not f:
@@ -203,11 +202,11 @@ class Solution:
             return ans
         elif num < 0:
             l = list(str(-num))
-            zero = l.count('0')
+            zero = l.count("0")
             n = sorted(l, reverse=True)
             ans = 0
             for i in n:
-                if i == '0':
+                if i == "0":
                     continue
                 else:
                     ans = ans * 10 + int(i)
@@ -300,7 +299,7 @@ class Bitset:
         return self.ones
 
     def toString(self) -> str:
-        ans = ''
+        ans = ""
         for i in self.arr:
             ans += str(i ^ self.reverse)
         return ans
@@ -338,7 +337,7 @@ class Bitset:
         return self.n
 
     def toString(self) -> str:
-        ans = ''
+        ans = ""
         for i in self.c:
             ans += str(i ^ self.f)
         return ans
@@ -351,7 +350,7 @@ class Solution:
         n = ans = len(s)
         pre = 0
         for idx, char in enumerate(s):
-            if char == '1':
+            if char == "1":
                 pre = min(pre + 2, idx + 1)
             ans = min(ans, pre + n - idx - 1)
         return ans
@@ -360,14 +359,14 @@ class Solution:
         n = len(s)
         suf = [0] * (n + 1)
         for i in range(n - 1, -1, -1):
-            if s[i] == '0':
+            if s[i] == "0":
                 suf[i] = suf[i + 1]
             else:
                 suf[i] = min(suf[i + 1] + 2, n - i)
         ans = suf[0]
         pre = 0
         for i, ch in enumerate(s):
-            if ch == '1':
+            if ch == "1":
                 pre = min(pre + 2, i + 1)
                 ans = min(ans, pre + suf[i + 1])
         return ans
@@ -483,16 +482,16 @@ class Solution:
         cnt2 = collections.Counter(t)
         ans = 0
         for i in range(26):
-            ch = chr(ord('a') + i)
+            ch = chr(ord("a") + i)
             ans += abs(cnt1[ch] - cnt2[ch])
         return ans
 
     def minSteps(self, s: str, t: str) -> int:
         arr = [0] * 26
         for ch in s:
-            arr[ord(ch) - ord('a')] += 1
+            arr[ord(ch) - ord("a")] += 1
         for ch in t:
-            arr[ord(ch) - ord('a')] -= 1
+            arr[ord(ch) - ord("a")] -= 1
         ans = 0
         for i in arr:
             ans += abs(i)
@@ -534,8 +533,9 @@ class Solution:
 
 # 2188 - Minimum Time to Finish the Race - HARD
 class Solution:
-    def minimumFinishTime(self, tires: List[List[int]], changeTime: int,
-                          numLaps: int) -> int:
+    def minimumFinishTime(
+        self, tires: List[List[int]], changeTime: int, numLaps: int
+    ) -> int:
         # minimum time to complete x consecutive circles with one tire (up to 17 circles)
         min_sec = [math.inf] * 18
         for f, r in tires:
@@ -549,8 +549,9 @@ class Solution:
         f = [0] * (numLaps + 1)
         f[0] = -changeTime
         for i in range(1, numLaps + 1):
-            f[i] = changeTime + min(f[i - j] + min_sec[j]
-                                    for j in range(1, min(18, i + 1)))
+            f[i] = changeTime + min(
+                f[i - j] + min_sec[j] for j in range(1, min(18, i + 1))
+            )
         return f[numLaps]
 
 

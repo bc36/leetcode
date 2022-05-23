@@ -1,4 +1,7 @@
-import collections, heapq, functools, bisect
+import collections
+import heapq
+import functools
+import bisect
 from typing import List
 
 
@@ -98,7 +101,7 @@ class Solution:
     # 父节点=2 if 所有子节点是2
     def catMouseGame(self, graph: List[List[int]]) -> int:
         n = len(graph)
-        degrees = [[[0] * 2 for _ in range(n)] for _ in range(n)]  #(m,c,t)
+        degrees = [[[0] * 2 for _ in range(n)] for _ in range(n)]  # (m,c,t)
         for i in range(n):
             for j in range(n):
                 if j == 0:
@@ -106,7 +109,7 @@ class Solution:
                 degrees[i][j][0] += len(graph[i])
                 degrees[i][j][1] += len(graph[j]) - (0 in graph[j])
 
-        dp = [[[0] * 2 for _ in range(n)] for _ in range(n)]  #(m,c,t)
+        dp = [[[0] * 2 for _ in range(n)] for _ in range(n)]  # (m,c,t)
         queue = collections.deque()
         for i in range(1, n):
             states = [(i, i, 0), (i, i, 1), (0, i, 0), (0, i, 1)]
@@ -148,6 +151,7 @@ class Solution:
     def catMouseGame(self, graph: List[List[int]]) -> int:
         n = len(graph)
         # search(step,cat,mouse) 表示步数=step，猫到达位置cat，鼠到达位置mouse的情况下最终的胜负情况
+
         @functools.lru_cache(None)
         def search(mouse, cat, step):
             # mouse到达洞最多需要n步(初始step=1) 说明mouse走n步还没达洞口 且cat也没抓住mouse
@@ -193,12 +197,12 @@ class Solution:
 # 917 - Reverse Only Letters - EASY
 class Solution:
     def reverseOnlyLetters(self, s: str) -> str:
-        a, z, A, Z = ord('a'), ord('z'), ord('A'), ord('Z')
+        a, z, A, Z = ord("a"), ord("z"), ord("A"), ord("Z")
         arr = []
         for i in range(len(s)):
             if a <= ord(s[i]) <= z or A <= ord(s[i]) <= Z:
                 arr.append(s[i])
-        ans = ''
+        ans = ""
         for i in range(len(s)):
             if a <= ord(s[i]) <= z or A <= ord(s[i]) <= Z:
                 ans += arr.pop()
@@ -219,7 +223,7 @@ class Solution:
                 s[l], s[r] = s[r], s[l]
             l += 1
             r -= 1
-        return ''.join(s)
+        return "".join(s)
 
 
 # 918 - Maximum Sum Circular Subarray - MEDIUM
@@ -240,9 +244,11 @@ class Solution:
         mx = mi = nums[0]
         for n in nums:
             dpx = n + dpx if dpx > 0 else n
-            if dpx > mx: mx = dpx
+            if dpx > mx:
+                mx = dpx
             dpn = n + dpn if dpn < 0 else n
-            if dpn < mi: mi = dpn
+            if dpn < mi:
+                mi = dpn
         return max(sum(nums) - mi, mx) if mx > 0 else mx
 
 
@@ -277,18 +283,20 @@ class Solution:
         for i in range(1, n):
             dp[i][0] = min(dp[i - 1][0], dp[i - 1][1]) + matrix[i][0]
             for j in range(1, n - 1):
-                dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j],
-                               dp[i - 1][j + 1]) + matrix[i][j]
+                dp[i][j] = (
+                    min(dp[i - 1][j - 1], dp[i - 1][j], dp[i - 1][j + 1]) + matrix[i][j]
+                )
             dp[i][-1] = min(dp[i - 1][-1], dp[i - 1][-2]) + matrix[i][-1]
         return min(dp[-1])
 
     def minFallingPathSum(self, matrix: List[List[int]]) -> int:
         n = len(matrix)
-        dp = [[float('inf')] + matrix[i] + [float('inf')] for i in range(n)]
+        dp = [[float("inf")] + matrix[i] + [float("inf")] for i in range(n)]
         for i in range(1, n):
             for j in range(1, n + 1):
-                dp[i][j] = dp[i][j] + min(dp[i - 1][j - 1], dp[i - 1][j],
-                                          dp[i - 1][j + 1])
+                dp[i][j] = dp[i][j] + min(
+                    dp[i - 1][j - 1], dp[i - 1][j], dp[i - 1][j + 1]
+                )
         return min(dp[-1])
 
 
@@ -375,17 +383,18 @@ class Solution:
     def knightDialer(self, n: int) -> int:
         x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x0 = 1
         for _ in range(n - 1):
-            x1, x2, x3, x4, x5, x6, x7, x8, x9, x0 = \
-                x6 + x8, \
-                x7 + x9, \
-                x4 + x8, \
-                x3 + x9 + x0, \
-                0, \
-                x1 + x7 + x0, \
-                x2 + x6, \
-                x1 + x3, \
-                x2 + x4, \
-                x4 + x6
+            x1, x2, x3, x4, x5, x6, x7, x8, x9, x0 = (
+                x6 + x8,
+                x7 + x9,
+                x4 + x8,
+                x3 + x9 + x0,
+                0,
+                x1 + x7 + x0,
+                x2 + x6,
+                x1 + x3,
+                x2 + x4,
+                x4 + x6,
+            )
         return (x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x0) % (10**9 + 7)
 
 
@@ -399,7 +408,7 @@ class Solution:
                 a.append(log)
             else:
                 b.append(log)
-        a.sort(key=lambda x: (x[x.index(' ') + 1:], x[:x.index(' ') + 1]))
+        a.sort(key=lambda x: (x[x.index(" ") + 1 :], x[: x.index(" ") + 1]))
         return a + b
 
     def reorderLogFiles(self, logs: List[str]) -> List[str]:
@@ -414,8 +423,8 @@ class Solution:
 
     def reorderLogFiles(self, logs: List[str]) -> List[str]:
         def comparator(log: str) -> tuple:
-            identity, res = log.split(' ', 1)
-            return (0, res, identity) if res[0].isalpha() else (1, )
+            identity, res = log.split(" ", 1)
+            return (0, res, identity) if res[0].isalpha() else (1,)
 
         return sorted(logs, key=comparator)
 
@@ -460,8 +469,11 @@ class Solution:
         if not root:
             return 0
         val = root.val if root.val >= low and root.val <= high else 0
-        return val + self.rangeSumBST(root.left, low, high) + self.rangeSumBST(
-            root.right, low, high)
+        return (
+            val
+            + self.rangeSumBST(root.left, low, high)
+            + self.rangeSumBST(root.right, low, high)
+        )
 
     # since its a 'binary search tree' which means that left.val < root.val < right.val
     # so we can speed up by jump some unqualified node (the value greater than high or smalller than low)
@@ -472,8 +484,11 @@ class Solution:
             return self.rangeSumBST(root.left, low, high)
         if root.val < low:
             return self.rangeSumBST(root.right, low, high)
-        return root.val + self.rangeSumBST(
-            root.left, low, high) + self.rangeSumBST(root.right, low, high)
+        return (
+            root.val
+            + self.rangeSumBST(root.left, low, high)
+            + self.rangeSumBST(root.right, low, high)
+        )
 
     # bfs
     def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
@@ -531,7 +546,7 @@ class Solution:
         j = len(s)
         ans = []
         for c in s:
-            if c == 'I':
+            if c == "I":
                 ans.append(i)
                 i += 1
             else:
@@ -599,7 +614,7 @@ class Solution:
 # 953 - Verifying an Alien Dictionary - EASY
 class Solution:
     def isAlienSorted(self, words: List[str], order: str) -> bool:
-        trans = str.maketrans(order, 'abcdefghijklmnopqrstuvwxyz')
+        trans = str.maketrans(order, "abcdefghijklmnopqrstuvwxyz")
         nw = [w.translate(trans) for w in words]
         for i in range(len(words) - 1):
             if nw[i] > nw[i + 1]:
@@ -657,6 +672,19 @@ class Solution:
         return True
 
 
+# 965 - Univalued Binary Tree - EASY
+class Solution:
+    def isUnivalTree(self, root: TreeNode) -> bool:
+        def dfs(root: TreeNode, pre: int):
+            if not root:
+                return True
+            if root.val != pre:
+                return False
+            return dfs(root.left, root.val) and dfs(root.right, root.val)
+
+        return dfs(root, root.val)
+
+
 # 969 - Pancake Sorting - MEDIUM
 class Solution:
     def pancakeSort(self, arr: List[int]) -> List[int]:
@@ -668,7 +696,7 @@ class Solution:
                 if arr[j] == i:
                     # moves the current largest number to the first position.
                     ans.append(j + 1)
-                    arr[:] = arr[:j + 1][::-1] + arr[j + 1:]
+                    arr[:] = arr[: j + 1][::-1] + arr[j + 1 :]
                     # reverse the first i elements
                     # so that the current largest number is moved to its correct position.
                     ans.append(i)
@@ -683,7 +711,7 @@ class Solution:
         while n:
             idx = arr.index(n)
             ans.append(idx + 1)
-            arr = arr[:idx + 1][::-1] + arr[idx + 1:]
+            arr = arr[: idx + 1][::-1] + arr[idx + 1 :]
             ans.append(n)
             arr = arr[:n][::-1] + arr[n:]
             n -= 1
@@ -715,7 +743,7 @@ class Solution:
         return ans
 
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
-        points.sort(key=lambda x: (x[0]**2 + x[1]**2))
+        points.sort(key=lambda x: (x[0] ** 2 + x[1] ** 2))
         return points[:k]
 
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
@@ -729,11 +757,11 @@ class Solution:
         return [(x, y) for (_, x, y) in heap]
 
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
-        q = [(-x**2 - y**2, i) for i, (x, y) in enumerate(points[:k])]
+        q = [(-(x**2) - y**2, i) for i, (x, y) in enumerate(points[:k])]
         heapq.heapify(q)
         for i in range(k, len(points)):
             x, y = points[i]
-            dist = -x**2 - y**2
+            dist = -(x**2) - y**2
             heapq.heappushpop(q, (dist, i))
         ans = [points[idx] for (_, idx) in q]
         return ans
@@ -745,7 +773,7 @@ class Solution:
         a.sort()
         for i in range(len(a) - 1, 1, -1):
             if a[i - 1] + a[i - 2] > a[i]:
-                return sum(a[i - 2:i + 1])
+                return sum(a[i - 2 : i + 1])
         return 0
 
 
@@ -770,8 +798,9 @@ class Solution:
 
 # 986 - Interval List Intersections - MEDIUM
 class Solution:
-    def intervalIntersection(self, first: List[List[int]],
-                             second: List[List[int]]) -> List[List[int]]:
+    def intervalIntersection(
+        self, first: List[List[int]], second: List[List[int]]
+    ) -> List[List[int]]:
         ans, i, j = [], 0, 0
         while i < len(first) and j < len(second):
             lo = max(first[i][0], second[j][0])

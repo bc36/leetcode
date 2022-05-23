@@ -96,7 +96,8 @@ class Solution:
 # 103 - Binary Tree Zigzag Level Order Traversal - MEDIUM
 class Solution:
     def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
-        if not root: return []
+        if not root:
+            return []
         ans = []
         dq = collections.deque([root])
         f = True
@@ -117,7 +118,8 @@ class Solution:
         return ans
 
     def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
-        if not root: return []
+        if not root:
+            return []
         ans = []
         q = [root]
         f = 0
@@ -158,7 +160,8 @@ class Solution:
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 
     def maxDepth(self, root: Optional[TreeNode]) -> int:
-        if not root: return 0
+        if not root:
+            return 0
         dq = collections.deque([root])
         step = 0
         while dq:
@@ -180,8 +183,8 @@ class Solution:
             return None
         root = TreeNode(preorder[0])
         idx = inorder.index(preorder[0])
-        root.left = self.buildTree(preorder[1:idx + 1], inorder[:idx])
-        root.right = self.buildTree(preorder[idx + 1:], inorder[idx + 1:])
+        root.left = self.buildTree(preorder[1 : idx + 1], inorder[:idx])
+        root.right = self.buildTree(preorder[idx + 1 :], inorder[idx + 1 :])
         return root
 
     def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
@@ -204,7 +207,7 @@ class Solution:
     def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
         mid = len(nums) // 2
         left = nums[:mid]
-        right = nums[mid + 1:]
+        right = nums[mid + 1 :]
         root = TreeNode(nums[mid])
         if left:
             root.left = self.sortedArrayToBST(left)
@@ -247,7 +250,8 @@ class Solution:
         if not (root.right or root.left):
             return root.val == t
         return self.hasPathSum(root.left, t - root.val) or self.hasPathSum(
-            root.right, t - root.val)
+            root.right, t - root.val
+        )
 
 
 # 113 - Path Sum II - MEDIUM
@@ -257,7 +261,8 @@ class Solution:
         path = list()
 
         def dfs(root: TreeNode, t: int):
-            if not root: return
+            if not root:
+                return
             path.append(root.val)
             t -= root.val
             if not root.left and not root.right and t == 0:
@@ -313,7 +318,7 @@ class Solution:
 # 116 - Populating Next Right Pointers in Each Node - MEDIUM
 class Solution:
     # O(n) / O(n)
-    def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
+    def connect(self, root: "Optional[Node]") -> "Optional[Node]":
         if not root:
             return None
         dq = collections.deque([root])
@@ -336,8 +341,9 @@ class Solution:
 
 # 117 - Populating Next Right Pointers in Each Node II - MEDIUM
 class Solution:
-    def connect(self, root: 'Node') -> 'Node':
-        if not root: return
+    def connect(self, root: "Node") -> "Node":
+        if not root:
+            return
         cur = root
         while cur:
             dummy = Node(None)
@@ -395,8 +401,7 @@ class Solution(object):
     def getRow(self, rowIndex: int) -> List[int]:
         row = [1]
         for _ in range(rowIndex):
-            row = [1] + [row[j] + row[j + 1]
-                         for j in range(len(row) - 1)] + [1]
+            row = [1] + [row[j] + row[j + 1] for j in range(len(row) - 1)] + [1]
         return row
 
 
@@ -435,7 +440,7 @@ class Solution:
             self.ans = max(self.ans, root.val + l + r)
             return root.val + max(l, r)
 
-        self.ans = float('-inf')
+        self.ans = float("-inf")
         getMax(root)
         return self.ans
 
@@ -444,10 +449,14 @@ class Solution:
 class Solution:
     def isPalindrome(self, s: str) -> bool:
         s = s.lower()
-        s = "".join([
-            ch for ch in s if (97 <= ord(ch) and ord(ch) <= 122) or (
-                48 <= ord(ch) and ord(ch) <= 57)
-        ])
+        s = "".join(
+            [
+                ch
+                for ch in s
+                if (97 <= ord(ch) and ord(ch) <= 122)
+                or (48 <= ord(ch) and ord(ch) <= 57)
+            ]
+        )
         # s.isalnum(): alphabet or numeric
         # s = "".join(ch.lower() for ch in s if ch.isalnum())
         return s == s[::-1]
@@ -455,8 +464,7 @@ class Solution:
 
 # 127 - Word Ladder - HARD
 class Solution:
-    def ladderLength(self, beginWord: str, endWord: str,
-                     wordList: List[str]) -> int:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
         if endWord not in wordList:
             return 0
         s = set(wordList)
@@ -467,8 +475,8 @@ class Solution:
             for _ in range(n):
                 cur = dq.popleft()
                 for i in range(len(cur)):
-                    for ch in 'qwertyuiopasdfghjklzxcvbnm':
-                        new = cur[:i] + ch + cur[i + 1:]
+                    for ch in "qwertyuiopasdfghjklzxcvbnm":
+                        new = cur[:i] + ch + cur[i + 1 :]
                         if new == endWord:
                             return step + 1
                         if new in s:
@@ -477,21 +485,20 @@ class Solution:
             step += 1
         return 0
 
-    def ladderLength(self, beginWord: str, endWord: str,
-                     wordList: List[str]) -> int:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
         if endWord not in wordList:
             return 0
         mapper = collections.defaultdict(list)
         for word in wordList:
             for i in range(len(word)):
-                key = word[:i] + "*" + word[i + 1:]
+                key = word[:i] + "*" + word[i + 1 :]
                 mapper[key].append(word)
         dq = collections.deque([(beginWord, 1)])
         seen = set(beginWord)
         while dq:
             cur, step = dq.popleft()
             for i in range(len(cur)):
-                key = cur[:i] + "*" + cur[i + 1:]
+                key = cur[:i] + "*" + cur[i + 1 :]
                 for word in mapper[key]:
                     if word == endWord:
                         return step + 1
@@ -501,8 +508,7 @@ class Solution:
         return 0
 
     # bi-directional bfs
-    def ladderLength(self, beginWord: str, endWord: str,
-                     wordList: List[str]) -> int:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
         wordSet = set(wordList)
         startSet, endSet = set([beginWord]), set([endWord])
         if endWord not in wordSet:
@@ -515,8 +521,8 @@ class Solution:
             nextSet = set()
             for word in startSet:
                 for i in range(len(word)):
-                    for ch in 'abcdefghijklmnopqrstuvwxyz':
-                        temp = word[:i] + ch + word[i + 1:]
+                    for ch in "abcdefghijklmnopqrstuvwxyz":
+                        temp = word[:i] + ch + word[i + 1 :]
                         if temp in endSet:
                             return steps
                         if temp in wordSet:
@@ -538,13 +544,13 @@ class Solution:
                 while curNum + 1 in nums:
                     curNum += 1
                     curLen += 1
-                '''
+                """
                 'curLen' can be optimized
                 nextOne = num + 1
                 while nextOne in nums:
                     nextOne += 1
                 longest = max(longest, nextOne - num)
-                '''
+                """
                 longest = max(longest, curLen)
         return longest
 
@@ -633,8 +639,7 @@ class Solution:
         row, col = len(board), len(board[0])
         for r in range(row):
             for c in range(col):
-                if (r in [0, row - 1]
-                        or c in [0, col - 1]) and board[r][c] == "O":
+                if (r in [0, row - 1] or c in [0, col - 1]) and board[r][c] == "O":
                     dq.append((r, c))
         while dq:
             r, c = dq.popleft()
@@ -667,7 +672,7 @@ class Solution:
 
 # 133 - Clone Graph - MEDIUM
 class Solution:
-    def cloneGraph(self, node: 'Node') -> 'Node':
+    def cloneGraph(self, node: "Node") -> "Node":
         def dfs(node):
             if not node:
                 return
@@ -682,7 +687,7 @@ class Solution:
         seen = {}
         return dfs(node)
 
-    def cloneGraph(self, node: 'Node') -> 'Node':
+    def cloneGraph(self, node: "Node") -> "Node":
         if not node:
             return
         clone = Node(node.val, [])
@@ -783,19 +788,19 @@ class Solution:  # 没看懂
 
 # 138 - Copy List with Random Pointer - MEDIUM
 class Node:
-    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+    def __init__(self, x: int, next: "Node" = None, random: "Node" = None):
         self.val = int(x)
         self.next = next
         self.random = random
 
 
 class Solution:
-    def copyRandomList(self, head: 'Node') -> 'Node':
+    def copyRandomList(self, head: "Node") -> "Node":
         return copy.deepcopy(head)
 
 
 class Solution:
-    def copyRandomList(self, head: 'Node') -> 'Node':
+    def copyRandomList(self, head: "Node") -> "Node":
         if not head:
             return None
         dic = {}
@@ -834,15 +839,16 @@ class Solution:
         for j in range(1, len(s) + 1):
             for word in wordDict:
                 if j >= len(word):
-                    dp[j] = dp[j] or (dp[j - len(word)]
-                                      and word == s[j - len(word):j])
+                    dp[j] = dp[j] or (
+                        dp[j - len(word)] and word == s[j - len(word) : j]
+                    )
         return dp[-1]
 
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         dp = [True] + [False] * len(s)
         for i in range(len(s) + 1):
             for w in wordDict:
-                if i + len(w) < len(s) + 1 and s[i:i + len(w)] == w:
+                if i + len(w) < len(s) + 1 and s[i : i + len(w)] == w:
                     dp[i + len(w)] = dp[i] or dp[i + len(w)]
         return dp[-1]
 
@@ -884,9 +890,9 @@ class Solution:
     # O(n) / O(0), change the 'val' in linked list, may not allowed
     def hasCycle(self, head: Optional[ListNode]) -> bool:
         while head:
-            if head.val == '#':
+            if head.val == "#":
                 return True
-            head.val = '#'
+            head.val = "#"
             head = head.next
         return False
 
@@ -949,13 +955,13 @@ class Solution:
             fast = fast.next.next
         pre = None
         while slow:
-            '''
+            """
             # pre, slow, slow.next = slow, slow.next, pre # wrong
             # pre, slow.next, slow = slow, pre, slow.next # right
             # slow, slow.next, pre = slow.next, pre, slow # wrong
             # slow.next, slow, pre = pre, slow.next, slow # right
             # slow, pre, slow.next = slow.next, slow, pre # wrong
-            '''
+            """
             slow.next, pre, slow = pre, slow, slow.next  # right
         while pre.next:
             head.next, head = pre, head.next
@@ -969,8 +975,11 @@ class Solution:
     def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         if not root:
             return []
-        return [root.val] + self.preorderTraversal(
-            root.left) + self.preorderTraversal(root.right)
+        return (
+            [root.val]
+            + self.preorderTraversal(root.left)
+            + self.preorderTraversal(root.right)
+        )
 
     def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         def preorder(root):
@@ -1004,8 +1013,11 @@ class Solution:
     def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         if not root:
             return []
-        return self.postorderTraversal(root.left) + self.postorderTraversal(
-            root.right) + [root.val]
+        return (
+            self.postorderTraversal(root.left)
+            + self.postorderTraversal(root.right)
+            + [root.val]
+        )
 
     def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         def postorder(root):
@@ -1150,8 +1162,7 @@ class LRUCache:
 
 # 147 - Insertion Sort List - MEDIUM
 class Solution:
-    def insertionSortList(self,
-                          head: Optional[ListNode]) -> Optional[ListNode]:
+    def insertionSortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         dummy = ListNode(-1, head)
         while head and head.next:
             if head.val <= head.next.val:
@@ -1233,7 +1244,7 @@ class Solution:
             a = points[i]
             b = points[j]
             if a[0] == b[0]:
-                return float('inf')
+                return float("inf")
             else:
                 return (b[1] - a[1]) / (b[0] - a[0])
 
@@ -1285,9 +1296,9 @@ class Solution:
     def maxProduct(self, nums: List[int]) -> int:
         maxF = minF = ans = nums[0]
         for i in range(1, len(nums)):
-            maxF, minF = max(maxF * nums[i], nums[i],
-                             minF * nums[i]), min(maxF * nums[i], nums[i],
-                                                  minF * nums[i])
+            maxF, minF = max(maxF * nums[i], nums[i], minF * nums[i]), min(
+                maxF * nums[i], nums[i], minF * nums[i]
+            )
             # mx, mn = maxF, minF
             # maxF = max(mx * nums[i], nums[i], mn * nums[i])
             # minF = min(mx * nums[i], nums[i], mn * nums[i])
@@ -1304,7 +1315,7 @@ class Solution:
 
     # Kadane
     def maxProduct(self, nums: List[int]) -> int:
-        prefix, suffix, ans = 0, 0, float('-inf')
+        prefix, suffix, ans = 0, 0, float("-inf")
         for i in range(len(nums)):
             prefix = (prefix or 1) * nums[i]
             suffix = (suffix or 1) * nums[~i]
@@ -1383,8 +1394,7 @@ class MinStack:
 # 160 - Intersection of Two Linked Lists - EASY
 class Solution:
     # O(m + n) / O(m)
-    def getIntersectionNode(self, headA: ListNode,
-                            headB: ListNode) -> ListNode:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
         s = set()
         while headA:
             s.add(headA)
@@ -1396,8 +1406,7 @@ class Solution:
         return None
 
     # O(m + n) / O(1)
-    def getIntersectionNode(self, headA: ListNode,
-                            headB: ListNode) -> ListNode:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
         a = headA
         b = headB
         aex = False  # flag: whether a has been exchanged
@@ -1416,8 +1425,7 @@ class Solution:
                 bex = True
         return None
 
-    def getIntersectionNode(self, headA: ListNode,
-                            headB: ListNode) -> ListNode:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
         a = headA
         b = headB
         while a != b:
@@ -1448,8 +1456,9 @@ class Solution:
                 return float("-inf")
             return nums[i]
 
-        while not (getValue(idx - 1) < getValue(idx)
-                   and getValue(idx) > getValue(idx + 1)):
+        while not (
+            getValue(idx - 1) < getValue(idx) and getValue(idx) > getValue(idx + 1)
+        ):
             if getValue(idx) < getValue(idx + 1):
                 idx += 1
             else:
@@ -1459,8 +1468,7 @@ class Solution:
 
 # 163 - Missing Ranges - EASY - PREMIUM
 class Solution:
-    def findMissingRanges(self, nums: List[int], lower: int,
-                          upper: int) -> List[str]:
+    def findMissingRanges(self, nums: List[int], lower: int, upper: int) -> List[str]:
         def helper(lower: int, upper: int) -> str:
             if lower == upper:
                 return str(lower)
@@ -1482,8 +1490,8 @@ class Solution:
 # 165 - Compare Version Numbers - MEDIUM
 class Solution:
     def compareVersion(self, version1: str, version2: str) -> int:
-        v1 = version1.split('.')
-        v2 = version2.split('.')
+        v1 = version1.split(".")
+        v2 = version2.split(".")
         i = j = 0
         while i < len(v1) and j < len(v2):
             if int(v1[i]) > int(v2[j]):
@@ -1518,10 +1526,10 @@ class Solution:
         i = j = 0
         while i < m or j < n:
             a = b = 0
-            while i < m and v1[i] != '.':
+            while i < m and v1[i] != ".":
                 a = 10 * a + int(v1[i])
                 i += 1
-            while j < n and v2[j] != '.':
+            while j < n and v2[j] != ".":
                 b = 10 * b + int(v2[j])
                 j += 1
             if a > b:
@@ -1587,7 +1595,7 @@ class Solution:
     def titleToNumber(self, columnTitle: str) -> int:
         ans = 0
         for ch in columnTitle:
-            ans = ans * 26 + ord(ch) - ord('A') + 1
+            ans = ans * 26 + ord(ch) - ord("A") + 1
         return ans
 
 
@@ -1685,12 +1693,12 @@ class BSTIterator:
 class Solution:
     def rotate(self, nums: List[int], k: int) -> None:
         k %= len(nums)
-        '''
+        """
         Input: [1], 0
         Wrong: nums[:k], nums[k:] = nums[-k:], nums[:-k]
         Assignment Visualization: [], [1] = [1], []
         Conclusion: assignment from left to right
-        '''
+        """
         nums[k:], nums[:k] = nums[:-k], nums[-k:]
         # nums[:] = nums[-k:] + nums[:-k]
         return
@@ -1719,7 +1727,7 @@ class Solution:
         return ans
 
     def reverseBits(self, n):
-        oribin = '{0:032b}'.format(n)
+        oribin = "{0:032b}".format(n)
         reversebin = oribin[::-1]
         return int(reversebin, 2)
 
@@ -1742,7 +1750,7 @@ class Solution:
         return ans
 
     def hammingWeight(self, n: int) -> int:
-        return bin(n).count('1')
+        return bin(n).count("1")
 
 
 # 198 - House Robber - MEDIUM

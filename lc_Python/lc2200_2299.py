@@ -12,8 +12,7 @@ class TreeNode:
 
 # 2200 - Find All K-Distant Indices in an Array - EASY
 class Solution:
-    def findKDistantIndices(self, nums: List[int], key: int,
-                            k: int) -> List[int]:
+    def findKDistantIndices(self, nums: List[int], key: int, k: int) -> List[int]:
         ans = []
         n = len(nums)
         for i in range(n):
@@ -26,8 +25,9 @@ class Solution:
 
 # 2201 - Count Artifacts That Can Be Extracted - MEDIUM
 class Solution:
-    def digArtifacts(self, n: int, artifacts: List[List[int]],
-                     dig: List[List[int]]) -> int:
+    def digArtifacts(
+        self, n: int, artifacts: List[List[int]], dig: List[List[int]]
+    ) -> int:
         s = set((i, j) for i, j in dig)
         ans = 0
         for r1, c1, r2, c2 in artifacts:
@@ -56,15 +56,16 @@ class Solution:
             else:
                 return nums[0]
 
-        f = max(nums[:k - 1]) if k > 1 else 0
+        f = max(nums[: k - 1]) if k > 1 else 0
         s = nums[k] if k < n else 0
         return max(f, s)
 
 
 # 2203 - Minimum Weighted Subgraph With the Required Paths - HARD
 class Solution:
-    def minimumWeight(self, n: int, edges: List[List[int]], src1: int,
-                      src2: int, dest: int) -> int:
+    def minimumWeight(
+        self, n: int, edges: List[List[int]], src1: int, src2: int, dest: int
+    ) -> int:
         def dijkstra(g: List[List[tuple]], start: int) -> List[int]:
             dis = [math.inf] * n
             dis[start] = 0
@@ -93,8 +94,9 @@ class Solution:
         ans = min(sum(d) for d in zip(d1, d2, d3))
         return ans if ans < math.inf else -1
 
-    def minimumWeight(self, n: int, edges: List[List[int]], src1: int,
-                      src2: int, dest: int) -> int:
+    def minimumWeight(
+        self, n: int, edges: List[List[int]], src1: int, src2: int, dest: int
+    ) -> int:
         g = collections.defaultdict(list)
         reverse_g = collections.defaultdict(list)
         for i, j, w in edges:
@@ -106,7 +108,9 @@ class Solution:
             pq = [(0, src)]
             while pq:
                 w, node = heapq.heappop(pq)
-                if dis[node] <= w:  # see the different symbols between here and solution above
+                if (
+                    dis[node] <= w
+                ):  # see the different symbols between here and solution above
                     continue
                 dis[node] = w
                 for nxt, wt in G[node]:
@@ -122,8 +126,9 @@ class Solution:
             ans = min(ans, l1[i] + l2[i] + l3[i])
         return ans if ans != math.inf else -1
 
-    def minimumWeight(self, n: int, edges: List[List[int]], src1: int,
-                      src2: int, dest: int) -> int:
+    def minimumWeight(
+        self, n: int, edges: List[List[int]], src1: int, src2: int, dest: int
+    ) -> int:
         G1 = collections.defaultdict(list)
         G2 = collections.defaultdict(list)
         for a, b, w in edges:
@@ -223,11 +228,11 @@ class Solution:
     def minimumWhiteTiles(self, floor: str, ncp: int, l: int) -> int:
         n = len(floor)
         dp = [[0] * n for _ in range(ncp + 1)]
-        dp[0][0] = 1 if floor[0] == '1' else 0
+        dp[0][0] = 1 if floor[0] == "1" else 0
         isWhite = [0] * n
         for i in range(1, n):
             dp[0][i] = dp[0][i - 1]
-            if floor[i] == '1':
+            if floor[i] == "1":
                 dp[0][i] += 1
                 isWhite[i] = 1
         for i in range(1, ncp + 1):
@@ -239,30 +244,29 @@ class Solution:
                     dp[i][j] = min(dp[i][j - 1] + isWhite[j], dp[i - 1][j - l])
         return dp[ncp][n - 1]
 
-    def minimumWhiteTiles(self, floor: str, numCarpets: int,
-                          carpetLen: int) -> int:
+    def minimumWhiteTiles(self, floor: str, numCarpets: int, carpetLen: int) -> int:
         # define dp[i][numCarpet]
         # choose use or not use
         # if use: dp[i][use] = dp[i+carpetLen][use-1]
         @functools.lru_cache(None)
         def dfs(i, num):
-            if i >= len(floor): return 0
-            res = float('inf')
+            if i >= len(floor):
+                return 0
+            res = float("inf")
             # use
             if num:
                 res = dfs(i + carpetLen, num - 1)
             # not use
-            res = min(res, (floor[i] == '1') + dfs(i + 1, num))
+            res = min(res, (floor[i] == "1") + dfs(i + 1, num))
             return res
 
         return dfs(0, numCarpets)
 
-    def minimumWhiteTiles(self, floor: str, numCarpets: int,
-                          carpetLen: int) -> int:
+    def minimumWhiteTiles(self, floor: str, numCarpets: int, carpetLen: int) -> int:
         pre = [0]
         n = len(floor)
         for i in range(n):
-            if floor[i] == '1':
+            if floor[i] == "1":
                 pre.append(pre[-1] + 1)
             else:
                 pre.append(pre[-1])
@@ -274,8 +278,8 @@ class Solution:
             if j == 0:
                 return pre[i + 1]
             return min(
-                dp(i - 1, j) + (1 if floor[i] == '1' else 0),
-                dp(i - carpetLen, j - 1))
+                dp(i - 1, j) + (1 if floor[i] == "1" else 0), dp(i - carpetLen, j - 1)
+            )
 
         return dp(n - 1, numCarpets)
 
@@ -301,29 +305,29 @@ class Solution:
         s = []
         co = 0
         for ch in directions:
-            if ch == 'L':
+            if ch == "L":
                 if not s:
                     continue
-                elif s[-1] == 'S':
+                elif s[-1] == "S":
                     co += 1
-                elif s[-1] == 'R':
-                    while s and s[-1] == 'R':
+                elif s[-1] == "R":
+                    while s and s[-1] == "R":
                         s.pop()
                         co += 1
                     co += 1
-                    s.append('S')
-            elif ch == 'R':
+                    s.append("S")
+            elif ch == "R":
                 s.append(ch)
             else:
-                while s and s[-1] == 'R':
+                while s and s[-1] == "R":
                     s.pop()
                     co += 1
-                s.append('S')
+                s.append("S")
         return co
 
     # All the cars that move to the middle will eventually collide
     def countCollisions(self, directions: str) -> int:
-        return sum(d != 'S' for d in directions.lstrip('L').rstrip('R'))
+        return sum(d != "S" for d in directions.lstrip("L").rstrip("R"))
 
 
 # 2212 - Maximum Points in an Archery Competition - MEDIUM
@@ -378,7 +382,9 @@ class Solution:
                 numArrows -= ans[k]
                 remain -= ans[k]
 
-        ans[0] += remain  # In case of having remain arrows then it means in all sections Bob always win
+        ans[
+            0
+        ] += remain  # In case of having remain arrows then it means in all sections Bob always win
         # then we can distribute the remain to any section, here we simple choose first section.
         return ans
 
@@ -532,7 +538,7 @@ class Solution:
 class Solution:
     # O(n * L) / O(n * L)
     def kthPalindrome(self, queries: List[int], intLength: int) -> List[int]:
-        base = 10**((intLength - 1) // 2)
+        base = 10 ** ((intLength - 1) // 2)
         ans = [-1] * len(queries)
         for i, q in enumerate(queries):
             if q <= 9 * base:
@@ -542,10 +548,10 @@ class Solution:
         return ans
 
     def kthPalindrome(self, queries: List[int], l: int) -> List[int]:
-        base = 10**((l - 1) // 2)
+        base = 10 ** ((l - 1) // 2)
         ans = [q - 1 + base for q in queries]
         for i, a in enumerate(ans):
-            a = str(a) + str(a)[-1 - l % 2::-1]
+            a = str(a) + str(a)[-1 - l % 2 :: -1]
             ans[i] = int(a) if len(a) == l else -1
         return ans
 
@@ -556,9 +562,9 @@ class Solution:
         s = bin(start)[2:]  # bin() -> O(logn)
         g = bin(goal)[2:]
         if len(s) > len(g):
-            g = '0' * (len(s) - len(g)) + g
+            g = "0" * (len(s) - len(g)) + g
         if len(s) < len(g):
-            s = '0' * (len(g) - len(s)) + s
+            s = "0" * (len(g) - len(s)) + s
         ans = 0
         for i in range(len(s)):
             if s[i] != g[i]:
@@ -604,7 +610,7 @@ class Solution:
     def numberOfWays(self, s: str) -> int:
         ans = n0 = n1 = n01 = n10 = 0
         for ch in s:
-            if ch == '1':
+            if ch == "1":
                 n10 += n0
                 ans += n01
                 n1 += 1
@@ -616,9 +622,9 @@ class Solution:
 
     def numberOfWays(self, s: str) -> int:
         ans = n0 = 0
-        t0 = s.count('0')
+        t0 = s.count("0")
         for i, ch in enumerate(s):
-            if ch == '1':
+            if ch == "1":
                 ans += n0 * (t0 - n0)  # (left '0') * (right '0')
             else:
                 n1 = i - n0
@@ -631,12 +637,15 @@ class Solution:
         def f(t: str) -> int:
             a = b = c = 0
             for ch in s:
-                if ch == t[2]: c += b
-                if ch == t[1]: b += a
-                if ch == t[0]: a += 1
+                if ch == t[2]:
+                    c += b
+                if ch == t[1]:
+                    b += a
+                if ch == t[0]:
+                    a += 1
             return c
 
-        return f('101') + f('010')
+        return f("101") + f("010")
 
 
 # 2223 - Sum of Scores of Built Strings - HARD
@@ -654,7 +663,7 @@ class Solution:
                 count += 1
             res += count
             for k in range(2 * start, count + 1, start):
-                res += (count - (k - start))
+                res += count - (k - start)
                 visited.add(k)
         return res + len(s)
 
@@ -678,10 +687,10 @@ class Solution:
         nxt[0] = n
         T = s
         for i in range(1, n):
-            if (i >= p or i + nxt[i - a] >= p):
-                if (i > p):
+            if i >= p or i + nxt[i - a] >= p:
+                if i > p:
                     p = i
-                while (p < n and T[p] == T[p - i]):
+                while p < n and T[p] == T[p - i]:
                     p += 1
                 nxt[i] = p - i
                 a = i
@@ -790,7 +799,7 @@ class Solution:
                 e.append(ch)
         o.sort()
         e.sort()
-        ss = ''
+        ss = ""
         for ch in s:
             if int(ch) % 2:
                 ss += o.pop()
@@ -802,42 +811,42 @@ class Solution:
 # 2232 - Minimize Result by Adding Parentheses to Expression - MEDIUM
 class Solution:
     def minimizeResult(self, expression: str) -> str:
-        n1, n2 = expression.split('+')
+        n1, n2 = expression.split("+")
         m = 1e99
         ans = None
         for i in range(len(n1)):
             a = 1 if i == 0 else int(n1[:i])
-            s1 = str(a) if i != 0 else ''
+            s1 = str(a) if i != 0 else ""
             b = int(n1[i:])
             for j in range(len(n2)):
-                c = int(n2[:j + 1])
-                d = 1 if j == len(n2) - 1 else int(n2[j + 1:])
-                s2 = str(d) if j != len(n2) - 1 else ''
+                c = int(n2[: j + 1])
+                d = 1 if j == len(n2) - 1 else int(n2[j + 1 :])
+                s2 = str(d) if j != len(n2) - 1 else ""
                 p = a * (b + c) * d
                 if p < m:
                     m = p
-                    ans = '%s(%d+%d)%s' % (s1, b, c, s2)
+                    ans = "%s(%d+%d)%s" % (s1, b, c, s2)
         return ans
 
     def minimizeResult(self, expression: str) -> str:
-        a, b = expression.split('+')
+        a, b = expression.split("+")
         m = math.inf
         ans = None
         for i in range(len(a)):
             for j in range(1, len(b) + 1):
-                s = '' if i == 0 else a[:i] + '*'
-                s += '('
+                s = "" if i == 0 else a[:i] + "*"
+                s += "("
                 s += a[i:]
-                s += '+'
+                s += "+"
                 s += b[:j]
-                s += ')'
+                s += ")"
                 if j != len(b):
-                    s += '*' + b[j:]
+                    s += "*" + b[j:]
                 cur = eval(s)
                 if cur < m:
                     m = cur
                     ans = s
-        return ans.replace('*', '')
+        return ans.replace("*", "")
 
 
 # 2233 - Maximum Product After K Increments - MEDIUM
@@ -868,7 +877,7 @@ class Solution:
                 break
         ans = 1
         for i in range(len(pq)):
-            ans *= pq[i][0]**pq[i][1]
+            ans *= pq[i][0] ** pq[i][1]
         return ans % (10**9 + 7)
 
     def maximumProduct(self, nums: List[int], k: int) -> int:
@@ -889,7 +898,7 @@ class Solution:
         ans = 1
         for i in cnt.keys():
             if cnt[i] > 0:
-                ans *= i**cnt[i]
+                ans *= i ** cnt[i]
                 ans %= mod
         return ans
 
@@ -914,8 +923,9 @@ class Solution:
 # 2234 - Maximum Total Beauty of the Gardens - HARD
 class Solution:
     # O(n * logn) / O(1)
-    def maximumBeauty(self, f: List[int], newFlowers: int, target: int,
-                      full: int, partial: int) -> int:
+    def maximumBeauty(
+        self, f: List[int], newFlowers: int, target: int, full: int, partial: int
+    ) -> int:
         f.sort()
         n = len(f)
         if f[0] >= target:
@@ -932,15 +942,15 @@ class Solution:
                     x += 1
                 beauty = (n - i) * full
                 if x:  # for division
-                    beauty += min(
-                        (leftFlowers + sumFlowers) // x, target - 1) * partial
+                    beauty += min((leftFlowers + sumFlowers) // x, target - 1) * partial
                 ans = max(ans, beauty)
             if i < n:
                 leftFlowers += target - f[i]
         return ans
 
-    def maximumBeauty(self, f: List[int], newFlowers: int, target: int,
-                      full: int, partial: int) -> int:
+    def maximumBeauty(
+        self, f: List[int], newFlowers: int, target: int, full: int, partial: int
+    ) -> int:
         f = [min(target, x) for x in f]
         f.sort()
         n = len(f)
@@ -1029,9 +1039,9 @@ class ATM:
 class Solution:
     def digitSum(self, s: str, k: int) -> str:
         while len(s) > k:
-            new = ''
+            new = ""
             for i in range(0, len(s), k):
-                n = int(s[i:i + k])
+                n = int(s[i : i + k])
                 t = 0
                 while n:
                     t += n % 10
@@ -1120,14 +1130,10 @@ class Solution:
                 l5 = f[i + 1][j] - f[i][j]
                 r5 = f[i + 1][-1] - f[i][-1] - (f[i + 1][j + 1] - f[i][j + 1])
 
-                ul = min(u2 + l2 + s[i + 1][j + 1][0],
-                         u5 + l5 + s[i + 1][j + 1][1])
-                ur = min(u2 + r2 + s[i + 1][j + 1][0],
-                         u5 + r5 + s[i + 1][j + 1][1])
-                dl = min(d2 + l2 + s[i + 1][j + 1][0],
-                         d5 + l5 + s[i + 1][j + 1][1])
-                dr = min(d2 + r2 + s[i + 1][j + 1][0],
-                         d5 + r5 + s[i + 1][j + 1][1])
+                ul = min(u2 + l2 + s[i + 1][j + 1][0], u5 + l5 + s[i + 1][j + 1][1])
+                ur = min(u2 + r2 + s[i + 1][j + 1][0], u5 + r5 + s[i + 1][j + 1][1])
+                dl = min(d2 + l2 + s[i + 1][j + 1][0], d5 + l5 + s[i + 1][j + 1][1])
+                dr = min(d2 + r2 + s[i + 1][j + 1][0], d5 + r5 + s[i + 1][j + 1][1])
 
                 mx = max(ul, ur, dl, dr)
                 ans = max(ans, mx)
@@ -1163,13 +1169,17 @@ class Solution:
             for j in range(n):
                 t, f = pu[i + 1][j + 1]
                 ul = min(t + pl[i + 1][j][0], f + pl[i + 1][j][1])
-                ur = min(t + pl[i + 1][-1][0] - pl[i + 1][j + 1][0],
-                         f + pl[i + 1][-1][1] - pl[i + 1][j + 1][1])
+                ur = min(
+                    t + pl[i + 1][-1][0] - pl[i + 1][j + 1][0],
+                    f + pl[i + 1][-1][1] - pl[i + 1][j + 1][1],
+                )
                 t = pu[-1][j + 1][0] - pu[i][j + 1][0]
                 f = pu[-1][j + 1][1] - pu[i][j + 1][1]
                 dl = min(t + pl[i + 1][j][0], f + pl[i + 1][j][1])
-                dr = min(t + pl[i + 1][-1][0] - pl[i + 1][j + 1][0],
-                         f + pl[i + 1][-1][1] - pl[i + 1][j + 1][1])
+                dr = min(
+                    t + pl[i + 1][-1][0] - pl[i + 1][j + 1][0],
+                    f + pl[i + 1][-1][1] - pl[i + 1][j + 1][1],
+                )
                 ans = max(ans, ul, ur, dl, dr)
         return ans
 
@@ -1225,7 +1235,7 @@ class Solution:
         ans = 0
 
         def dfs(node):
-            '''Return longest path of all the paths start from node'''
+            """Return longest path of all the paths start from node"""
             nonlocal ans
             longest = 1
             first, second = 0, 0
@@ -1334,8 +1344,9 @@ class Solution:
 # 2250 - Count Number of Rectangles Containing Each Point - MEDIUM
 class Solution:
     # the range of 'h' is 1 <= h <= 100, much smaller than the range of 'l'
-    def countRectangles(self, rectangles: List[List[int]],
-                        points: List[List[int]]) -> List[int]:
+    def countRectangles(
+        self, rectangles: List[List[int]], points: List[List[int]]
+    ) -> List[int]:
         ans = []
         d = collections.defaultdict(list)
         for l, h in rectangles:  # O(n)
@@ -1350,14 +1361,16 @@ class Solution:
             ans.append(count)
         return ans
 
-    def countRectangles(self, rectangles: List[List[int]],
-                        points: List[List[int]]) -> List[int]:
+    def countRectangles(
+        self, rectangles: List[List[int]], points: List[List[int]]
+    ) -> List[int]:
         rectangles.sort(key=lambda r: -r[1])
         ans = [0] * len(points)
         i = 0
         xs = []
-        for (x, y), id in sorted(zip(points, range(len(points))),
-                                 key=lambda x: -x[0][1]):
+        for (x, y), id in sorted(
+            zip(points, range(len(points))), key=lambda x: -x[0][1]
+        ):
             start = i
             while i < len(rectangles) and rectangles[i][1] >= y:
                 xs.append(rectangles[i][0])
@@ -1367,15 +1380,15 @@ class Solution:
             ans[id] = i - bisect.bisect_left(xs, x)
         return ans
 
-    def countRectangles(self, rectangles: List[List[int]],
-                        points: List[List[int]]) -> List[int]:
+    def countRectangles(
+        self, rectangles: List[List[int]], points: List[List[int]]
+    ) -> List[int]:
         rectangles.sort(key=lambda r: -r[0])
         n = len(points)
         ans = [0] * n
         cnt = [0] * (max(r[1] for r in rectangles) + 1)
         i = 0
-        for (x, y), id in sorted(zip(points, range(n)),
-                                 key=lambda x: -x[0][0]):
+        for (x, y), id in sorted(zip(points, range(n)), key=lambda x: -x[0][0]):
             while i < len(rectangles) and rectangles[i][0] >= x:
                 cnt[rectangles[i][1]] += 1
                 i += 1
@@ -1383,22 +1396,25 @@ class Solution:
         return ans
 
     # O(nlogn + mlogm + mlogn) / O(m), n = len(rectangles), m = len(points)
-    def countRectangles(self, rectangles: List[List[int]],
-                        points: List[List[int]]) -> List[int]:
+    def countRectangles(
+        self, rectangles: List[List[int]], points: List[List[int]]
+    ) -> List[int]:
         rectangles.sort(key=lambda r: -r[1])
         ans = [0] * len(points)
         i = 0
         sl = sortedcontainers.SortedList()
-        for (x, y), id in sorted(zip(points, range(len(points))),
-                                 key=lambda x: -x[0][1]):
+        for (x, y), id in sorted(
+            zip(points, range(len(points))), key=lambda x: -x[0][1]
+        ):
             while i < len(rectangles) and rectangles[i][1] >= y:
                 sl.add(rectangles[i][0])
                 i += 1
             ans[id] = i - sl.bisect_left(x)
         return ans
 
-    def countRectangles(self, rectangles: List[List[int]],
-                        points: List[List[int]]) -> List[int]:
+    def countRectangles(
+        self, rectangles: List[List[int]], points: List[List[int]]
+    ) -> List[int]:
         rectangles.sort()
         points = sorted([[x, y, i] for i, (x, y) in enumerate(points)])
         sl = sortedcontainers.SortedList()
@@ -1418,8 +1434,8 @@ class Solution:
         ans = 0
         cnt = collections.Counter(words)
         for i in range(len(s)):
-            if s[:i + 1] in cnt:
-                ans += cnt[s[:i + 1]]
+            if s[: i + 1] in cnt:
+                ans += cnt[s[: i + 1]]
         return ans
 
     def countPrefixes(self, words: List[str], s: str) -> int:
@@ -1464,8 +1480,9 @@ class Solution:
 
 # 2257 - Count Unguarded Cells in the Grid - MEDIUM
 class Solution:
-    def countUnguarded(self, m: int, n: int, guards: List[List[int]],
-                       walls: List[List[int]]) -> int:
+    def countUnguarded(
+        self, m: int, n: int, guards: List[List[int]], walls: List[List[int]]
+    ) -> int:
         # guard: 3 / wall:2 / can be guarded: 1
         g = [[0] * n for _ in range(m)]
         for r, c in walls:
@@ -1487,8 +1504,9 @@ class Solution:
                     dq.append((nx, ny, dx, dy))
         return sum(v == 0 for r in g for v in r)
 
-    def countUnguarded(self, m: int, n: int, guards: List[List[int]],
-                       walls: List[List[int]]) -> int:
+    def countUnguarded(
+        self, m: int, n: int, guards: List[List[int]], walls: List[List[int]]
+    ) -> int:
         f = [[0] * n for _ in range(m)]
         for x, y in walls:
             f[x][y] = -1
@@ -1528,8 +1546,12 @@ class Solution:
                 seen[i][j] = t
                 for di, dj in d:
                     x, y = i + di, j + dj
-                    if 0 <= x < m and 0 <= y < n and \
-                        seen[x][y] >= inf and t + 1 < g[x][y]:
+                    if (
+                        0 <= x < m
+                        and 0 <= y < n
+                        and seen[x][y] >= inf
+                        and t + 1 < g[x][y]
+                    ):
                         queue.append([x, y, t + 1])
 
         def die(t: int) -> bool:
@@ -1558,8 +1580,12 @@ class Solution:
             for _ in range(len(s)):
                 x, y = s.popleft()
                 for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
-                    if 0 <= nx < m and 0 <= ny < n and f[nx][
-                            ny] == math.inf and g[nx][ny] != 2:
+                    if (
+                        0 <= nx < m
+                        and 0 <= ny < n
+                        and f[nx][ny] == math.inf
+                        and g[nx][ny] != 2
+                    ):
                         s.append((nx, ny))
                         f[nx][ny] = f[x][y] + 1
 
@@ -1571,11 +1597,17 @@ class Solution:
             for _ in range(len(my)):
                 x, y = my.popleft()
                 for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
-                    if 0 <= nx < m and 0 <= ny < n and g[nx][ny] != 2 and p[
-                            nx][ny] == math.inf:
-                        if f[nx][ny] == math.inf or step + 1 < f[nx][ny] or (
-                                step + 1 == f[nx][ny] and nx == m - 1
-                                and ny == n - 1):
+                    if (
+                        0 <= nx < m
+                        and 0 <= ny < n
+                        and g[nx][ny] != 2
+                        and p[nx][ny] == math.inf
+                    ):
+                        if (
+                            f[nx][ny] == math.inf
+                            or step + 1 < f[nx][ny]
+                            or (step + 1 == f[nx][ny] and nx == m - 1 and ny == n - 1)
+                        ):
                             p[nx][ny] = p[x][y] + 1
                             my.append((nx, ny))
             step += 1
@@ -1606,16 +1638,27 @@ class Solution:
                 r, c, step = dq.popleft()
                 board[r][c] = step
                 for nr, nc in [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]]:
-                    if 0 <= nc < n and 0 <= nr < m and board[nr][nc] < 0 and g[nr][nc] != 2 and \
-                        (is_fire or \
-                        f[nr][nc] < 0 or \
-                        f[nr][nc] > step + 1 or \
-                        (f[nr][nc] == step + 1 and nr == m - 1 and nc == n - 1)):
+                    if (
+                        0 <= nc < n
+                        and 0 <= nr < m
+                        and board[nr][nc] < 0
+                        and g[nr][nc] != 2
+                        and (
+                            is_fire
+                            or f[nr][nc] < 0
+                            or f[nr][nc] > step + 1
+                            or (f[nr][nc] == step + 1 and nr == m - 1 and nc == n - 1)
+                        )
+                    ):
                         dq.append((nr, nc, step + 1))
             return
 
-        bfs(collections.deque([(r, c, 0) for r in range(m) for c in range(n) \
-                               if g[r][c] == 1]), f)
+        bfs(
+            collections.deque(
+                [(r, c, 0) for r in range(m) for c in range(n) if g[r][c] == 1]
+            ),
+            f,
+        )
         bfs(collections.deque([(0, 0, 0)]), p, is_fire=False)
 
         if p[-1][-1] < 0:
@@ -1636,10 +1679,10 @@ class Solution:
 # 2259 - Remove Digit From Number to Maximize Result - EASY
 class Solution:
     def removeDigit(self, number: str, digit: str) -> str:
-        ans = ''
+        ans = ""
         for i in range(len(number)):
             if number[i] == digit:
-                s = number[:i] + number[i + 1:]
+                s = number[:i] + number[i + 1 :]
                 if s > ans:
                     ans = s
         return ans
@@ -1682,7 +1725,7 @@ class Solution:
         ans = last = 0
         pos = [-1] * 26
         for i, c in enumerate(s):
-            idx = ord(c) - ord('a')
+            idx = ord(c) - ord("a")
             last += i - pos[idx]
             pos[idx] = i
             ans += last
@@ -1729,11 +1772,11 @@ class Solution:
 # 2264 - Largest 3-Same-Digit Number in String - EASY
 class Solution:
     def largestGoodInteger(self, num: str) -> str:
-        ans = ''
+        ans = ""
         for i in range(1, len(num) - 1):
             if num[i - 1] == num[i] == num[i + 1]:
-                cur = num[i - 1:i + 2]
-                if ans == '':
+                cur = num[i - 1 : i + 2]
+                if ans == "":
                     ans = cur
                 elif int(cur) > int(ans):
                     ans = cur
@@ -1742,16 +1785,16 @@ class Solution:
     def largestGoodInteger(self, num: str) -> str:
         ans = ""
         for i in range(len(num) - 2):
-            if num[i:i + 3] == num[i] * 3:
+            if num[i : i + 3] == num[i] * 3:
                 ans = max(ans, num[i] * 3)
         return ans
 
     def largestGoodInteger(self, num: str) -> str:
-        for i in '9876543210':
+        for i in "9876543210":
             x = i * 3
             if x in num:
                 return x
-        return ''
+        return ""
 
 
 # 2265 - Count Nodes Equal to Average of Subtree - MEDIUM
@@ -1782,8 +1825,10 @@ class Solution:
         @functools.lru_cache(None)
         def dfs(n: int, k: int) -> int:
             """Return number of possible text of n repeated k times."""
-            if n < 0: return 0
-            if n == 0: return 1
+            if n < 0:
+                return 0
+            if n == 0:
+                return 1
             ans = 0
             for x in range(1, k + 1):
                 ans = (ans + dfs(n - x, k)) % mod
@@ -1817,7 +1862,7 @@ class Solution:
 
             return cur
 
-        pressedKeys += '#'
+        pressedKeys += "#"
         pre = pressedKeys[0]
         cnt = ans = 1
         mod = 1000000000 + 7
@@ -1825,7 +1870,7 @@ class Solution:
             if pressedKeys[i] == pre:
                 cnt += 1
             else:
-                if pre in '79':
+                if pre in "79":
                     ans = (ans * dfs(cnt, 4)) % mod
                 else:
                     ans = (ans * dfs(cnt, 3)) % mod
@@ -1852,11 +1897,11 @@ class Solution:
     def countTexts(self, s: str) -> int:
         mod = int(1e9 + 7)
         s += "#"
-        p = '*'
+        p = "*"
         l = 0
 
         def fn(p: int, l: int) -> int:
-            if p == '7' or p == '9':
+            if p == "7" or p == "9":
                 a, b, c, d = 1, 0, 0, 0
                 for _ in range(1, l):
                     a, b, c, d = (a + b + c + d) % mod, a, b, c
@@ -1889,7 +1934,7 @@ class Solution:
             l = r = False
             for x, y in [[i + 1, j], [i, j + 1]]:
                 if x < m and y < n:
-                    if grid[x][y] == '(':
+                    if grid[x][y] == "(":
                         # original version:
                         # l = dfs(x, y, left + 1)
                         l = l or dfs(x, y, left + 1)
@@ -1900,7 +1945,7 @@ class Solution:
 
         m = len(grid)
         n = len(grid[0])
-        if grid[0][0] == ')' or grid[-1][-1] == '(' or (not (m + n) & 1):
+        if grid[0][0] == ")" or grid[-1][-1] == "(" or (not (m + n) & 1):
             return False
         return dfs(0, 0, 1)
 
@@ -1914,12 +1959,12 @@ class Solution:
             r = False
             for x, y in [[i + 1, j], [i, j + 1]]:
                 if x < m and y < n:
-                    r = r or dfs(x, y, diff + (1 if grid[x][y] == '(' else -1))
+                    r = r or dfs(x, y, diff + (1 if grid[x][y] == "(" else -1))
             return r
 
         m = len(grid)
         n = len(grid[0])
-        if grid[0][0] == ')' or grid[-1][-1] == '(' or (not (m + n) & 1):
+        if grid[0][0] == ")" or grid[-1][-1] == "(" or (not (m + n) & 1):
             return False
         # dfs.cache_clear()
         return dfs(0, 0, 1)
@@ -1929,7 +1974,7 @@ class Solution:
         def dfs(r: int, c: int, cnt: int) -> bool:
             if r >= m or c >= n or cnt < 0:
                 return False
-            if grid[r][c] == '(':
+            if grid[r][c] == "(":
                 cnt += 1
             else:
                 cnt -= 1
@@ -1939,14 +1984,14 @@ class Solution:
 
         m = len(grid)
         n = len(grid[0])
-        if grid[0][0] == ')' or grid[-1][-1] == '(' or (m + n - 1) % 2:
+        if grid[0][0] == ")" or grid[-1][-1] == "(" or (m + n - 1) % 2:
             return False
         return dfs(0, 0, 0)
 
     def hasValidPath(self, grid: List[List[str]]) -> bool:
         r = len(grid)
         c = len(grid[0])
-        if (r + c) % 2 == 0 or grid[0][0] == ')' or grid[r - 1][c - 1] == '(':
+        if (r + c) % 2 == 0 or grid[0][0] == ")" or grid[r - 1][c - 1] == "(":
             return False
         vis = [[[False] * (r + c) for _ in range(c)] for _ in range(r)]
         vis[0][0][1] = True
@@ -1957,8 +2002,136 @@ class Solution:
                 return True
             for nx, ny in [[x + 1, y], [x, y + 1]]:
                 if nx < r and ny < c:
-                    nt = cnt + 1 if grid[nx][ny] == '(' else cnt - 1
+                    nt = cnt + 1 if grid[nx][ny] == "(" else cnt - 1
                     if nt >= 0 and not vis[nx][ny][nt]:
                         vis[nx][ny][nt] = True
                         dq.append([nx, ny, nt])
         return False
+
+
+# 2273 - Find Resultant Array After Removing Anagrams - EASY
+class Solution:
+    def removeAnagrams(self, words: List[str]) -> List[str]:
+        last = sorted(words[0])
+        ans = [words[0]]
+        for i in range(1, len(words)):
+            new = sorted(words[i])
+            if new != last:
+                ans.append(words[i])
+                last = new
+        return ans
+
+    def removeAnagrams(self, words: List[str]) -> List[str]:
+        ans = [words[0]]
+        for i in range(1, len(words)):
+            cnt = [0] * 26
+            for c in words[i]:
+                cnt[ord(c) - ord("a")] += 1
+            for c in ans[-1]:
+                cnt[ord(c) - ord("a")] -= 1
+            if cnt != [0] * 26:
+                ans.append(words[i])
+        return ans
+
+
+# 2274 - Maximum Consecutive Floors Without Special Floors - MEDIUM
+class Solution:
+    # O(nlogn) / O(logn)
+    def maxConsecutive(self, bottom: int, top: int, special: List[int]) -> int:
+        ans = max(top - special[-1], special[0] - bottom)
+        special.sort()
+        for i in range(1, len(special)):
+            ans = max(ans, special[i] - special[i - 1] - 1)
+        return ans
+
+
+# 2275 - Largest Combination With Bitwise AND Greater Than Zero - MEDIUM
+class Solution:
+    def largestCombination(self, candidates: List[int]) -> int:
+        d = collections.defaultdict(int)
+        for can in candidates:
+            i = 0
+            while can != 0:
+                if can & 1 == 1:
+                    d[i] += 1
+                i += 1
+                can >>= 1
+        return max(d.values())
+
+    def largestCombination(self, c: List[int]) -> int:
+        bit = 1
+        ans = 0
+        while bit <= 10**7:
+            cnt = 0
+            for val in c:
+                if val & bit:
+                    cnt += 1
+            ans = max(ans, cnt)
+            bit <<= 1
+        return ans
+
+    # 2 ** 23 < 10 ** 7 < 2 ** 24
+    def largestCombination(self, candidates: List[int]) -> int:
+        return max(sum((x >> i) & 1 for x in candidates) for i in range(24))
+
+
+# 2278 - Percentage of Letter in String - EASY
+class Solution:
+    def percentageLetter(self, s: str, letter: str) -> int:
+        return s.count(letter) * 100 // len(s)
+
+
+# 2279 - Maximum Bags With Full Capacity of Rocks - MEDIUM
+class Solution:
+    def maximumBags(
+        self, capacity: List[int], rocks: List[int], additionalRocks: int
+    ) -> int:
+        for i in range(len(capacity)):
+            capacity[i] -= rocks[i]
+        capacity.sort()
+        ans = 0
+        for c in capacity:
+            if c > additionalRocks:
+                break
+            else:
+                additionalRocks -= c
+                ans += 1
+        return ans
+
+
+# 2280 - Minimum Lines to Represent a Line Chart - MEDIUM
+class Solution:
+    def minimumLines(self, stock: List[List[int]]) -> int:
+        stock.sort()
+        if len(stock) == 1:
+            return 0
+        s = set()
+        for i in range(1, len(stock)):
+            dy = stock[i][1] - stock[i - 1][1]
+            dx = stock[i][0] - stock[i - 1][0]
+            g = math.gcd(dy, dx)
+            b = stock[i][1] - (dy / dx) * stock[i][0]
+            if (dy / g, dx / g, b) not in s:
+                s.add((dy / g, dx / g, b))
+                # s.add((k, b)) # Using k obtained by division will have precision problems
+        return len(s)
+
+    # itertools.pairwise, New in version 3.10
+    def pairwise(self, iterable):
+        # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+        a, b = itertools.tee(iterable)
+        next(b, None)
+        return zip(a, b)
+
+    def minimumLines(self, stockPrices: List[List[int]]) -> int:
+        stockPrices.sort()
+        ans = 0
+        pre_dy = 1  # 1 / 0, infinite slope, different with any line in test case
+        pre_dx = 0
+        for (x1, y1), (x2, y2) in self.pairwise(stockPrices):
+            dy, dx = y2 - y1, x2 - x1
+            # different k, no float point precision error
+            if dy * pre_dx != pre_dy * dx:
+                ans += 1
+                pre_dy, pre_dx = dy, dx
+        return ans

@@ -46,8 +46,8 @@ class Solution:
         m, n = len(grid), len(grid[0])
 
         def dfs(i: int, j: int) -> None:
-            if 0 <= i < m and 0 <= j < n and grid[i][j] == '1':
-                grid[i][j] = '#'
+            if 0 <= i < m and 0 <= j < n and grid[i][j] == "1":
+                grid[i][j] = "#"
                 dfs(i, j + 1)
                 dfs(i, j - 1)
                 dfs(i + 1, j)
@@ -57,7 +57,7 @@ class Solution:
         count = 0
         for i in range(m):
             for j in range(n):
-                if grid[i][j] == '1':
+                if grid[i][j] == "1":
                     count += 1
                     dfs(i, j)
 
@@ -70,18 +70,16 @@ class Solution:
         m, n = len(grid), len(grid[0])
         for i in range(m):
             for j in range(n):
-                if grid[i][j] == '1':
+                if grid[i][j] == "1":
                     ans += 1
                     dq.append((i, j))
-                    grid[i][j] = '0'
+                    grid[i][j] = "0"
                     while dq:
                         x, y = dq.popleft()
-                        for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1],
-                                       [x, y - 1]]:
-                            if 0 <= nx < m and 0 <= ny < n and grid[nx][
-                                    ny] == '1':
+                        for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
+                            if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] == "1":
                                 dq.append((nx, ny))
-                                grid[nx][ny] = '0'
+                                grid[nx][ny] = "0"
         return ans
 
 
@@ -106,14 +104,13 @@ class Solution:
         seen = set()
         while n not in seen:
             seen.add(n)
-            n = sum([int(x)**2 for x in str(n)])
+            n = sum([int(x) ** 2 for x in str(n)])
         return n == 1
 
 
 # 203 - Remove Linked List Elements - EASY
 class Solution:
-    def removeElements(self, head: Optional[ListNode],
-                       val: int) -> Optional[ListNode]:
+    def removeElements(self, head: Optional[ListNode], val: int) -> Optional[ListNode]:
         dummyHead = ListNode(-1, head)
         cur = dummyHead
         while cur.next:
@@ -136,17 +133,16 @@ class Solution:
 
     # NOT WORK!! / input: [7,7,7,7] 7
     # head did not change
-    def removeElements(self, head: Optional[ListNode],
-                       val: int) -> Optional[ListNode]:
+    def removeElements(self, head: Optional[ListNode], val: int) -> Optional[ListNode]:
         pre = ListNode(-1)
         pre.next = head
         cur = head
-        '''
+        """
         # It is a wrong assigning way, it will create two new objects: 'dummy' and 'pre'
         dummy, pre = ListNode(-1), ListNode(-1)
         dummy.next, pre.next = head, head
         return dummy.next
-        '''
+        """
         while cur:
             if cur.val == val:
                 pre.next = cur.next
@@ -156,8 +152,7 @@ class Solution:
         return head
 
     # recursive
-    def removeElements(self, head: Optional[ListNode],
-                       val: int) -> Optional[ListNode]:
+    def removeElements(self, head: Optional[ListNode], val: int) -> Optional[ListNode]:
         if head == None:
             return None
         # head.next = self.removeElements(head.next, val)
@@ -199,8 +194,7 @@ class Solution:
     # DAG(Directed Acyclic Graph)
 
     # bfs, adjacency list, indegree, save successor
-    def canFinish(self, numCourses: int,
-                  prerequisites: List[List[int]]) -> bool:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         g = collections.defaultdict(list)  # or {i: set()}
         in_d = [0] * numCourses  # or {i: 0}
         for a, b in prerequisites:
@@ -245,8 +239,7 @@ class Solution:
         return total == num
 
     # dfs, whether there is a cycle
-    def canFinish(self, numCourses: int,
-                  prerequisites: List[List[int]]) -> bool:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         def hasCycle(v: int) -> bool:
             if f[v] == -1:  # is being processing
                 return True
@@ -316,7 +309,7 @@ class Trie:
             if ch not in node:
                 node[ch] = {}
             node = node[ch]
-        node['END'] = True
+        node["END"] = True
         return
 
     def search(self, word: str) -> bool:
@@ -325,7 +318,7 @@ class Trie:
             if ch not in node:
                 return False
             node = node[ch]
-        return 'END' in node
+        return "END" in node
 
     def startsWith(self, prefix: str) -> bool:
         node = self.root
@@ -341,7 +334,7 @@ class Solution:
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
         s = l = r = 0
         n = len(nums)
-        ans = float('inf')
+        ans = float("inf")
         while r < n:
             s += nums[r]
             while s >= target:
@@ -349,7 +342,7 @@ class Solution:
                 s -= nums[l]
                 l += 1
             r += 1
-        return ans if ans != float('inf') else 0
+        return ans if ans != float("inf") else 0
 
 
 # 210 - Course Schedule II - MEDIUM
@@ -376,11 +369,14 @@ class Solution:
 
     def findOrder(self, num: int, prerequisites: List[List[int]]) -> List[int]:
         def dfs(v: int) -> bool:
-            if visited[v] == -1: return False  # cycle detected
-            if visited[v] == 1: return True  # finished, need added
+            if visited[v] == -1:
+                return False  # cycle detected
+            if visited[v] == 1:
+                return True  # finished, need added
             visited[v] = -1  # mark as visited
             for x in g[v]:
-                if not dfs(x): return False
+                if not dfs(x):
+                    return False
             visited[v] = 1  # mark as finished
             ans.append(v)
             return True
@@ -407,7 +403,7 @@ class WordDictionary:
         r = self.root
         for ch in word:
             r = r.setdefault(ch, {})
-        r['END'] = True
+        r["END"] = True
         return
 
     def search(self, word: str) -> bool:
@@ -415,16 +411,16 @@ class WordDictionary:
             for i, ch in enumerate(word):
                 if ch in r:
                     r = r[ch]
-                elif ch == '.':
+                elif ch == ".":
                     for k in r:
-                        if k == 'END':  # not having the 'isWord' property
+                        if k == "END":  # not having the 'isWord' property
                             continue
-                        if dfs(word[i + 1:], r[k]):
+                        if dfs(word[i + 1 :], r[k]):
                             return True
                     return False
                 else:
                     return False
-            return 'END' in r
+            return "END" in r
 
         return dfs(word, self.root)
 
@@ -444,7 +440,7 @@ class WordDictionary:
             if not word:
                 return None in r
             ch, word = word[0], word[1:]
-            if ch != '.':
+            if ch != ".":
                 return ch in r and find(word, r[ch])
             return any(find(word, kid) for kid in r.values() if kid)
 
@@ -459,11 +455,11 @@ class WordDictionary:
         self.d[len(word)] += [word]
 
     def search(self, word: str) -> bool:
-        if '.' not in word:
+        if "." not in word:
             return word in self.d[len(word)]
         for x in self.d[len(word)]:
             for i in range(len(word)):
-                if word[i] != x[i] and word[i] != '.':
+                if word[i] != x[i] and word[i] != ".":
                     break
             else:
                 return True
@@ -490,12 +486,12 @@ class Solution:
         def my_rob(nums):
             cur, pre = 0, 0
             for num in nums:
-                '''
+                """
                 Correct:
-                cur, pre = max(pre + num, cur), cur 
-                
+                cur, pre = max(pre + num, cur), cur
+
                 pre, cur = cur, max(pre + num, cur)
-                
+
                 tmp = pre
                 pre = cur
                 cur = max(tmp + num, cur)
@@ -510,12 +506,11 @@ class Solution:
 
                 cur = max(tmp + num, cur)
                 pre = cur
-                '''
+                """
                 pre, cur = cur, max(pre + num, cur)
             return cur
 
-        return max(my_rob(nums[:-1]), my_rob(
-            nums[1:])) if len(nums) != 1 else nums[0]
+        return max(my_rob(nums[:-1]), my_rob(nums[1:])) if len(nums) != 1 else nums[0]
 
 
 # 215 - Kth Largest Element in an Array - MEDIUM - REVIEW
@@ -591,7 +586,8 @@ class Solution:
             return self.findKthLargest(left, k - len(right) - len(mid))
 
     def findKthLargest(self, nums, k):
-        if not nums: return
+        if not nums:
+            return
         pivot = random.choice(nums)
         left = [x for x in nums if x > pivot]  # different from above
         mid = [x for x in nums if x == pivot]
@@ -644,7 +640,8 @@ class Solution:
     def containsDuplicate(self, nums: List[int]) -> bool:
         s = set()
         for num in nums:
-            if num in s: return True
+            if num in s:
+                return True
             s.add(num)
         return False
 
@@ -654,7 +651,7 @@ class Solution:
     def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
         dic = {}
         for i in range(len(nums)):
-            if i - dic.get(nums[i], float('-inf')) <= k:
+            if i - dic.get(nums[i], float("-inf")) <= k:
                 return True
             dic[nums[i]] = i
             # or
@@ -680,12 +677,11 @@ class Solution:
         dp, maxSide = [[0] * cols for _ in range(rows)], 0
         for i in range(rows):
             for j in range(cols):
-                if matrix[i][j] == '1':
+                if matrix[i][j] == "1":
                     if i == 0 or j == 0:
                         dp[i][j] = 1
                     else:
-                        dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j],
-                                       dp[i][j - 1]) + 1
+                        dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1
                 maxSide = max(maxSide, dp[i][j])
         return maxSide**2
 
@@ -696,7 +692,7 @@ class Solution:
         for r in range(1, rows + 1):
             nxt_dp = [0] * (cols + 1)
             for c in range(1, cols + 1):
-                if matrix[r - 1][c - 1] == '1':
+                if matrix[r - 1][c - 1] == "1":
                     nxt_dp[c] = 1 + min(dp[c], dp[c - 1], nxt_dp[c - 1])
                 max_side = max(max_side, nxt_dp[c])
             dp = nxt_dp
@@ -757,8 +753,9 @@ class Solution:
     # recursively
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         if root:
-            root.left, root.right = self.invertTree(
-                root.right), self.intertTree(root.left)
+            root.left, root.right = self.invertTree(root.right), self.intertTree(
+                root.left
+            )
         return root
 
 
@@ -766,22 +763,22 @@ class Solution:
 class Solution:
     def calculate(self, s: str) -> int:
         cur = pre = result = 0
-        sign = '+'
-        for ch in s + '#':
-            if ch == ' ':
+        sign = "+"
+        for ch in s + "#":
+            if ch == " ":
                 continue
             elif ch.isdigit():
                 cur = 10 * cur + int(ch)
             else:
-                if sign == '+':
+                if sign == "+":
                     result += pre
                     pre = cur
-                elif sign == '-':
+                elif sign == "-":
                     result += pre
                     pre = -cur
-                elif sign == '*':
+                elif sign == "*":
                     pre = pre * cur
-                elif sign == '/':
+                elif sign == "/":
                     pre = int(pre / cur)
                 cur = 0
                 sign = ch
@@ -791,21 +788,21 @@ class Solution:
     def calculate(self, s: str) -> int:
         a = []
         pre = 0
-        f = '+'
-        s += '#'
+        f = "+"
+        s += "#"
         for ch in s:
             if ch.isdigit():
                 pre = pre * 10 + int(ch)
-            elif ch == ' ':
+            elif ch == " ":
                 continue
             else:
-                if f == '+':
+                if f == "+":
                     a.append(pre)
-                elif f == '-':
+                elif f == "-":
                     a.append(-pre)
-                elif f == '*':
+                elif f == "*":
                     a.append(a.pop() * pre)
-                elif f == '/':
+                elif f == "/":
                     if a[-1] < 0:
                         # because: -3 // 2 = -2
                         # different languages have different implements
@@ -829,15 +826,13 @@ class Solution:
         elif len(nums) == 1:
             return [str(nums[0])]
         ans, length = [], 1
-        nums.append(float('inf'))  # help to process the last element
+        nums.append(float("inf"))  # help to process the last element
         for i in range(1, len(nums)):
             if nums[i] != nums[i - 1] + 1:
                 if length == 1:
                     ans.append("".join([str(nums[i - 1])]))
                 else:
-                    ans.append("->".join(
-                        [str(nums[i - length]),
-                         str(nums[i - 1])]))
+                    ans.append("->".join([str(nums[i - length]), str(nums[i - 1])]))
                 length = 1
             else:
                 length += 1
@@ -969,8 +964,9 @@ class MyQueue:
 # 235 - Lowest Common Ancestor of a Binary Search Tree - EASY
 class Solution:
     # recursive solution
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
-                             q: 'TreeNode') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
         if p.val < root.val and q.val < root.val:
             return self.lowestCommonAncestor(root.left, p, q)
         if p.val > root.val and q.val > root.val:
@@ -978,8 +974,9 @@ class Solution:
         return root
 
     # Non-recursive solution
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
-                             q: 'TreeNode') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
         while (root.val - p.val) * (root.val - q.val) > 0:
             if root.val > p.val and root.val > q.val:
                 root = root.left
@@ -992,8 +989,9 @@ class Solution:
 class Solution:
     # need to know the status of left and right subtrees
     # then we can proceed to the next step, so we use postorder traversal
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
-                             q: 'TreeNode') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
         if not root or p.val == root.val or q.val == root.val:
             return root
         left = self.lowestCommonAncestor(root.left, p, q)
@@ -1006,19 +1004,24 @@ class Solution:
     # 1. root == p || root == q
     # 2. p, q are subtree in two sides (p in left, q in right and vice versa)
     # 3. p, q on the same side of subtree, recursive
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
-                             q: 'TreeNode') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
         if not root:
             return None
-        if root.val == p.val: return root
-        if root.val == q.val: return root
+        if root.val == p.val:
+            return root
+        if root.val == q.val:
+            return root
         left = self.lowestCommonAncestor(root.left, p, q)
         right = self.lowestCommonAncestor(root.right, p, q)
-        if left and right: return root
+        if left and right:
+            return root
         return left if left else right
 
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
-                             q: 'TreeNode') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
         if not root:
             return None
         if p == root:
@@ -1029,8 +1032,9 @@ class Solution:
         r = self.lowestCommonAncestor(root.right, p, q)
         return root if l and r else l or r
 
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
-                             q: 'TreeNode') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
         def dfs(root):
             if not root:
                 return None
@@ -1049,8 +1053,9 @@ class Solution:
         return dfs(root)
 
     # iterative solution
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode',
-                             q: 'TreeNode') -> 'TreeNode':
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
         stack = [root]
         # stack = collections.deque([root])
         parent = {root: None}  # {child: father}
@@ -1198,7 +1203,7 @@ class Solution:
             key = ()
             for i in range(len(s) - 1):
                 circular_difference = 26 + ord(s[i + 1]) - ord(s[i])
-                key += (circular_difference % 26, )
+                key += (circular_difference % 26,)
             dic[key] = dic.get(key, []) + [s]
         return list(dic.values())
 
@@ -1294,14 +1299,22 @@ class Solution:
         return dp[-1]
 
     # much faster 40ms, it does not compute time spent before entering objective function
-    ugly = sorted(2**a * 3**b * 5**c for a in range(32) for b in range(20)
-                  for c in range(14))
+    ugly = sorted(
+        2**a * 3**b * 5**c
+        for a in range(32)
+        for b in range(20)
+        for c in range(14)
+    )
 
     def nthUglyNumber(self, n):
         return self.ugly[n - 1]
         # quite slow, 4000ms
-        ugly = sorted(2**a * 3**b * 5**c for a in range(32) for b in range(20)
-                      for c in range(14))
+        ugly = sorted(
+            2**a * 3**b * 5**c
+            for a in range(32)
+            for b in range(20)
+            for c in range(14)
+        )
         return ugly
 
 
@@ -1342,9 +1355,9 @@ class Solution:
     def firstBadVersion(self, n: int) -> int:
         left, right = 1, n
         while left < right:
-            '''
+            """
             precedence of '>>' is lower than '+'
-            '''
+            """
             mid = ((right - left) >> 1) + left  # wrong way
             # mid = left + (right - left) >> 1 # right way
             if isBadVersion(mid):
@@ -1364,7 +1377,7 @@ class Solution:
             return 4
         a = 0
         while a**2 <= n:
-            b = int((n - a**2)**0.5)
+            b = int((n - a**2) ** 0.5)
             if a**2 + b**2 == n:
                 return (not not a) + (not not b)
                 # or
@@ -1469,8 +1482,9 @@ class Solution:
 
     def wordPattern(self, pattern: str, s: str) -> bool:
         s = s.split()
-        return len(set(zip(pattern, s))) == len(set(pattern)) == len(set(s)) \
-            and len(pattern) == len(s)
+        return len(set(zip(pattern, s))) == len(set(pattern)) == len(set(s)) and len(
+            pattern
+        ) == len(s)
 
 
 # 297 - Serialize and Deserialize Binary Tree - HARD
@@ -1487,8 +1501,8 @@ class Codec:
                 dq.append(n.left)
                 dq.append(n.right)
             else:
-                ans.append('None')
-        return ','.join(ans)
+                ans.append("None")
+        return ",".join(ans)
 
     def deserialize(self, data: str) -> TreeNode:
         if data == "":
@@ -1499,11 +1513,11 @@ class Codec:
         i = 1
         while dq:
             x = dq.popleft()
-            if data[i] != 'None':
+            if data[i] != "None":
                 x.left = TreeNode(int(data[i]))
                 dq.append(x.left)
             i += 1
-            if data[i] != 'None':
+            if data[i] != "None":
                 x.right = TreeNode(int(data[i]))
                 dq.append(x.right)
             i += 1
@@ -1524,12 +1538,12 @@ class Codec:
             return
 
         dfs(root)
-        return ','.join(str(i) for i in ans)
+        return ",".join(str(i) for i in ans)
 
     def deserialize(self, data: str) -> TreeNode:
         def dfs(dq):
             cur = dq.popleft()
-            if cur == 'None':
+            if cur == "None":
                 return None
             root = TreeNode(int(cur))
             root.left = dfs(dq)
@@ -1538,7 +1552,7 @@ class Codec:
 
         if not data:
             return None
-        data = collections.deque(data.split(','))
+        data = collections.deque(data.split(","))
         return dfs(data)
 
 
@@ -1585,8 +1599,8 @@ class Solution:
         #     if i in secret:
         #         cow += min(guess.count(i),secret.count(i))
         # cow = cow-bull
-        '''
+        """
         str(bull) + "A" + str(cow) + "B"
         "{}A{}B".format(bull, cow)
-        '''
-        return f'{bull}A{cow}B'
+        """
+        return f"{bull}A{cow}B"

@@ -14,9 +14,12 @@ class TreeNode:
 class Solution:
     def longestDiverseString(self, a: int, b: int, c: int) -> str:
         ans, pq = "", []
-        if a: pq.append([-a, 'a'])
-        if b: pq.append([-b, 'b'])
-        if c: pq.append([-c, 'c'])
+        if a:
+            pq.append([-a, "a"])
+        if b:
+            pq.append([-b, "b"])
+        if c:
+            pq.append([-c, "c"])
         heapq.heapify(pq)
         while pq:
             n = len(ans)
@@ -47,25 +50,28 @@ class Solution:
                 return min(2, a) * aa
             usedA = min(2, a)
             usedB = 1 if a - usedA >= b else 0
-            return usedA * aa + usedB * bb + generate(a - usedA, b - usedB, c,
-                                                      aa, bb, cc)
+            return (
+                usedA * aa + usedB * bb + generate(a - usedA, b - usedB, c, aa, bb, cc)
+            )
 
-        return generate(a, b, c, 'a', 'b', 'c')
+        return generate(a, b, c, "a", "b", "c")
 
-    def longestDiverseString(self,
-                             a: int,
-                             b: int,
-                             c: int,
-                             aa='a',
-                             bb='b',
-                             cc='c') -> str:
-        if a < b: return self.longestDiverseString(b, a, c, bb, aa, cc)
-        elif b < c: return self.longestDiverseString(a, c, b, aa, cc, bb)
-        elif b == 0: return min(2, a) * aa
+    def longestDiverseString(
+        self, a: int, b: int, c: int, aa="a", bb="b", cc="c"
+    ) -> str:
+        if a < b:
+            return self.longestDiverseString(b, a, c, bb, aa, cc)
+        elif b < c:
+            return self.longestDiverseString(a, c, b, aa, cc, bb)
+        elif b == 0:
+            return min(2, a) * aa
         usedA = min(2, a)
         usedB = 1 if a - usedA >= b else 0
-        return usedA * aa + usedB * bb + self.longestDiverseString(
-            a - usedA, b - usedB, c, aa, bb, cc)
+        return (
+            usedA * aa
+            + usedB * bb
+            + self.longestDiverseString(a - usedA, b - usedB, c, aa, bb, cc)
+        )
 
 
 # 1414 - Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - MEDIUM
@@ -185,12 +191,12 @@ class Solution:
     # O(k * m * logk) / O(k)
     def kthSmallest(self, mat: List[List[int]], k: int) -> int:
         m, n = len(mat), len(mat[0])
-        pq = [(sum(r[0] for r in mat), (0, ) * m)]
-        seen = {(0, ) * m}
+        pq = [(sum(r[0] for r in mat), (0,) * m)]
+        seen = {(0,) * m}
         while k - 1:
             score, pos = heapq.heappop(pq)
             for i in range(m):
-                new = pos[:i] + (pos[i] + 1, ) + pos[i + 1:]
+                new = pos[:i] + (pos[i] + 1,) + pos[i + 1 :]
                 if pos[i] + 1 < n and new not in seen:
                     seen.add(new)
                     sc = score - mat[i][pos[i]] + mat[i][pos[i] + 1]
@@ -311,7 +317,7 @@ class Solution:
         while n > 1:
             for t in range(1, n):
                 if math.gcd(t, n) == 1:
-                    ans.append(str(t) + '/' + str(n))
+                    ans.append(str(t) + "/" + str(n))
             n -= 1
         return ans
 
@@ -340,7 +346,7 @@ class Solution:
             return
 
         self.cnt = 0
-        inorder(root, float('-inf'))
+        inorder(root, float("-inf"))
         return self.cnt
 
     def goodNodes(self, root: TreeNode) -> int:
@@ -362,8 +368,11 @@ class Solution:
             if not root:
                 return 0
             premax = max(root.val, premax)
-            return (root.val >= premax) + inorder(root.left, premax) + inorder(
-                root.right, premax)
+            return (
+                (root.val >= premax)
+                + inorder(root.left, premax)
+                + inorder(root.right, premax)
+            )
 
         return inorder(root, root.val)
 

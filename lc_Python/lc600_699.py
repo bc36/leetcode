@@ -114,8 +114,9 @@ class Solution:
         a = [[0] * n for _ in range(m)]
         for i in range(1, m + 1):
             for j in range(1, n + 1):
-                p[i][j] = p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1] + img[
-                    i - 1][j - 1]
+                p[i][j] = (
+                    p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1] + img[i - 1][j - 1]
+                )
         for i in range(m):
             for j in range(n):
                 x1 = max(i - 1, 0)
@@ -123,7 +124,8 @@ class Solution:
                 x2 = min(i + 2, m)
                 y2 = min(j + 2, n)
                 a[i][j] = (p[x2][y2] - p[x1][y2] - p[x2][y1] + p[x1][y1]) // (
-                    (x2 - x1) * (y2 - y1))
+                    (x2 - x1) * (y2 - y1)
+                )
         return a
 
     def imageSmoother(self, img: List[List[int]]) -> List[List[int]]:
@@ -284,7 +286,7 @@ class Solution:
         # left to right
         stack = []
         for x in s:
-            if x == '(' or x == '*':
+            if x == "(" or x == "*":
                 stack.append(x)
             else:
                 if len(stack) > 0:
@@ -294,7 +296,7 @@ class Solution:
         # right to left
         stack = []
         for x in s[::-1]:
-            if x == ')' or x == '*':
+            if x == ")" or x == "*":
                 stack.append(x)
             else:
                 if len(stack) > 0:
@@ -307,13 +309,13 @@ class Solution:
     def checkValidString(self, s: str) -> bool:
         cmin = cmax = 0
         for i in s:
-            if i == '(':
+            if i == "(":
                 cmax += 1
                 cmin += 1
-            if i == ')':
+            if i == ")":
                 cmax -= 1
                 cmin = max(cmin - 1, 0)
-            if i == '*':
+            if i == "*":
                 cmax += 1
                 cmin = max(cmin - 1, 0)
             if cmax < 0:
@@ -328,7 +330,7 @@ class Solution:
         while i < j:
             if s[i] != s[j]:
                 deleteJ = s[i:j]
-                deleteI = s[i + 1:j + 1]
+                deleteI = s[i + 1 : j + 1]
                 return deleteI == deleteI[::-1] or deleteJ == deleteJ[::-1]
             i += 1
             j -= 1
@@ -338,7 +340,7 @@ class Solution:
         i = 0
         while i < len(s) / 2 and s[i] == s[-(i + 1)]:
             i += 1
-        s = s[i:len(s) - i]
+        s = s[i : len(s) - i]
         return s[1:] == s[1:][::-1] or s[:-1] == s[:-1][::-1]
 
 
@@ -347,11 +349,11 @@ class Solution:
     def calPoints(self, ops: List[str]) -> int:
         s = []
         for ch in ops:
-            if ch == 'D':
+            if ch == "D":
                 s.append(2 * s[-1])
-            elif ch == 'C':
+            elif ch == "C":
                 s.pop()
-            elif ch == '+':
+            elif ch == "+":
                 s.append(s[-1] + s[-2])
             else:
                 s.append(int(ch))
@@ -412,8 +414,7 @@ class Solution:
 
 # 688 - Knight Probability in Chessboard - MEDIUM
 class Solution:
-    def knightProbability(self, n: int, k: int, row: int,
-                          column: int) -> float:
+    def knightProbability(self, n: int, k: int, row: int, column: int) -> float:
         dp = [[[0] * n for _ in range(n)] for _ in range(k + 1)]
         for step in range(k + 1):
             for i in range(n):
@@ -421,8 +422,16 @@ class Solution:
                     if step == 0:
                         dp[step][i][j] = 1
                     else:
-                        for di, dj in ((-2, -1), (-2, 1), (2, -1), (2, 1),
-                                       (-1, -2), (-1, 2), (1, -2), (1, 2)):
+                        for di, dj in (
+                            (-2, -1),
+                            (-2, 1),
+                            (2, -1),
+                            (2, 1),
+                            (-1, -2),
+                            (-1, 2),
+                            (1, -2),
+                            (1, 2),
+                        ):
                             ni, nj = i + di, j + dj
                             if 0 <= ni < n and 0 <= nj < n:
                                 dp[step][i][j] += dp[step - 1][ni][nj] / 8
@@ -434,11 +443,18 @@ class Solution:
         def dfs(i, j, p, k):
             if 0 <= i < N and 0 <= j < N and k < K:
                 sm = 0
-                for x, y in ((-1, -2), (-2, -1), (-2, 1), (-1, 2), (1, 2),
-                             (2, 1), (2, -1), (1, -2)):
+                for x, y in (
+                    (-1, -2),
+                    (-2, -1),
+                    (-2, 1),
+                    (-1, 2),
+                    (1, 2),
+                    (2, 1),
+                    (2, -1),
+                    (1, -2),
+                ):
                     if (i + x, j + y, k) not in memo:
-                        memo[(i + x, j + y, k)] = dfs(i + x, j + y, p / 8,
-                                                      k + 1)
+                        memo[(i + x, j + y, k)] = dfs(i + x, j + y, p / 8, k + 1)
                     sm += memo[(i + x, j + y, k)]
                 return sm
             else:
@@ -457,8 +473,8 @@ class Solution:
 
         # Sums of each window
         seqSum = sum(nums[0:k])
-        seqTwoSum = sum(nums[k:k * 2])
-        seqThreeSum = sum(nums[k * 2:k * 3])
+        seqTwoSum = sum(nums[k : k * 2])
+        seqThreeSum = sum(nums[k * 2 : k * 3])
 
         # Sums of combined best windows
         bestSeqSum = seqSum
@@ -472,10 +488,10 @@ class Solution:
         while threeSeqIndex <= len(nums) - k:
             # Update the three sliding windows
             seqSum = seqSum - nums[seqIndex - 1] + nums[seqIndex + k - 1]
-            seqTwoSum = seqTwoSum - nums[twoSeqIndex - 1] + nums[twoSeqIndex +
-                                                                 k - 1]
-            seqThreeSum = seqThreeSum - nums[threeSeqIndex -
-                                             1] + nums[threeSeqIndex + k - 1]
+            seqTwoSum = seqTwoSum - nums[twoSeqIndex - 1] + nums[twoSeqIndex + k - 1]
+            seqThreeSum = (
+                seqThreeSum - nums[threeSeqIndex - 1] + nums[threeSeqIndex + k - 1]
+            )
 
             # Update best single window
             if seqSum > bestSeqSum:
@@ -546,8 +562,7 @@ class Solution:
         def dfs(i: int, j: int) -> int:
             if 0 <= i < m and 0 <= j < n and grid[i][j]:
                 grid[i][j] = 0
-                return 1 + dfs(i - 1, j) + dfs(i, j + 1) + dfs(i + 1, j) + dfs(
-                    i, j - 1)
+                return 1 + dfs(i - 1, j) + dfs(i, j + 1) + dfs(i + 1, j) + dfs(i, j - 1)
             return 0
 
         areas = [dfs(i, j) for i in range(m) for j in range(n) if grid[i][j]]

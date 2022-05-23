@@ -19,8 +19,7 @@ class Node:
 # The '<' and '>' operators are testing for strict subsets
 class Solution:
     def findWords(self, words):
-        line1, line2, line3 = set('qwertyuiop'), set('asdfghjkl'), set(
-            'zxcvbnm')
+        line1, line2, line3 = set("qwertyuiop"), set("asdfghjkl"), set("zxcvbnm")
         ret = []
         for word in words:
             w = set(word.lower())
@@ -29,11 +28,11 @@ class Solution:
         return ret
 
 
-'''lc 501
+"""lc 501
 BST: internal nodes each store a key greater than all the keys in the node’s left subtree
      and less than those in its right subtree.
 Inorder Traversal of BST: ordered sequence
-'''
+"""
 
 
 # 501. Find Mode in Binary Search Tree - EASY
@@ -67,14 +66,14 @@ class Solution:
 class Solution:
     def convertToBase7(self, num: int) -> str:
         if num == 0:
-            return '0'
+            return "0"
         arr = []
-        f = '-' if num < 0 else ''
+        f = "-" if num < 0 else ""
         num = abs(num)
         while num:
             arr.append(str(num % 7))
             num //= 7
-        return f + ''.join(reversed((arr)))
+        return f + "".join(reversed((arr)))
 
 
 # 506 - Relative Ranks - EASY
@@ -82,9 +81,7 @@ class Solution:
     def findRelativeRanks(self, score: List[int]) -> List[str]:
         dic = {n: idx for idx, n in enumerate(sorted(score, reverse=True))}
         medals = ["Gold Medal", "Silver Medal", "Bronze Medal"]
-        return [
-            str(dic[i] + 1) if dic[i] >= 3 else medals[dic[i]] for i in score
-        ]
+        return [str(dic[i] + 1) if dic[i] >= 3 else medals[dic[i]] for i in score]
 
 
 # 507 - Perfect Number - EASY
@@ -106,7 +103,8 @@ class Solution:
 # 509 - Fibonacci Number - EASY
 class Solution:
     def fib(self, n: int) -> int:
-        if n < 2: return n
+        if n < 2:
+            return n
         one, two, ans = 0, 1, 0
         for _ in range(1, n):
             ans = one + two
@@ -408,8 +406,8 @@ class Solution:
 # 537 - Complex Number Multiplication - MEDIUM
 class Solution:
     def complexNumberMultiply(self, num1: str, num2: str) -> str:
-        a, b = num1[:-1].split('+')
-        c, d = num2[:-1].split('+')
+        a, b = num1[:-1].split("+")
+        c, d = num2[:-1].split("+")
         e = int(a) * int(c) - int(b) * int(d)
         f = int(a) * int(d) + int(b) * int(c)
         return f"{e}+{f}i"
@@ -421,9 +419,8 @@ class Solution:
         if len(timePoints) > 1440:
             return 0
         timePoints.sort()
-        firstTime = preTime = int(timePoints[0][:2]) * 60 + int(
-            timePoints[0][3:])
-        ans = float('inf')
+        firstTime = preTime = int(timePoints[0][:2]) * 60 + int(timePoints[0][3:])
+        ans = float("inf")
         for t in timePoints[1:]:
             time = int(t[:2]) * 60 + int(t[3:])
             ans = min(ans, time - preTime)
@@ -472,14 +469,12 @@ class Solution:
         r = len(nums) - 1
         while l <= r:
             mid = (l + r) // 2
-            if mid % 2 == 0 and mid + 1 < len(
-                    nums):  # mid是偶数(nums[mid]前面有偶数个元素)
+            if mid % 2 == 0 and mid + 1 < len(nums):  # mid是偶数(nums[mid]前面有偶数个元素)
                 if nums[mid] == nums[mid + 1]:  # mid前面没有单一元素
                     l = mid + 1
                 else:  # mid前面有单一元素
                     r = mid - 1
-            elif mid % 2 != 0 and mid + 1 < len(
-                    nums):  # mid是奇数(nums[mid]前面有奇数个元素)
+            elif mid % 2 != 0 and mid + 1 < len(nums):  # mid是奇数(nums[mid]前面有奇数个元素)
                 if nums[mid] == nums[mid + 1]:  # mid前面有单一元素
                     r = mid - 1
                 else:  # mid前面没有单一元素
@@ -489,9 +484,11 @@ class Solution:
         return nums[l]
 
     def singleNonDuplicate(self, nums: List[int]) -> int:
-        return nums[bisect.bisect_left(range(len(nums) - 1),
-                                       True,
-                                       key=lambda x: nums[x] != nums[x ^ 1])]
+        return nums[
+            bisect.bisect_left(
+                range(len(nums) - 1), True, key=lambda x: nums[x] != nums[x ^ 1]
+            )
+        ]
 
 
 # 542 - 01 Matrix - MEDIUM
@@ -611,11 +608,11 @@ class Solution:
 # 553 - Optimal Division - MEDIUM
 class Solution:
     def optimalDivision(self, nums: List[int]) -> str:
-        res = ''
+        res = ""
         if len(nums) > 2:
-            res = '/(' + '/'.join(str(i) for i in nums[1:]) + ')'
+            res = "/(" + "/".join(str(i) for i in nums[1:]) + ")"
         elif len(nums) == 2:
-            res = '/' + '/'.join(str(i) for i in nums[1:]) + ''
+            res = "/" + "/".join(str(i) for i in nums[1:]) + ""
         return str(nums[0]) + res
 
 
@@ -638,7 +635,7 @@ class Solution:
 class Solution:
     # root.children is a list
     # bfs
-    def maxDepth(self, root: 'Node') -> int:
+    def maxDepth(self, root: "Node") -> int:
         if not root:
             return 0
         dq = collections.deque([root])
@@ -652,11 +649,10 @@ class Solution:
         return ans
 
     # dfs
-    def maxDepth(self, root: 'Node') -> int:
+    def maxDepth(self, root: "Node") -> int:
         if not root:
             return 0
-        return max([self.maxDepth(child) for child in root.children],
-                   default=0) + 1
+        return max([self.maxDepth(child) for child in root.children], default=0) + 1
 
 
 # 560 - Subarray Sum Equals K - MEDIUM
@@ -710,32 +706,31 @@ class Solution:
     def nearestPalindromic(self, n: str) -> str:
         if int(n) < 10 or int(n[::-1]) == 1:
             return str(int(n) - 1)
-        if n == '11':
-            return '9'
+        if n == "11":
+            return "9"
         # if set(n) == {'9'}:
         #     return str(int(n) + 2)
-        l, r = n[:(len(n) + 1) // 2], n[(len(n) + 1) // 2:]
+        l, r = n[: (len(n) + 1) // 2], n[(len(n) + 1) // 2 :]
         temp = [str(int(l) - 1), l, str(int(l) + 1)]
-        temp = [i + i[len(r) - 1::-1] for i in temp]
+        temp = [i + i[len(r) - 1 :: -1] for i in temp]
         # float('inf'), deal with the case like '88'
-        return min(temp, key=lambda x: abs(int(x) - int(n)) or float('inf'))
+        return min(temp, key=lambda x: abs(int(x) - int(n)) or float("inf"))
 
     def nearestPalindromic(self, n: str) -> str:
         if int(n) < 10 or int(n[::-1]) == 1:
             return str(int(n) - 1)
-        if n == '11':
-            return '9'
-        left = n[:(len(n) + 1) // 2]
+        if n == "11":
+            return "9"
+        left = n[: (len(n) + 1) // 2]
         # N-1,N-1 / N, N / N+1, N+1
         tmp = [str(int(left) - 1), left, str(int(left) + 1)]
-        tmp = [i + i[:(len(n)) // 2][::-1] for i in tmp]
-        return min(tmp, key=lambda x: abs(int(x) - int(n)) or float('inf'))
+        tmp = [i + i[: (len(n)) // 2][::-1] for i in tmp]
+        return min(tmp, key=lambda x: abs(int(x) - int(n)) or float("inf"))
 
 
 # 566 - Reshape the Matrix - EASY
 class Solution:
-    def matrixReshape(self, mat: List[List[int]], r: int,
-                      c: int) -> List[List[int]]:
+    def matrixReshape(self, mat: List[List[int]], r: int, c: int) -> List[List[int]]:
         if r * c != len(mat) * len(mat[0]):
             return mat
         tmp = [0] * (r * c)
@@ -750,8 +745,7 @@ class Solution:
         return ans
 
     # not use tmp, save space
-    def matrixReshape(self, mat: List[List[int]], r: int,
-                      c: int) -> List[List[int]]:
+    def matrixReshape(self, mat: List[List[int]], r: int, c: int) -> List[List[int]]:
         if r * c != len(mat) * len(mat[0]):
             return mat
         ans = [[0] * c for _ in range(r)]
@@ -766,8 +760,7 @@ class Solution:
         return ans
 
     # better
-    def matrixReshape(self, mat: List[List[int]], r: int,
-                      c: int) -> List[List[int]]:
+    def matrixReshape(self, mat: List[List[int]], r: int, c: int) -> List[List[int]]:
         m, n = len(mat), len(mat[0])
         if r * c != m * n:
             return mat
@@ -785,13 +778,13 @@ class Solution:
         arr1 = [0] * 26
         arr2 = [0] * 26
         for i in range(len(s1)):
-            arr1[ord(s1[i]) - ord('a')] += 1
-            arr2[ord(s2[i]) - ord('a')] += 1
+            arr1[ord(s1[i]) - ord("a")] += 1
+            arr2[ord(s2[i]) - ord("a")] += 1
         if arr1 == arr2:
             return True
         for i in range(len(s1), len(s2)):
-            arr2[ord(s2[i - len(s1)]) - ord('a')] -= 1
-            arr2[ord(s2[i]) - ord('a')] += 1
+            arr2[ord(s2[i - len(s1)]) - ord("a")] -= 1
+            arr2[ord(s2[i]) - ord("a")] += 1
             if arr1 == arr2:
                 return True
         return False
@@ -802,24 +795,24 @@ class Solution:
         c = [0] * 26
         m, n = len(s1), len(s2)
         for i in range(m):
-            c[ord(s1[i]) - ord('a')] -= 1
-            c[ord(s2[i]) - ord('a')] += 1
+            c[ord(s1[i]) - ord("a")] -= 1
+            c[ord(s2[i]) - ord("a")] += 1
         diff = 0
         for i in c:
             diff += 1 if i else 0
         if diff == 0:
             return True
         for i in range(m, n):
-            if c[ord(s2[i - m]) - ord('a')] == 1:
+            if c[ord(s2[i - m]) - ord("a")] == 1:
                 diff -= 1
-            elif c[ord(s2[i - m]) - ord('a')] == 0:
+            elif c[ord(s2[i - m]) - ord("a")] == 0:
                 diff += 1
-            c[ord(s2[i - m]) - ord('a')] -= 1
-            if c[ord(s2[i]) - ord('a')] == -1:
+            c[ord(s2[i - m]) - ord("a")] -= 1
+            if c[ord(s2[i]) - ord("a")] == -1:
                 diff -= 1
-            elif c[ord(s2[i]) - ord('a')] == 0:
+            elif c[ord(s2[i]) - ord("a")] == 0:
                 diff += 1
-            c[ord(s2[i]) - ord('a')] += 1
+            c[ord(s2[i]) - ord("a")] += 1
             if diff == 0:
                 return True
         return False
@@ -832,24 +825,29 @@ class Solution:
             return True
         if not sub or not root:
             return False
-        return self.isSameTree(sub, root) or self.isSubtree(
-            root.left, sub) or self.isSubtree(root.right, sub)
+        return (
+            self.isSameTree(sub, root)
+            or self.isSubtree(root.left, sub)
+            or self.isSubtree(root.right, sub)
+        )
 
     def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
         if not q and not p:
             return True
         if not q or not p:
             return False
-        return q.val == p.val and self.isSameTree(
-            q.left, p.left) and self.isSameTree(q.right, p.right)
+        return (
+            q.val == p.val
+            and self.isSameTree(q.left, p.left)
+            and self.isSameTree(q.right, p.right)
+        )
 
 
 # 575 - Distribute Candies - EASY
 class Solution:
     # counter
     def distributeCandies(self, candyType: List[int]) -> int:
-        return min(len(collections.Counter(candyType)),
-                   int(len(candyType) / 2))
+        return min(len(collections.Counter(candyType)), int(len(candyType) / 2))
 
     # set
     def distributeCandies(self, candyType: List[int]) -> int:
@@ -889,8 +887,7 @@ class Solution:
         # Returns a positive value, if OAB makes a counter-clockwise turn,
         # negative for clockwise turn, and zero if the points are collinear.
         def sign(o, a, b):
-            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] -
-                                                                    o[0])
+            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 
         # Build lower hull
         lower = []
@@ -914,7 +911,7 @@ class Solution:
 
 # 589 - N-ary Tree Preorder Traversal - EASY
 class Solution:
-    def preorder(self, root: 'Node') -> List[int]:
+    def preorder(self, root: "Node") -> List[int]:
         if not root:
             return []
         t = [root.val]
@@ -922,8 +919,8 @@ class Solution:
             t += self.preorder(ch)
         return t
 
-    def preorder(self, root: 'Node') -> List[int]:
-        def dfs(root: 'Node'):
+    def preorder(self, root: "Node") -> List[int]:
+        def dfs(root: "Node"):
             if not root:
                 return
             ans.append(root.val)
@@ -935,7 +932,7 @@ class Solution:
         dfs(root)
         return ans
 
-    def preorder(self, root: 'Node') -> List[int]:
+    def preorder(self, root: "Node") -> List[int]:
         if not root:
             return []
         s = [root]
@@ -951,7 +948,7 @@ class Solution:
 
 # 590 - N-ary Tree Postorder Traversal - EASY
 class Solution:
-    def postorder(self, root: 'Node') -> List[int]:
+    def postorder(self, root: "Node") -> List[int]:
         if not root:
             return []
         t = []
@@ -960,7 +957,7 @@ class Solution:
         t.append(root.val)
         return t
 
-    def postorder(self, root: 'Node') -> List[int]:
+    def postorder(self, root: "Node") -> List[int]:
         def dfs(root: Node):
             if not root:
                 return
@@ -973,7 +970,7 @@ class Solution:
         dfs(root)
         return ans
 
-    def postorder(self, root: 'Node') -> List[int]:
+    def postorder(self, root: "Node") -> List[int]:
         if not root:
             return []
         q = [root]
@@ -990,12 +987,12 @@ class Solution:
 # 591 - Tag Validator - HARD
 class Solution:
     def isValid(self, code: str) -> bool:
-        code = re.sub(r'<!\[CDATA\[.*?\]\]>|t', '-', code)
+        code = re.sub(r"<!\[CDATA\[.*?\]\]>|t", "-", code)
         prev = None
         while code != prev:
             prev = code
-            code = re.sub(r'<([A-Z]{1,9})>[^<]*</\1>', 't', code)
-        return code == 't'
+            code = re.sub(r"<([A-Z]{1,9})>[^<]*</\1>", "t", code)
+        return code == "t"
 
 
 # 594 - Longest Harmonious Subsequence - EASY

@@ -6,12 +6,13 @@ from typing import List
 class Solution:
     @functools.lru_cache(None)
     def tribonacci(self, n: int) -> int:
-        if n == 0: return 0
-        if n == 1: return 1
-        if n == 2: return 1
-        return self.tribonacci(n -1) \
-                + self.tribonacci(n - 2) \
-                + self.tribonacci(n - 3)
+        if n == 0:
+            return 0
+        if n == 1:
+            return 1
+        if n == 2:
+            return 1
+        return self.tribonacci(n - 1) + self.tribonacci(n - 2) + self.tribonacci(n - 3)
 
 
 class Solution:
@@ -19,10 +20,11 @@ class Solution:
         self.cache = {0: 0, 1: 1, 2: 1}
 
     def tribonacci(self, n: int) -> int:
-        if n in self.cache: return self.cache[n]
-        self.cache[n] = self.tribonacci(n - 1) \
-                        + self.tribonacci(n - 2) \
-                        + self.tribonacci(n - 3)
+        if n in self.cache:
+            return self.cache[n]
+        self.cache[n] = (
+            self.tribonacci(n - 1) + self.tribonacci(n - 2) + self.tribonacci(n - 3)
+        )
         return self.cache[n]
 
 
@@ -84,14 +86,13 @@ class Solution:
         year, month, day = [int(x) for x in date.split("-")]
         if year % 400 == 0 or (year % 4 == 0 and year % 100 != 0):
             m[1] += 1
-        return sum(m[:month - 1]) + day
+        return sum(m[: month - 1]) + day
 
 
 # 1178 - Number of Valid Words for Each Puzzle - HARD
 class Solution:
     # TLE
-    def findNumOfValidWords(self, words: List[str],
-                            puzzles: List[str]) -> List[int]:
+    def findNumOfValidWords(self, words: List[str], puzzles: List[str]) -> List[int]:
         puzzleSet = [set(p) for p in puzzles]
         wordSet = [set(w) for w in words]
         # firstLetters = set([p[0] for p in puzzles])
@@ -113,4 +114,4 @@ class Solution:
 class Solution:
     def maxNumberOfBalloons(self, text: str) -> int:
         cnt = collections.Counter(text)
-        return min(cnt['b'], cnt['a'], cnt['l'] // 2, cnt['o'] // 2, cnt['n'])
+        return min(cnt["b"], cnt["a"], cnt["l"] // 2, cnt["o"] // 2, cnt["n"])
