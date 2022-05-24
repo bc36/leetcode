@@ -849,6 +849,22 @@ class Solution:
         return ans
 
 
+# 467 - Unique Substrings in Wraparound String - MEDIUM
+class Solution:
+    # O(n) / O(26)
+    def findSubstringInWraproundString(self, p: str) -> int:
+        d = collections.defaultdict(int)
+        l = 0
+        for i, c in enumerate(p):
+            # if i > 0 and (ord(c) - ord(p[i - 1])) % 26 == 1:
+            if i > 0 and ord(p[i - 1]) + 1 == ord(c) or (p[i - 1] == "z" and c == "a"):
+                l += 1
+            else:
+                l = 1
+            d[c] = max(d[c], l)
+        return sum(d.values())
+
+
 # 479 - Largest Palindrome Product - HARD
 class Solution:
     def largestPalindrome(self, n: int) -> int:

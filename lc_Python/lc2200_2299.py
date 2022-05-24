@@ -2009,6 +2009,30 @@ class Solution:
         return False
 
 
+# 2269 - Find the K-Beauty of a Number - EASY
+class Solution:
+    def divisorSubstrings(self, num: int, k: int) -> int:
+        s = str(num)
+        ans = 0
+        for i in range(k, len(s) + 1):
+            if int(s[i - k : i]) != 0 and num % int(s[i - k : i]) == 0:
+                ans += 1
+        return ans
+
+
+# 2270 - Number of Ways to Split Array - MEDIUM
+class Solution:
+    def waysToSplitArray(self, nums: List[int]) -> int:
+        sub = sum(nums)
+        ans = pre = 0
+        for i in range(len(nums)-1):
+            pre += nums[i]
+            sub -= nums[i]
+            if pre >= sub:
+                ans += 1
+        return ans
+
+
 # 2273 - Find Resultant Array After Removing Anagrams - EASY
 class Solution:
     def removeAnagrams(self, words: List[str]) -> List[str]:
