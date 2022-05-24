@@ -8,44 +8,48 @@ from typing import List
 # 5948 判断一个括号字符串是否有效. 正反遍历, 可能的左括号最大最小值. 类似678
 class Solution:
     def canBeValid(self, s: str, locked: str) -> bool:
-        if len(s) % 2 == 1: return False
+        if len(s) % 2 == 1:
+            return False
         # 正序遍历: 未匹配的左括号 ( 的最大数目
         cnt = 0
         for ch, b in zip(s, locked):
-            if ch == '(' and b == '1':
+            if ch == "(" and b == "1":
                 cnt += 1
-            elif ch == ')' and b == '1':
+            elif ch == ")" and b == "1":
                 cnt -= 1
-            elif b == '0':
+            elif b == "0":
                 cnt += 1
-            if cnt < 0: return False
+            if cnt < 0:
+                return False
         # 逆序遍历: 未匹配的右括号 ) 的最大数目
         cnt = 0
         for ch, b in zip(s[::-1], locked[::-1]):
-            if ch == ')' and b == '1':
+            if ch == ")" and b == "1":
                 cnt += 1
-            elif ch == '(' and b == '1':
+            elif ch == "(" and b == "1":
                 cnt -= 1
-            elif b == '0':
+            elif b == "0":
                 cnt += 1
-            if cnt < 0: return False
+            if cnt < 0:
+                return False
         return True
 
     def canBeValid(self, s: str, locked: str) -> bool:
-        if len(s) % 2 == 1: return False
+        if len(s) % 2 == 1:
+            return False
         # 未匹配的左括号的最大, 最小值
         max_left = min_left = 0
         for ch, b in zip(s, locked):
             # locked[i]==1时, 无法改变字符, 直接加减
-            if ch == '(' and b == '1':
+            if ch == "(" and b == "1":
                 max_left += 1
                 min_left += 1
-            elif ch == ')' and b == '1':
+            elif ch == ")" and b == "1":
                 max_left -= 1
                 min_left -= 1
             # locked[i]==0时, 可作为通配符,
             # 贪心地将: 未匹配的左括号的最大值+1, 最小值-1
-            elif b == '0':
+            elif b == "0":
                 max_left += 1
                 min_left -= 1
             # 保持当前未匹配的左括号的最小值>=0
@@ -62,22 +66,25 @@ class Solution:
 # 5931. 用邮票贴满网格图
 # 直接check, 更改矩阵会超时 -> 二维前缀和
 class Solution:
-    def possibleToStamp(self, grid: List[List[int]], stampHeight: int,
-                        stampWidth: int) -> bool:
+    def possibleToStamp(
+        self, grid: List[List[int]], stampHeight: int, stampWidth: int
+    ) -> bool:
         m, n = len(grid), len(grid[0])
         sum = [[0] * (n + 1) for _ in range(m + 1)]
         diff = [[0] * (n + 1) for _ in range(m + 1)]
         for i, row in enumerate(grid):
             for j, v in enumerate(row):  # grid 的二维前缀和
-                sum[i + 1][j +
-                           1] = sum[i + 1][j] + sum[i][j + 1] - sum[i][j] + v
+                sum[i + 1][j + 1] = sum[i + 1][j] + sum[i][j + 1] - sum[i][j] + v
 
         for i, row in enumerate(grid):
             for j, v in enumerate(row):
                 if v == 0:
                     x, y = i + stampHeight, j + stampWidth  # 注意这是矩形右下角横纵坐标都 +1 后的位置
-                    if x <= m and y <= n and sum[x][y] - sum[x][j] - sum[i][
-                            y] + sum[i][j] == 0:
+                    if (
+                        x <= m
+                        and y <= n
+                        and sum[x][y] - sum[x][j] - sum[i][y] + sum[i][j] == 0
+                    ):
                         diff[i][j] += 1
                         diff[i][y] -= 1
                         diff[x][j] -= 1
@@ -104,11 +111,11 @@ class Solution:
 # 5974. 分隔长廊的方案数
 class Solution:
     def numberOfWays(self, corridor: str) -> int:
-        n, ns, ans, cs, cp = len(corridor), corridor.count('S'), 1, 0, 0
+        n, ns, ans, cs, cp = len(corridor), corridor.count("S"), 1, 0, 0
         if ns & 1 or (ns == 0 and n):
             return 0
-        for ch in corridor.strip('P'):
-            if ch == 'S':
+        for ch in corridor.strip("P"):
+            if ch == "S":
                 cs += 1
                 if cs == 1:
                     ans = ans * (cp + 1) % 1000000007
@@ -120,7 +127,7 @@ class Solution:
         return ans
 
     def numberOfWays(self, corridor: str) -> int:
-        s = [i for i, char in enumerate(corridor) if char == 'S']
+        s = [i for i, char in enumerate(corridor) if char == "S"]
         if not s or len(s) % 2:
             return 0
         ans, mod = 1, 10**9 + 7
@@ -136,7 +143,7 @@ class Solution:
         s = 0
         mp = collections.defaultdict(int)
         for _, ch in enumerate(corridor):
-            s += (ch == "S")
+            s += ch == "S"
             if s > 0 and s < ns - 1 and s % 2 == 0:
                 mp[s] += 1
         ans, mod = 1, 10**9 + 7
@@ -168,7 +175,7 @@ class Solution:
             s += nums[i + n] + v
         min_value[n] = s
         max_value = [0] * (n + 1)
-        min_heap = [n for n in nums[2 * n:]]
+        min_heap = [n for n in nums[2 * n :]]
         heapq.heapify(min_heap)
         s = sum(min_heap)
         for i in range(n, 0, -1):
@@ -182,7 +189,7 @@ class Solution:
         m = len(nums)
         n = m // 3
 
-        min_pq = nums[m - n:]
+        min_pq = nums[m - n :]
         heapq.heapify(min_pq)
         suf_max = [0] * (m - n + 1)
         suf_max[-1] = s = sum(min_pq)
@@ -248,7 +255,7 @@ class Solution:
             s2[i] += nums[i + 1]
             if len(q) > k:
                 s2[i] -= heapq.heappop(q)
-        ans = float('inf')
+        ans = float("inf")
         for i in range(k - 1, 2 * k):
             ans = min(ans, s1[i] - s2[i])
         return ans
@@ -289,13 +296,13 @@ class Solution:
         def inc(x):
             while x <= n:
                 t[x] += 1
-                x += (x & (-x))
+                x += x & (-x)
 
         def calc(x):
             res = 0
             while x:
                 res += t[x]
-                x -= (x & (-x))
+                x -= x & (-x)
             return res
 
         left, right = [0] * n, [0] * n
@@ -354,7 +361,7 @@ class Solution:
         tmp = ""
         for i in range(n - 1, -1, -1):
             if s[i] == s[0] and i != 0:
-                tmp = s[1:i] + s[i + 1:]
+                tmp = s[1:i] + s[i + 1 :]
                 move += n - i - 1
                 break
             if i == 0:  # odd, s[0] occur only once
@@ -368,11 +375,13 @@ class Solution:
         ans = 0
         while length > 2:
             ch = s[-1]
-            if d[ch] == 1:  # odd case, reverse 's', leave this character to the beginning
+            if (
+                d[ch] == 1
+            ):  # odd case, reverse 's', leave this character to the beginning
                 s = s[::-1]
                 ch = s[-1]
             idx = s.index(ch)  # O(n) opt
-            s = s[:idx] + s[idx + 1:-1]  # delete two character
+            s = s[:idx] + s[idx + 1 : -1]  # delete two character
             ans += idx
             d[ch] -= 2
             length -= 2
@@ -383,9 +392,9 @@ class Solution:
             return 0
         for i in range(len(s)):
             if s[i] == s[-1]:
-                return i + self.minMovesToMakePalindrome(s[:i] + s[i + 1:-1])
+                return i + self.minMovesToMakePalindrome(s[:i] + s[i + 1 : -1])
             elif s[-1 - i] == s[0]:
-                return i + self.minMovesToMakePalindrome(s[1:-1 - i] + s[-i:])
+                return i + self.minMovesToMakePalindrome(s[1 : -1 - i] + s[-i:])
 
     def minMovesToMakePalindrome(self, s: str) -> int:
         s = list(s)
@@ -416,3 +425,9 @@ class Solution:
 
 # https://leetcode-cn.com/contest/biweekly-contest-77
 # 285 / https://leetcode-cn.com/contest/biweekly-contest-77/problems/escape-the-spreading-fire/
+
+
+# https://leetcode-cn.com/contest/biweekly-contest-78
+# 796 / https://leetcode.cn/contest/biweekly-contest-78/problems/maximum-white-tiles-covered-by-a-carpet/
+
+# 144 / https://leetcode.cn/contest/biweekly-contest-78/problems/substring-with-largest-variance/
