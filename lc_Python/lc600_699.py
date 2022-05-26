@@ -582,3 +582,23 @@ class Solution:
                 cur += 1
         ans += min(prev, cur)
         return ans
+
+
+# 699 - Falling Squares - HARD
+class Solution:
+    # O(n ** 2) / O(1)
+    def fallingSquares(self, positions: List[List[int]]) -> List[int]:
+        n = len(positions)
+        heights = [0] * n
+        for i, (l, sz) in enumerate(positions):
+            r = l + sz - 1
+            heights[i] = sz
+            for j in range(i):
+                ll, rr = positions[j][0], positions[j][0] + positions[j][1] - 1
+                if r >= ll and l <= rr:
+                    heights[i] = max(heights[i], heights[j] + sz)
+        for i in range(1, n):
+            heights[i] = max(heights[i], heights[i - 1])
+        return heights
+
+    # segment tree: TODO
