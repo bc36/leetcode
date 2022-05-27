@@ -767,6 +767,7 @@ class Solution:
         return ans
 
 
+# 2226 - Maximum Candies Allocated to K Children - MEDIUM
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
 class Solution:
     # do not need to care about specific indices
@@ -2025,11 +2026,45 @@ class Solution:
     def waysToSplitArray(self, nums: List[int]) -> int:
         sub = sum(nums)
         ans = pre = 0
-        for i in range(len(nums)-1):
+        for i in range(len(nums) - 1):
             pre += nums[i]
             sub -= nums[i]
             if pre >= sub:
                 ans += 1
+        return ans
+
+
+# 2271 - Maximum White Tiles Covered by a Carpet - MEDIUM
+class Solution:
+    def maximumWhiteTiles(self, tiles: List[List[int]], carpetLen: int) -> int:
+        tiles.sort()
+        ans = cover = r = 0
+        n = len(tiles)
+        for l in range(n):
+            while r < n and tiles[r][1] - tiles[l][0] < carpetLen:
+                cover += tiles[r][1] - tiles[r][0] + 1
+                r += 1
+
+            # if r < n and tiles[r][0] - tiles[l][0] < carpetLen:
+            #     ans = max(ans, cover + tiles[l][0] + carpetLen - tiles[r][0])
+
+            if r < n:
+                # ans = max(ans, cover + max(0, tiles[l][0] - tiles[r][0] + carpetLen))
+                ans = max(ans, cover + max(0, carpetLen - (tiles[r][0] - tiles[l][0])))
+            else:
+                ans = max(ans, cover)
+            cover -= tiles[l][1] - tiles[l][0] + 1
+        return ans
+
+    def maximumWhiteTiles(self, tiles: List[List[int]], carpetLen: int) -> int:
+        tiles.sort()
+        ans = cover = l = 0
+        for tl, tr in tiles:
+            cover += tr - tl + 1
+            while tiles[l][1] < tr - carpetLen + 1:
+                cover -= tiles[l][1] - tiles[l][0] + 1
+                l += 1
+            ans = max(ans, cover - max(tr - carpetLen + 1 - tiles[l][0], 0))
         return ans
 
 
