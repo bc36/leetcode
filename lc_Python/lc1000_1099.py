@@ -235,6 +235,21 @@ class Solution:
         return ans
 
 
+# 1021 - Remove Outermost Parentheses - EASY
+class Solution:
+    def removeOuterParentheses(self, s: str) -> str:
+        ans = ""
+        f = 0
+        for c in s:
+            if c == ")":
+                f -= 1
+            if f:
+                ans += c
+            if c == "(":
+                f += 1
+        return ans
+
+
 # 1022 - Sum of Root To Leaf Binary Numbers - EASY
 class Solution:
     def sumRootToLeaf(self, root: TreeNode) -> int:
