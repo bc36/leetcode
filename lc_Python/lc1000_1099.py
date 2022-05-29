@@ -266,19 +266,15 @@ class Solution:
         return ans
 
     def sumRootToLeaf(self, root: TreeNode) -> int:
-        def dfs(root: TreeNode, pre: str):
-            if not root:
-                return
-            if not root.left and not root.right:
-                self.ans += int(pre + str(root.val), 2)
-                return
-            dfs(root.left, pre + str(root.val))
-            dfs(root.right, pre + str(root.val))
-            return
+        def dfs(root: TreeNode, v: int) -> int:
+            if root is None:
+                return 0
+            v = (v << 1) | root.val
+            if root.left is None and root.right is None:
+                return v
+            return dfs(root.left, v) + dfs(root.right, v)
 
-        self.ans = 0
-        dfs(root, "")
-        return self.ans
+        return dfs(root, 0)
 
     def sumRootToLeaf(self, root: TreeNode, val=0) -> int:
         if not root:
@@ -287,6 +283,21 @@ class Solution:
         if root.left == root.right == None:
             return val
         return self.sumRootToLeaf(root.left, val) + self.sumRootToLeaf(root.right, val)
+
+    def sumRootToLeaf(self, root: TreeNode) -> int:
+        def dfs(root: TreeNode, pre: int):
+            if not (root.left or root.right):
+                self.ans += (pre << 1) + root.val
+                return
+            if root.left:
+                dfs(root.left, (pre << 1) + root.val)
+            if root.right:
+                dfs(root.right, (pre << 1) + root.val)
+            return
+
+        self.ans = 0
+        dfs(root, 0)
+        return self.ans
 
 
 # 1026 - Maximum Difference Between Node and Ancestor - MEDIUM

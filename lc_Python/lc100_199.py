@@ -1717,7 +1717,7 @@ class Solution:
             ans += 1
         return ans
 
-    def reverseBits(self, n):
+    def reverseBits(self, n:int):
         ans = 0
         for _ in range(32):
             ans = (ans << 1) + (n & 1)
@@ -1726,7 +1726,7 @@ class Solution:
             n >>= 1
         return ans
 
-    def reverseBits(self, n):
+    def reverseBits(self, n:int):
         oribin = "{0:032b}".format(n)
         reversebin = oribin[::-1]
         return int(reversebin, 2)
