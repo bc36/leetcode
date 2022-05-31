@@ -1026,3 +1026,6 @@ class Solution:
 
 # https://leetcode-cn.com/contest/weekly-contest-294/
 # 146 / https://leetcode.cn/contest/weekly-contest-294/problems/sum-of-total-strength-of-wizards/
+
+
+# https://leetcode-cn.com/contest/weekly-contest-295/
