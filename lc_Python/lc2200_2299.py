@@ -768,6 +768,8 @@ class Solution:
 
 
 # 2226 - Maximum Candies Allocated to K Children - MEDIUM
+
+
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
 class Solution:
     # do not need to care about specific indices
@@ -2194,3 +2196,82 @@ class Solution:
                 ans += 1
                 pre_dy, pre_dx = dy, dx
         return ans
+
+
+# 2283 - Check if Number Has Equal Digit Count and Digit Value - EASY
+class Solution:
+    def digitCount(self, num: str) -> bool:
+        cnt = collections.Counter(num)
+        for i, n in enumerate(num):
+            if int(n) != cnt[str(i)]:
+                return False
+        return True
+
+    def digitCount(self, num: str) -> bool:
+        cnt = collections.Counter(num)
+        return all(cnt[str(i)] == int(num[i]) for i in range(len(num)))
+
+
+# 2284 - Sender With Largest Word Count - MEDIUM
+class Solution:
+    def largestWordCount(self, messages: List[str], senders: List[str]) -> str:
+        cnt = collections.defaultdict(int)
+        for m, s in zip(messages, senders):
+            cnt[s] += len(m.split())
+        m = max(cnt.values())
+        names = [k for k in cnt if cnt[k] == m]
+        return sorted(names)[-1]
+
+    def largestWordCount(self, messages: List[str], senders: List[str]) -> str:
+        cnt = collections.defaultdict(int)
+        for i, m in enumerate(messages):
+            cnt[senders[i]] += m.count(" ") + 1
+        ans = ""
+        for k, v in list(cnt.items()):
+            if v > cnt[ans] or v == cnt[ans] and k > ans:
+                ans = k
+        return ans
+
+
+# 2285 - Maximum Total Importance of Roads - MEDIUM
+class Solution:
+    def maximumImportance(self, n: int, roads: List[List[int]]) -> int:
+        d = collections.defaultdict(int)
+        for a, b in roads:
+            d[a] += 1
+            d[b] += 1
+        arr = sorted(d.values(), reverse=True)
+        ans = 0
+        for i, v in enumerate(arr):
+            ans += (n - i) * v
+        return ans
+
+    def maximumImportance(self, n: int, roads: List[List[int]]) -> int:
+        arr = [0] * n
+        for a, b in roads:
+            arr[a] += 1
+            arr[b] += 1
+        arr.sort()
+        return sum(v * i for i, v in enumerate(arr, start=1))
+
+
+# 2287 - Rearrange Characters to Make Target String - EASY
+class Solution:
+    def rearrangeCharacters(self, s: str, target: str) -> int:
+        cnt = collections.Counter(s)
+        d = collections.Counter(target)
+        return min(cnt[n] // d[n] for n in d)
+
+
+# 2288 - Apply Discount to Prices - MEDIUM
+class Solution:
+    def discountPrices(self, sentence: str, discount: int) -> str:
+        ans = []
+        s = sentence.split()
+        for w in s:
+            if w[0] == "$" and w[1:].isdigit():
+                price = "%.2f" % (int(w[1:]) * (100 - discount) / 100)
+                ans.append("$" + price)
+            else:
+                ans.append(w)
+        return " ".join(ans)

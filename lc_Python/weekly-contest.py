@@ -1029,3 +1029,8 @@ class Solution:
 
 
 # https://leetcode-cn.com/contest/weekly-contest-295/
+# 194 / https://leetcode.cn/contest/weekly-contest-295/problems/steps-to-make-array-non-decreasing/
+# 单调栈
+
+# 739 / https://leetcode.cn/contest/weekly-contest-295/problems/minimum-obstacle-removal-to-reach-corner/
+# 0-1 BFS / Dijkstra
