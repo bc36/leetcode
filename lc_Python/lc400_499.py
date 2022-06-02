@@ -1,5 +1,5 @@
 import collections, bisect, functools, math, heapq
-from typing import List
+from typing import List, Optional
 
 
 # Definition for a Node.
@@ -795,6 +795,119 @@ class Codec:
         return build(-math.inf, math.inf)
 
 
+# 450 - Delete Node in a BST - MEDIUM
+class Solution:
+    # O(n ^ 2) / O(n), similar to 105. Construct Binary Tree from Preorder and Inorder Traversal
+    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+        preorder = []
+
+        def helper(root: TreeNode, k: int):
+            if not root:
+                return
+            if root.val != k:
+                preorder.append(root.val)
+            helper(root.left, k)
+            helper(root.right, k)
+            return
+
+        helper(root, key)
+        inorder = sorted(preorder)
+
+        def build(preorder: List[int], inorder: List[int]) -> TreeNode:
+            if not preorder:
+                return
+            root = TreeNode(preorder[0])
+            idx = inorder.index(root.val)  # slow
+            root.left = build(preorder[1 : idx + 1], inorder[:idx])
+            root.right = build(preorder[idx + 1 :], inorder[idx + 1 :])
+            return root
+
+        return build(preorder, inorder)
+
+    # O(nlogn) / O(n)
+    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+        preorder = []
+
+        def helper(root: TreeNode, k: int):
+            if not root:
+                return
+            if root.val != k:
+                preorder.append(root.val)
+            helper(root.left, k)
+            helper(root.right, k)
+            return
+
+        helper(root, key)
+        inorder = sorted(preorder)
+        d = {v: i for i, v in enumerate(inorder)}
+
+        def helper(p: int, ileft: int, iright: int) -> TreeNode:
+            if ileft > iright:
+                return None
+            root = TreeNode(preorder[p])
+            idx = d[preorder[p]]
+            root.left = helper(p + 1, ileft, idx - 1)
+            root.right = helper(p + idx - ileft + 1, idx + 1, iright)
+            return root
+
+        return helper(0, 0, len(inorder) - 1)
+
+    # O(n) / O(n)
+    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+        if not root:
+            return
+        if root.val == key:
+            if not root.left or not root.right:
+                return root.right or root.left
+            # Replaces root with a successor
+            # (the smallest node larger than root, that is, the smallest node in its right subtree)
+            # as the new root
+            p = root.right
+            while p.left:
+                p = p.left
+            p.right = self.deleteNode(root.right, p.val)
+            p.left = root.left
+            root = p
+        elif root.val < key:
+            root.right = self.deleteNode(root.right, key)
+        else:
+            root.left = self.deleteNode(root.left, key)
+        return root
+
+    # O(n) / O(n)
+    def deleteNode(self, root: TreeNode, key: int) -> TreeNode:
+        def successor(root: TreeNode) -> int:
+            # One step right and then always left
+            root = root.right
+            while root.left:
+                root = root.left
+            return root.val
+
+        def predecessor(root: TreeNode) -> int:
+            # One step left and then always right
+            root = root.left
+            while root.right:
+                root = root.right
+            return root.val
+
+        if not root:
+            return None
+        if key > root.val:
+            root.right = self.deleteNode(root.right, key)
+        elif key < root.val:
+            root.left = self.deleteNode(root.left, key)
+        else:
+            if not (root.left or root.right):
+                root = None
+            elif root.right:
+                root.val = successor(root)
+                root.right = self.deleteNode(root.right, root.val)
+            else:
+                root.val = predecessor(root)
+                root.left = self.deleteNode(root.left, root.val)
+        return root
+
+
 # 452 - Minimum Number of Arrows to Burst Balloons - MEDIUM
 class Solution:
     def findMinArrowShots(self, points: List[List[int]]) -> int:
@@ -863,6 +976,85 @@ class Solution:
                 l = 1
             d[c] = max(d[c], l)
         return sum(d.values())
+
+
+# 473 - Matchsticks to Square - MEDIUM
+class Solution:
+    # O(4 ** n) / O(n)
+    def makesquare(self, m: List[int]) -> bool:
+        if sum(m) % 4 != 0:
+            return False
+        t = sum(m) // 4
+        self.ans = False
+        m = sorted(m, reverse=True)
+
+        def dfs(a, b, c, d, i):
+            if self.ans or i == len(m) and a == b == c == d == t:
+                self.ans = True
+                return
+            if a + m[i] <= t:
+                dfs(a + m[i], b, c, d, i + 1)
+            if b + m[i] <= t:
+                dfs(a, b + m[i], c, d, i + 1)
+            if c + m[i] <= t:
+                dfs(a, b, c + m[i], d, i + 1)
+            if d + m[i] <= t:
+                dfs(a, b, c, d + m[i], i + 1)
+            return
+
+        dfs(0, 0, 0, 0, 0)
+        return self.ans
+
+    # O(4 ** n) / O(n)
+    def makesquare(self, m: List[int]) -> bool:
+        if sum(m) % 4:
+            return False
+        t = sum(m) // 4
+        m.sort(reverse=True)  # speed up, if not reverse, TLE
+        edges = [0] * 4
+
+        """
+        @functools.lru_cache(None)
+        failed in this case: [5,5,5,5,4,4,4,4,3,3,3,3]
+        the decorator seems to prevent subsequent computation results to modify previous results
+        however, the memorized search is originally intended to be used to compute constant results, but in the case of heavy computations.
+        """
+
+        def dfs(i) -> bool:
+            if i == len(m):
+                return True
+            for e in range(4):
+                if edges[e] + m[i] <= t:
+                    # speed up, why?
+                    # cuz if the former failed, the same value will fail again
+                    if e == 0 or edges[e] != edges[e - 1]:
+                        edges[e] += m[i]
+                        if dfs(i + 1):
+                            return True
+                        edges[e] -= m[i]
+            return False
+
+        return dfs(0)
+
+    # O(n * 2^n) / O(2^n), hard
+    def makesquare(self, m: List[int]) -> bool:
+        if sum(m) % 4 != 0:
+            return False
+        t = sum(m) // 4
+
+        @functools.lru_cache(None)
+        def dfs(state: int, cur: int):
+            if cur == t:
+                cur = 0
+                if state == (1 << len(m)) - 1:
+                    return True
+            for i in range(len(m)):
+                if not 1 << i & state and cur + m[i] <= t:
+                    if dfs(1 << i | state, cur + m[i]):
+                        return True
+            return False
+
+        return dfs(0, 0)
 
 
 # 479 - Largest Palindrome Product - HARD
