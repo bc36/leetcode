@@ -320,6 +320,15 @@ class Solution:
             i += 1
         return ans
 
+    def consecutiveNumbersSum(self, n: int) -> int:
+        ans = 0
+        end = n << 1
+        i = 1
+        while i * i <= end:
+            ans += (n - (i + 1) * i // 2) % i == 0
+            i += 1
+        return ans
+
     # N = (x + 1) + (x + 2) + ... + (x + k) = kx + k * (k + 1) / 2
     # 2 * N = k(2x + k + 1)
     # 'k' is odd or '2x + k + 1' is odd
