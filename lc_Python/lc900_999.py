@@ -275,6 +275,32 @@ class Solution:
         return left + right
 
 
+# 929 - Unique Email Addresses - EASY
+class Solution:
+    def numUniqueEmails(self, emails: List[str]) -> int:
+        s = set()
+        for e in emails:
+            if "+" in e:
+                plus = e.index("+")
+                at = e.index("@")
+            else:
+                at = plus = e.index("@")
+            a = "".join(e[:plus].split("."))
+            b = e[at:]
+            s.add(a + b)
+        return len(s)
+
+    def numUniqueEmails(self, emails: List[str]) -> int:
+        s = set()
+        for e in emails:
+            a = e.split("@")[0]
+            b = e.split("@")[1]
+            f = a.split("+")[0].replace(".", "")
+            email = f + "@" + b
+            s.add(email)
+        return len(s)
+
+
 # 931 - Minimum Falling Path Sum - MEDIUM
 class Solution:
     def minFallingPathSum(self, matrix: List[List[int]]) -> int:
