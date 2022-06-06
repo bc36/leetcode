@@ -190,13 +190,13 @@ class Solution:
     def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
         dic = {val: idx for idx, val in enumerate(inorder)}
 
-        def helper(pleft, ileft, iright) -> TreeNode:
+        def helper(p: int, ileft: int, iright: int) -> TreeNode:
             if ileft > iright:
                 return None
-            root = TreeNode(preorder[pleft])
-            idx = dic[preorder[pleft]]
-            root.left = helper(pleft + 1, ileft, idx - 1)
-            root.right = helper(pleft + 1 + idx - ileft, idx + 1, iright)
+            root = TreeNode(preorder[p])
+            idx = dic[preorder[p]]
+            root.left = helper(p + 1, ileft, idx - 1)
+            root.right = helper(p + idx - ileft + 1, idx + 1, iright)
             return root
 
         return helper(0, 0, len(inorder) - 1)
@@ -1717,7 +1717,7 @@ class Solution:
             ans += 1
         return ans
 
-    def reverseBits(self, n:int):
+    def reverseBits(self, n: int):
         ans = 0
         for _ in range(32):
             ans = (ans << 1) + (n & 1)
@@ -1726,7 +1726,7 @@ class Solution:
             n >>= 1
         return ans
 
-    def reverseBits(self, n:int):
+    def reverseBits(self, n: int):
         oribin = "{0:032b}".format(n)
         reversebin = oribin[::-1]
         return int(reversebin, 2)
