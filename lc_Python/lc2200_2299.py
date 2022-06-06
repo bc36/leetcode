@@ -2275,3 +2275,242 @@ class Solution:
             else:
                 ans.append(w)
         return " ".join(ans)
+
+
+# 2293 - Min Max Game - EASY
+class Solution:
+    def minMaxGame(self, nums: List[int]) -> int:
+        while len(nums) > 1:
+            new = []
+            for i in range(len(nums) // 2):
+                if i & 1:
+                    new.append(max(nums[2 * i], nums[2 * i + 1]))
+                else:
+                    new.append(min(nums[2 * i], nums[2 * i + 1]))
+            nums = new
+        return nums[0]
+
+
+# 2294 - Partition Array Such That Maximum Difference Is K - MEDIUM
+class Solution:
+    def partitionArray(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        ans = 1
+        p = nums[0]
+        for i in range(1, len(nums)):
+            if nums[i] - p > k:
+                ans += 1
+                p = nums[i]
+            else:
+                pass
+        return ans
+
+    def partitionArray(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        ans = 1
+        p = nums[0]
+        for n in nums:
+            if n - p > k:
+                ans += 1
+                p = n
+        return ans
+
+
+# 2295 - Replace Elements in an Array - MEDIUM
+class Solution:
+    def arrayChange(self, nums: List[int], operations: List[List[int]]) -> List[int]:
+        d = {v: i for i, v in enumerate(nums)}
+        for a, b in operations:
+            d[b] = d[a]
+            d[a] = -1
+        for k, v in d.items():
+            if v != -1:
+                nums[v] = k
+        return nums
+
+    def arrayChange(self, nums: List[int], operations: List[List[int]]) -> List[int]:
+        d = {v: i for i, v in enumerate(nums)}
+        for a, b in operations:
+            i = d[a]
+            nums[i] = b
+            d[b] = i
+            del d[a]
+        return nums
+
+    # the idea is similar to Disjoint Set(or Union-Find)
+    def arrayChange(self, nums: List[int], operations: List[List[int]]) -> List[int]:
+        m = {}
+        for a, b in reversed(operations):  # reverse!
+            m[a] = m.get(b, b)
+        return [m.get(n, n) for n in nums]
+
+
+# 2296 - Design a Text Editor - HARD
+class TextEditor:
+    # O(n ^ 2), O(n) for all operations
+    def __init__(self):
+        self.arr = ""
+        self.p = 0
+
+    def addText(self, text: str) -> None:
+        self.arr = self.arr[: self.p] + text + self.arr[self.p :]
+        self.p += len(text)
+        return
+
+    def deleteText(self, k: int) -> int:
+        if self.p >= k:
+            self.arr = self.arr[: self.p - k] + self.arr[self.p :]
+            self.p -= k
+            return k
+        else:
+            self.arr = self.arr[self.p :]
+            r = self.p
+            self.p = 0
+            return r
+
+    def cursorLeft(self, k: int) -> str:
+        if self.p >= k + 10:
+            self.p -= k
+            return self.arr[self.p - 10 : self.p]
+        elif self.p >= k:
+            self.p -= k
+            return self.arr[: self.p]
+        else:
+            self.p = 0
+            return ""
+
+    def cursorRight(self, k: int) -> str:
+        if self.p + k <= len(self.arr):
+            self.p += k
+        else:
+            self.p = len(self.arr)
+        if self.p >= 10:
+            return self.arr[self.p - 10 : self.p]
+        else:
+            return self.arr[: self.p]
+
+
+class TextEditor:
+    def __init__(self):
+        self.s = ""
+        self.cur = 0
+
+    def addText(self, text: str) -> None:
+        self.s = self.s[: self.cur] + text + self.s[self.cur :]
+        self.cur += len(text)
+        return
+
+    def deleteText(self, k: int) -> int:
+        new = max(0, self.cur - k)
+        r = k if self.cur - k >= 0 else self.cur
+        self.s = self.s[:new] + self.s[self.cur :]
+        self.cur = new
+        return r
+
+    def cursorLeft(self, k: int) -> str:
+        self.cur = max(0, self.cur - k)
+        start = max(0, self.cur - 10)
+        return self.s[start : self.cur]
+
+    def cursorRight(self, k: int) -> str:
+        self.cur = min(len(self.s), self.cur + k)
+        start = max(0, self.cur - 10)
+        return self.s[start : self.cur]
+
+
+# doubly linked list
+class DLLNode:
+    __slots__ = ("pre", "nxt", "ch")
+
+    def __init__(self, ch="", pre: "DLLNode" = None, nxt: "DLLNode" = None):
+        self.pre = pre
+        self.nxt = nxt
+        self.ch = ch
+
+    def insert(self, node: "DLLNode") -> "DLLNode":
+        node.pre = self
+        node.nxt = self.nxt
+        node.pre.nxt = node
+        node.nxt.pre = node
+        return node
+
+    def remove(self) -> None:
+        self.pre.nxt = self.nxt
+        self.nxt.pre = self.pre
+        return
+
+
+class TextEditor:
+    # O(n), O(n) for add, and O(k) for other operations
+    def __init__(self):
+        self.root = self.cur = DLLNode()
+        self.root.pre = self.root
+        self.root.nxt = self.root
+
+    def addText(self, text: str) -> None:
+        for ch in text:
+            self.cur = self.cur.insert(DLLNode(ch))
+        return
+
+    def deleteText(self, k: int) -> int:
+        k0 = k
+        while k and self.cur != self.root:
+            self.cur = self.cur.pre
+            self.cur.nxt.remove()
+            k -= 1
+        return k0 - k
+
+    def text(self) -> str:
+        s = []
+        k = 10
+        cur = self.cur
+        while k and cur != self.root:
+            s.append(cur.ch)
+            cur = cur.pre
+            k -= 1
+        return "".join(reversed(s))
+
+    def cursorLeft(self, k: int) -> str:
+        while k and self.cur != self.root:
+            self.cur = self.cur.pre
+            k -= 1
+        return self.text()
+
+    def cursorRight(self, k: int) -> str:
+        while k and self.cur.nxt != self.root:
+            self.cur = self.cur.nxt
+            k -= 1
+        return self.text()
+
+
+# 对顶栈
+# Always maintain the left part of string in left stack
+# and right part of the string in right stack which are divided by the cursor
+class TextEditor:
+    # O(n), O(n) for add, and O(k) for other operations
+    def __init__(self):
+        self.left = []
+        self.right = []
+
+    def addText(self, text: str) -> None:
+        self.left.extend(list(text))
+        return
+
+    def deleteText(self, k: int) -> int:
+        k0 = k
+        while k and self.left:
+            self.left.pop()
+            k -= 1
+        return k0 - k
+
+    def cursorLeft(self, k: int) -> str:
+        while k and self.left:
+            self.right.append(self.left.pop())
+            k -= 1
+        return "".join(self.left[-10:])
+
+    def cursorRight(self, k: int) -> str:
+        while k and self.right:
+            self.left.append(self.right.pop())
+            k -= 1
+        return "".join(self.left[-10:])

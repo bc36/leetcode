@@ -1034,3 +1034,11 @@ class Solution:
 
 # 739 / https://leetcode.cn/contest/weekly-contest-295/problems/minimum-obstacle-removal-to-reach-corner/
 # 0-1 BFS / Dijkstra
+
+"""
+AK, 313 / 676, 2022-06-04
+https://leetcode-cn.com/contest/weekly-contest-296/
+WA: T1(1)
+FT: 0:42:44
+T4: 1532 pass
+"""
