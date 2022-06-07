@@ -506,6 +506,16 @@ class Solution:
         return bfs(source, target) and bfs(target, source)
 
 
+# 1037 - Valid Boomerang - EASY
+class Solution:
+    def isBoomerang(self, p: List[List[int]]) -> bool:
+        x0, y0 = p[0]
+        x1, y1 = p[1]
+        x2, y2 = p[2]
+        # (y1 - y0) / (x1 - x0) != (y2 - y1) / (x2 - x1)
+        return (y1 - y0) * (x2 - x1) != (y2 - y1) * (x1 - x0)
+
+
 # 1041 - Robot Bounded In Circle - MEDIUM
 class Solution:
     def isRobotBounded(self, instructions: str) -> bool:

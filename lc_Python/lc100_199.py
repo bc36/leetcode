@@ -1098,7 +1098,7 @@ class LRUCache:
             self.cache.popitem(last=False)
 
 
-# Double linked list + Hashmap
+# Doubly linked list + Hashmap
 class ListNode:
     def __init__(self, key=0, value=0):
         self.key = key
