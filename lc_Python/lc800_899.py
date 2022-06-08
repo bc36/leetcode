@@ -1,5 +1,5 @@
+import collections, math, itertools, re, bisect
 from typing import List, Optional
-import collections, math, itertools, re
 
 
 class ListNode:
@@ -390,6 +390,33 @@ class Solution:
         return "".join("." if l == r else ("R" if l > r else "L") for l, r in records)
 
 
+# 841 - Keys and Rooms - MEDIUM
+class Solution:
+    # O(m + n) / O(n), m is the total number of keys
+    def canVisitAllRooms(self, rooms: List[List[int]]) -> bool:
+        can = [True] + [False] * (len(rooms) - 1)
+        dq = collections.deque([0])
+        while dq:
+            n = dq.popleft()
+            for x in rooms[n]:
+                if not can[x]:
+                    can[x] = True
+                    dq.append(x)
+        return all(can)
+
+    def canVisitAllRooms(self, rooms: List[List[int]]) -> bool:
+        def dfs(n: int):
+            for x in rooms[n]:
+                if not can[x]:
+                    can[x] = True
+                    dfs(x)
+            return
+
+        can = [True] + [False] * (len(rooms) - 1)
+        dfs(0)
+        return all(can)
+
+
 # 844 - Backspace String Compare - EASY
 class Solution:
     def backspaceCompare(self, s: str, t: str) -> bool:
@@ -649,8 +676,10 @@ class Solution:
                     h -= b // mid + 1
                 # or
                 # h -= (b + mid - 1) // mid
+
                 # or
                 # h -= (b - 1) / mid + 1
+
                 # equal to
                 # h -= math.ceil(b / mid)
             return h >= 0
@@ -665,17 +694,75 @@ class Solution:
         return lo
 
     def minEatingSpeed(self, piles: List[int], h: int) -> int:
-        lo, hi = 1, max(piles)
-        while lo < hi:
-            middle = (lo + hi) // 2
+        l = 1
+        r = max(piles)
+        while l < r:
+            m = (l + r) // 2
             need = 0
-            for pile in piles:
-                need += math.ceil(pile / middle)
+            for p in piles:
+                need += math.ceil(p / m)
             if need <= h:
-                hi = middle
+                r = m
             else:
-                lo = middle + 1
-        return hi
+                l = m + 1
+        return r
+
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        l = 0
+        r = max(piles)
+        while l < r:
+            m = (l + r) >> 1
+            t = 0
+            if m == 0:  # cuz l init as 0, can be omitted if l init as 1, see above
+                return 1
+            for p in piles:
+                t += (p + m - 1) // m  # trick
+            if t > h:
+                l = m + 1
+            else:
+                r = m
+        return l
+
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        return bisect.bisect_left(
+            range(max(piles)),
+            x=-h,
+            lo=1,
+            key=lambda x: -sum((p + x - 1) // x for p in piles),
+        )
+
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        return (
+            bisect.bisect_left(
+                range(1, max(piles)),
+                x=-h,
+                key=lambda x: -sum((p + x - 1) // x for p in piles),
+            )
+            + 1
+        )
+
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        return (
+            bisect.bisect_left(
+                range(1, max(piles)),
+                x=True,
+                key=lambda x: sum((p + x - 1) // x for p in piles) <= h,
+            )
+            + 1
+        )
+
+    # wrong answer, why?
+    # bisect_left seems to require sequence sorted in ascending order,
+    # at here True > False
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        return (
+            bisect.bisect_left(
+                range(1, max(piles)),
+                x=False,
+                key=lambda x: sum((p + x - 1) // x for p in piles) > h,
+            )
+            + 1
+        )
 
 
 # 876 - Middle of the Linked List - EASY

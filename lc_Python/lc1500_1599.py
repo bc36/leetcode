@@ -101,6 +101,20 @@ class Solution:
         return self.ans
 
 
+# 1557 - Minimum Number of Vertices to Reach All Nodes - MEDIUM
+class Solution:
+    # O(m + n) / O(n)
+    def findSmallestSetOfVertices(self, n: int, edges: List[List[int]]) -> List[int]:
+        d = [0] * n
+        for _, t in edges:
+            d[t] += 1
+        return [i for i, n in enumerate(d) if n == 0]
+
+    def findSmallestSetOfVertices(self, n: int, edges: List[List[int]]) -> List[int]:
+        s = set(y for _, y in edges)
+        return [i for i in range(n) if i not in s]
+
+
 # 1567 - Maximum Length of Subarray With Positive Product - MEDIUM
 class Solution:
     # dp

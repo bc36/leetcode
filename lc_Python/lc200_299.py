@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Deque
 import collections, random, heapq, math, bisect
 
 
@@ -1501,7 +1501,7 @@ class Codec:
                 dq.append(n.left)
                 dq.append(n.right)
             else:
-                ans.append("None")
+                ans.append("#")
         return ",".join(ans)
 
     def deserialize(self, data: str) -> TreeNode:
@@ -1513,11 +1513,11 @@ class Codec:
         i = 1
         while dq:
             x = dq.popleft()
-            if data[i] != "None":
+            if data[i] != "#":
                 x.left = TreeNode(int(data[i]))
                 dq.append(x.left)
             i += 1
-            if data[i] != "None":
+            if data[i] != "#":
                 x.right = TreeNode(int(data[i]))
                 dq.append(x.right)
             i += 1
@@ -1528,7 +1528,7 @@ class Codec:
     def serialize(self, root: TreeNode) -> str:
         ans = []
 
-        def dfs(node):
+        def dfs(node: TreeNode):
             if not node:
                 ans.append(None)
                 return
@@ -1541,7 +1541,7 @@ class Codec:
         return ",".join(str(i) for i in ans)
 
     def deserialize(self, data: str) -> TreeNode:
-        def dfs(dq):
+        def dfs(dq: Deque):
             cur = dq.popleft()
             if cur == "None":
                 return None
