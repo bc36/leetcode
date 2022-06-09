@@ -1,4 +1,4 @@
-import collections, bisect, functools, math, heapq, random
+import collections, bisect, functools, math, heapq, random, itertools
 from typing import List, Optional
 
 
@@ -446,7 +446,6 @@ class Solution:
 
 
 # 432 - All O`one Data Structure - HARD
-# TODO
 
 
 # 433 - Minimum Genetic Mutation - MEDIUM
@@ -908,6 +907,36 @@ class Solution:
         return root
 
 
+# 451 - Sort Characters By Frequency - MEDIUM
+class Solution:
+    # O(n + klogk) / O(n + k)
+    def frequencySort(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        return "".join(sorted(s, reverse=True, key=lambda x: (cnt.get(x), x)))
+
+    def frequencySort(self, s: str) -> str:
+        return "".join([c * t for (c, t) in collections.Counter(s).most_common()])
+
+    def frequencySort(self, s: str) -> str:
+        return "".join(
+            [
+                c * t
+                for c, t in sorted(collections.Counter(s).items(), key=lambda x: -x[1])
+            ]
+        )
+
+    def frequencySort(self, s: str) -> str:
+        return "".join(
+            [
+                c * t
+                for c, t in sorted(
+                    zip(collections.Counter(s).values(), collections.Counter(s).keys()),
+                    reverse=True,
+                )
+            ]
+        )
+
+
 # 452 - Minimum Number of Arrows to Burst Balloons - MEDIUM
 class Solution:
     def findMinArrowShots(self, points: List[List[int]]) -> int:
@@ -1221,3 +1250,49 @@ class Solution:
         # for i in range(len(nums1)):
         #     nums1[i] = dic.get(nums1[i], -1)
         # return nums1
+
+
+# 497 - Random Point in Non-overlapping Rectangles - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    # random.randint(x, y) == random.randrange(x, y + 1)
+    def __init__(self, rects: List[List[int]]):
+        self.rects = rects
+        self.area = [0]
+        for a, b, x, y in rects:
+            self.area.append(self.area[-1] + (x - a + 1) * (y - b + 1))
+
+    def pick(self) -> List[int]:
+        p = random.randrange(self.area[-1])
+        pos = bisect.bisect_right(self.area, p) - 1
+        a, b, _, y = self.rects[pos]
+        da, db = divmod(p - self.area[pos], y - b + 1)
+        return [a + da, b + db]
+
+
+class Solution:
+    def __init__(self, rects: List[List[int]]):
+        self.rects = rects
+        self.area = [0]
+        for a, b, x, y in rects:
+            self.area.append(self.area[-1] + (x - a + 1) * (y - b + 1))
+
+    def pick(self) -> List[int]:
+        p = random.randint(1, self.area[-1])
+        pos = bisect.bisect_left(self.area, p) - 1
+        a, b, x, y = self.rects[pos]
+        return [random.randint(a, x), random.randint(b, y)]
+
+
+class Solution:
+    def __init__(self, rects: List[List[int]]):
+        self.rects = rects
+        self.weights = []
+        for a, b, x, y in rects:
+            self.weights.append((x - a + 1) * (y - b + 1))
+
+    def pick(self) -> List[int]:
+        a, b, x, y = random.choices(self.rects, self.weights)[0]
+        c = random.randint(a, x)
+        d = random.randint(b, y)
+        return [c, d]
