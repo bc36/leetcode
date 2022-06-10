@@ -434,5 +434,5 @@ class Solution:
 
 
 # https://leetcode-cn.com/contest/biweekly-contest-79
-# 241 / https://leetcode.cn/contest/biweekly-contest-79/problems/booking-concert-tickets-in-groups/
+# 244 / https://leetcode.cn/contest/biweekly-contest-79/problems/booking-concert-tickets-in-groups/
 # 线段树, 二分
