@@ -436,3 +436,10 @@ class Solution:
 # https://leetcode-cn.com/contest/biweekly-contest-79
 # 244 / https://leetcode.cn/contest/biweekly-contest-79/problems/booking-concert-tickets-in-groups/
 # 线段树, 二分
+
+
+# https://leetcode-cn.com/contest/biweekly-contest-80
+# 1123 / https://leetcode.cn/contest/biweekly-contest-80/problems/match-substring-after-replacement/
+# 模拟, 思路错了
+
+# 1214 / https://leetcode.cn/contest/biweekly-contest-80/problems/count-subarrays-with-score-less-than-k/
