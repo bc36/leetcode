@@ -1296,3 +1296,46 @@ class Solution:
         c = random.randint(a, x)
         d = random.randint(b, y)
         return [c, d]
+
+
+# 498 - Diagonal Traverse - MEDIUM
+class Solution:
+    def findDiagonalOrder(self, mat: List[List[int]]) -> List[int]:
+        m = len(mat)
+        n = len(mat[0])
+        ans = []
+        i = j = 0
+        up = True
+        while i != m and j != n:
+            ans.append(mat[i][j])
+            if (i == 0 or j == n - 1) and up:
+                if i == 0 and j != n - 1:
+                    j += 1
+                elif j == n - 1:
+                    i += 1
+                up = False
+            elif (j == 0 or i == m - 1) and not up:
+                if j == 0 and i != m - 1:
+                    i += 1
+                elif i == m - 1:
+                    j += 1
+                up = True
+            else:
+                i -= 1 if up else -1
+                j += 1 if up else -1
+        return ans
+
+    def findDiagonalOrder(self, mat: List[List[int]]) -> List[int]:
+        m = len(mat)
+        n = len(mat[0])
+        ans = []
+        up = True
+        for i in range(m + n - 1):
+            if up:
+                for j in range(max(i - m + 1, 0), min(i + 1, n)):
+                    ans.append(mat[i - j][j])
+            else:
+                for j in range(max(i - n + 1, 0), min(i + 1, m)):
+                    ans.append(mat[j][i - j])
+            up = not up
+        return ans

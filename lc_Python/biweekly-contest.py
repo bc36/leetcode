@@ -417,14 +417,14 @@ class Solution:
 # https://leetcode-cn.com/contest/biweekly-contest-74/problems/minimum-white-tiles-after-covering-with-carpets/
 
 # https://leetcode-cn.com/contest/biweekly-contest-75/
-# 433 / https://leetcode-cn.com/contest/biweekly-contest-75/problems/sum-of-scores-of-built-strings/
+# 365 / https://leetcode-cn.com/contest/biweekly-contest-75/problems/sum-of-scores-of-built-strings/
 # z算法, 扩展kmp
 
 # https://leetcode-cn.com/contest/biweekly-contest-76/
-# 439 / https://leetcode-cn.com/contest/biweekly-contest-76/problems/maximum-score-of-a-node-sequence/
+# 320 / https://leetcode-cn.com/contest/biweekly-contest-76/problems/maximum-score-of-a-node-sequence/
 
 # https://leetcode-cn.com/contest/biweekly-contest-77
-# 285 / https://leetcode-cn.com/contest/biweekly-contest-77/problems/escape-the-spreading-fire/
+# 250 / https://leetcode-cn.com/contest/biweekly-contest-77/problems/escape-the-spreading-fire/
 
 
 # https://leetcode-cn.com/contest/biweekly-contest-78
@@ -442,4 +442,5 @@ class Solution:
 # 1123 / https://leetcode.cn/contest/biweekly-contest-80/problems/match-substring-after-replacement/
 # 模拟, 思路错了
 
-# 1214 / https://leetcode.cn/contest/biweekly-contest-80/problems/count-subarrays-with-score-less-than-k/
+# 1222 / https://leetcode.cn/contest/biweekly-contest-80/problems/count-subarrays-with-score-less-than-k/
+# 双指针, a[i] - a[j], amount of subarray: j - i + 1

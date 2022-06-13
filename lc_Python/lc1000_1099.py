@@ -556,6 +556,17 @@ class Solution:
         return "".join(ls[: end + 1])
 
 
+# 1051 - Height Checker - EASY
+class Solution:
+    def heightChecker(self, heights: List[int]) -> int:
+        exp = sorted(heights)
+        ans = 0
+        for i in range(len(heights)):
+            if heights[i] != exp[i]:
+                ans += 1
+        return ans
+
+
 # 1078 - Occurrences After Bigram - EASY
 class Solution:
     def findOcurrences(self, text: str, first: str, second: str) -> List[str]:

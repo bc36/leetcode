@@ -871,3 +871,36 @@ class Solution:
             if cnt[k] == 1:
                 ans.append(k)
         return ans
+
+
+# 890 - Find and Replace Pattern - MEDIUM
+class Solution:
+    def findAndReplacePattern(self, words: List[str], pattern: str) -> List[str]:
+        ans = []
+        for word in words:
+            m2p = {}
+            p2m = {}
+            f = True
+            for w, p in zip(word, pattern):
+                if w not in m2p and p not in p2m:
+                    m2p[w] = p
+                    p2m[p] = w
+                # elif w not in m2p or p not in p2m or m2p[w] != p or p2m[p] != w:
+                elif m2p.get(w, p) != p or p2m.get(p, w) != w:
+                    f = False
+                    break
+            if f:
+                ans.append(word)
+        return ans
+
+    def findAndReplacePattern(self, words: List[str], pattern: str) -> List[str]:
+        def match(word: str, pattern: str) -> bool:
+            m = {}
+            for x, y in zip(word, pattern):
+                if x not in m:
+                    m[x] = y
+                elif m[x] != y:
+                    return False
+            return True
+
+        return [w for w in words if match(w, pattern) and match(pattern, w)]
