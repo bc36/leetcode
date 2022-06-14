@@ -1017,7 +1017,7 @@ class Solution:
 # 2057 / https://leetcode-cn.com/contest/weekly-contest-292/problems/count-number-of-texts/
 # dfs, dp, python大数运算取模TLE / MLE
 
-# 928 / https://leetcode-cn.com/contest/weekly-contest-292/problems/check-if-there-is-a-valid-parentheses-string-path/
+# 884 / https://leetcode-cn.com/contest/weekly-contest-292/problems/check-if-there-is-a-valid-parentheses-string-path/
 # dfs, dp, bfs
 
 
@@ -1025,7 +1025,7 @@ class Solution:
 # 542 / https://leetcode.cn/contest/weekly-contest-293/problems/count-integers-in-intervals/
 
 # https://leetcode-cn.com/contest/weekly-contest-294/
-# 146 / https://leetcode.cn/contest/weekly-contest-294/problems/sum-of-total-strength-of-wizards/
+# 142 / https://leetcode.cn/contest/weekly-contest-294/problems/sum-of-total-strength-of-wizards/
 
 
 # https://leetcode-cn.com/contest/weekly-contest-295/
@@ -1042,3 +1042,9 @@ WA: T1(1)
 FT: 0:42:44
 T4: 1532 pass
 """
+
+# https://leetcode.cn/contest/weekly-contest-297
+# 1366 / https://leetcode.cn/contest/weekly-contest-297/problems/fair-distribution-of-cookies/
+# backtracking + pruning / 状压DP
+
+# 410 / https://leetcode.cn/contest/weekly-contest-297/problems/naming-a-company/

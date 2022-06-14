@@ -275,6 +275,32 @@ class Solution:
         return left + right
 
 
+# 926 - Flip String to Monotone Increasing - MEDIUM
+class Solution:
+    # O(n) / O(1)
+    def minFlipsMonoIncr(self, s: str) -> int:
+        dp0 = dp1 = 0
+        for c in s:
+            dp00, dp11 = dp0, min(dp0, dp1)
+            if c == "1":
+                dp00 += 1
+            else:
+                dp11 += 1
+            dp0, dp1 = dp00, dp11
+        return min(dp0, dp1)
+
+    # O(n) / O(n)
+    def minFlipsMonoIncr(self, s: str) -> int:
+        pre = [0]
+        # flip 1 in the left and 0 in the right
+        for x in s:
+            pre.append(pre[-1] + int(x))
+        # pre[j]: 1s in the left
+        # pre[-1] - pre[j]: 1s in the right
+        # len(s) - j - (pre[-1] - pre[j]): 0s in the right
+        return min(pre[j] + len(s) - j - (pre[-1] - pre[j]) for j in range(len(pre)))
+
+
 # 929 - Unique Email Addresses - EASY
 class Solution:
     def numUniqueEmails(self, emails: List[str]) -> int:
