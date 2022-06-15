@@ -35,7 +35,7 @@ Inorder Traversal of BST: ordered sequence
 """
 
 
-# 501. Find Mode in Binary Search Tree - EASY
+# 501 - Find Mode in Binary Search Tree - EASY
 class Solution:
     def findMode(self, root: TreeNode) -> List[int]:
         def inorderBST(root: TreeNode):
@@ -401,6 +401,13 @@ class Solution:
             if (k > 0 and i + k in cnt) or (k == 0 and cnt[i] > 1):
                 ans += 1
         return ans
+
+    def findPairs(self, nums: List[int], k: int) -> int:
+        if k == 0:
+            cnt = collections.Counter(nums)
+            return sum(True for v in cnt.values() if v >= 2)
+        s = set(nums)
+        return sum(True for v in set(nums) if v + k in s)
 
 
 # 537 - Complex Number Multiplication - MEDIUM
