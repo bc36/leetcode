@@ -1,4 +1,4 @@
-import bisect, collections, functools, math, itertools, heapq
+import bisect, collections, functools, math, itertools, heapq, string
 from typing import List, Optional
 
 # 2300 - Successful Pairs of Spells and Potions - MEDIUM
@@ -280,3 +280,134 @@ class Solution:
         ans = [-1]
         dfs(0)
         return ans[0]
+
+    # O(k * 3 ^ n) / O(2 ^ n), state compression dp
+    # f[i][j]: The minimum value of inequity of the in total 'i' subarray
+    #          when the in total 'i' subarray are assigned the set of cookies 'j'.
+    def distributeCookies(self, cookies: List[int], k: int) -> int:
+        n = len(cookies)
+        summ = [0] * (1 << n)
+        for i in range(1, 1 << n):
+            for j in range(n):
+                if i >> j & 1:
+                    summ[i] += cookies[j]
+
+        f = [[0] * (1 << n) for _ in range(k)]
+        f[0] = summ
+        for i in range(1, k):
+            for j in range(1 << n):
+                s = j
+                f[i][j] = 1e9
+                while s:
+                    # 'i' always comes from 'i-1' -> Scrolling array, save space
+                    # 'j' always comes from a number smaller than 'j' -> 01 knapsack -> reverse enumeration
+                    f[i][j] = min(f[i][j], max(f[i - 1][j ^ s], summ[s]))
+                    s = (s - 1) & j
+        return f[k - 1][(1 << n) - 1]
+
+    # optimize the first dimension of 'f'
+    def distributeCookies(self, cookies: List[int], k: int) -> int:
+        n = len(cookies)
+        summ = [0] * (1 << n)
+        for i, v in enumerate(cookies):
+            bit = 1 << i
+            for j in range(bit):
+                summ[bit | j] = summ[j] + v
+
+        f = summ.copy()
+        for _ in range(1, k):
+            for j in range((1 << n) - 1, 0, -1):
+                s = j
+                while s:
+                    f[j] = min(f[j], max(f[j ^ s], summ[s]))
+                    s = (s - 1) & j
+        return f[-1]
+
+    def distributeCookies(self, cookies: List[int], k: int) -> int:
+        @functools.lru_cache(None)
+        def fn(mask: int, k: int) -> int:
+            if mask == 0:
+                return 0
+            if k == 0:
+                return 1e9
+            ans = 1e9
+            orig = mask
+            while mask:
+                mask = orig & (mask - 1)  # choose another subset
+                s = sum(cookies[i] for i in range(n) if (orig ^ mask) & 1 << i)
+                ans = min(ans, max(s, fn(mask, k - 1)))
+            return ans
+
+        n = len(cookies)
+        return fn((1 << n) - 1, k)
+
+
+# 2306 - Naming a Company - HARD
+class Solution:
+    def distinctNames(self, ideas: List[str]) -> int:
+        group = collections.defaultdict(int)
+        for s in ideas:
+            group[s[1:]] |= 1 << (ord(s[0]) - ord("a"))
+        ans = 0
+        cnt = [[0] * 26 for _ in range(26)]
+        for mask in group.values():
+            for i in range(26):
+                if mask >> i & 1 == 0:
+                    for j in range(26):
+                        if mask >> j & 1:
+                            cnt[i][j] += 1
+                else:
+                    for j in range(26):
+                        if mask >> j & 1 == 0:
+                            ans += cnt[i][j]
+        return ans * 2
+
+    def distinctNames(self, ideas: List[str]) -> int:
+        group = collections.defaultdict(set)
+        for s in ideas:
+            group[s[0]].add(s[1:])
+        ans = 0
+        for a, b in itertools.combinations(group.values(), 2):
+            m = len(a & b)
+            ans += (len(a) - m) * (len(b) - m)
+        return ans * 2
+
+    def distinctNames(self, ideas: List[str]) -> int:
+        group = collections.defaultdict(set)
+        for s in ideas:
+            group[s[0]].add(s[1:])
+        ans = 0
+        for a, seta in group.items():
+            for b, setb in group.items():
+                if a >= b:
+                    continue
+                same = len(seta & setb)
+                ans += (len(seta) - same) * (len(setb) - same)
+        return ans * 2
+
+    def distinctNames(self, ideas: List[str]) -> int:
+        ss = [set() for _ in range(26)]
+        for x in ideas:
+            ss[ord(x[0]) - ord("a")].add(x[1:])
+        ans = 0
+        for i in range(26):
+            for j in range(i + 1, 26):
+                # setA - setB = setA.difference(setB)
+                ans += len(ss[i] - ss[j]) * len(ss[j] - ss[i])
+        return ans * 2
+
+    def distinctNames(self, ideas: List[str]) -> int:
+        ideas = set(ideas)
+        d = collections.Counter()
+        for s in ideas:
+            for c in string.ascii_lowercase:
+                if c + s[1:] not in ideas:
+                    d[c, s[0]] += 1
+        ans = 0
+        for s in ideas:
+            cnt = 0
+            for c in string.ascii_lowercase:
+                if c + s[1:] not in ideas:
+                    cnt += d[s[0], c]
+            ans += cnt
+        return ans
