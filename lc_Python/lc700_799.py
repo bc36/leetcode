@@ -172,6 +172,73 @@ class Solution:
         return i == n - 1
 
 
+# 719 - Find K-th Smallest Pair Distance - HARD
+class Solution:
+    def smallestDistancePair(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        l = 0
+        r = nums[-1] - nums[0]
+        while l < r:
+            m = (l + r) >> 1
+            cnt = 0
+            # Enumerate right endpoints
+            i = 0
+            for j in range(len(nums)):
+                while nums[j] - nums[i] > m:
+                    i += 1
+                cnt += j - i
+
+            # # Enumerate left endpoints
+            # j = 0
+            # for i in range(len(nums)):
+            #     while j < len(nums) and nums[j] - nums[i] <= m:
+            #         j += 1
+            #     cnt += j - i - 1
+
+            if cnt >= k:
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    def smallestDistancePair(self, nums: List[int], k: int) -> int:
+        def check(dist: int) -> bool:
+            cnt = i = 0
+            for j in range(len(nums)):
+                while nums[j] - nums[i] > dist:
+                    i += 1
+                cnt += j - i
+            return cnt >= k
+
+        nums.sort()
+        return bisect.bisect_left(range(nums[-1] - nums[0]), True, key=check)
+
+    def smallestDistancePair(self, nums: List[int], k: int) -> int:
+        def check(dist: int) -> int:
+            cnt = i = 0
+            for j in range(len(nums)):
+                while nums[j] - nums[i] > dist:
+                    i += 1
+                cnt += j - i
+            return cnt
+
+        nums.sort()
+        return bisect.bisect_left(range(nums[-1] - nums[0]), k, key=check)
+
+    def smallestDistancePair(self, nums: List[int], k: int) -> int:
+        def count(dist: int) -> int:
+            cnt = 0
+            for j, v in enumerate(nums):
+                i = bisect.bisect_left(nums, v - dist, 0, len(nums))
+                # i = bisect.bisect_left(nums, v - dist, 0, j)
+                # i = bisect_left(nums, v - mid) # cuz 'v - mid <= v' at insertion, so it won't happen 'i = len(nums)'
+                cnt += j - i
+            return cnt
+
+        nums.sort()
+        return bisect.bisect_left(range(nums[-1] - nums[0]), k, key=count)
+
+
 # 720 - Longest Word in Dictionary - EASY
 class Solution:
     # O(n + n * 30), brute force
