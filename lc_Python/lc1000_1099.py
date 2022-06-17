@@ -602,6 +602,41 @@ class Solution:
         return self.days[w]
 
 
+# 1089 - Duplicate Zeros - EASY
+class Solution:
+    def duplicateZeros(self, arr: List[int]) -> None:
+        """
+        Do not return anything, modify arr in-place instead.
+        """
+        n = len(arr)
+        i = 0
+        while i < n:
+            if arr[i] == 0:
+                arr.insert(i, 0)
+                arr.pop()
+                i += 2
+            else:
+                i += 1
+        return
+
+    def duplicateZeros(self, arr: List[int]) -> None:
+        l = len(arr)
+        dq = collections.deque(arr)
+        ans = []
+        while dq and l > 0:
+            ans.append(dq.popleft())
+            if ans[-1] == 0 and l > 0:
+                ans.append(0)
+                l -= 1
+            l -= 1
+        for i in range(len(arr)):
+            arr[i] = ans[i]
+        return
+
+    def duplicateZeros(self, arr: List[int]) -> None:
+        arr[:] = [x for v in arr for x in ([v] if v else [0, 0])][: len(arr)]
+
+
 # 1091 - Shortest Path in Binary Matrix - MEDIUM
 class Solution:
     # TLE, not suitable for 'dfs', be careful with 'visited2'(cycle)
