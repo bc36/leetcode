@@ -100,6 +100,22 @@ class Solution:
         return num == 6 or num == 28 or num == 496 or num == 8128 or num == 33550336
 
 
+# 508 - Most Frequent Subtree Sum - MEDIUM
+class Solution:
+    def findFrequentTreeSum(self, root: TreeNode) -> List[int]:
+        def post(root: TreeNode) -> int:
+            if not root:
+                return 0
+            t = root.val + post(root.left) + post(root.right)
+            d[t] += 1
+            return t
+
+        d = collections.defaultdict(int)
+        post(root)
+        m = max(d.values())
+        return [k for k, v in d.items() if v == m]
+
+
 # 509 - Fibonacci Number - EASY
 class Solution:
     def fib(self, n: int) -> int:
