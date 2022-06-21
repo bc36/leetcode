@@ -1,6 +1,11 @@
 import bisect, functools, collections, itertools, math
 from typing import List
 
+# 1108 - Defanging an IP Address - EASY
+class Solution:
+    def defangIPaddr(self, address: str) -> str:
+        return address.replace(".", "[.]")
+
 
 # 1137 - N-th Tribonacci Number - EASY
 class Solution:

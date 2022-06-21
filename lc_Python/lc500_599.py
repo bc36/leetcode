@@ -128,6 +128,39 @@ class Solution:
         return ans
 
 
+# 513 - Find Bottom Left Tree Value - MEDIUM
+class Solution:
+    def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
+        dq = collections.deque([root])
+        ans = 2**31
+        while dq:
+            ans = dq[0].val
+            for _ in range(len(dq)):
+                n = dq.popleft()
+                if n.left:
+                    dq.append(n.left)
+                if n.right:
+                    dq.append(n.right)
+        return ans
+
+    def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
+        def dfs(root: TreeNode, h: int):
+            if not root:
+                return
+            h += 1
+            dfs(root.left, h)
+            dfs(root.right, h)
+            if h > height[0]:
+                ans[0] = root.val
+                height[0] = h
+            return
+
+        ans = [2**32]
+        height = [0]
+        dfs(root, 0)
+        return ans[0]
+
+
 # 516 - Longest Palindromic Subsequence - MEDIUM
 class Solution:
     def longestPalindromeSubseq(self, s: str) -> int:
