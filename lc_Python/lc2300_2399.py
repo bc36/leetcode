@@ -411,3 +411,137 @@ class Solution:
                     cnt += d[s[0], c]
             ans += cnt
         return ans
+
+
+# 2309. Greatest English Letter in Upper and Lower Case - EASY
+class Solution:
+    # O(n) / O(n)
+    def greatestLetter(self, s: str) -> str:
+        s = set(s)
+        for i in range(26, -1, -1):
+            if chr(ord("a") + i) in s and chr(ord("A") + i) in s:
+                return chr(ord("A") + i)
+        return ""
+
+    # O(n) / O(1)
+    def greatestLetter(self, s: str) -> str:
+        mask: int = 0
+        for c in s:
+            mask |= 1 << (ord(c) - ord("A"))
+        mask &= mask >> (ord("a") - ord("A"))
+        if mask == 0:
+            return ""
+        l = mask.bit_length()
+        return chr(ord("A") + l - 1)
+
+
+# 2310 - Sum of Numbers With Units Digit K - MEDIUM
+class Solution:
+    # O(1) / O(1)
+    def minimumNumbers(self, num: int, k: int) -> int:
+        if num == 0:
+            return 0
+        for x in range(1, 11):
+            if x * k % 10 == num % 10 and x * k <= num:
+                return x
+        return -1
+
+    def minimumNumbers(self, num: int, k: int) -> int:
+        if num == 0:
+            return 0
+        for t in range(1, 11):
+            if t * k % 10 == num % 10:
+                if t * k <= num:
+                    return t
+                else:
+                    return -1
+        return -1
+
+
+# 2311 - Longest Binary Subsequence Less Than or Equal to K - MEDIUM
+class Solution:
+    # O(n) / O(1)
+    def longestSubsequence(self, s: str, k: int) -> int:
+        z = 0
+        for i, c in enumerate(s):
+            if int(s[i:], 2) <= k:
+                return z + len(s) - i
+            if c == "0":
+                z += 1
+        return -1
+
+    def longestSubsequence(self, s: str, k: int) -> int:
+        bits = ""
+        for i in range(len(s) - 1, -1, -1):
+            bits = s[i] + bits
+            if int(bits, 2) > k:
+                return s[:i].count("0") + len(bits) - 1
+        return len(s)
+
+    def longestSubsequence(self, s: str, k: int) -> int:
+        n = len(s)
+        m = k.bit_length()
+        if n < m:
+            return n
+        can = m - 1
+        if int(s[n - m :], 2) <= k:
+            can = m
+        return can + s.count("0", 0, n - m)
+
+    def longestSubsequence(self, s: str, k: int) -> int:
+        ans = s.count("0")
+        x = 0
+        p = 1
+        for c in s[::-1]:
+            x += int(c) * p
+            p *= 2
+            if x > k:
+                break
+            if c == "1":
+                ans += 1
+        return ans
+
+    # O(n ^ 2) / O(n), dp[i] means the minimum value of subsequence with length i
+    def longestSubsequence(self, s: str, k: int) -> int:
+        dp = [0]
+        for v in map(int, s):
+            if dp[-1] * 2 + v <= k:
+                dp.append(dp[-1] * 2 + v)
+            for i in range(len(dp) - 1, 0, -1):
+                dp[i] = min(dp[i], dp[i - 1] * 2 + v)
+        return len(dp) - 1
+
+
+# 2312 - Selling Pieces of Wood - HARD
+class Solution:
+    # O(m * n * (m + n)) / O(m * n)
+    def sellingWood(self, m: int, n: int, prices: List[List[int]]) -> int:
+        d = collections.defaultdict(dict)
+        for h, w, p in prices:
+            d[h][w] = p
+
+        @functools.lru_cache(None)
+        def fn(h: int, w: int) -> int:
+            p = d[h].get(w, 0)
+            for i in range(1, h // 2 + 1):
+                p = max(p, fn(i, w) + fn(h - i, w))
+            for i in range(1, w // 2 + 1):
+                p = max(p, fn(h, i) + fn(h, w - i))
+            return p
+
+        return fn(m, n)
+
+    # f[i][j], the maximum amount that can be earned by cutting a block of size (i, j)
+    def sellingWood(self, m: int, n: int, prices: List[List[int]]) -> int:
+        p = [[0] * (n + 1) for _ in range(m + 1)]
+        for h, w, pr in prices:
+            p[h][w] = pr
+        f = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                f[i][j] = p[i][j]
+                for k in range(1, i // 2 + 1):
+                    f[i][j] = max(f[i][j], f[i - k][j] + f[k][j])
+                for k in range(1, j // 2 + 1):
+                    f[i][j] = max(f[i][j], f[i][j - k] + f[i][k])
+        return f[m][n]

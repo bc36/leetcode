@@ -1049,3 +1049,11 @@ T4: 1532 pass
 
 # 410 / https://leetcode.cn/contest/weekly-contest-297/problems/naming-a-company/
 # 分组 + 枚举首字母
+
+
+# https://leetcode.cn/contest/weekly-contest-298
+# 1826 / https://leetcode.cn/contest/weekly-contest-298/problems/longest-binary-subsequence-less-than-or-equal-to-k/
+# 贪心
+
+# 395 / https://leetcode.cn/contest/weekly-contest-298/problems/selling-pieces-of-wood/
+# dp
