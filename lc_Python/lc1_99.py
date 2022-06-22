@@ -16,6 +16,16 @@ bit operation
 gc.disable()
 
 
+def solution():
+    @functools.lru_cache(None)
+    def fn():
+        pass
+
+    # fn.cache_info()
+    fn.cache_clear()
+    return
+
+
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -696,31 +706,54 @@ class Solution:
         except:
             return -1
 
-    # KMP
+    # KMP, TODO
 
 
 # 30 - Substring with Concatenation of All Words - HARD
 class Solution:
-    # O((n - k * t) * (k + k * t)), k = len(words), t = word_size
+    # O((n - w * l) * (w * l * l)), w = len(words), l = word_size
     def findSubstring(self, s: str, words: List[str]) -> List[int]:
-        if not s or not words:
-            return []
         cnt = collections.Counter(words)
-        t, k = len(words[0]), len(words)
-        total = t * k
+        l = len(words[0])
+        w = len(words)
         ans = []
-        for i in range(len(s) - total + 1):  # O(n)
-            seen = dict(cnt)  # new a dict, O(k)
+        for i in range(len(s) - l * w + 1):  # O(n)
+            cp = dict(cnt)  # new a dict, O(w)
+            # cp = cnt.copy()
             used = 0
-            for j in range(i, i + total, t):  # O(k)
-                w = s[j : j + t]  # O(t)
-                if w in seen and seen[w] > 0:
-                    seen[w] -= 1
+            for j in range(i, i + l * w, l):  # O(wl)
+                word = s[j : j + l]  # O(l)
+                if word in cp and cp[word] > 0:
+                    cp[word] -= 1
                     used += 1
                 else:
                     break
-            if used == k:
+            if used == w:
                 ans.append(i)
+        return ans
+
+    # O(n * l), w = len(words), l = word_size
+    def findSubstring(self, s: str, words: List[str]) -> List[int]:
+        wl = len(words[0])
+        w = len(words)
+        cnt = collections.Counter(words)
+        ans = []
+        for i in range(wl):  # O(l)
+            used = 0
+            l = r = i
+            cur_cnt = collections.Counter()
+            while r + wl <= len(s):  # O(n // l)
+                word = s[r : r + wl]  # O(l)
+                r += wl
+                cur_cnt[word] += 1
+                used += 1
+                while cur_cnt[word] > cnt[word]:
+                    left_w = s[l : l + wl]  # O(l)
+                    l += wl
+                    cur_cnt[left_w] -= 1
+                    used -= 1
+                if used == w:
+                    ans.append(l)
         return ans
 
 
