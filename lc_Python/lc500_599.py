@@ -161,6 +161,42 @@ class Solution:
         return ans[0]
 
 
+# 515 - Find Largest Value in Each Tree Row - MEDIUM
+class Solution:
+    def largestValues(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        ans = []
+        dq = collections.deque([root])
+        while dq:
+            m = -math.inf
+            for _ in range(len(dq)):
+                n = dq.popleft()
+                m = n.val if n.val > m else m
+                if n.left:
+                    dq.append(n.left)
+                if n.right:
+                    dq.append(n.right)
+            ans.append(m)
+        return ans
+
+    def largestValues(self, root: Optional[TreeNode]) -> List[int]:
+        def dfs(root: TreeNode, h: int):
+            if not root:
+                return
+            if len(ans) == h:
+                ans.append(root.val)
+            else:
+                ans[h] = root.val if root.val > ans[h] else ans[h]
+            dfs(root.left, h + 1)
+            dfs(root.right, h + 1)
+            return
+
+        ans = []
+        dfs(root, 0)
+        return ans
+
+
 # 516 - Longest Palindromic Subsequence - MEDIUM
 class Solution:
     def longestPalindromeSubseq(self, s: str) -> int:
