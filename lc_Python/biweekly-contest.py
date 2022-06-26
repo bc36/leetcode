@@ -444,3 +444,8 @@ class Solution:
 
 # 1222 / https://leetcode.cn/contest/biweekly-contest-80/problems/count-subarrays-with-score-less-than-k/
 # 双指针, a[i] - a[j], amount of subarray: j - i + 1
+
+
+# https://leetcode.cn/contest/biweekly-contest-81
+# 455 / https://leetcode.cn/contest/biweekly-contest-81/problems/number-of-distinct-roll-sequences/
+# dp
