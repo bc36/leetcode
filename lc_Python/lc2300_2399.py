@@ -1,4 +1,4 @@
-import bisect, collections, functools, math, itertools, heapq, string
+import bisect, collections, functools, math, itertools, heapq, string, operator
 from typing import List, Optional
 
 # 2300 - Successful Pairs of Spells and Potions - MEDIUM
@@ -545,3 +545,169 @@ class Solution:
                 for k in range(1, j // 2 + 1):
                     f[i][j] = max(f[i][j], f[i][j - k] + f[i][k])
         return f[m][n]
+
+
+# 2315 - Count Asterisks - EASY
+class Solution:
+    def countAsterisks(self, s: str) -> int:
+        f = 2
+        ans = 0
+        for c in s:
+            if c == "|":
+                f = 3 - f
+            elif c == "*" and f == 2:
+                ans += 1
+        return ans
+
+    def countAsterisks(self, s: str) -> int:
+        f = 0
+        ans = 0
+        for c in s:
+            if c == "|":
+                f += 1
+            elif c == "*" and not f & 1:
+                ans += 1
+        return ans
+
+    def countAsterisks(self, s: str) -> int:
+        return sum(t.count("*") for t in s.split("|")[::2])
+
+
+# 2316 - Count Unreachable Pairs of Nodes in an Undirected Graph - MEDIUM
+class Solution:
+    # BFS
+    def countPairs(self, n: int, edges: List[List[int]]) -> int:
+        ans = n * (n - 1) // 2
+        vis = set()
+        g = collections.defaultdict(set)
+        for a, b in edges:
+            g[a].add(b)
+            g[b].add(a)
+
+        def bfs(start: int) -> int:
+            cnt = 1
+            dq = collections.deque([start])
+            vis.add(start)
+            while dq:
+                n = dq.popleft()
+                for x in g[n]:
+                    if x not in vis:
+                        vis.add(x)
+                        cnt += 1
+                        dq.append(x)
+            return cnt
+
+        for i in range(n):
+            if i not in vis:
+                group = bfs(i)
+                ans -= group * (group - 1) // 2
+        return ans
+
+    # DFS
+    def countPairs(self, n: int, edges: List[List[int]]) -> int:
+        vis = [False] * n
+        g = [[] for _ in range(n)]
+        for a, b in edges:
+            g[a].append(b)
+            g[b].append(a)
+
+        def dfs(i: int):
+            nonlocal group
+            vis[i] = True
+            group += 1
+            for j in g[i]:
+                if not vis[j]:
+                    dfs(j)
+            return
+
+        ans = pre = group = 0
+        for i in range(n):
+            if not vis[i]:
+                group = 0
+                dfs(i)
+                ans += group * pre
+                pre += group
+        return ans
+
+    # DSU, disjoint set union
+    def countPairs(self, n: int, edges: List[List[int]]) -> int:
+        dsu = [i for i in range(n)]
+        size = [1] * n
+
+        def find(x: int):
+            if dsu[x] != x:
+                dsu[x] = find(dsu[x])
+            return dsu[x]
+
+        for x, y in edges:
+            a = find(dsu[x])
+            b = find(dsu[y])
+            if a != b:
+                size[b] += size[a]
+                dsu[a] = b
+        ans = n * (n - 1) // 2
+        for i in range(n):
+            if dsu[i] == i:
+                ans -= size[i] * (size[i] - 1) // 2
+        return ans
+
+
+# 2317 - Maximum XOR After Operations - MEDIUM
+class Solution:
+    def maximumXOR(self, nums: List[int]) -> int:
+        ans = 0
+        for n in nums:
+            ans = ans | n
+        return ans
+
+    def maximumXOR(self, nums: List[int]) -> int:
+        return functools.reduce(operator.or_, nums)
+
+
+# 2318 - Number of Distinct Roll Sequences - HARD
+@functools.lru_cache(None)
+def dfs(n: int, l1: int, l2: int) -> int:
+    """
+    leetcode will new many Solution() objects, if write dfs() in the obj, the new func won't use the previous lru_cache()
+    """
+
+    if n == 0:
+        return 1
+    ans = 0
+    for cur in range(1, 7):
+        if cur != l1 and cur != l2 and math.gcd(cur, l1) == 1:
+            ans += dfs(n - 1, cur, l1)
+    return ans % (10**9 + 7)
+
+
+class Solution:
+    # O(n * 6 ^ 3) / O(n * 6 ^ 2)
+    def distinctSequences(self, n: int) -> int:
+        return dfs(n, 7, 7)  # greatest common divisor of 7 and each number is 1
+
+
+class Solution:
+    def distinctSequences(self, n: int) -> int:
+        def gcd(a: int, b: int):
+            return gcd(b, a % b) if b else a
+
+        if n == 1:
+            return 6
+        f = [[[0] * 6 for _ in range(6)] for _ in range(n + 1)]
+        mod = 10**9 + 7
+        for i in range(6):
+            for j in range(6):
+                if i != j and gcd(i + 1, j + 1) == 1:
+                    f[2][i][j] = 1
+        for i in range(3, n + 1):
+            for j in range(6):
+                for k in range(6):
+                    if j != k and gcd(j + 1, k + 1) == 1:
+                        for kk in range(6):
+                            if kk != j:
+                                f[i][j][k] = (f[i][j][k] + f[i-1][k][kk]) % mod
+        ans = 0
+        for i in range(6):
+            for j in range(6):
+                ans = (ans + f[n][i][j]) % mod
+        return ans
