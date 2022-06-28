@@ -330,6 +330,55 @@ class Solution:
         return max(len(a), len(b))
 
 
+# 522 - Longest Uncommon Subsequence II - MEDIUM
+class Solution:
+    # O(n ^ 2 * l) / O(1), l is the average length of each str
+    def findLUSlength(self, strs: List[str]) -> int:
+        def is_subseq(s1: str, s2: str) -> bool:
+            i = j = 0
+            while i < len(s1) and j < len(s2):
+                if s1[i] == s2[j]:
+                    i += 1
+                j += 1
+            return i == len(s1)
+
+        ans = -1
+        for i, s1 in enumerate(strs):
+            ok = True
+            for j, s2 in enumerate(strs):
+                if i != j and is_subseq(s1, s2):
+                    ok = False
+                    break
+            if ok:
+                ans = max(ans, len(s1))
+        return ans
+
+    def findLUSlength(self, strs: List[str]) -> int:
+        def is_subseq(s1: str, s2: str) -> bool:
+            # len(s1) <= len(s2)
+            i = j = 0
+            while i < len(s1) and j < len(s2):
+                if s1[i] == s2[j]:
+                    i += 1
+                j += 1
+            return i == len(s1)
+
+        cnt = collections.Counter(strs)
+        pairs = sorted(cnt.items(), key=lambda x: len(x[0]), reverse=True)
+        vis = set()
+        for k, v in pairs:
+            if v == 1:
+                ok = True
+                for x in vis:
+                    if is_subseq(k, x):
+                        ok = False
+                if ok:
+                    return len(k)
+            else:
+                vis.add(k)
+        return -1
+
+
 # 523 - Continuous Subarray Sum - MEDIUM
 class Solution:
     # 'cur' calculate the prefix sum remainder of input array 'nums'
