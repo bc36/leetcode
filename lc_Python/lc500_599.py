@@ -544,6 +544,34 @@ class Solution:
         return sum(True for v in set(nums) if v + k in s)
 
 
+# 535 - Encode and Decode TinyURL - MEDIUM
+class Codec:
+    def __init__(self):
+        self.db = {}
+        self.id = 0
+
+    def encode(self, longUrl: str) -> str:
+        self.id += 1
+        self.db[self.id] = longUrl
+        return "http://tinyurl.com/" + str(self.id)
+
+    def decode(self, shortUrl: str) -> str:
+        i = shortUrl.rfind("/")
+        id = int(shortUrl[i + 1 :])
+        return self.db[id]
+
+
+class Codec:
+    def encode(self, longUrl: str) -> str:
+        return longUrl
+
+    def decode(self, shortUrl: str) -> str:
+        return shortUrl
+
+
+# Your Codec object will be instantiated and called as such:
+# codec = Codec()
+# codec.decode(codec.encode(url))
 # 537 - Complex Number Multiplication - MEDIUM
 class Solution:
     def complexNumberMultiply(self, num1: str, num2: str) -> str:
