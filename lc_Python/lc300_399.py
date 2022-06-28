@@ -732,6 +732,38 @@ class Solution:
         return dp(amount) if dp(amount) != float("inf") else -1
 
 
+# 324 - Wiggle Sort II - MEDIUM
+class Solution:
+    def wiggleSort(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        arr = sorted(nums)
+        left = arr[: (len(nums) + 1) // 2]
+        right = arr[(len(nums) + 1) // 2 :]
+        i = 0
+        while i < len(nums):
+            if left:
+                nums[i] = left.pop()
+                i += 1
+            if right:
+                nums[i] = right.pop()
+                i += 1
+        return
+
+    def wiggleSort(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        nums.sort()
+        n = len(nums)
+        nums[::2], nums[1::2] = (
+            nums[: (n + 1) // 2][::-1],
+            nums[(n + 1) // 2 :][::-1],
+        )
+        return
+
+
 # 328 - Odd Even Linked List - MEDIUM
 # O(n) / O(n)
 class Solution:
