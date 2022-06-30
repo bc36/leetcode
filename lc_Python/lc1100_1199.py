@@ -94,6 +94,29 @@ class Solution:
         return sum(m[: month - 1]) + day
 
 
+# 1175 - Prime Arrangements - EASY
+class Solution:
+    def numPrimeArrangements(self, n: int) -> int:
+        def isPrime(n: int) -> int:
+            if n == 1:
+                return 0
+            for i in range(2, int(math.sqrt(n)) + 1):
+                if n % i == 0:
+                    return 0
+            return 1
+
+        def factorial(n: int) -> int:
+            res = 1
+            for i in range(1, n + 1):
+                res *= i
+                res %= mod
+            return res
+
+        mod = 10**9 + 7
+        primes = sum(isPrime(i) for i in range(1, n + 1))
+        return factorial(primes) * factorial(n - primes) % mod
+
+
 # 1178 - Number of Valid Words for Each Puzzle - HARD
 class Solution:
     # TLE
