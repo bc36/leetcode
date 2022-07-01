@@ -1057,3 +1057,9 @@ T4: 1532 pass
 
 # 395 / https://leetcode.cn/contest/weekly-contest-298/problems/selling-pieces-of-wood/
 # dp
+
+
+# https://leetcode.cn/contest/weekly-contest-299
+# 1986 / https://leetcode.cn/contest/weekly-contest-299/problems/maximum-score-of-spliced-array/
+
+# 314 / https://leetcode.cn/contest/weekly-contest-299/problems/minimum-score-after-removals-on-a-tree/
