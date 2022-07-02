@@ -705,9 +705,80 @@ class Solution:
                     if j != k and gcd(j + 1, k + 1) == 1:
                         for kk in range(6):
                             if kk != j:
-                                f[i][j][k] = (f[i][j][k] + f[i-1][k][kk]) % mod
+                                f[i][j][k] = (f[i][j][k] + f[i - 1][k][kk]) % mod
         ans = 0
         for i in range(6):
             for j in range(6):
                 ans = (ans + f[n][i][j]) % mod
+        return ans
+
+
+# 2319 - Check if Matrix Is X-Matrix - EASY
+class Solution:
+    def checkXMatrix(self, grid: List[List[int]]) -> bool:
+        n = len(grid)
+        for i in range(n):
+            for j in range(n):
+                if i == j or i + j == n - 1:
+                    if grid[i][j] == 0:
+                        return False
+                else:
+                    if grid[i][j] != 0:
+                        return False
+        return True
+
+
+# 2320 - Count Number of Ways to Place Houses - MEDIUM
+class Solution:
+    def countHousePlacements(self, n: int) -> int:
+        ans = 0
+        f = [[0] * 4 for _ in range(n)]
+        f[0][0] = 1  # no left or right
+        f[0][1] = 1  # left
+        f[0][2] = 1  # right
+        f[0][3] = 1  # left and right
+        mod = 10**9 + 7
+        for i in range(1, n):
+            f[i][0] = (f[i - 1][1] + f[i - 1][2] + f[i - 1][3] + f[i - 1][0]) % mod
+            f[i][1] = (f[i - 1][0] + f[i - 1][2]) % mod
+            f[i][2] = (f[i - 1][0] + f[i - 1][1]) % mod
+            f[i][3] = (f[i - 1][0]) % mod
+        ans = sum(f[-1])
+        return ans % mod
+
+    def countHousePlacements(self, n: int) -> int:
+        mod = 10**9 + 7
+        f = [1, 2]
+        for _ in range(n):
+            f.append((f[-1] + f[-2]) % mod)
+        return f[n] ** 2 % mod
+
+
+# 2321 - Maximum Score Of Spliced Array - HARD
+class Solution:
+    def maximumsSplicedArray(self, nums1: List[int], nums2: List[int]) -> int:
+        def maxSubArray(diff: List[int]):
+            cur = 0
+            r = 0
+            for d in diff:
+                cur += d
+                if cur < 0:
+                    cur = 0
+                r = max(r, cur)
+            return r
+
+        def maxSubArray2(diff: List[int]) -> int:
+            pre = 0
+            r = diff[0]
+            for d in diff:
+                pre = max(pre + d, d)
+                r = max(r, pre)
+            return r
+
+        diff1 = []
+        diff2 = []
+        for n1, n2 in zip(nums1, nums2):
+            diff1.append(n1 - n2)
+            diff2.append(n2 - n1)
+        ans = max(sum(nums1) + maxSubArray(diff2), sum(nums2) + maxSubArray(diff1))
         return ans
