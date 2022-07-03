@@ -238,3 +238,12 @@ class Solution:
                 ans += p[j + 1] - p[i]
                 l += 2
         return ans
+
+
+# 1592 - Rearrange Spaces Between Words - EASY
+class Solution:
+    def reorderSpaces(self, text: str) -> str:
+        sp = text.count(" ")
+        w = text.split()
+        cnt = sp // (len(w) - 1) if len(w) > 1 else 0
+        return (" " * cnt).join(w) + " " * (sp - cnt * (len(w) - 1))
