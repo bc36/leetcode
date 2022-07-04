@@ -1,5 +1,5 @@
 from typing import List
-import collections, itertools
+import collections, itertools, math
 
 
 class ListNode:
@@ -31,6 +31,19 @@ class Solution:
         a.sort()
         diff = min(a[i] - a[i - 1] for i in range(1, len(a)))
         return [[a[i - 1], a[i]] for i in range(1, len(a)) if a[i] - a[i - 1] == diff]
+
+    def minimumAbsDifference(self, arr: List[int]) -> List[List[int]]:
+        arr.append(math.inf)
+        arr.sort()
+        ans = []
+        d = math.inf
+        for i in range(1, len(arr)):
+            if arr[i] - arr[i - 1] < d:
+                ans = [[arr[i - 1], arr[i]]]
+                d = arr[i] - arr[i - 1]
+            elif arr[i] - arr[i - 1] == d:
+                ans.append([arr[i - 1], arr[i]])
+        return ans
 
 
 # 1202 - Smallest String With Swaps - MEDIUM
