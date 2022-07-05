@@ -1036,8 +1036,9 @@ class Solution:
 # 0-1 BFS / Dijkstra
 
 """
-AK, 313 / 676, 2022-06-04
+AK, 2022-06-04
 https://leetcode-cn.com/contest/weekly-contest-296/
+Rank: 313 / 676
 WA: T1(1)
 FT: 0:42:44
 T4: 1532 pass
@@ -1063,3 +1064,11 @@ T4: 1532 pass
 # 1986 / https://leetcode.cn/contest/weekly-contest-299/problems/maximum-score-of-spliced-array/
 
 # 314 / https://leetcode.cn/contest/weekly-contest-299/problems/minimum-score-after-removals-on-a-tree/
+
+
+# https://leetcode.cn/contest/weekly-contest-300
+# 1724 / https://leetcode.cn/contest/weekly-contest-300/problems/number-of-people-aware-of-a-secret/
+# dp
+
+# 938 / https://leetcode.cn/contest/weekly-contest-300/problems/number-of-increasing-paths-in-a-grid/
+# dp / dfs

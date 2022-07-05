@@ -1,6 +1,13 @@
 import bisect, collections, functools, math, itertools, heapq, string, operator
 from typing import List, Optional
 
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
 # 2300 - Successful Pairs of Spells and Potions - MEDIUM
 class Solution:
     def successfulPairs(self, sp: List[int], p: List[int], success: int) -> List[int]:
@@ -782,3 +789,204 @@ class Solution:
             diff2.append(n2 - n1)
         ans = max(sum(nums1) + maxSubArray(diff2), sum(nums2) + maxSubArray(diff1))
         return ans
+
+
+# 2325 - Decode the Message - EASY
+class Solution:
+    def decodeMessage(self, key: str, message: str) -> str:
+        d = dict()
+        i = 0
+        for c in key:
+            if c != " " and c not in d:
+                d[c] = chr(ord("a") + i)
+                i += 1
+            if i == 26:
+                break
+        ans = ""
+        for c in message:
+            if c == " ":
+                ans += c
+            else:
+                ans += d[c]
+        return ans
+
+    def decodeMessage(self, key: str, message: str) -> str:
+        # d = {" ": " "}
+        d = dict()
+        i = 0
+        for c in key:
+            if c != " " and c not in d:
+                d[c] = string.ascii_lowercase[i]
+                i += 1
+            if i == 26:
+                break
+        return "".join(d[c] if c != " " else " " for c in message)
+
+
+# 2326 - Spiral Matrix IV - MEDIUM
+class Solution:
+    def spiralMatrix(self, m: int, n: int, head: Optional[ListNode]) -> List[List[int]]:
+        g = [[-1] * n for _ in range(m)]
+        d = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        r = c = dd = 0
+        while head:
+            g[r][c] = head.val
+            dr, dc = d[dd]
+            if (
+                r + dr < 0
+                or r + dr >= m
+                or c + dc < 0
+                or c + dc >= n
+                or g[r + dr][c + dc] != -1
+            ):
+                dd = (dd + 1) % 4
+                dr, dc = d[dd]
+            r += dr
+            c += dc
+            head = head.next
+        return g
+
+
+# 2327 - Number of People Aware of a Secret - MEDIUM
+class Solution:
+    # O(n ^ 2) / O(n)
+    def peopleAwareOfSecret(self, n: int, delay: int, forget: int) -> int:
+        # number of 'new' peple who know secret on day i
+        f = [0] * (n + 1)
+        f[1] = 1
+        mod = 10**9 + 7
+        for i in range(2, n + 1):
+            # for j in range(max(i - forget + 1, 0), i - delay + 1):
+            for j in range(i - forget + 1, i - delay + 1):
+                if 0 <= j:
+                    f[i] = (f[i] + f[j]) % mod
+        return sum(f[-forget:]) % mod
+
+    def peopleAwareOfSecret(self, n: int, delay: int, forget: int) -> int:
+        new = [0] * (n + 1)
+        new[1] = 1
+        fgt = [0] * (n + 1)
+        mod = 10**9 + 7
+        ans = 0
+        for i in range(1, n + 1):
+            for j in range(i + delay, i + forget):
+                if j < n + 1:
+                    new[j] = (new[i] + new[j]) % mod
+            if i + forget < n + 1:
+                fgt[i + forget] = (fgt[i + forget] + new[i]) % mod
+            ans = (ans + new[i] - fgt[i]) % mod
+        return ans
+
+    def peopleAwareOfSecret(self, n: int, delay: int, forget: int) -> int:
+        # 0: cannot share secret / 1: can, on day i
+        dp = [[0, 0] for _ in range(n + 1)]
+        dp[1][1] = 1
+        mod = 10**9 + 7
+        for i in range(1, n + 1):
+            for j in range(1, min(i + delay, n + 1)):
+                dp[j][0] = (dp[j][0] + dp[i][1]) % mod
+            for j in range(i + delay, min(i + forget, n + 1)):
+                dp[j][1] = (dp[j][1] + dp[i][1]) % mod
+        return (dp[n][0] + dp[n][1]) % mod
+
+    # optimize dp[n][0]
+    def peopleAwareOfSecret(self, n: int, delay: int, forget: int) -> int:
+        # 0: cannot share secret / 1: can, on day i
+        dp = [0] * (n + 1)
+        dp[1] = 1
+        cnt0 = 0  # dp[n][0]
+        mod = 10**9 + 7
+        for i in range(1, n + 1):
+            if i + delay >= n + 1:
+                cnt0 = (cnt0 + dp[i]) % mod
+            for j in range(i + delay, min(i + forget, n + 1)):
+                dp[j] = (dp[j] + dp[i]) % mod
+        return (cnt0 + dp[n]) % mod
+
+    def peopleAwareOfSecret(self, n: int, delay: int, forget: int) -> int:
+        # people who kept secret for j days on day i
+        f = [[0] * (n + 1) for _ in range(n + 1)]
+        mod = 10**9 + 7
+        for i in range(1, n + 1):
+            f[1][i] = 1
+        for i in range(2, n + 1):
+            for j in range(1, forget + 1):
+                if j == 1:
+                    f[i][j] = (f[i - 1][forget - 1] - f[i - 1][delay - 1]) % mod
+                else:
+                    f[i][j] = (f[i - 1][j - 1] - f[i - 1][j - 2]) % mod
+                f[i][j] = (f[i][j] + f[i][j - 1]) % mod
+        return (f[n][forget] + mod) % mod
+
+    # O(n) / O(n), optimize with prefix sum
+    def peopleAwareOfSecret(self, n: int, delay: int, forget: int) -> int:
+        # number of 'new' peple who know secret on day i
+        dp = 1
+        p = [0] * (n + 2)  # prefix sum
+        p[2] = 1
+        mod = 10**9 + 7
+        for i in range(2, n + 1):
+            dp = p[max(i - delay + 1, 0)] - p[max(i - forget + 1, 0)]
+            p[i + 1] = (p[i] + dp) % mod
+        return (p[i + 1] - p[max(i - forget + 1, 0)] + mod) % mod
+
+
+# 2328 - Number of Increasing Paths in a Grid - HARD
+class Solution:
+    # O(mn) / O(mn)
+    def countPaths(self, grid: List[List[int]]) -> int:
+        @functools.lru_cache(None)
+        def dfs(x: int, y: int) -> int:
+            cur = 1
+            for nx, ny in [x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]:
+                # It doesn't matter if (x, y) is the start or the end
+                # Both can be accepted, just thinking from a different perspective
+                # grid[x][y] > grid[nx][ny] or grid[x][y] < grid[nx][ny]
+                if 0 <= nx < m and 0 <= ny < n and grid[x][y] < grid[nx][ny]:
+                    cur += dfs(nx, ny)
+            return cur % mod
+
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+        return sum(dfs(i, j) for i in range(m) for j in range(n)) % mod
+
+    def countPaths(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+        dp = [[1 for _ in range(n)] for j in range(m)]
+        pair = []
+        # state update require all elements to be sorted
+        for i in range(m):
+            for j in range(n):
+                pair.append([grid[i][j], i, j])
+        pair.sort()
+        for i in range(m * n):
+            v, x, y = pair[i]
+            for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
+                # why below is not work?
+                # if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] > v:
+
+                if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] < v:
+                    dp[x][y] += dp[nx][ny]
+            dp[x][y] %= mod
+        return sum(sum(r) for r in dp) % mod
+
+    def countPaths(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+        dp = [[1 for _ in range(n)] for j in range(m)]
+        pair = []
+        for i in range(m):
+            for j in range(n):
+                pair.append([grid[i][j], i, j])
+        pair.sort()
+        while pair:
+            v, x, y = pair.pop()
+            for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
+                if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] > v:
+                    dp[x][y] += dp[nx][ny]
+            dp[x][y] %= mod
+        return sum(sum(r) for r in dp) % mod
