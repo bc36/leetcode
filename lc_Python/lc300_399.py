@@ -765,8 +765,8 @@ class Solution:
 
 
 # 328 - Odd Even Linked List - MEDIUM
-# O(n) / O(n)
 class Solution:
+    # O(n) / O(n)
     def oddEvenList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         num = 1
         odd, even = ListNode(-1), ListNode(-1)
@@ -783,9 +783,7 @@ class Solution:
         odd.next = cpeven.next
         return cpodd.next
 
-
-# O(1) / O(n)
-class Solution:
+    # O(1) / O(n)
     def oddEvenList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         if not head:
             return head
@@ -798,6 +796,91 @@ class Solution:
             even = even.next
         odd.next = evenHead
         return head
+
+
+# 329 - Longest Increasing Path in a Matrix - HARD
+class Solution:
+    # O(mn) / O(mn)
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            t = 1
+            for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                # if 0 <= x < m and 0 <= y < n and matrix[x][y] > matrix[i][j]:  # works too, decreasing order
+                if 0 <= x < m and 0 <= y < n and matrix[x][y] < matrix[i][j]:
+                    t = max(t, dfs(x, y) + 1)
+            return t
+
+        m = len(matrix)
+        n = len(matrix[0])
+        return max(dfs(i, j) for i in range(m) for j in range(n))
+
+    # O(mn * logmn) / O(mn)
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        m = len(matrix)
+        n = len(matrix[0])
+        g = [[1 for _ in range(n)] for j in range(m)]
+        pair = []
+        for i in range(m):
+            for j in range(n):
+                pair.append([matrix[i][j], i, j])
+        pair.sort()
+        for i in range(m * n):
+            v, x, y = pair[i]
+            for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
+                if 0 <= nx < m and 0 <= ny < n and matrix[nx][ny] > v:
+                    g[nx][ny] = max(g[nx][ny], g[x][y] + 1)
+        return max(max(r) for r in g)
+
+    # O(mn) / O(mn), topological sort
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        m = len(matrix)
+        n = len(matrix[0])
+        dp = [[1 for _ in range(n)] for _ in range(m)]
+        d = [[0 for _ in range(n)] for _ in range(m)]  # in degree
+        dq = collections.deque()
+        for i in range(m):
+            for j in range(n):
+                for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                    if 0 <= x < m and 0 <= y < n and matrix[x][y] < matrix[i][j]:
+                        d[i][j] += 1
+                if d[i][j] == 0:
+                    dq.append((i, j))
+        while dq:
+            for _ in range(len(dq)):
+                i, j = dq.popleft()
+                for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                    if 0 <= x < m and 0 <= y < n and matrix[x][y] > matrix[i][j]:
+                        dp[x][y] = max(dp[x][y], dp[i][j] + 1)
+                        d[x][y] -= 1
+                        if d[x][y] == 0:
+                            dq.append((x, y))
+        return max(max(r) for r in dp)
+
+    # optimize 'dp'
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        m = len(matrix)
+        n = len(matrix[0])
+        d = [[0 for _ in range(n)] for _ in range(m)]  # in degree
+        dq = collections.deque()
+        for i in range(m):
+            for j in range(n):
+                for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                    if 0 <= x < m and 0 <= y < n and matrix[x][y] < matrix[i][j]:
+                        d[i][j] += 1
+                if d[i][j] == 0:
+                    dq.append((i, j))
+        ans = 0
+        while dq:
+            ans += 1
+            for _ in range(len(dq)):
+                i, j = dq.popleft()
+                for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                    if 0 <= x < m and 0 <= y < n and matrix[x][y] > matrix[i][j]:
+                        d[x][y] -= 1
+                        if d[x][y] == 0:
+                            dq.append((x, y))
+        return ans
 
 
 # 334 - Increasing Triplet Subsequence - MEDIUM

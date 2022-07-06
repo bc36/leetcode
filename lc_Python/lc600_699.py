@@ -88,6 +88,42 @@ class Solution:
         return len(pq)
 
 
+# 648 - Replace Words - MEDIUM
+class Solution:
+    # O(sdw + dlogd) / O(s + logd), w = len(each word in d)
+    def replaceWords(self, dictionary: List[str], sentence: str) -> str:
+        sentence = sentence.split()
+        dictionary.sort()  # ori: catt, cat -> sorted: cat, catt
+        for i, s in enumerate(sentence):
+            for d in dictionary:
+                if s.startswith(d):
+                    sentence[i] = d
+                    break
+        return " ".join(sentence)
+
+    # O(dw + sw) / O(dw + s), w = len(each word in s)
+    def replaceWords(self, dictionary: List[str], sentence: str) -> str:
+        trie = dict()
+        for w in dictionary:
+            r = trie
+            for c in w:
+                if c not in r:
+                    r[c] = {}
+                r = r[c]
+            r["#"] = 3  # ending flag
+        sentence = sentence.split()
+        for i, w in enumerate(sentence):
+            r = trie
+            for j, c in enumerate(w):
+                if "#" in r:
+                    sentence[i] = w[:j]
+                    break
+                if c not in r:
+                    break
+                r = r[c]
+        return " ".join(sentence)
+
+
 # 653 - Two Sum IV - Input is a BST - EASY
 class Solution:
     def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
