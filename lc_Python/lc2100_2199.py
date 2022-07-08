@@ -84,27 +84,79 @@ class Solution:
         return ans
 
 
+# 2119 - A Number After a Double Reversal - EASY
+class Solution:
+    def isSameAfterReversals(self, num: int) -> bool:
+        n = int(str(num)[::-1])
+        n = int(str(n)[::-1])
+        return n == num
+
+    def isSameAfterReversals(self, num: int) -> bool:
+        if num != 0 and num % 10 == 0:
+            return False
+        return True
+        # return num == 0 or num % 10 != 0
+
+
+# 2120 - Execution of All Suffix Instructions Staying in a Grid - MEDIUM
+class Solution:
+    def executeInstructions(self, n: int, startPos: List[int], s: str) -> List[int]:
+        ans = []
+        d = {"R": (0, 1), "L": (0, -1), "U": (-1, 0), "D": (1, 0)}
+        for i in range(len(s)):
+            x, y = startPos
+            j = i
+            while j < len(s):
+                dx, dy = d[s[j]]
+                x += dx
+                y += dy
+                if not 0 <= x < n or not 0 <= y < n:
+                    break
+                j += 1
+            ans.append(j - i)
+        return ans
+
+    def executeInstructions(self, n: int, startPos: List[int], s: str) -> List[int]:
+        ans = []
+        d = {"R": (0, 1), "L": (0, -1), "U": (-1, 0), "D": (1, 0)}
+        for i in range(len(s)):
+            x, y = startPos
+            cnt = 0
+            for j in range(i, len(s)):
+                dx, dy = d[s[j]]
+                x += dx
+                y += dy
+                if not 0 <= x < n or not 0 <= y < n:
+                    break
+                cnt += 1
+            ans.append(cnt)
+        return ans
+
+
 # 2121 - Intervals Between Identical Elements - MEDIUM
 class Solution:
     # O(n) / O(n), prefix sum + suffix sum
     def getDistances(self, arr: List[int]) -> List[int]:
         ans = [0] * len(arr)
         p = collections.defaultdict(int)
-        for i in range(len(arr)):
-            if arr[i] in p:
-                v, x, cnt = p[arr[i]]
-                p[arr[i]] = (cnt * (i - x) + v, i, cnt + 1)
+        for i, v in enumerate(arr):
+            if v in p:
+                summ, x, cnt = p[v]
+                p[v] = (cnt * (i - x) + summ, i, cnt + 1)
             else:
-                p[arr[i]] = (0, i, 1)
-            ans[i] += p[arr[i]][0]
+                p[v] = (0, i, 1)
+            ans[i] += p[v][0]
         s = collections.defaultdict(int)
-        for i in range(len(arr) - 1, -1, -1):
-            if arr[i] in s:
-                v, x, cnt = s[arr[i]]
-                s[arr[i]] = (cnt * (x - i) + v, i, cnt + 1)
+        n = len(arr) - 1
+        # for i, v in zip(reversed(range(len(arr))), reversed(arr)):
+        for i, v in enumerate(arr[::-1]):
+            i = n - i
+            if v in s:
+                summ, x, cnt = s[v]
+                s[v] = (cnt * (x - i) + summ, i, cnt + 1)
             else:
-                s[arr[i]] = (0, i, 1)
-            ans[i] += s[arr[i]][0]
+                s[v] = (0, i, 1)
+            ans[i] += s[v][0]
         return ans
 
     def getDistances(self, arr: List[int]) -> List[int]:
@@ -113,12 +165,132 @@ class Solution:
             d[arr[i]].append(i)
         ans = [0] * len(arr)
         for v in d.values():
-            p = 0
+            pre = 0
             s = sum(v)
             for i in range(len(v)):
-                ans[v[i]] = v[i] * i - p + (s - p) - v[i] * (len(v) - i)
-                p += v[i]
+                # left: v[i] * i - pre
+                # right: (s - pre) - v[i] * (len(v) - i)
+                ans[v[i]] = v[i] * i - pre + (s - pre) - v[i] * (len(v) - i)
+                pre += v[i]
         return ans
+
+    def getDistances(self, arr: List[int]) -> List[int]:
+        d = collections.defaultdict(list)
+        for i, v in enumerate(arr):
+            d[v].append(i)
+        ans = [0] * len(arr)
+        for v in d.values():
+            sub = sum(v)
+            pre = 0
+            cnt = len(v)
+            for i in v:
+                ans[i] = sub - i * cnt - pre
+                cnt -= 2
+                sub -= i
+                pre += i
+        return ans
+
+    def getDistances(self, arr: List[int]) -> List[int]:
+        d = collections.defaultdict(list)  # total_abs, pre_idx, pre, sub
+        for i, v in enumerate(arr):
+            if len(d[v]) == 0:
+                d[v] = [0, i, 0, 1]
+            else:
+                d[v][0] += i - d[v][1]
+                d[v][3] += 1
+        ans = []
+        for i, v in enumerate(arr):
+            x = d[v][0] + (i - d[v][1]) * (d[v][2] - d[v][3])
+            ans.append(x)
+            d[v][0] = x
+            d[v][1] = i
+            d[v][2] += 1
+            d[v][3] -= 1
+        return ans
+
+    def getDistances(self, arr: List[int]) -> List[int]:
+        group = collections.defaultdict(list)
+        for i, v in enumerate(arr):
+            group[v].append(i)
+        ans = [0] * len(arr)
+        for g in group.values():
+            summ = sum(i - g[0] for i in g)
+            ans[g[0]] = summ
+            for i in range(1, len(g)):
+                summ += i * (g[i] - g[i - 1]) - (len(g) - i) * (g[i] - g[i - 1])
+                ans[g[i]] = summ
+        return ans
+
+
+# 2122 - Recover the Original Array - HARD
+class Solution:
+    # O(n ^ 2) / O(n), two pointers
+    def recoverArray(self, nums: List[int]) -> List[int]:
+        nums.sort()
+        n = len(nums)
+        for i in range(1, n):
+            if nums[i] == nums[i - 1]:  # skip same k cuz same num
+                continue
+            d = nums[i] - nums[0]
+            if d & 1:
+                continue
+            k = d // 2
+            vis = [False] * n
+            vis[i] = True
+            ans = [nums[0] + k]
+            l = 1
+            r = i + 1
+            while r < n:
+                while vis[l]:  # skip the elements seen in 'higher'
+                    l += 1
+                while r < n and nums[r] - nums[l] < 2 * k:
+                    r += 1
+                if r == n or nums[r] - nums[l] > 2 * k:
+                    break
+                vis[r] = True
+                ans.append((nums[l] + nums[r]) // 2)
+                l += 1
+                r += 1
+            if len(ans) == n // 2:
+                return ans
+
+    # hashmap
+    def recoverArray(self, nums: List[int]) -> List[int]:
+        nums.sort()
+        for i in range(1, len(nums)):
+            if (nums[i] - nums[0]) % 2 == 1 or nums[i] == nums[i - 1]:
+                continue
+            k = (nums[i] - nums[0]) // 2
+            cnt = collections.Counter(nums)
+            f = True
+            ans = []
+            for v in nums:
+                if cnt[v] == 0:
+                    continue
+                if cnt[v + k * 2] == 0:
+                    f = False
+                    break
+                cnt[v] -= 1
+                cnt[v + k * 2] -= 1
+                ans.append(v + k)
+            if f:
+                return ans
+
+    # delay delete, require array sorted, hashmap is more useful
+    def recoverArray(self, nums: List[int]) -> List[int]:
+        nums.sort()
+        for n in nums:
+            d = n - nums[0]
+            if d and d % 2 == 0:
+                dq = collections.deque()
+                ans = []
+                for n in nums:
+                    if dq and n == dq[0]:
+                        ans.append(dq.popleft() - d // 2)
+                    else:
+                        dq.append(n + d)
+                if not dq:
+                    return ans
 
 
 # 2151 - Maximum Good People Based on Statements - HARD
