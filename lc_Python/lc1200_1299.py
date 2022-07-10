@@ -233,13 +233,18 @@ class Solution:
                 odd += 1
         return min(odd, even)
 
-
-class Solution:
     def minCostToMoveChips(self, position: List[int]) -> int:
         cost = [0, 0]
         for chip in position:
             cost[chip & 1] += 1
         return min(cost)
+
+    def minCostToMoveChips(self, position: List[int]) -> int:
+        odd = sum(1 for v in position if v & 1)
+        even = len(position) - odd
+        if odd > even:
+            return even
+        return odd
 
 
 # 1218 - Longest Arithmetic Subsequence of Given Difference - MEDIUM
