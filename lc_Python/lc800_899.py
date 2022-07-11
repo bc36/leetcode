@@ -1,4 +1,4 @@
-import collections, math, itertools, re, bisect
+import collections, math, itertools, re, bisect, functools
 from typing import List, Optional
 
 
@@ -662,6 +662,43 @@ class Solution:
                 c += 1 if c > 0 else 0
             n >>= 1
         return ans
+
+
+# 873 - Length of Longest Fibonacci Subsequence - MEDIUM
+class Solution:
+    def lenLongestFibSubseq(self, arr: List[int]) -> int:
+        s = set(arr)
+        dp = {}
+        for i in range(2, len(arr)):
+            vi = arr[i]
+            for j in range(i - 1, 0, -1):
+                vj = arr[j]
+                vk = vi - vj
+                if vk >= vj:
+                    break
+                if vk in s:
+                    dp[(vj, vi)] = dp.get((vk, vj), 2) + 1
+        if dp:
+            return max(dp.values())
+        return 0
+
+    def lenLongestFibSubseq(self, arr: List[int]) -> int:
+        def dfs(i, j):
+            if memo[i][j] != 0:
+                return memo[i][j]
+            v = arr[i] + arr[j]
+            if v in m:
+                memo[i][j] = dfs(j, m[v]) + 1
+                return memo[i][j]
+            else:
+                memo[i][j] = 2
+                return 2
+
+        m = {v: i for i, v in enumerate(arr)}
+        n = len(arr)
+        memo = [[0] * n for _ in range(n)]
+        ans = max(dfs(i, j) for i in range(len(arr)) for j in range(i + 1, len(arr)))
+        return 0 if ans == 2 else ans
 
 
 # 875 - Koko Eating Bananas - MEDIUM
