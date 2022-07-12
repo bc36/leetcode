@@ -432,6 +432,26 @@ class Solution:
         return "".join(arr)
 
 
+# 1252 - Cells with Odd Values in a Matrix - EASY
+class Solution:
+    def oddCells(self, m: int, n: int, indices: List[List[int]]) -> int:
+        f = [[0] * n for _ in range(m)]
+        for r, c in indices:
+            for i in range(n):
+                f[r][i] += 1
+            for i in range(m):
+                f[i][c] += 1
+        return sum(v & 1 for r in f for v in r)
+
+    def oddCells(self, m: int, n: int, indices: List[List[int]]) -> int:
+        rows = [0] * m
+        cols = [0] * n
+        for r, c in indices:
+            rows[r] += 1
+            cols[c] += 1
+        return sum((r + c) % 2 for r in rows for c in cols)
+
+
 # 1281 - Subtract the Product and Sum of Digits of an Integer - EASY
 class Solution:
     def subtractProductAndSum(self, n: int) -> int:
