@@ -2,6 +2,13 @@ import bisect, collections, functools, math, itertools, heapq, string, operator
 from typing import List, Optional
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -990,3 +997,299 @@ class Solution:
                     dp[x][y] += dp[nx][ny]
             dp[x][y] %= mod
         return sum(sum(r) for r in dp) % mod
+
+
+# 2331 - Evaluate Boolean Binary Tree - EASY
+class Solution:
+    def evaluateTree(self, root: Optional[TreeNode]) -> bool:
+        if root.val == 2:
+            return self.evaluateTree(root.left) or self.evaluateTree(root.right)
+        if root.val == 3:
+            return self.evaluateTree(root.left) and self.evaluateTree(root.right)
+        return root.val == 1
+
+
+# 2332 - The Latest Time to Catch a Bus - MEDIUM
+class Solution:
+    # O(nlogn + mlogm) / O(1)
+    def latestTimeCatchTheBus(
+        self, buses: List[int], passengers: List[int], capacity: int
+    ) -> int:
+        buses.sort()
+        passengers.sort()
+        j = 0
+        for v in buses:
+            c = capacity
+            while j < len(passengers) and c and passengers[j] <= v:
+                j += 1
+                c -= 1
+        j -= 1
+        ans = buses[-1] if c else passengers[j]
+        while j > -1 and passengers[j] == ans:
+            j -= 1
+            ans -= 1
+        return ans
+
+    def latestTimeCatchTheBus(
+        self, buses: List[int], p: List[int], capacity: int
+    ) -> int:
+        buses.sort()
+        p.sort()
+        s = set(p)
+        ans = cnt = j = 0
+        for i in range(len(buses)):
+            while cnt < capacity and j < len(p) and p[j] <= buses[i]:
+                if p[j] == p[0] or p[j - 1] != p[j] - 1:
+                    ans = p[j] - 1
+                j += 1
+                cnt += 1
+            if cnt < capacity and buses[i] not in s:
+                ans = buses[i]
+            cnt = 0
+        return ans
+
+    def latestTimeCatchTheBus(
+        self, buses: List[int], passengers: List[int], capacity: int
+    ) -> int:
+        s = set(passengers)
+        p = collections.deque(sorted(passengers))
+        ans = 1
+        for t in sorted(buses):
+            c = capacity
+            while c and p and p[0] <= t:
+                ans = p.popleft()
+                c -= 1
+            if c:
+                ans = t
+        while ans in s:
+            ans -= 1
+        return ans
+
+
+# 2333 - Minimum Sum of Squared Difference - MEDIUM
+class Solution:
+    def minSumSquareDiff(
+        self, nums1: List[int], nums2: List[int], k1: int, k2: int
+    ) -> int:
+        d = collections.defaultdict(int)
+        for a, b in zip(nums1, nums2):
+            d[abs(a - b)] += 1
+        k = k1 + k2
+        i = max(d.keys())
+        while i > 0 and k > 0:
+            change = min(k, d[i])
+            d[i - 1] += change
+            k -= change
+            d[i] -= change
+            i -= 1
+        return sum(k * k * v for k, v in d.items())
+
+    def minSumSquareDiff(
+        self, nums1: List[int], nums2: List[int], k1: int, k2: int
+    ) -> int:
+        ans = 0
+        k = k1 + k2
+        diff = []
+        for a, b in zip(nums1, nums2):
+            d = abs(a - b)
+            diff.append(d)
+            ans += d * d
+        if sum(diff) <= k:
+            return 0
+        diff.append(0)
+        diff.sort(reverse=True)
+        for i, v in enumerate(diff):
+            ans -= v * v
+            j = i + 1
+            c = j * (v - diff[j])
+            if c < k:
+                k -= c
+                continue
+            v -= k // j
+            return ans + k % j * (v - 1) * (v - 1) + (j - k % j) * v * v
+
+    def minSumSquareDiff(
+        self, nums1: List[int], nums2: List[int], k1: int, k2: int
+    ) -> int:
+        diff = sorted(abs(a - b) for a, b in zip(nums1, nums2) if a != b)
+        k = k1 + k2
+        sub = sum(diff)
+        if sub <= k:
+            return 0
+        for i, v in enumerate(diff):
+            # whether all remaining elements of diff can be reduced to v
+            if sub - (len(diff) - i) * v <= k:
+                k -= sub - (len(diff) - i) * v
+                # all remaining elements be reduced to v-m, k elements to v-m-1
+                m = k // (len(diff) - i)
+                k %= len(diff) - i
+                break
+            sub -= v
+        diff = diff[:i] + [v - m - 1] * k + [v - m] * (len(diff) - i - k)
+        return sum([d * d for d in diff])
+
+
+# 2335 - Minimum Amount of Time to Fill Cups - EASY
+class Solution:
+    def fillCups(self, amount: List[int]) -> int:
+        ans = 0
+        hp = [-v for v in amount if v != 0]
+        heapq.heapify(hp)
+        while hp:
+            if len(hp) >= 2:
+                f = heapq.heappop(hp)
+                s = heapq.heappop(hp)
+                f += 1
+                s += 1
+                if f:
+                    heapq.heappush(hp, f)
+                if s:
+                    heapq.heappush(hp, s)
+                ans += 1
+            elif len(hp) == 1:
+                return ans - hp[0]
+        return ans
+
+    def fillCups(self, a: List[int]) -> int:
+        ans = 0
+        a.sort()
+        while a[1] > 0:
+            ans += 1
+            a[1] -= 1
+            a[2] -= 1
+            a.sort()
+        return ans + a[2]
+
+    def fillCups(self, a: List[int]) -> int:
+        a.sort()
+        if a[0] + a[1] <= a[2]:
+            return a[2]
+        t = a[0] + a[1] - a[2]
+        return (t + 1) // 2 + a[2]
+
+
+# 2336 - Smallest Number in Infinite Set - MEDIUM
+class SmallestInfiniteSet:
+    def __init__(self):
+        self.s = set()
+
+    def popSmallest(self) -> int:
+        for i in range(1, 1001):
+            if i not in self.s:
+                self.s.add(i)
+                return i
+
+    def addBack(self, num: int) -> None:
+        if num in self.s:
+            self.s.remove(num)
+        return
+
+
+class SmallestInfiniteSet:
+    def __init__(self):
+        self.p = 1
+        self.l = []
+        self.s = set()
+
+    def popSmallest(self) -> int:
+        if self.l:
+            a = heapq.heappop(self.l)
+            self.s.remove(a)
+            return a
+        else:
+            a = self.p
+            self.p += 1
+            return a
+
+    def addBack(self, num: int) -> None:
+        if num >= self.p:
+            pass
+        elif num not in self.s:
+            self.s.add(num)
+            heapq.heappush(self.l, num)
+
+
+# 2337 - Move Pieces to Obtain a String - MEDIUM
+class Solution:
+    def canChange(self, start: str, target: str) -> bool:
+        if start.replace("_", "") != target.replace("_", ""):
+            return False
+        i = j = 0
+        n = len(start)
+        while i < n and j < n:
+            if start[i] == "_":
+                i += 1
+                continue
+            if target[j] == "_":
+                j += 1
+                continue
+            if start[i] == "L" and i < j:
+                return False
+            if start[i] == "R" and i > j:
+                return False
+            i += 1
+            j += 1
+        return True
+
+    def canChange(self, start: str, target: str) -> bool:
+        if start.replace("_", "") != target.replace("_", ""):
+            return False
+        i = j = 0
+        n = len(start)
+        while i < n and j < n:
+            while i < n and start[i] == "_":
+                i += 1
+            while j < n and target[j] == "_":
+                j += 1
+            if i < n and j < n:
+                if start[i] == "L" and i < j:
+                    return False
+                if start[i] == "R" and i > j:
+                    return False
+            i += 1
+            j += 1
+        return True
+
+    def canChange(self, start: str, target: str) -> bool:
+        if start.replace("_", "") != target.replace("_", ""):
+            return False
+        j = 0
+        for i, c in enumerate(start):
+            if c == "_":
+                continue
+            while target[j] == "_":
+                j += 1
+            if i != j and (c == "L") == (i < j):
+                return False
+            j += 1
+        return True
+
+    def canChange(self, start: str, target: str) -> bool:
+        ls = []
+        rs = []
+        lt = []
+        rt = []
+        l = r = ""
+        for i, v in enumerate(start):
+            if v == "L":
+                ls.append(i)
+                l += "L"
+            if v == "R":
+                rs.append(i)
+                l += "R"
+        for i, v in enumerate(target):
+            if v == "L":
+                lt.append(i)
+                r += "L"
+            if v == "R":
+                rt.append(i)
+                r += "R"
+        if l != r:
+            return False
+        for i in range(len(ls)):
+            if ls[i] < lt[i]:
+                return False
+        for i in range(len(rs)):
+            if rs[i] > rt[i]:
+                return False
+        return True
