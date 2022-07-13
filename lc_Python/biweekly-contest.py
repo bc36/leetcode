@@ -416,6 +416,7 @@ class Solution:
 # https://leetcode-cn.com/contest/biweekly-contest-74/
 # https://leetcode-cn.com/contest/biweekly-contest-74/problems/minimum-white-tiles-after-covering-with-carpets/
 
+
 # https://leetcode-cn.com/contest/biweekly-contest-75/
 # 365 / https://leetcode-cn.com/contest/biweekly-contest-75/problems/sum-of-scores-of-built-strings/
 # z算法, 扩展kmp
@@ -441,7 +442,6 @@ class Solution:
 # https://leetcode-cn.com/contest/biweekly-contest-80
 # 1123 / https://leetcode.cn/contest/biweekly-contest-80/problems/match-substring-after-replacement/
 # 模拟, 思路错了
-
 # 1222 / https://leetcode.cn/contest/biweekly-contest-80/problems/count-subarrays-with-score-less-than-k/
 # 双指针, a[i] - a[j], amount of subarray: j - i + 1
 
@@ -449,3 +449,12 @@ class Solution:
 # https://leetcode.cn/contest/biweekly-contest-81
 # 455 / https://leetcode.cn/contest/biweekly-contest-81/problems/number-of-distinct-roll-sequences/
 # dp
+
+
+# https://leetcode.cn/contest/biweekly-contest-82
+# 1093 / https://leetcode.cn/contest/biweekly-contest-82/problems/the-latest-time-to-catch-a-bus/
+# two pointer
+# 719 / https://leetcode.cn/contest/biweekly-contest-82/problems/minimum-sum-of-squared-difference/
+# math, heap
+# 250 / https://leetcode.cn/contest/biweekly-contest-82/problems/subarray-with-elements-greater-than-varying-threshold/
+# 并查集, 单调栈
