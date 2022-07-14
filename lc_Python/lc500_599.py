@@ -797,7 +797,37 @@ class Solution:
         # return ' '.join(s.split()[::-1])[::-1]
 
 
-# 558
+# 558 - Logical OR of Two Binary Grids Represented as Quad-Trees - MEDIUM
+class Node:
+    # Definition for a QuadTree node.
+    def __init__(self, val, isLeaf, topLeft, topRight, bottomLeft, bottomRight):
+        self.val = val
+        self.isLeaf = isLeaf
+        self.topLeft = topLeft
+        self.topRight = topRight
+        self.bottomLeft = bottomLeft
+        self.bottomRight = bottomRight
+
+
+class Solution:
+    def intersect(self, q1: "Node", q2: "Node") -> "Node":
+        if (q1.isLeaf and q1.val) or (q2.isLeaf and not q2.val):
+            return q1
+        if (q2.isLeaf and q2.val) or (q1.isLeaf and not q1.val):
+            return q2
+        l1 = self.intersect(q1.topLeft, q2.topLeft)
+        l2 = self.intersect(q1.topRight, q2.topRight)
+        l3 = self.intersect(q1.bottomLeft, q2.bottomLeft)
+        l4 = self.intersect(q1.bottomRight, q2.bottomRight)
+        if (
+            l1.isLeaf
+            and l2.isLeaf
+            and l3.isLeaf
+            and l4.isLeaf
+            and l1.val == l2.val == l3.val == l4.val
+        ):
+            return l1
+        return Node(None, False, l1, l2, l3, l4)
 
 
 # 559 - Maximum Depth of N-ary Tree - EASY
