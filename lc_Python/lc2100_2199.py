@@ -47,40 +47,176 @@ class Solution:
         return [i for i in range(t, n - t) if l[i] >= t and r[i] >= t]
 
 
+# 2103 - Rings and Rods - EASY
+class Solution:
+    def countPoints(self, rings: str) -> int:
+        d = collections.defaultdict(set)
+        for i in range(0, len(rings), 2):
+            d[rings[i + 1]].add(rings[i])
+        return sum(1 for v in d.values() if len(v) == 3)
+
+    def countPoints(self, rings: str) -> int:
+        d = collections.defaultdict(set)
+        for c, i in zip(rings[::2], rings[1::2]):
+            d[i].add(c)
+        return sum(1 for v in d.values() if len(v) == 3)
+
+
 # 2104 - Sum of Subarray Ranges - MEDIUM
 class Solution:
     # O(n ^ 2) / O(2)
     def subArrayRanges(self, nums: List[int]) -> int:
         ans = 0
         for i in range(len(nums)):
-            mi = math.inf
-            mx = -math.inf
-            for j in range(i, len(nums)):
-                mi = min(mi, nums[j])
+            mx = mi = nums[i]
+            for j in range(i + 1, len(nums)):
                 mx = max(mx, nums[j])
+                mi = min(mi, nums[j])
                 ans += mx - mi
         return ans
 
-    # O(n) / O(n),
+    # O(n) / O(n)
     # why monotonic stack: sum(ranges) = sum(maxes) - sum(mines)
     def subArrayRanges(self, nums: List[int]) -> int:
         ans = 0
-        inf = float("inf")
-        arr = [-inf] + nums + [-inf]
+        arr = [-math.inf] + nums + [-math.inf]
         s = []
         for i in range(len(arr)):
             while s and arr[s[-1]] > arr[i]:
                 j = s.pop()
+                # s[-1] ... j ... i
+                # left: j - s[-1]
+                # right: i - j
                 ans -= arr[j] * (i - j) * (j - s[-1])
             s.append(i)
-
-        arr = [inf] + nums + [inf]
+        arr = [math.inf] + nums + [math.inf]
         s = []
         for i in range(len(arr)):
             while s and arr[s[-1]] < arr[i]:
                 j = s.pop()
                 ans += arr[j] * (i - j) * (j - s[-1])
             s.append(i)
+        return ans
+
+    def subArrayRanges(self, nums: List[int]) -> int:
+        ans = 0
+        arr = nums + [-math.inf]
+        s = [-1]
+        for i in range(len(arr)):
+            while s and arr[s[-1]] > arr[i]:
+                j = s.pop()
+                ans -= arr[j] * (i - j) * (j - s[-1])
+            s.append(i)
+        arr = nums + [math.inf]
+        s = [-1]
+        for i in range(len(arr)):
+            while s and arr[s[-1]] < arr[i]:
+                j = s.pop()
+                ans += arr[j] * (i - j) * (j - s[-1])
+            s.append(i)
+        return ans
+
+
+# 2105 - Watering Plants II - MEDIUM
+class Solution:
+    def minimumRefill(self, plants: List[int], capacityA: int, capacityB: int) -> int:
+        ans = i = 0
+        ca = capacityA
+        cb = capacityB
+        j = len(plants) - 1
+        while i < j:
+            if ca < plants[i]:
+                ans += 1
+                ca = capacityA
+            if cb < plants[j]:
+                ans += 1
+                cb = capacityB
+            ca -= plants[i]
+            cb -= plants[j]
+            i += 1
+            j -= 1
+        if i == j:
+            if ca < plants[i] and cb < plants[j]:
+                ans += 1
+        return ans
+
+
+# 2106 - Maximum Fruits Harvested After at Most K Steps - HARD
+class Solution:
+    # O(n) / O(1), cover: b - a + min(sp - a, b - sp)
+    def maxTotalFruits(self, f: List[List[int]], sp: int, k: int) -> int:
+        ans = l = summ = 0
+        cal = lambda l, r: f[r][0] - f[l][0] + min(abs(sp - f[l][0]), abs(sp - f[r][0]))
+        for r in range(len(f)):
+            while l <= r and cal(l, r) > k:
+                summ -= f[l][1]
+                l += 1
+            summ += f[r][1]
+            ans = max(ans, summ)
+        return ans
+
+    def maxTotalFruits(self, f: List[List[int]], sp: int, k: int) -> int:
+        dq = collections.deque([])
+        ans = i = 0
+        while i < len(f) and f[i][0] <= sp:  # left part
+            if sp - f[i][0] <= k:
+                ans += f[i][1]
+                dq.append((f[i][0], f[i][1]))
+            i += 1
+        tmp = ans
+        while i < len(f) and f[i][0] - sp <= k:  # right part
+            while (
+                dq
+                and dq[0][0] < sp
+                and f[i][0] - dq[0][0] + min(sp - dq[0][0], f[i][0] - sp) > k
+            ):
+                tmp -= dq[0][1]
+                dq.popleft()
+            tmp += f[i][1]
+            ans = max(ans, tmp)
+            i += 1
+        return ans
+
+    # TLE
+    def maxTotalFruits(self, f: List[List[int]], sp: int, k: int) -> int:
+        ans = 0
+        for i in range(len(f)):
+            j = i
+            summ = 0
+            while j < len(f) and 2 * max(sp - f[i][0], 0) + max(f[j][0] - sp, 0) <= k:
+                summ += f[j][1]
+                ans = max(ans, summ)
+                j += 1
+            summ -= f[i][1]
+        for i in range(len(f)):
+            j = i
+            summ = 0
+            while j < len(f) and max(sp - f[i][0], 0) + 2 * max(f[j][0] - sp, 0) <= k:
+                summ += f[j][1]
+                ans = max(ans, summ)
+                j += 1
+            summ -= f[i][1]
+        return ans
+
+    # TLE
+    def maxTotalFruits(self, f: List[List[int]], sp: int, k: int) -> int:
+        ans = 0
+        for i in range(len(f)):
+            j = i
+            summ = 0
+            while j < len(f) and 2 * max(sp - f[i][0], 0) + max(f[j][0] - sp, 0) <= k:
+                summ += f[j][1]
+                ans = max(ans, summ)
+                j += 1
+            summ -= f[i][1]
+        for i in range(len(f) - 1, -1, -1):
+            j = i
+            summ = 0
+            while j >= 0 and 2 * max(f[i][0] - sp, 0) + 2 * max(sp - f[j][0], 0) <= k:
+                summ += f[j][1]
+                ans = max(ans, summ)
+                j -= 1
+            summ -= f[i][1]
         return ans
 
 
