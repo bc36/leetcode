@@ -84,6 +84,100 @@ class Solution:
         return ans
 
 
+# 2108 - Find First Palindromic String in the Array - EASY
+class Solution:
+    def firstPalindrome(self, words: List[str]) -> str:
+        for w in words:
+            if w == w[::-1]:
+                return w
+        return ""
+
+
+# 2109 - Adding Spaces to a String - MEDIUM
+class Solution:
+    def addSpaces(self, s: str, spaces: List[int]) -> str:
+        ans = ""
+        spaces = spaces[::-1]
+        for i, c in enumerate(s):
+            if spaces and i == spaces[-1]:
+                ans += " "
+                spaces.pop()
+            ans += c
+        return ans
+
+
+# 2110 - Number of Smooth Descent Periods of a Stock - MEDIUM
+class Solution:
+    def getDescentPeriods(self, prices: List[int]) -> int:
+        n = len(prices)
+        dp = [1] * n
+        for i in range(1, n):
+            if prices[i - 1] - 1 == prices[i]:
+                dp[i] += dp[i - 1]
+        return sum(dp)
+
+    def getDescentPeriods(self, prices: List[int]) -> int:
+        ans = cur = 1
+        for i in range(1, len(prices)):
+            if prices[i] == prices[i - 1] - 1:
+                cur += 1
+            else:
+                cur = 1
+            ans += cur
+        return ans
+
+    def getDescentPeriods(self, prices: List[int]) -> int:
+        ans = pre = cur = 0
+        for p in prices:
+            if pre - 1 == p:
+                cur += 1
+            else:
+                cur = 1
+            ans += cur
+            pre = p
+        return ans
+
+
+# 2111 - Minimum Operations to Make the Array K-Increasing - HARD
+class Solution:
+    # O(n * log(n/k)) / O(n / k)
+    def kIncreasing(self, arr: List[int], k: int) -> int:
+        group = collections.defaultdict(list)
+        for i, v in enumerate(arr):
+            group[i % k].append(v)
+        ans = 0
+        # LIS: longest increasing subsequence, lc300
+        for g in group.values():
+            a = []
+            for v in g:
+                pos = bisect.bisect_right(a, v)
+                if pos == len(a):
+                    a.append(v)
+                else:
+                    a[pos] = v
+            ans += len(g) - len(a)
+        return ans
+
+    def kIncreasing(self, arr: List[int], k: int) -> int:
+        def LIS(nums: List[int]) -> int:
+            a = []
+            for v in nums:
+                pos = bisect.bisect_right(a, v)
+                if pos == len(a):
+                    a.append(v)
+                else:
+                    a[pos] = v
+            return len(a)
+
+        ans = 0
+        for i in range(k):
+            group = []
+            for x in range(i, len(arr), k):
+                group.append(arr[x])
+            ans += len(group) - LIS(group)
+        return ans
+
+
 # 2119 - A Number After a Double Reversal - EASY
 class Solution:
     def isSameAfterReversals(self, num: int) -> bool:
