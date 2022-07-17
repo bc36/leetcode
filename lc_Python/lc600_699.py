@@ -237,6 +237,28 @@ class Solution:
 # 676 - Implement Magic Dictionary - MEDIUM
 class MagicDictionary:
     def __init__(self):
+        self.w = list()
+
+    def buildDict(self, dictionary: List[str]) -> None:
+        self.w = dictionary
+
+    def search(self, searchWord: str) -> bool:
+        for w in self.w:
+            if len(w) != len(searchWord):
+                continue
+            diff = 0
+            for a, b in zip(w, searchWord):
+                if a != b:
+                    diff += 1
+                if diff > 1:
+                    break
+            if diff == 1:
+                return True
+        return False
+
+
+class MagicDictionary:
+    def __init__(self):
         self.dic = {}
 
     def buildDict(self, dictionary: List[str]) -> None:
@@ -249,7 +271,7 @@ class MagicDictionary:
             for j in range(len(searchWord)):
                 if candi[j] != searchWord[j]:
                     diff += 1
-                if diff > 2:
+                if diff > 1:
                     break
             if diff == 1:
                 return True
@@ -266,7 +288,7 @@ class MagicDictionary:
 
     def search(self, searchWord: str) -> bool:
         l = len(searchWord)
-        for candidate in self.dct.get(l, []):
+        for candidate in self.dic.get(l, []):
             isDifferent = False
             for idx in range(l):
                 if candidate[idx] != searchWord[idx]:
