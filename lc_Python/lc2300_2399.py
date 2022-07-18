@@ -1128,6 +1128,125 @@ class Solution:
         diff = diff[:i] + [v - m - 1] * k + [v - m] * (len(diff) - i - k)
         return sum([d * d for d in diff])
 
+    def minSumSquareDiff(
+        self, nums1: List[int], nums2: List[int], k1: int, k2: int
+    ) -> int:
+        n = len(nums1)
+        k = k1 + k2
+        d = [abs(a - b) for a, b in zip(nums1, nums2)]
+        l = 0
+        r = 10**5
+        while l < r:
+            m = l + r >> 1
+            summ = 0
+            for i in range(n):
+                if d[i] > m:
+                    summ += d[i] - m
+            if summ <= k:
+                r = m
+            else:
+                l = m + 1
+        summ = 0
+        for i in range(n):
+            if d[i] > r:
+                summ += d[i] - r
+        k -= summ
+        ans = 0
+        for i in range(n):
+            if d[i] >= r:
+                if r and k:
+                    ans += (r - 1) * (r - 1)
+                    k -= 1
+                else:
+                    ans += r * r
+            else:
+                ans += d[i] * d[i]
+        return ans
+
+    def minSumSquareDiff(
+        self, nums1: List[int], nums2: List[int], k1: int, k2: int
+    ) -> int:
+        hp = [-abs(a - b) for a, b in zip(nums1, nums2)]
+        s = -sum(hp)
+        k = k1 + k2
+        if s <= k:
+            return 0
+        heapq.heapify(hp)
+        while k > 0:
+            d = -heapq.heappop(hp)
+            can = max(k // len(nums1), 1)
+            d -= can
+            heapq.heappush(hp, -d)
+            k -= can
+        return sum(d * d for d in hp)
+
+
+# 2334 - Subarray With Elements Greater Than Varying Threshold - HARD
+class Solution:
+    def validSubarraySize(self, nums: List[int], threshold: int) -> int:
+        def find(x: int) -> int:
+            if p[x] != x:
+                p[x] = find(p[x])
+            return p[x]
+
+        n = len(nums)
+        p = list(range(n + 1))
+        sz = [1] * (n + 1)
+        q = list(range(n))
+        q = [y for _, y in sorted(zip(nums, q), reverse=True)]
+        i = 0
+        for k in range(1, n + 1):
+            while i < n and nums[q[i]] > threshold // k:
+                a = q[i]
+                b = find(q[i] + 1)
+                sz[b] += sz[a]
+                if sz[b] - 1 >= k:
+                    return k
+                p[a] = b
+                i += 1
+        return -1
+
+    def validSubarraySize(self, nums: List[int], threshold: int) -> int:
+        def find(x: int) -> int:
+            if p[x] != x:
+                p[x] = find(p[x])
+            return p[x]
+
+        n = len(nums)
+        p = list(range(n + 1))
+        sz = [1] * (n + 1)
+        for num, i in sorted(zip(nums, range(n)), reverse=True):
+            j = find(i + 1)
+            p[i] = j
+            sz[j] += sz[i]
+            if num > threshold // (sz[j] - 1):
+                return sz[j] - 1
+        return -1
+
+    def validSubarraySize(self, nums: List[int], threshold: int) -> int:
+        n = len(nums)
+        left = [-1] * n
+        st = []
+        for i in range(len(nums)):
+            while st and nums[st[-1]] >= nums[i]:
+                st.pop()
+            if st:
+                left[i] = st[-1]
+            st.append(i)
+        right = [n] * n
+        st = []
+        for i in range(n - 1, -1, -1):
+            while st and nums[st[-1]] >= nums[i]:
+                st.pop()
+            if st:
+                right[i] = st[-1]
+            st.append(i)
+        for num, l, r in zip(nums, left, right):
+            k = r - l - 1
+            if num > threshold // k:
+                return k
+        return -1
+
 
 # 2335 - Minimum Amount of Time to Fill Cups - EASY
 class Solution:
@@ -1293,3 +1412,129 @@ class Solution:
             if rs[i] > rt[i]:
                 return False
         return True
+
+
+# 2341 - Maximum Number of Pairs in Array - EASY
+class Solution:
+    def numberOfPairs(self, nums: List[int]) -> List[int]:
+        cnt = collections.Counter(nums)
+        ans = [0, 0]
+        for v in cnt.values():
+            ans[0] += v >> 1
+            ans[1] += v & 1
+        return ans
+
+
+# 2342 - Max Sum of a Pair With Equal Sum of Digits - MEDIUM
+class Solution:
+    def maximumSum(self, nums: List[int]) -> int:
+        d = collections.defaultdict(list)
+        for n in nums:
+            x = n
+            t = 0
+            while x:
+                t += x % 10
+                x //= 10
+            d[t].append(n)
+        ans = -1
+        for v in d.values():
+            if len(v) >= 2:
+                x = sorted(v, reverse=True)
+                ans = max(ans, x[0] + x[1])
+        return ans
+
+    def maximumSum(self, nums: List[int]) -> int:
+        ans = -1
+        d = collections.defaultdict(int)
+        for n in nums:
+            # t = sum(int(x) for x in str(n)) # slow
+            t = 0
+            x = n
+            while x:
+                t += x % 10
+                x //= 10
+            if t in d:
+                ans = max(ans, d[t] + n)
+            d[t] = max(d[t], n)
+        return ans
+
+    def maximumSum(self, nums: List[int]) -> int:
+        g = collections.defaultdict(list)
+        for n in nums:
+            t = 0
+            x = n
+            while x > 0:
+                t += x % 10
+                x //= 10
+            if len(g[t]) < 2:
+                heapq.heappush(g[t], n)
+            else:
+                heapq.heappushpop(g[t], n)
+        return max((g[0] + g[1] for g in g.values() if len(g) == 2), default=-1)
+
+
+# 2343 - Query Kth Smallest Trimmed Number - MEDIUM
+class Solution:
+    def smallestTrimmedNumbers(
+        self, nums: List[str], queries: List[List[int]]
+    ) -> List[int]:
+        ans = []
+        for k, t in queries:
+            arr = []
+            for i, n in enumerate(nums):
+                arr.append((n[-t:], i))
+            arr = sorted(arr)
+            ans.append(arr[k - 1][1])
+        return ans
+
+
+# 2344 - Minimum Deletions to Make Array Divisible - HARD
+class Solution:
+    def minOperations(self, nums: List[int], numsDivide: List[int]) -> int:
+        ans = 0
+        cnt = collections.Counter(nums)
+        numsDivide = set(numsDivide)
+        for x, v in sorted(cnt.items()):
+            f = True
+            for y in numsDivide:
+                if y % x != 0:
+                    f = False
+                    break
+            if f:
+                return ans
+            ans += v
+        return -1
+
+    def minOperations(self, nums: List[int], numsDivide: List[int]) -> int:
+        ans = 0
+        cnt = collections.Counter(nums)
+        numsDivide = set(numsDivide)
+        for x, v in sorted(cnt.items()):
+            # if all(y % x == 0 for y in numsDivide):
+            #     return ans
+            if not any(y % x for y in numsDivide):
+                return ans
+            ans += v
+        return -1
+
+    def minOperations(self, nums: List[int], numsDivide: List[int]) -> int:
+        x = numsDivide[0]
+        for i in range(1, len(numsDivide)):
+            x = math.gcd(x, numsDivide[i])
+        cnt = collections.Counter(nums)
+        ans = 0
+        for k, v in sorted(cnt.items()):
+            if x % k == 0:
+                return ans
+            ans += v
+        return -1
+
+    def minOperations(self, nums: List[int], numsDivide: List[int]) -> int:
+        g = 0
+        for n in numsDivide:
+            g = math.gcd(g, n)
+        nums.sort()
+        for i in range(len(nums)):
+            if g % nums[i] == 0:
+                return i
+        return -1

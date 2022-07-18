@@ -1,7 +1,26 @@
 from typing import List
 import collections, functools, itertools, heapq, math
 
+"""exercise"""
+# https://leetcode.cn/contest/weekly-contest-270/ranking/
 
+
+# https://leetcode.cn/contest/weekly-contest-271/ranking/
+# 632 / https://leetcode.cn/contest/weekly-contest-271/problems/maximum-fruits-harvested-after-at-most-k-steps/
+# 滑动窗口
+
+
+# https://leetcode.cn/contest/weekly-contest-272/ranking/
+# 891 / https://leetcode.cn/contest/weekly-contest-272/problems/minimum-operations-to-make-the-array-k-increasing/
+# LIS, lc300, 分组
+
+
+# https://leetcode.cn/contest/weekly-contest-273/ranking/
+# 489 / https://leetcode.cn/contest/weekly-contest-273/problems/recover-the-original-array/
+# 枚举 higher[0] + 双指针
+
+
+"""first lc weekly contest"""
 ########################
 # 274 / 3道 / 2022.1.1 #
 ########################
@@ -1035,6 +1054,7 @@ class Solution:
 # 739 / https://leetcode.cn/contest/weekly-contest-295/problems/minimum-obstacle-removal-to-reach-corner/
 # 0-1 BFS / Dijkstra
 
+
 """
 AK, 2022-06-04
 https://leetcode-cn.com/contest/weekly-contest-296/
@@ -1044,10 +1064,10 @@ FT: 0:42:44
 T4: 1532 pass
 """
 
+
 # https://leetcode.cn/contest/weekly-contest-297
 # 1366 / https://leetcode.cn/contest/weekly-contest-297/problems/fair-distribution-of-cookies/
 # backtracking + pruning / 状压DP
-
 # 410 / https://leetcode.cn/contest/weekly-contest-297/problems/naming-a-company/
 # 分组 + 枚举首字母
 
@@ -1055,7 +1075,6 @@ T4: 1532 pass
 # https://leetcode.cn/contest/weekly-contest-298
 # 1826 / https://leetcode.cn/contest/weekly-contest-298/problems/longest-binary-subsequence-less-than-or-equal-to-k/
 # 贪心
-
 # 395 / https://leetcode.cn/contest/weekly-contest-298/problems/selling-pieces-of-wood/
 # dp
 
@@ -1069,6 +1088,19 @@ T4: 1532 pass
 # https://leetcode.cn/contest/weekly-contest-300
 # 1724 / https://leetcode.cn/contest/weekly-contest-300/problems/number-of-people-aware-of-a-secret/
 # dp
-
 # 938 / https://leetcode.cn/contest/weekly-contest-300/problems/number-of-increasing-paths-in-a-grid/
 # dp / dfs
+
+
+# https://leetcode.cn/contest/weekly-contest-301
+# 2707 / https://leetcode.cn/contest/weekly-contest-301/problems/move-pieces-to-obtain-a-string/
+
+
+"""
+AK, 2022-07-16
+https://leetcode-cn.com/contest/weekly-contest-302/
+Rank: 1616 / 4243
+WA: T2(1),  T4(3)
+FT: 1:21:20
+T4: 2746 pass
+"""
