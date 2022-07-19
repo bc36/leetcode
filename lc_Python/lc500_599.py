@@ -514,6 +514,23 @@ class Solution:
         return left
 
 
+# 530 - Minimum Absolute Difference in BST - EASY
+class Solution:
+    def getMinimumDifference(self, root: TreeNode) -> int:
+        def inorder(root):
+            if not root:
+                return
+            inorder(root.left)
+            arr.append(root.val)
+            inorder(root.right)
+            return
+
+        arr = []
+        inorder(root)
+        return min(arr[i] - arr[i - 1] for i in range(1, len(arr)))
+        return min(abs(x - y) for x, y in zip(arr, arr[1:]))
+
+
 # 532 - K-diff Pairs in an Array - MEDIUM
 class Solution:
     # like two sum (lc 1)

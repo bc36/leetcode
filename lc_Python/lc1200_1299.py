@@ -452,6 +452,15 @@ class Solution:
         return sum((r + c) % 2 for r in rows for c in cols)
 
 
+# 1260 - Shift 2D Grid - EASY
+class Solution:
+    def shiftGrid(self, grid: List[List[int]], k: int) -> List[List[int]]:
+        arr = [v for r in grid for v in r]
+        k %= len(arr)
+        arr = arr[-k:] + arr[:-k]
+        return [arr[i : i + len(grid[0])] for i in range(0, len(arr), len(grid[0]))]
+
+
 # 1281 - Subtract the Product and Sum of Digits of an Integer - EASY
 class Solution:
     def subtractProductAndSum(self, n: int) -> int:

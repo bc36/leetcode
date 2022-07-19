@@ -88,6 +88,27 @@ class Solution:
         return len(pq)
 
 
+# 637 - Average of Levels in Binary Tree - EASY
+class Solution:
+    def averageOfLevels(self, root: Optional[TreeNode]) -> List[float]:
+        ans = []
+        q = [root]
+        while q:
+            t = summ = 0
+            new = []
+            for _ in range(len(q)):
+                n = q.pop()
+                if n.left:
+                    new.append(n.left)
+                if n.right:
+                    new.append(n.right)
+                t += 1
+                summ += n.val
+            ans.append(summ / t)
+            q = new
+        return ans
+
+
 # 648 - Replace Words - MEDIUM
 class Solution:
     # O(sdw + dlogd) / O(s + logd), w = len(each word in d)
