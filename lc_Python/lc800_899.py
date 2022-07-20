@@ -133,6 +133,32 @@ class Solution:
         )
 
 
+# 814 - Binary Tree Pruning - MEDIUM
+class Solution:
+    def pruneTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        def postorder(root) -> int:
+            if not root:
+                return 0
+            l = postorder(root.left)
+            r = postorder(root.right)
+            if not l:
+                root.left = None
+            if not r:
+                root.right = None
+            return l + r + root.val
+
+        return root if postorder(root) else None
+
+    def pruneTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return None
+        root.left = self.pruneTree(root.left)
+        root.right = self.pruneTree(root.right)
+        if root.val == 0 and (not root.left and not root.right):
+            return None
+        return root
+
+
 # 819 - Most Common Word - EASY
 class Solution:
     def mostCommonWord(self, p: str, banned: List[str]) -> str:
