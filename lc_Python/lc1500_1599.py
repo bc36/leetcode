@@ -44,6 +44,15 @@ class Solution:
         return pre(high) - pre(low - 1)
 
 
+# 1528 - Shuffle String - EASY
+class Solution:
+    def restoreString(self, s: str, indices: List[int]) -> str:
+        ans = [""] * len(s)
+        for i, ch in enumerate(s):
+            ans[indices[i]] = ch
+        return "".join(ans)
+
+
 ###############
 # 2022.1.6 VO #
 ###############
@@ -99,6 +108,33 @@ class Solution:
         self.ans = 0
         post(root)
         return self.ans
+
+
+# 1534 - Count Good Triplets - EASY
+class Solution:
+    def countGoodTriplets(self, arr: List[int], a: int, b: int, c: int) -> int:
+        ans = 0
+        for k in range(len(arr)):
+            for j in range(k):
+                for i in range(j):
+                    if (
+                        abs(arr[i] - arr[j]) <= a
+                        and abs(arr[j] - arr[k]) <= b
+                        and abs(arr[i] - arr[k]) <= c
+                    ):
+                        ans += 1
+        return ans
+
+    def countGoodTriplets(self, arr: List[int], a: int, b: int, c: int) -> int:
+        n = len(arr)
+        ans = 0
+        for i in range(n - 2):
+            for j in range(i + 1, n - 1):
+                if abs(arr[i] - arr[j]) <= a:
+                    for k in range(j + 1, n):
+                        if abs(arr[j] - arr[k]) <= b and abs(arr[i] - arr[k]) <= c:
+                            ans += 1
+        return ans
 
 
 # 1557 - Minimum Number of Vertices to Reach All Nodes - MEDIUM
