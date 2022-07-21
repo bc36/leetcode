@@ -1,5 +1,5 @@
 from typing import List
-import collections, itertools, functools, bisect, math
+import collections, itertools, functools, bisect, math, random, heapq
 
 
 class TreeNode:
@@ -7,6 +7,12 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
+
+
+class Node:
+    def __init__(self, val=None, next=None):
+        self.val = val
+        self.next = next
 
 
 # 700 - Search in a Binary Search Tree - EASY
@@ -98,6 +104,31 @@ class Solution:
         return l if nums[l] == target else -1
 
 
+# 708 - Insert Into a Sorted Circular Linked List - MEDIUM
+class Solution:
+    def insert(self, head: "Node", insertVal: int) -> "Node":
+        if not head:
+            n = Node(insertVal)
+            n.next = n
+            return n
+        r = head
+        while head.next != r:
+            if head.val <= insertVal <= head.next.val:
+                break
+            if head.next.val < head.val and (
+                head.val <= insertVal or insertVal <= head.next.val
+            ):
+                break
+            head = head.next
+
+        # n = Node(insertVal, head.next) # slow
+
+        n = Node(insertVal)
+        n.next = head.next
+        head.next = n
+        return r
+
+
 # 709 -To Lower Case - EASY
 class Solution:
     def toLowerCase(self, s: str) -> str:
@@ -110,6 +141,25 @@ class Solution:
             chr(asc | 32) if 65 <= (asc := ord(ch)) <= 90 else ch for ch in s
         )
         return s.lower()
+
+
+# 710 - Random Pick with Blacklist - HARD
+class Solution:
+    def __init__(self, n: int, blacklist: List[int]):
+        m = len(blacklist)
+        self.p = j = n - m
+        self.d = {}
+        b = set(blacklist)
+        for x in blacklist:
+            if x < n - m:
+                while j in b:
+                    j += 1
+                self.d[x] = j
+                j += 1
+
+    def pick(self) -> int:
+        p = random.randint(0, self.p - 1)
+        return self.d.get(p, p)
 
 
 # 713 - Subarray Product Less Than K - MEDIUM
@@ -174,6 +224,7 @@ class Solution:
 
 # 719 - Find K-th Smallest Pair Distance - HARD
 class Solution:
+    # O(n * logD) / O(logD), D = max(nums) - min(nums)
     def smallestDistancePair(self, nums: List[int], k: int) -> int:
         nums.sort()
         l = 0
@@ -225,18 +276,30 @@ class Solution:
         nums.sort()
         return bisect.bisect_left(range(nums[-1] - nums[0]), k, key=check)
 
+    # O(n * logn * logD) / O(logn + logD), D = max(nums) - min(nums)
     def smallestDistancePair(self, nums: List[int], k: int) -> int:
         def count(dist: int) -> int:
             cnt = 0
             for j, v in enumerate(nums):
                 i = bisect.bisect_left(nums, v - dist, 0, len(nums))
                 # i = bisect.bisect_left(nums, v - dist, 0, j)
-                # i = bisect_left(nums, v - mid) # cuz 'v - mid <= v' at insertion, so it won't happen 'i = len(nums)'
+                # i = bisect_left(nums, v - dist) # cuz 'v - mid <= v' at insertion, so it won't happen 'i = len(nums)'
                 cnt += j - i
             return cnt
 
         nums.sort()
         return bisect.bisect_left(range(nums[-1] - nums[0]), k, key=count)
+
+    def smallestDistancePair(self, nums: List[int], k: int) -> int:
+        def check(dist: int) -> int:
+            return sum(
+                bisect.bisect_right(nums, v + dist) - 1 - i for i, v in enumerate(nums)
+            )
+
+        nums.sort()
+        return bisect.bisect_left(
+            range(nums[-1] - nums[0] + 1), True, key=lambda x: check(x) >= k
+        )
 
 
 # 720 - Longest Word in Dictionary - EASY
@@ -414,6 +477,225 @@ class Solution:
         return ans
 
 
+# 729 - My Calendar I - MEDIUM
+class MyCalendar:
+    def __init__(self):
+        # 0: no booking
+        # 1: all booked
+        # 2: exist booking
+        self.t = collections.defaultdict(int)
+
+    def merge(self, l, r, s, e):
+        if l == s and r == e:
+            self.t[(l, r)] = 1
+            return
+        m = (l + r) >> 1
+        # pushdown
+        if self.t[(l, r)] == 1:
+            self.t[(l, m)] = 1
+            self.t[(m, r)] = 1
+
+        if e <= m:
+            self.merge(l, m, s, e)
+        elif m <= s:
+            self.merge(m, r, s, e)
+        else:
+            self.merge(l, m, s, m)
+            self.merge(m, r, m, e)
+        # pushup
+        self.t[(l, r)] = self.t[(l, m)] & self.t[(m, r)]
+        if self.t[(l, r)] == 0:
+            self.t[(l, r)] = 2
+        return
+
+    def check(self, l, r, s, e):
+        if l == s and r == e:
+            return self.t[(l, r)] == 0
+        m = (l + r) >> 1
+        if self.t[(l, r)] == 1:
+            return False
+        if e <= m:
+            return self.check(l, m, s, e)
+        elif m <= s:
+            return self.check(m, r, s, e)
+        else:
+            return self.check(l, m, s, m) and self.check(m, r, m, e)
+
+    def book(self, start: int, end: int) -> bool:
+        if self.check(0, 10**9, start, end):
+            self.merge(0, 10**9, start, end)
+            return True
+        return False
+
+
+# 731 - My Calendar II - MEDIUM
+class MyCalendarTwo:
+    def __init__(self):
+        self.t = collections.defaultdict(int)
+        self.l = collections.defaultdict(int)
+
+    def query(self, k: int, l: int, r: int, s: int, e: int) -> int:
+        if s > r or e < l:
+            return False
+        if s <= l and r <= e:
+            return self.t[k] >= 2
+        # push down
+        if self.l[k]:
+            self.l[k << 1] += self.l[k]
+            self.t[k << 1] += self.l[k]
+            self.l[k << 1 | 1] += self.l[k]
+            self.t[k << 1 | 1] += self.l[k]
+            self.l[k] = 0
+        m = l + r >> 1
+        return self.query(k << 1, l, m, s, e) or self.query(k << 1 | 1, m + 1, r, s, e)
+
+    def update(self, k: int, l: int, r: int, s: int, e: int) -> None:
+        if s > r or e < l:
+            return
+        if s <= l and r <= e:
+            self.t[k] += 1
+            self.l[k] += 1
+            return
+        # push down(optional)
+        if self.l[k]:
+            self.l[k << 1] += self.l[k]
+            self.t[k << 1] += self.l[k]
+            self.l[k << 1 | 1] += self.l[k]
+            self.t[k << 1 | 1] += self.l[k]
+            self.l[k] = 0
+        m = l + r >> 1
+        self.update(k << 1, l, m, s, e)
+        self.update(k << 1 | 1, m + 1, r, s, e)
+        # push up
+        self.t[k] = self.l[k] + max(self.t[k << 1], self.t[k << 1 | 1])
+        return
+
+    def book(self, start: int, end: int) -> bool:
+        if self.query(1, 0, 10**9, start, end - 1):  # whether >= 2
+            return False
+        self.update(1, 0, 10**9, start, end - 1)
+        return True
+
+
+class MyCalendarTwo:
+    def __init__(self):
+        self.t = collections.defaultdict(int)
+        self.l = collections.defaultdict(int)
+
+    def query(self, k: int, l: int, r: int, s: int, e: int) -> int:
+        if s <= l and r <= e:
+            return self.t[k]
+        m = l + r >> 1
+        if self.l[k] > 0:
+            self.t[2 * k] += self.l[k]
+            self.t[2 * k + 1] += self.l[k]
+            self.l[2 * k] += self.l[k]
+            self.l[2 * k + 1] += self.l[k]
+            self.l[k] = 0
+        ans = 0
+        if s <= m:
+            ans = max(ans, self.query(2 * k, l, m, s, e))
+        if e > m:
+            ans = max(ans, self.query(2 * k + 1, m + 1, r, s, e))
+        return ans
+
+    def update(self, k: int, l: int, r: int, s: int, e: int) -> None:
+        if s > r or e < l:
+            return
+        if s <= l and r <= e:
+            self.t[k] += 1
+            self.l[k] += 1
+            return
+        m = l + r >> 1
+        self.update(2 * k, l, m, s, e)
+        self.update(2 * k + 1, m + 1, r, s, e)
+        self.t[k] = self.l[k] + max(self.t[2 * k], self.t[2 * k + 1])
+        return
+
+    def book(self, start: int, end: int) -> bool:
+        if self.query(1, 0, 10**9, start, end - 1) >= 2:
+            return False
+        self.update(1, 0, 10**9, start, end - 1)
+        return True
+
+
+class MyCalendarTwo:
+    def __init__(self):
+        self.tree = {}
+
+    def update(self, start: int, end: int, val: int, l: int, r: int, idx: int) -> None:
+        if r < start or end < l:
+            return
+        if start <= l and r <= end:
+            p = self.tree.get(idx, [0, 0])
+            p[0] += val
+            p[1] += val
+            self.tree[idx] = p
+            return
+        mid = (l + r) // 2
+        self.update(start, end, val, l, mid, 2 * idx)
+        self.update(start, end, val, mid + 1, r, 2 * idx + 1)
+        p = self.tree.get(idx, [0, 0])
+        p[0] = p[1] + max(
+            self.tree.get(2 * idx, (0,))[0], self.tree.get(2 * idx + 1, (0,))[0]
+        )
+        self.tree[idx] = p
+
+    def book(self, start: int, end: int) -> bool:
+        self.update(start, end - 1, 1, 0, 10**9, 1)
+        if self.tree[1][0] > 2:
+            self.update(start, end - 1, -1, 0, 10**9, 1)
+            return False
+        return True
+
+
+from sortedcontainers import SortedDict
+
+
+class MyCalendarTwo:
+    def __init__(self):
+        self.d = SortedDict()
+
+    def book(self, start: int, end: int) -> bool:
+        self.d[start] = self.d.get(start, 0) + 1
+        self.d[end] = self.d.get(end, 0) - 1
+        cnt = 0
+        ans = True
+        for v in self.d.values():
+            cnt += v
+            if cnt >= 3:
+                ans = False
+                break
+        if not ans:
+            self.d[start] -= 1
+            self.d[end] += 1
+        return ans
+
+
+# 732 - My Calendar III - HARD
+class MyCalendarThree:
+    def __init__(self):
+        self.f = collections.defaultdict(int)
+        self.lazy = collections.defaultdict(int)
+
+    def update(self, i: int, l: int, r: int, start: int, end: int):
+        if r < start or end < l:
+            return
+        if start <= l and r <= end:
+            self.f[i] += 1
+            self.lazy[i] += 1
+        else:
+            mid = (l + r) // 2
+            self.update(i * 2, l, mid, start, end)
+            self.update(i * 2 + 1, mid + 1, r, start, end)
+            self.f[i] = self.lazy[i] + max(self.f[i * 2], self.f[i * 2 + 1])
+        return
+
+    def book(self, start: int, end: int) -> int:
+        self.update(1, 0, 10**9, start, end - 1)
+        return self.f[1]
+
+
 # 733 - Flood Fill - EASY
 class Solution:
     # bfs
@@ -475,6 +757,35 @@ class Solution:
         return image
 
 
+# 735 - Asteroid Collision - MEDIUM
+class Solution:
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        r = []
+        l = []
+        for v in asteroids:
+            if v > 0:
+                r.append(v)
+            while r and r[-1] < -v:
+                r.pop()
+            if r and r[-1] == -v:
+                r.pop()
+            elif not r:
+                l.append(v)
+        return l + r
+
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        a = []
+        for v in asteroids:
+            f = True
+            while f and v < 0 and a and a[-1] > 0:
+                f = a[-1] < -v
+                if a[-1] <= -v:
+                    a.pop()
+            if f:
+                a.append(v)
+        return a
+
+
 # 740 - Delete and Earn - MEDIUM
 class Solution:
     def deleteAndEarn(self, nums: List[int]) -> int:
@@ -500,6 +811,62 @@ class Solution:
         return dp[-1]
 
 
+# 741 - Cherry Pickup - HARD
+class Solution:
+    def cherryPickup(self, grid: List[List[int]]) -> int:
+        @functools.lru_cache(None)
+        def dfs(x1, y1, x2, y2):
+            # actually x1 + y1 == x2 + y2
+            #       -> y2 = x1 + y1 - x2
+            if not (0 <= x1 < m and 0 <= y1 < n and 0 <= x2 < m and 0 <= y2 < n):
+                return -math.inf
+            if grid[x1][y1] == -1 or grid[x2][y2] == -1:
+                return -math.inf
+            cur = 0
+            if x1 != x2 or y1 != y2:
+                cur += grid[x1][y1] + grid[x2][y2]
+            elif grid[x1][y1] == 1:
+                cur += 1
+            if x1 == x2 == 0 and y1 == y2 == 0:  # if x1 == y1 == 0
+                return cur
+            a = dfs(x1 - 1, y1, x2 - 1, y2)
+            b = dfs(x1 - 1, y1, x2, y2 - 1)
+            c = dfs(x1, y1 - 1, x2 - 1, y2)
+            d = dfs(x1, y1 - 1, x2, y2 - 1)
+            cur += max(a, b, c, d)
+            return cur
+
+        m = len(grid)
+        n = len(grid[0])
+        return max(dfs(m - 1, n - 1, m - 1, n - 1), 0)
+
+    def cherryPickup(self, grid: List[List[int]]) -> int:
+        @functools.lru_cache(None)
+        def dfs(r1, c1, c2):
+            r2 = r1 + c1 - c2
+            if r1 == m or r2 == m or c1 == m or c2 == m:
+                return float("-inf")
+            if grid[r1][c1] == -1 or grid[r2][c2] == -1:
+                return float("-inf")
+            if r1 == c1 == m - 1:
+                return grid[r1][c1]
+            else:
+                cur = grid[r1][c1]
+                if c1 != c2:
+                    cur += grid[r2][c2]
+                # TODO, why lru_cache still works
+                cur += max(
+                    dfs(r1, c1 + 1, c2 + 1),
+                    dfs(r1, c1 + 1, c2),
+                    dfs(r1 + 1, c1, c2),
+                    dfs(r1 + 1, c1, c2 + 1),
+                )
+                return cur
+
+        m = len(grid)
+        return max(dfs(0, 0, 0), 0)
+
+
 # 744 - Find Smallest Letter Greater Than Target - EASY
 class Solution:
     def nextGreatestLetter(self, letters: List[str], target: str) -> str:
@@ -513,6 +880,94 @@ class Solution:
 
     def nextGreatestLetter(self, l: List[str], target: str) -> str:
         return l[bisect.bisect_right(l, target)] if target < l[-1] else l[0]
+
+
+# 745 - Prefix and Suffix Search - HARD
+class WordFilter:
+    def __init__(self, words: List[str]):
+        self.d = dict()
+        for i, w in enumerate(words):
+            for j in range(0, len(w) + 1):
+                p = w[:j]
+                for k in range(0, len(w) + 1):
+                    s = w[k:]
+                    self.d[(p, s)] = i
+
+    def f(self, pref: str, suff: str) -> int:
+        return self.d.get((pref, suff), -1)
+
+
+class WordFilter:
+    def __init__(self, words: List[str]):
+        self.p = {}
+        self.s = {}
+        for i, w in enumerate(words):
+            r = self.p
+            for c in w:
+                if c not in r:
+                    r[c] = {}
+                r = r[c]
+                if "MAX" in r:
+                    r["MAX"].append(i)
+                else:
+                    r["MAX"] = [i]
+        for i, w in enumerate(words):
+            r = self.s
+            for c in w[::-1]:
+                if c not in r:
+                    r[c] = {}
+                r = r[c]
+                if "MAX" in r:
+                    r["MAX"].append(i)
+                else:
+                    r["MAX"] = [i]
+
+    def f(self, pref: str, suff: str) -> int:
+        r = self.p
+        for c in pref:
+            if c not in r:
+                return -1
+            r = r[c]
+        p = r["MAX"]  # copy, incase p.pop() will change original arr
+        r = self.s
+        for c in suff[::-1]:
+            if c not in r:
+                return -1
+            r = r[c]
+        s = r["MAX"]
+        i = len(p) - 1  # instead of using p.pop(), using two pointers
+        j = len(s) - 1  # speed up, and reduce memory usage cuz no list copy
+        while i > -1 and j > -1:
+            if p[i] > s[j]:
+                i -= 1
+            elif p[i] < s[j]:
+                j -= 1
+            else:
+                return p[i]
+        return -1
+
+
+class WordFilter:
+    def __init__(self, words: List[str]):
+        self.p = collections.defaultdict(set)
+        self.s = collections.defaultdict(set)
+        self.weights = {}
+        for i, w in enumerate(words):
+            p = s = ""
+            for c in w:
+                p += c
+                self.p[p].add(w)
+            for c in w[::-1]:
+                s = c + s
+                self.s[s].add(w)
+            self.weights[w] = i
+
+    def f(self, pref: str, suff: str) -> int:
+        weight = -1
+        for w in self.p[pref] & self.s[suff]:
+            if self.weights[w] > weight:
+                weight = self.weights[w]
+        return weight
 
 
 # 746 - Min Cost Climbing Stairs - EASY
@@ -560,7 +1015,98 @@ class Solution:
         return min([w for w in words if collections.Counter(w) & pc == pc], key=len)
 
 
-# 749
+# 749 - Contain Virus - HARD
+class Solution:
+    def containVirus(self, isInfected: List[List[int]]) -> int:
+        blank = set()
+        virus = set()
+        for i, row in enumerate(isInfected):
+            for j, v in enumerate(row):
+                if v:
+                    virus.add((i, j))
+                else:
+                    blank.add((i, j))
+
+        def dfs(i: int, j: int) -> int:
+            if (i, j) in neib:
+                return 0
+            neib.add((i, j))
+            wall = 0
+            for x, y in (i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1):
+                if (x, y) in blank:
+                    infect.add((x, y))
+                    wall += 1
+                elif (x, y) in virus:
+                    wall += dfs(x, y)
+            return wall
+
+        ans = 0
+        while virus and blank:
+            seen = set()
+            todo = (set(), set(), 0)
+            area = []
+            for i, j in virus:
+                if (i, j) in seen:
+                    continue
+                infect = set()
+                neib = set()
+                walls = dfs(i, j)
+                seen.update(neib)
+                area.append((infect, neib, walls))
+                if len(todo[0]) < len(infect):
+                    todo = (infect, neib, walls)
+            ans += todo[2]
+            virus -= todo[1]
+            for infect, neib, walls in area:
+                if len(todo[0]) == len(infect):
+                    continue
+                if infect:
+                    virus |= infect
+                    blank -= infect
+                else:
+                    virus -= neib
+        return ans
+
+    def containVirus(self, isInfected: List[List[int]]) -> int:
+        def dfs(i: int, j: int) -> None:
+            vis[i][j] = True
+            areas.append((i, j))
+            for x, y in (i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1):
+                if 0 <= x < m and 0 <= y < n:
+                    if isInfected[x][y] == 1 and not vis[x][y]:
+                        dfs(x, y)
+                    elif isInfected[x][y] == 0:
+                        wall[0] += 1
+                        infect.add((x, y))
+            return
+
+        m = len(isInfected)
+        n = len(isInfected[0])
+        ans = 0
+        while 1:
+            vis = [[False] * n for _ in range(m)]
+            arr = []
+            for i, row in enumerate(isInfected):
+                for j, v in enumerate(row):
+                    if v == 1 and not vis[i][j]:
+                        areas = []
+                        wall = [0]
+                        infect = set()
+                        dfs(i, j)
+                        arr.append((infect, areas, wall[0]))
+            if not arr:
+                break
+            arr.sort(key=lambda x: len(x[0]))
+            _, area, w = arr.pop()
+            ans += w
+            for i, j in area:
+                isInfected[i][j] = -1
+            for _, area, _ in arr:
+                for i, j in area:
+                    for x, y in (i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1):
+                        if 0 <= x < m and 0 <= y < n and isInfected[x][y] == 0:
+                            isInfected[x][y] = 1
+        return ans
 
 
 # 750
@@ -627,6 +1173,68 @@ class Solution:
                 partition.append(end - start + 1)
                 start = end + 1
         return partition
+
+
+# 767 - Reorganize String - MEDIUM
+class Solution:
+    # O(n * logk + n) / O(n)
+    def reorganizeString(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        if cnt.most_common(1)[0][1] > (len(s) + 1) // 2:
+            return ""
+        hp = [[-v, k] for k, v in cnt.items()]
+        heapq.heapify(hp)
+        ans = ""
+        while hp:
+            if len(hp) > 1:
+                fst = heapq.heappop(hp)
+                snd = heapq.heappop(hp)
+                ans += fst[1] + snd[1]
+                fst[0] += 1
+                snd[0] += 1
+                if fst[0] != 0:
+                    heapq.heappush(hp, fst)
+                if snd[0] != 0:
+                    heapq.heappush(hp, snd)
+            else:
+                ans += hp[0][1]
+                heapq.heappop(hp)
+        return ans
+
+    def reorganizeString(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        hp = [[-v, k] for k, v in cnt.items()]
+        heapq.heapify(hp)
+        ans = ""
+        pre = [1, 0]
+        while hp:
+            v, k = heapq.heappop(hp)
+            ans += k
+            if pre[0] < 0:
+                heapq.heappush(hp, pre)
+            pre = [v + 1, k]
+        return "" if pre[0] < 0 else ans
+
+    # O(n + C) / O(n)
+    def reorganizeString(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        bn = cnt.most_common(1)[0][1]
+        if bn > (len(s) + 1) // 2:
+            return ""
+        buckets = [[] for _ in range(bn)]
+        i = 0
+        for c, v in cnt.most_common():
+            while v:
+                buckets[i].append(c)
+                v -= 1
+                i = (i + 1) % bn
+        return "".join(c for b in buckets for c in b)
+
+        return (
+            "".join(c for b in buckets for c in b)
+            if list(map(len, buckets)).count(1) <= 1
+            else ""
+        )
 
 
 ################
