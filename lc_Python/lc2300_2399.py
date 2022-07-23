@@ -1538,3 +1538,89 @@ class Solution:
             if g % nums[i] == 0:
                 return i
         return -1
+
+
+# 2347 - Best Poker Hand - EASY
+class Solution:
+    def bestHand(self, ranks: List[int], suits: List[str]) -> str:
+        if len(set(suits)) == 1:
+            return "Flush"
+        cnt = collections.Counter(ranks)
+        if any(v >= 3 for v in cnt.values()):
+            return "Three of a Kind"
+        if any(v >= 2 for v in cnt.values()):
+            return "Pair"
+        if len(cnt.keys()) == 5:
+            return "High Card"
+        return ""
+
+    def bestHand(self, ranks: List[int], suits: List[str]) -> str:
+        if len(set(suits)) == 1:
+            return "Flush"
+        for i in ranks:
+            if ranks.count(i) >= 3:
+                return "Three of a Kind"
+        for i in ranks:
+            if ranks.count(i) == 2:
+                return "Pair"
+        return "High Card"
+
+
+# 2348 - Number of Zero-Filled Subarrays - MEDIUM
+class Solution:
+    def zeroFilledSubarray(self, nums: List[int]) -> int:
+        ans = 0
+        nums.append(1)
+        cur = 0
+        for v in nums:
+            if v == 0:
+                cur += 1
+            else:
+                ans += cur * (cur + 1) // 2
+                cur = 0
+        return ans
+
+    def zeroFilledSubarray(self, nums: List[int]) -> int:
+        ans = 0
+        cur = 0
+        for v in nums:
+            if v == 0:
+                cur += 1
+                ans += cur
+            else:
+                cur = 0
+        return ans
+
+
+# 2349 - Design a Number Container System - MEDIUM
+class NumberContainers:
+    def __init__(self):
+        self.cur = collections.defaultdict(int)
+        self.n = collections.defaultdict(list)
+
+    def change(self, index: int, number: int) -> None:
+        self.cur[index] = number
+        heapq.heappush(self.n[number], index)
+        return
+
+    def find(self, number: int) -> int:
+        while self.n[number]:
+            x = self.n[number][0]
+            if self.cur[x] == number:
+                return x
+            heapq.heappop(self.n[number])
+        return -1
+
+
+# 2350 - Shortest Impossible Sequence of Rolls - HARD
+class Solution:
+    # O(n) / O(k)
+    def shortestSequence(self, rolls: List[int], k: int) -> int:
+        ans = 1
+        s = set()
+        for v in rolls:
+            s.add(v)
+            if len(s) == k:
+                ans += 1
+                s.clear()
+        return ans

@@ -458,3 +458,8 @@ class Solution:
 # math, heap
 # 250 / https://leetcode.cn/contest/biweekly-contest-82/problems/subarray-with-elements-greater-than-varying-threshold/
 # 并查集, 单调栈
+
+
+# https://leetcode.cn/contest/biweekly-contest-83
+# 763 / https://leetcode.cn/contest/biweekly-contest-83/problems/shortest-impossible-sequence-of-rolls/
+# brain teaser
