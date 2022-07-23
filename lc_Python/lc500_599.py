@@ -962,6 +962,46 @@ class Solution:
         return min(tmp, key=lambda x: abs(int(x) - int(n)) or float("inf"))
 
 
+# 565 - Array Nesting - MEDIUM
+class Solution:
+    def arrayNesting(self, nums: List[int]) -> int:
+        def dfs(i: int) -> int:
+            vis[i] = True
+            cur = 1
+            if not vis[nums[i]]:
+                cur += dfs(nums[i])
+            return cur
+
+        vis = [False] * len(nums)
+        ans = 0
+        for n in nums:
+            if not vis[n]:
+                ans = max(ans, dfs(n))
+        return ans
+
+    def arrayNesting(self, nums: List[int]) -> int:
+        def dfs(i: int) -> int:
+            if nums[i] == -1:
+                return 0
+            x = nums[i]
+            nums[i] = -1  # vis
+            return 1 + dfs(x)
+
+        return max(dfs(i) for i in range(len(nums)))
+
+    def arrayNesting(self, nums: List[int]) -> int:
+        ans = 0
+        for i in range(len(nums)):
+            cnt = 0
+            while nums[i] != -1:
+                nxt = nums[i]
+                nums[i] = -1 # vis
+                cnt += 1
+                i = nxt
+            ans = max(ans, cnt)
+        return ans
+
+
 # 566 - Reshape the Matrix - EASY
 class Solution:
     def matrixReshape(self, mat: List[List[int]], r: int, c: int) -> List[List[int]]:

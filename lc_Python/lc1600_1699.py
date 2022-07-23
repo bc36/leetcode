@@ -103,12 +103,6 @@ class Solution:
         return ans
 
 
-# 1672 - Richest Customer Wealth - EASY
-class Solution:
-    def maximumWealth(self, accounts: List[List[int]]) -> int:
-        return max(sum(a) for a in accounts)
-
-
 # 1629 - Slowest Key - EASY
 class Solution:
     def slowestKey(self, rT: List[int], keys: str) -> str:
@@ -122,6 +116,15 @@ class Solution:
                 time = rT[i + 1] - rT[i]
                 ans = keys[i + 1]
         return ans
+
+
+# 1636 - Sort Array by Increasing Frequency - EASY
+class Solution:
+    def frequencySort(self, nums: List[int]) -> List[int]:
+        # return sorted(nums, key=lambda x: (nums.count(x), -x))
+        cnt = collections.Counter(nums)
+        return sorted(nums, key=lambda x: (cnt[x], -x))
+        return sorted(nums, key=lambda x: (cnt.get(x), -x))
 
 
 # 1648 - Sell Diminishing-Valued Colored Balls - MEDIUM
@@ -189,6 +192,38 @@ class Solution:
             p1 = p1.parent if p1.parent else q
             p2 = p2.parent if p2.parent else p
         return p1
+
+
+# 1652 - Defuse the Bomb - EASY
+class Solution:
+    def decrypt(self, code: List[int], k: int) -> List[int]:
+        n = len(code)
+        ans = []
+        for i, v in enumerate(code):
+            if k > 0:
+                if k + i >= n:
+                    ans.append(sum(code[i + 1 :] + code[: k + i + 1 - n]))
+                else:
+                    ans.append(sum(code[i + 1 : i + k + 1]))
+            elif k < 0:
+                if i + k < 0:
+                    ans.append(sum(code[:i] + code[n + k + i :]))
+                else:
+                    ans.append(sum(code[i + k : i]))
+            else:
+                ans.append(0)
+        return ans
+
+    def decrypt(self, code: List[int], k: int) -> List[int]:
+        n = len(code)
+        ans = [0 for _ in range(n)]
+        c2 = code * 2
+        for i in range(n):
+            if k > 0:
+                ans[i] = sum(c2[i + 1 : i + k + 1])
+            if k < 0:
+                ans[i] = sum(c2[i + n + k : i + n])
+        return ans
 
 
 # 1672 - Richest Customer Wealth - EASY

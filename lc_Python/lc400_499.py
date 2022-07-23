@@ -705,6 +705,44 @@ class Solution:
         return l
 
 
+# 444 - Sequence reconstruction - MEDIUM - PREMIUM
+class Solution:
+    def sequenceReconstruction(
+        self, nums: List[int], sequences: List[List[int]]
+    ) -> bool:
+        g = [[] for _ in range((len(nums)))]
+        d = [0] * (len(nums))
+        for s in sequences:
+            for i in range(1, len(s)):
+                g[s[i - 1] - 1].append(s[i] - 1)
+                d[s[i] - 1] += 1
+        q = [i for i, v in enumerate(d) if v == 0]
+        while q:
+            if len(q) > 1:
+                return False
+            new = []
+            n = q.pop()
+            for v in g[n]:
+                d[v] -= 1
+                if d[v] == 0:
+                    new.append(v)
+            q = new
+        return True
+
+    # TODO
+    def sequenceReconstruction(
+        self, nums: List[int], sequences: List[List[int]]
+    ) -> bool:
+        temp = [0] * (len(nums) + 1)
+        r = [0] * (len(nums) + 1)
+        for i in range(1, len(nums)):
+            r[nums[i]] = nums[i - 1]
+        for s in sequences:
+            for x in range(1, len(s)):
+                temp[s[x]] = max(s[x - 1], temp[s[x]])
+        return True if r == temp else False
+
+
 # 448 - Find All Numbers Disappeared in an Array - EASY
 class Solution:
     def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
