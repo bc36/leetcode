@@ -221,6 +221,44 @@ class Solution:
                 s[i] = ch
         return "".join(s)
 
+# 1206 - Design Skiplist - HARD
+class Skiplist:
+    def __init__(self):
+        self.d = dict()
+
+    def search(self, target: int) -> bool:
+        return True if target in self.d else False
+
+    def add(self, num: int) -> None:
+        self.d[num] = self.d.get(num, 0) + 1
+        return
+
+    def erase(self, num: int) -> bool:
+        if num not in self.d:
+            return False
+        self.d[num] -= 1
+        if self.d[num] == 0:
+            del self.d[num]
+        return True
+
+
+class Skiplist:
+    def __init__(self):
+        self.d = dict()
+
+    def search(self, target: int) -> bool:
+        return self.d.get(target, 0) != 0
+
+    def add(self, num: int) -> None:
+        self.d[num] = self.d.get(num, 0) + 1
+        return
+
+    def erase(self, num: int) -> bool:
+        if self.d.get(num, 0) == 0:
+            return False
+        self.d[num] -= 1
+        return True
+
 
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
 class Solution:
