@@ -890,9 +890,9 @@ class Solution:
 
 
 # 560 - Subarray Sum Equals K - MEDIUM
-# Why not sliding window?
-# The next element might be negative
-# Moving pointer to the right cannot guarantee the sum will become larger
+# why not sliding window?
+# the next element might be negative
+# moving pointer to the right cannot guarantee the sum will become larger
 class Solution:
     def subarraySum(self, nums: List[int], k: int) -> int:
         presum, ans = 0, 0
