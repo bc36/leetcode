@@ -1,5 +1,6 @@
 from typing import List
-import collections, functools, itertools, heapq, math
+import collections, functools, itertools, heapq, math, bisect, sortedcontainers, string, random, operator, re, os, gc
+
 
 """exercise"""
 # https://leetcode.cn/contest/weekly-contest-270/ranking/
@@ -1080,7 +1081,7 @@ T4: 1532 pass
 
 
 # https://leetcode.cn/contest/weekly-contest-299
-# 1986 / https://leetcode.cn/contest/weekly-contest-299/problems/maximum-score-of-spliced-array/
+# 1976 / https://leetcode.cn/contest/weekly-contest-299/problems/maximum-score-of-spliced-array/
 
 # 314 / https://leetcode.cn/contest/weekly-contest-299/problems/minimum-score-after-removals-on-a-tree/
 
@@ -1104,3 +1105,10 @@ WA: T2(1),  T4(3)
 FT: 1:21:20
 T4: 2746 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-303
+# 1941 / https://leetcode.cn/contest/weekly-contest-303/problems/design-a-food-rating-system/
+# heapq, sortedcontainers
+# 993 / https://leetcode.cn/contest/weekly-contest-303/problems/number-of-excellent-pairs/
+# bit manipulation, hash table or 二分

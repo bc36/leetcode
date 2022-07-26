@@ -1,4 +1,4 @@
-import bisect, collections, functools, math, itertools, heapq, string, operator
+import bisect, collections, functools, math, itertools, heapq, string, operator, sortedcontainers
 from typing import List, Optional
 
 
@@ -1623,4 +1623,144 @@ class Solution:
             if len(s) == k:
                 ans += 1
                 s.clear()
+        return ans
+
+
+# 2351 - First Letter to Appear Twice - EASY
+class Solution:
+    def repeatedCharacter(self, s: str) -> str:
+        st = set()
+        for c in s:
+            if c in st:
+                return c
+            st.add(c)
+        return ""
+
+    def repeatedCharacter(self, s: str) -> str:
+        b = 0
+        for c in s:
+            # if 1 << ord(c) - ord("a") & b > 0:
+            if b >> ord(c) - ord("a") & 1 > 0:
+                return c
+            b |= 1 << ord(c) - ord("a")
+        return ""
+
+
+# 2352 - Equal Row and Column Pairs - MEDIUM
+class Solution:
+    def equalPairs(self, grid: List[List[int]]) -> int:
+        d = collections.defaultdict(int)
+        for r in grid:
+            d[tuple(r)] += 1
+        ans = 0
+        n = len(grid)
+        for j in range(n):
+            t = tuple([grid[i][j] for i in range(n)])
+            ans += d[t]
+        return ans
+
+    def equalPairs(self, grid: List[List[int]]) -> int:
+        cnt = collections.Counter(tuple(r) for r in grid)
+        return sum(cnt[c] for c in zip(*grid))
+
+
+# 2353 - Design a Food Rating System - MEDIUM
+class FoodRatings:
+    def __init__(self, foods: List[str], cuisines: List[str], ratings: List[int]):
+        self.frc = collections.defaultdict(list)
+        self.crf = collections.defaultdict(list)
+        for f, c, r in zip(foods, cuisines, ratings):
+            self.frc[f] = [r, c]
+            heapq.heappush(self.crf[c], (-r, f))
+
+    def changeRating(self, food: str, newRating: int) -> None:
+        _, c = self.frc[food]
+        heapq.heappush(self.crf[c], (-newRating, food))
+        self.frc[food][0] = newRating
+
+    def highestRated(self, cuisine: str) -> str:
+        hp = self.crf[cuisine]
+        while -hp[0][0] != self.frc[hp[0][1]][0]:
+            heapq.heappop(hp)
+        return hp[0][1]
+
+
+class FoodRatings:
+    def __init__(self, foods: List[str], cuisines: List[str], ratings: List[int]):
+        self.frc = collections.defaultdict(list)
+        self.crf = collections.defaultdict(sortedcontainers.SortedSet)
+        for f, c, r in zip(foods, cuisines, ratings):
+            self.frc[f] = [r, c]
+            self.crf[c].add((-r, f))
+
+    def changeRating(self, food: str, newRating: int) -> None:
+        r, c = self.frc[food]
+        s = self.crf[c]
+        s.remove((-r, food))
+        s.add((-newRating, food))
+        self.frc[food][0] = newRating
+
+    def highestRated(self, cuisine: str) -> str:
+        return self.crf[cuisine][0][1]
+
+
+class FoodRatings:
+    def __init__(self, foods: List[str], cuisines: List[str], ratings: List[int]):
+        self.f2r = collections.defaultdict(int)
+        self.f2c = collections.defaultdict(str)
+        self.crf = collections.defaultdict(sortedcontainers.SortedList)
+        for f, c, r in zip(foods, cuisines, ratings):
+            self.f2r[f] = r
+            self.f2c[f] = c
+            self.crf[c].add((-r, f))
+
+    def changeRating(self, food: str, newRating: int) -> None:
+        pre = self.f2r[food]
+        c = self.f2c[food]
+        self.crf[c].discard((-pre, food))
+        self.f2r[food] = newRating
+        self.f2c[food] = c
+        self.crf[c].add((-newRating, food))
+
+    def highestRated(self, cuisine: str) -> str:
+        return self.crf[cuisine][0][1]
+
+
+# 2354 - Number of Excellent Pairs - HARD
+class Solution:
+    """
+    py3.10 builtin
+    int.bit_count(x)
+    x.bit_count()
+
+    def bit_count(self) -> str:
+        return bin(self).count("1")
+    """
+
+    def countExcellentPairs(self, nums: List[int], k: int) -> int:
+        def fn(x):
+            r = 0
+            while x:
+                if x & 1:
+                    r += 1
+                x //= 2
+            return r
+
+        cnt = collections.Counter(x.bit_count() for x in set(nums))  # 100ms
+        # cnt = collections.Counter(bin(x).count('1') for x in set(nums)) # 200ms
+        # cnt = collections.Counter(fn(x) for x in set(nums)) # 1000ms
+        ans = 0
+        for k1, v1 in cnt.items():
+            for k2, v2 in cnt.items():
+                if k1 + k2 >= k:
+                    ans += v1 * v2
+        return ans
+
+    def countExcellentPairs(self, nums: List[int], k: int) -> int:
+        arr = [int.bit_count(x) for x in set(nums)]
+        arr.sort()
+        ans = 0
+        for v in arr:
+            p = bisect.bisect_left(arr, k - v)
+            ans += len(arr) - p
         return ans
