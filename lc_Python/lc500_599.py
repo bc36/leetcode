@@ -1,4 +1,4 @@
-import collections, math, random, bisect, itertools, functools, heapq, re
+import collections, math, random, bisect, itertools, functools, heapq, re, fractions
 from typing import List, Optional
 
 
@@ -995,7 +995,7 @@ class Solution:
             cnt = 0
             while nums[i] != -1:
                 nxt = nums[i]
-                nums[i] = -1 # vis
+                nums[i] = -1  # vis
                 cnt += 1
                 i = nxt
             ans = max(ans, cnt)
@@ -1267,6 +1267,59 @@ class Solution:
             prev = code
             code = re.sub(r"<([A-Z]{1,9})>[^<]*</\1>", "t", code)
         return code == "t"
+
+
+# 592 - Fraction Addition and Subtraction - MEDIUM
+class Solution:
+    def fractionAddition(self, expression: str) -> str:
+        def gcd(a: int, b: int) -> int:
+            if not b:
+                return a
+            return gcd(b, a % b)
+
+        def lcm(a: int, b: int) -> int:
+            return (a * b) // gcd(a, b)
+
+        if expression[0] != "-":
+            expression = "+" + expression
+
+        sign = []
+        numerator = []
+        denominator = []
+        cur = 0
+        for i, v in enumerate(expression):
+            if v in "+-":
+                sign.append(v)
+                if i != 0:
+                    denominator.append(cur)
+                cur = 0
+                continue
+            if v == "/":
+                numerator.append(cur)
+                cur = 0
+                continue
+            cur = cur * 10 + int(v)
+            if i == len(expression) - 1:
+                denominator.append(cur)
+        dnmnt = 1
+        n = len(sign)
+        for v in denominator:
+            dnmnt = lcm(dnmnt, v)
+        for i in range(n):
+            p = dnmnt // denominator[i]
+            numerator[i] *= p
+        nmrt = 0
+        for i in range(n):
+            nmrt += numerator[i] if sign[i] == "+" else -numerator[i]
+        pp = gcd(nmrt, dnmnt)
+        nmrt //= pp
+        dnmnt //= pp
+        dnmnt = 1 if dnmnt == 0 else dnmnt
+        return str(nmrt) + "/" + str(dnmnt)
+
+    def fractionAddition(self, expression: str) -> str:
+        f = fractions.Fraction(str(eval(expression))).limit_denominator()
+        return f"{f.numerator}/{f.denominator}"
 
 
 # 594 - Longest Harmonious Subsequence - EASY
