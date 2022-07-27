@@ -265,6 +265,13 @@ class Solution:
         return ans
 
 
+# 1331 - Rank Transform of an Array - EASY
+class Solution:
+    def arrayRankTransform(self, arr: List[int]) -> List[int]:
+        ranks = {v: i for i, v in enumerate(sorted(set(arr)), start=1)}
+        return [ranks[v] for v in arr]
+
+
 # 1332 - Remove Palindromic Subsequences - EASY
 class Solution:
     def removePalindromeSub(self, s: str) -> int:

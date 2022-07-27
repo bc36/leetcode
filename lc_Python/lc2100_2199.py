@@ -560,6 +560,99 @@ class Solution:
         return True
 
 
+# 2134 - Minimum Swaps to Group All 1's Together II - MEDIUM
+class Solution:
+    # maximum 1
+    def minSwaps(self, nums: List[int]) -> int:
+        ones = sum(nums)
+        mx = c = sum(nums[:ones])
+        nums = nums * 2
+        l = 0
+        for r in range(ones, len(nums)):
+            c -= nums[l]
+            l += 1
+            c += nums[r]
+            mx = max(mx, c)
+        return ones - mx
+
+    def minSwaps(self, nums: List[int]) -> int:
+        ones = nums.count(1)
+        n = len(nums)
+        cur = mx = 0
+        for i in range(n * 2):
+            if i >= ones and nums[i % n - ones]:
+                cur -= 1
+            if nums[i % n] == 1:
+                cur += 1
+            mx = max(cur, mx)
+        return ones - mx
+
+    # minimum 0
+    def minSwaps(self, nums: List[int]) -> int:
+        ones = sum(nums)
+        window = sum(nums[:ones])
+        ans = ones - window
+        for i in range(len(nums)):
+            window -= nums[i]
+            i = (i + ones) % len(nums)
+            window += nums[i]
+            ans = min(ans, ones - window)
+        return ans
+
+
+# 2135 - Count Words Obtained After Adding a Letter - MEDIUM
+class Solution:
+    def wordCount(self, startWords: List[str], targetWords: List[str]) -> int:
+        d = collections.defaultdict(set)
+        for s in startWords:
+            d[len(s)].add("".join(sorted(s)))
+        ans = 0
+        for t in targetWords:
+            st = "".join(sorted(t))
+            # do not operate each set from d[len(t) - 1], TLE
+            for i in range(len(t)):
+                if st[:i] + st[i + 1 :] in d[len(t) - 1]:
+                    ans += 1
+                    break
+        return ans
+
+    # Since 'No letter occurs more than once in any string of startWords or targetWords'.
+    # if occurs more than once, use above solution.
+    def wordCount(self, startWords: List[str], targetWords: List[str]) -> int:
+        def s2b(s: str):
+            n = 0
+            for c in s:
+                n |= 1 << (ord(c) - ord("a"))
+            return n
+
+        s = set()
+        ans = 0
+        for v in startWords:
+            s.add(s2b(v))
+        for t in targetWords:
+            x = s2b(t)
+            for c in t:
+                # if x - (1 << (ord(c) - 97)) in s:
+                #     ans += 1
+                #     break
+                if x ^ s2b(c) in s:
+                    ans += 1
+                    break
+        return ans
+
+    # frozenset: TypeError: unhashable type: 'set'
+    def wordCount(self, startWords: List[str], targetWords: List[str]) -> int:
+        s = set(frozenset(w) for w in startWords)
+        ans = 0
+        for t in targetWords:
+            st = set(t)
+            for c in t:
+                if st.difference(c) in s:
+                    ans += 1
+                    break
+        return ans
+
+
 # 2151 - Maximum Good People Based on Statements - HARD
 class Solution:
     # O(2^n * n^2) / O(1)

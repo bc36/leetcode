@@ -7,6 +7,50 @@ class Solution:
         return address.replace(".", "[.]")
 
 
+# 1122 - Relative Sort Array - EASY
+class Solution:
+    def relativeSortArray(self, arr1: List[int], arr2: List[int]) -> List[int]:
+        s = set(arr1)
+        cnt = collections.Counter(arr1)
+        ans = []
+        for v in arr2:
+            if v in s:
+                ans.extend([v] * cnt[v])
+                del cnt[v]
+        for k, v in sorted(cnt.items()):
+            ans.extend([k] * v)
+        return ans
+
+    def relativeSortArray(self, arr1: List[int], arr2: List[int]) -> List[int]:
+        freq = [0] * 1001
+        for v in arr1:
+            freq[v] += 1
+        ans = []
+        for v in arr2:
+            ans.extend([v] * freq[v])
+            freq[v] = 0
+        for v in range(1001):
+            if freq[v] > 0:
+                ans.extend([v] * freq[v])
+        return ans
+
+
+# 1128 - Number of Equivalent Domino Pairs - EASY
+class Solution:
+    def numEquivDominoPairs(self, dominoes: List[List[int]]) -> int:
+        cnt = collections.Counter(tuple(sorted(d)) for d in dominoes)
+        return sum(v * (v - 1) // 2 for v in cnt.values())
+
+    def numEquivDominoPairs(self, dominoes: List[List[int]]) -> int:
+        cnt = [0] * 100
+        ans = 0
+        for x, y in dominoes:
+            v = (x * 10 + y if x <= y else y * 10 + x)
+            ans += cnt[v]
+            cnt[v] += 1
+        return ans
+
+
 # 1137 - N-th Tribonacci Number - EASY
 class Solution:
     @functools.lru_cache(None)
