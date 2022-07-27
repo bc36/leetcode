@@ -138,6 +138,16 @@ class Solution:
         return ans
 
 
+# 1184 - Distance Between Bus Stops - EASY
+class Solution:
+    def distanceBetweenBusStops(
+        self, distance: List[int], start: int, destination: int
+    ) -> int:
+        a = min(destination, start)
+        b = max(destination, start)
+        return min(sum(distance[a:b]), sum(distance[b:] + distance[:a]))
+
+
 # 1189 - Maximum Number of Balloons - EASY
 class Solution:
     def maxNumberOfBalloons(self, text: str) -> int:

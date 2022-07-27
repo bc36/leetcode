@@ -523,6 +523,43 @@ class Solution:
                     return ans
 
 
+# 2124 - Check if All A's Appears Before All B's - EASY
+class Solution:
+    def checkString(self, s: str) -> bool:
+        if len(set(s)) == 1:
+            return True
+        a = len(s) - 1 - s[::-1].find("a")
+        b = s.find("b")
+        return True if a < b else False
+
+    def checkString(self, s: str) -> bool:
+        return s.find("ba") == -1
+        return "".join(sorted(s)) == s
+
+
+# 2125 - Number of Laser Beams in a Bank - MEDIUM
+class Solution:
+    def numberOfBeams(self, bank: List[str]) -> int:
+        ans = pre = 0
+        for s in bank:
+            cur = s.count("1")
+            if cur != 0:
+                ans += pre * cur
+                pre = cur
+        return ans
+
+
+# 2126 - Destroying Asteroids - MEDIUM
+class Solution:
+    def asteroidsDestroyed(self, mass: int, asteroids: List[int]) -> bool:
+        asteroids.sort()
+        for v in asteroids:
+            if v > mass:
+                return False
+            mass += v
+        return True
+
+
 # 2151 - Maximum Good People Based on Statements - HARD
 class Solution:
     # O(2^n * n^2) / O(1)
@@ -1127,12 +1164,12 @@ class Solution:
 # 2197 - Replace Non-Coprime Numbers in Array - HARD
 class Solution:
     def replaceNonCoprimes(self, nums: List[int]) -> List[int]:
-        def gcd(x, y):
+        def gcd(x: int, y: int) -> int:
             while y:
                 x, y = y, x % y
             return x
 
-        def lcm(x, y):
+        def lcm(x: int, y: int) -> int:
             res = (x * y) // gcd(x, y)
             return res
 
