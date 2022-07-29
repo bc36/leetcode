@@ -768,6 +768,81 @@ class Solution:
 
 
 # 2226 - Maximum Candies Allocated to K Children - MEDIUM
+class Solution:
+    def maximumCandies(self, candies: List[int], k: int) -> int:
+        def check(i: int) -> bool:
+            res = 0
+            for c in candies:
+                res += c // i
+            return res >= k
+
+        l = 1
+        r = max(candies) + 1
+        while l < r:
+            mid = l + (r - l) // 2
+            if check(mid):
+                l = mid + 1
+            else:
+                r = mid
+        return l - 1
+
+    def maximumCandies(self, candies: List[int], k: int) -> int:
+        fn = lambda t: sum(x // t for x in candies) < k
+        return bisect.bisect_left(range(1, max(candies) + 1), True, key=fn)
+
+    def maximumCandies(self, candies: List[int], k: int) -> int:
+        fn = lambda x: -sum(v // (x + 1) for v in candies)
+        return bisect.bisect_right(range(sum(candies) // k), -k, key=fn)
+
+
+# 2227 - Encrypt and Decrypt Strings - HARD
+class Encrypter:
+    def __init__(self, keys: List[str], values: List[str], dictionary: List[str]):
+        self.k2v = {k: v for k, v in zip(keys, values)}
+        self.cnt = collections.Counter(self.encrypt(d) for d in dictionary)
+
+    def encrypt(self, word1: str) -> str:
+        ans = ""
+        for c in word1:
+            if c not in self.k2v:
+                return ""
+            ans += self.k2v[c]
+        return ans
+
+    def decrypt(self, word2: str) -> int:
+        return self.cnt[word2]
+
+
+class Encrypter:
+    def __init__(self, keys: List[str], values: List[str], dictionary: List[str]):
+        self.k2v = {k: v for k, v in zip(keys, values)}
+        self.v2k = v2k = collections.defaultdict(list)
+        for v, k in zip(values, keys):
+            v2k[v].append(k)
+        self.r = dict()
+        for d in dictionary:
+            r = self.r
+            for c in d:
+                if c not in r:
+                    r[c] = dict()
+                r = r[c]
+            r["end"] = 1
+
+    def encrypt(self, word1: str) -> str:
+        return "".join(self.k2v[i] for i in word1)
+
+    def decrypt(self, word2: str) -> int:
+        dq = collections.deque([self.r])
+        for i in range(0, len(word2), 2):
+            w = word2[i : i + 2]
+            if w not in self.v2k:
+                return 0
+            for _ in range(len(dq)):
+                r = dq.popleft()
+                for c in self.v2k[w]:
+                    if c in r:
+                        dq.append(r[c])
+        return sum("end" in r for r in dq)
 
 
 # 2231 - Largest Number After Digit Swaps by Parity - EASY
@@ -2255,6 +2330,79 @@ class Solution:
         return sum(v * i for i, v in enumerate(arr, start=1))
 
 
+# 2286 - Booking Concert Tickets in Groups - HARD
+class BookMyShow:
+    # update single value
+    def __init__(self, n: int, m: int):
+        self.n = n
+        self.m = m
+        self.f = [0] * 4 * n
+        self.min = [0] * 4 * n
+
+    # self.add(1, 1, n, idx, val)
+    def add(self, k: int, l: int, r: int, idx: int, val: int):
+        if l == r:
+            self.f[k] += val
+            self.min[k] += val
+            return
+        m = (l + r) >> 1
+        if idx <= m:
+            self.add(k + k, l, m, idx, val)
+        else:
+            self.add(k + k + 1, m + 1, r, idx, val)
+        self.f[k] = self.f[k + k] + self.f[k + k + 1]
+        self.min[k] = min(self.min[k + k], self.min[k + k + 1])
+        return
+
+    # self.calc(1, 1, n, L, R)
+    def calc(self, k: int, l: int, r: int, L: int, R: int) -> int:
+        # calc arr[L, R]
+        if L <= l and r <= R:
+            return self.f[k]
+        m = (l + r) >> 1
+        ret = 0
+        if L <= m:
+            ret += self.calc(k + k, l, m, L, R)
+        if m < R:
+            ret += self.calc(k + k + 1, m + 1, r, L, R)
+        return ret
+
+    # return the minimum index of val in range [1, R], if not exist: return 0
+    def index(self, k: int, l: int, r: int, R: int, val: int) -> int:
+        if self.min[k] > val:
+            return 0
+        if l == r:
+            return l
+        m = (l + r) >> 1
+        if self.min[k + k] <= val:
+            return self.index(k + k, l, m, R, val)
+        if R > m:
+            return self.index(k + k + 1, m + 1, r, R, val)
+        return 0
+
+    def gather(self, k: int, maxRow: int) -> List[int]:
+        i = self.index(1, 1, self.n, maxRow + 1, self.m - k)
+        if i == 0:
+            return []
+        seats = self.calc(1, 1, self.n, i, i)
+        self.add(1, 1, self.n, i, k)
+        return [i - 1, seats]
+
+    def scatter(self, k: int, maxRow: int) -> bool:
+        left = (maxRow + 1) * self.m - self.calc(1, 1, self.n, 1, maxRow + 1)
+        if left < k:
+            return False
+        i = self.index(1, 1, self.n, maxRow + 1, self.m - 1)
+        while True:
+            left_seats = self.m - self.calc(1, 1, self.n, i, i)
+            if k <= left_seats:
+                self.add(1, 1, self.n, i, k)
+                return True
+            k -= left_seats
+            self.add(1, 1, self.n, i, left_seats)
+            i += 1
+
+
 # 2287 - Rearrange Characters to Make Target String - EASY
 class Solution:
     def rearrangeCharacters(self, s: str, target: str) -> int:
@@ -2275,6 +2423,122 @@ class Solution:
             else:
                 ans.append(w)
         return " ".join(ans)
+
+
+# 2289 - Steps to Make Array Non-decreasing - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def totalSteps(self, nums: List[int]) -> int:
+        st = []  # monotonic stack, (num, max_t)
+        ans = 0
+        for v in nums:
+            cur = 0
+            while st and st[-1][0] <= v:
+                cur = max(cur, st.pop()[1])
+            if st:
+                cur += 1
+            else:
+                cur = 0  # v is the biggest
+            ans = max(ans, cur)
+            st.append((v, cur))
+        return ans
+
+    def totalSteps(self, nums: List[int]) -> int:
+        st = []
+        f = [0] * len(nums)
+        for i, v in enumerate(nums):
+            cur = 0
+            while st and nums[st[-1]] <= v:
+                cur = max(cur, f[st.pop()])
+            if st:
+                f[i] = cur + 1
+            st.append(i)
+        return max(f)
+
+
+# 2290 - Minimum Obstacle Removal to Reach Corner - HARD
+class Solution:
+    # O(m * n) / O(m * n), 0-1 BFS
+    def minimumObstacles(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        dis = [[math.inf] * n for _ in range(m)]
+        dis[0][0] = 0
+        dq = collections.deque([(0, 0)])
+        while dq:
+            x, y = dq.popleft()
+            for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                if 0 <= nx < m and 0 <= ny < n:
+                    g = grid[x][y]
+                    if dis[x][y] + g < dis[nx][ny]:
+                        dis[nx][ny] = dis[x][y] + g
+                        if g == 0:
+                            dq.appendleft((nx, ny))
+                        else:
+                            dq.append((nx, ny))
+        return dis[m - 1][n - 1]
+
+    # dijkstra, TODO
+    def minimumObstacles(self, grid: List[List[int]]) -> int:
+        INF = 10**9
+        dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+        Row = len(grid)
+        Col = len(grid[0])
+
+        dist = [[INF for _ in range(Col)] for _ in range(Row)]
+        minHeap = []
+
+        heapq.heappush(minHeap, (0, 0, 0))
+        dist[0][0] = 0
+
+        while minHeap:
+            d, r, c = heapq.heappop(minHeap)
+            if dist[r][c] < d:
+                continue
+            for di in range(4):
+                (dr, dc) = dirs[di]
+                nr = r + dr
+                nc = c + dc
+                if (
+                    0 <= nr < Row
+                    and 0 <= nc < Col
+                    and dist[r][c] + grid[nr][nc] < dist[nr][nc]
+                ):
+                    dist[nr][nc] = dist[r][c] + grid[nr][nc]
+                    heapq.heappush(minHeap, (dist[nr][nc], nr, nc))
+
+        res = dist[Row - 1][Col - 1]
+        return res
+
+    # dijkstra, TODO
+    def minimumObstacles(self, grid: List[List[int]]) -> int:
+        def dijkstra(st, ed):
+            dist = [[math.inf] * m for _ in range(n)]
+            ok = [[False] * m for _ in range(n)]
+            pq = [(0, st)]
+            dist[0][0] = 0
+            while pq:
+                _, (x, y) = heapq.heappop(pq)
+                if (x, y) == ed:
+                    return dist[x][y]
+                if ok[x][y]:
+                    continue
+                ok[x][y] = True
+                for dx, dy in zip(dir_x, dir_y):
+                    nx, ny = x + dx, y + dy
+                    if (
+                        0 <= nx < n
+                        and 0 <= ny < m
+                        and dist[nx][ny] > dist[x][y] + grid[nx][ny]
+                    ):
+                        dist[nx][ny] = dist[x][y] + grid[nx][ny]
+                        heapq.heappush(pq, (dist[nx][ny], (nx, ny)))
+            return -1
+
+        n, m = len(grid), len(grid[0])
+        dir_x, dir_y = (-1, 1, 0, 0), (0, 0, -1, 1)
+        return dijkstra((0, 0), (n - 1, m - 1))
 
 
 # 2293 - Min Max Game - EASY
@@ -2514,3 +2778,26 @@ class TextEditor:
             self.left.append(self.right.pop())
             k -= 1
         return "".join(self.left[-10:])
+
+
+# 2299 - Strong Password Checker II - EASY
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        a = b = c = d = e = False
+        if len(password) >= 8:
+            a = True
+        pre = "aa"
+        f = True
+        for ch in password:
+            if ord("a") <= ord(ch) <= ord("z"):
+                b = True
+            if ord("A") <= ord(ch) <= ord("Z"):
+                c = True
+            if ch.isdigit():
+                d = True
+            if ch in "!@#$%^&*()-+":
+                e = True
+            if pre == ch:
+                f = False
+            pre = ch
+        return a == b == c == d == e == f == True
