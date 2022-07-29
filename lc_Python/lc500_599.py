@@ -2,6 +2,13 @@ import collections, math, random, bisect, itertools, functools, heapq, re, fract
 from typing import List, Optional
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -1320,6 +1327,90 @@ class Solution:
     def fractionAddition(self, expression: str) -> str:
         f = fractions.Fraction(str(eval(expression))).limit_denominator()
         return f"{f.numerator}/{f.denominator}"
+
+
+# 593 - Valid Square - MEDIUM
+class Solution:
+    def validSquare(
+        self, p1: List[int], p2: List[int], p3: List[int], p4: List[int]
+    ) -> bool:
+        def k1k2(p1: List[int], p2: List[int], p3: List[int]) -> bool:
+            # p2 is common point
+            y12 = p1[1] - p2[1]
+            y23 = p2[1] - p3[1]
+            x12 = p1[0] - p2[0]
+            x23 = p2[0] - p3[0]
+            return y12 * y23 == -x12 * x23
+
+        def distance(p1: List[int], p2: List[int]) -> int:
+            return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+
+        if p1 == p2 == p3 == p4:
+            return False
+        d2 = distance(p1, p2)
+        d3 = distance(p1, p3)
+        d4 = distance(p1, p4)
+        # a4, opposite point
+        # p1 --- p2
+        #  |     |
+        #  |     |
+        # p3 --- p4
+        a2, a3, a4 = sorted([d2, d3, d4])
+        if a2 + a3 != a4 or a2 != a3:
+            return False
+        if d2 == a4:
+            p2, p4 = p4, p2
+        elif d3 == a4:
+            p3, p4 = p4, p3
+        if not k1k2(p1, p2, p4):
+            return False
+        if not k1k2(p1, p3, p4):
+            return False
+        if not k1k2(p2, p1, p3):
+            return False
+        if not k1k2(p2, p4, p3):
+            return False
+        return True
+
+    def validSquare(
+        self, p1: List[int], p2: List[int], p3: List[int], p4: List[int]
+    ) -> bool:
+        def distance(p1: List[int], p2: List[int]) -> int:
+            return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+
+        if p1 == p2 == p3 == p4:
+            return False
+        a = [0] * 6
+        a[0] = distance(p1, p2)
+        a[1] = distance(p1, p3)
+        a[2] = distance(p1, p4)
+        a[3] = distance(p2, p3)
+        a[4] = distance(p2, p4)
+        a[5] = distance(p3, p4)
+        a.sort()
+        return a[0] == a[1] == a[2] == a[3] and a[4] == a[5]
+
+    def validSquare(
+        self, p1: List[int], p2: List[int], p3: List[int], p4: List[int]
+    ) -> bool:
+        def distance(p1: List[int], p2: List[int]) -> int:
+            return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+
+        def isRightTriangle(p1: List[int], p2: List[int], p3: List[int]) -> bool:
+            d12 = distance(p1, p2)
+            d23 = distance(p2, p3)
+            d13 = distance(p1, p3)
+            a, b, c = sorted((d12, d13, d23))
+            if c > a and a == b and c == a + b:
+                return True
+            return False
+
+        return (
+            isRightTriangle(p1, p2, p3)
+            and isRightTriangle(p1, p2, p4)
+            and isRightTriangle(p4, p2, p3)
+            and isRightTriangle(p1, p3, p4)
+        )
 
 
 # 594 - Longest Harmonious Subsequence - EASY

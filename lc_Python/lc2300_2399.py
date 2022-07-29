@@ -1612,6 +1612,21 @@ class NumberContainers:
         return -1
 
 
+class NumberContainers:
+    def __init__(self):
+        self.cur = collections.defaultdict(int)
+        self.arr = collections.defaultdict(sortedcontainers.SortedList)
+
+    def change(self, index: int, number: int) -> None:
+        if index in self.cur:
+            self.arr[self.cur[index]].remove(index)
+        self.cur[index] = number
+        self.arr[number].add(index)
+
+    def find(self, number: int) -> int:
+        return self.arr[number][0] if self.arr[number] else -1
+
+
 # 2350 - Shortest Impossible Sequence of Rolls - HARD
 class Solution:
     # O(n) / O(k)
@@ -1623,6 +1638,19 @@ class Solution:
             if len(s) == k:
                 ans += 1
                 s.clear()
+        return ans
+
+    def shortestSequence(self, rolls: List[int], k: int) -> int:
+        ans = 1
+        vis = [0] * (k + 1)
+        need = k
+        for v in rolls:
+            if vis[v] < ans:
+                vis[v] = ans
+                need -= 1
+                if need == 0:
+                    need = k
+                    ans += 1
         return ans
 
 

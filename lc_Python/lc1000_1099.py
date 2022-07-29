@@ -300,13 +300,19 @@ class Solution:
         return self.ans
 
 
+# 1025 - Divisor Game - EASY
+class Solution:
+    def divisorGame(self, n: int) -> bool:
+        return not n & 1
+
+
 # 1026 - Maximum Difference Between Node and Ancestor - MEDIUM
 class Solution:
     # down to top, calculate the minimum and maximum values then pass them to the root
     def maxAncestorDiff(self, root: TreeNode) -> int:
         self.ans = 0
 
-        def dfs(root):
+        def dfs(root: TreeNode) -> tuple(int, int):
             if not root:
                 return float("inf"), -float("inf")
             lmin, lmax = dfs(root.left)
