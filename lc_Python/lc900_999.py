@@ -1,7 +1,4 @@
-import collections
-import heapq
-import functools
-import bisect
+import collections, math, heapq, functools, bisect, itertools, copy
 from typing import List
 
 
@@ -661,6 +658,95 @@ class Solution:
                 j += 1
             i += 1
         return i == 0
+
+
+# 952 - Largest Component Size by Common Factor - HARD
+
+"""
+for some problems that input can be used for other test cases,
+put the cache outside the class Solution,
+each instance can reuse cache and speed up
+"""
+
+
+@functools.lru_cache(None)
+def get_prime_factor(n: int) -> set:
+    if n == 1:
+        return set()
+    ans = set()
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            n //= i
+            ans.add(i)
+            ans = ans.union(get_prime_factor(n))
+            return ans
+    ans.add(n)
+    return ans
+
+
+class Solution:
+    def largestComponentSize(self, nums) -> int:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+                self.sz = [1] * n
+
+            def find(self, x: int) -> int:
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                self.sz[py] += self.sz[px]
+                return
+
+        conn = collections.defaultdict(list)
+        for i, n in enumerate(nums):
+            for fac in get_prime_factor(n):
+                conn[fac].append(i)
+        uf = UnionFind(len(nums))
+        for group in conn:
+            m = len(conn[group])
+            for j in range(1, m):
+                uf.union(conn[group][j - 1], conn[group][j])
+        return max(uf.sz)
+
+
+@functools.lru_cache(None)
+def getFactor(n):
+    if n == 1:
+        return collections.defaultdict(int)
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            tmp = copy.deepcopy(getFactor(n // i))
+            tmp[i] += 1
+            return tmp
+    tmp = collections.defaultdict(int)
+    tmp[n] = 1
+    return tmp
+
+
+class Solution:
+    def largestComponentSize(self, nums: List[int]) -> int:
+        def find(x: int) -> int:
+            if p[x] != x:
+                p[x] = find(p[x])
+            return p[x]
+
+        p = [i for i in range(max(nums) + 1)]
+        cnt = collections.Counter()
+        for i in range(len(nums)):
+            for n in getFactor(nums[i]).keys():
+                if n != 1:
+                    p[find(nums[i])] = find(n)
+        for i in range(len(nums)):
+            cnt[find(nums[i])] += 1
+        return cnt.most_common(1)[0][1]
 
 
 # 953 - Verifying an Alien Dictionary - EASY
