@@ -1053,6 +1053,18 @@ class Solution:
         return ans
 
 
+# 2235 - Add Two Integers - EASY
+class Solution:
+    def sum(self, num1: int, num2: int) -> int:
+        return num1 + num2
+
+
+# 2236 - Root Equals Sum of Children - EASY
+class Solution:
+    def checkTree(self, root: Optional[TreeNode]) -> bool:
+        return root.val == root.left.val + root.right.val
+
+
 # 2239 - Find Closest Number to Zero - EASY
 class Solution:
     def findClosestNumber(self, nums: List[int]) -> int:

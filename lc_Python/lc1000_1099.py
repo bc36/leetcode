@@ -370,6 +370,17 @@ class Solution:
         return res
 
 
+# 1030 - Matrix Cells in Distance Order - EASY
+class Solution:
+    def allCellsDistOrder(
+        self, rows: int, cols: int, rCenter: int, cCenter: int
+    ) -> List[List[int]]:
+        return sorted(
+            [(i, j) for i in range(rows) for j in range(cols)],
+            key=lambda x: abs(x[0] - rCenter) + abs(x[1] - cCenter),
+        )
+
+
 # 1034 - Coloring A Border - MEDIUM
 class Solution:
     # bfs
@@ -571,6 +582,13 @@ class Solution:
             if heights[i] != exp[i]:
                 ans += 1
         return ans
+
+
+# 1160 - Find Words That Can Be Formed by Characters - EASY
+class Solution:
+    def countCharacters(self, words: List[str], chars: str) -> int:
+        cnt = collections.Counter(chars)
+        return sum(len(w) for w in words if collections.Counter(w) <= cnt)  # py3.10
 
 
 # 1078 - Occurrences After Bigram - EASY

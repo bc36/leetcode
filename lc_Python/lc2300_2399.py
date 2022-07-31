@@ -648,7 +648,7 @@ class Solution:
         dsu = [i for i in range(n)]
         size = [1] * n
 
-        def find(x: int):
+        def find(x: int) -> int:
             if dsu[x] != x:
                 dsu[x] = find(dsu[x])
             return dsu[x]

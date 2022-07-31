@@ -155,4 +155,15 @@ class UnionFind:
         self.p[px] = py
         self.sz[py] += self.sz[px]
         self.part -= 1
+        # self.sz[px] = 0  # sum(self.sz) == n
         return
+
+    def find(self, x: int) -> int:
+        """path compression"""
+        need_compress = []
+        while self.p[x] != x:
+            need_compress.append(x)
+            x = self.p[x]
+        while need_compress:
+            self.p[need_compress.pop()] = x
+        return x
