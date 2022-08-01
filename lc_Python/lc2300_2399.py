@@ -1792,3 +1792,198 @@ class Solution:
             p = bisect.bisect_left(arr, k - v)
             ans += len(arr) - p
         return ans
+
+
+# 2357 - Make Array Zero by Subtracting Equal Amounts - EASY
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        return len(set(n for n in nums if n > 0))
+
+    def minimumOperations(self, nums: List[int]) -> int:
+        s = set(nums)
+        if 0 in s:
+            s.remove(0)
+        return len(s)
+
+
+# 2358 - Maximum Number of Groups Entering a Competition - MEDIUM
+class Solution:
+    def maximumGroups(self, grades: List[int]) -> int:
+        # grades.sort()
+        ans = 1
+        cur = 0
+        pre = 1
+        for _ in range(1, len(grades)):
+            cur += 1
+            if cur > pre:
+                ans += 1
+                pre = cur
+                cur = 0
+        return ans
+
+    def maximumGroups(self, grades: List[int]) -> int:
+        n = len(grades)
+        k = 0
+        while n >= k + 1:
+            k += 1
+            n -= k
+        return k
+
+    def maximumGroups(self, grades: List[int]) -> int:
+        for i in range(1, len(grades)):
+            if i * (i + 1) // 2 > len(grades):
+                return i - 1
+        return 1
+
+    def maximumGroups(self, grades: List[int]) -> int:
+        # 1 + 2 + ... + x <= n
+        # x(x + 1) / 2 <= n
+        # x**2 + x - 2n <= n
+        return int((-1 + math.sqrt(1 + 8 * len(grades))) / 2)
+
+    def maximumGroups(self, grades: List[int]) -> int:
+        # 如果怕掉精度, 1.99999 -> 1
+        n = 2 * len(grades)
+        x = int(math.sqrt(n))
+        return x - 1 if x * (x + 1) > n else x
+
+
+# 2359 - Find Closest Node to Given Two Nodes - MEDIUM
+class Solution:
+    # only one cycle in each block
+    def closestMeetingNode(self, edges: List[int], n1: int, n2: int) -> int:
+        p1 = [n1]
+        vis = set([n1])
+        while edges[n1] != -1 and edges[n1] not in vis:
+            p1.append(edges[n1])
+            vis.add(edges[n1])
+            n1 = edges[n1]
+        p2 = [n2]
+        vis = set([n2])
+        while edges[n2] != -1 and edges[n2] not in vis:
+            p2.append(edges[n2])
+            vis.add(edges[n2])
+            n2 = edges[n2]
+        s1 = set(p1)
+        s2 = set(p2)
+        dis1 = {v: i for i, v in enumerate(p1)}
+        dis2 = {v: i for i, v in enumerate(p2)}
+        ans = -1
+        d = math.inf
+        for n in s1.intersection(s2):
+            d1 = dis1[n]
+            d2 = dis2[n]
+            if max(d1, d2) < d:
+                d = max(d1, d2)
+                ans = n
+            elif max(d1, d2) == d:
+                ans = min(ans, n)
+        return ans
+
+    def closestMeetingNode(self, edges: List[int], node1: int, node2: int) -> int:
+        def path(x: int) -> List[int]:
+            dis = [math.inf] * n  # calculate distance and meanwhile mark it as visited
+            d = 0
+            while x >= 0 and dis[x] == math.inf:
+                dis[x] = d
+                d += 1
+                x = edges[x]
+            return dis
+
+        n = len(edges)
+        mi = math.inf
+        ans = -1
+        # traverse from smaller to larger index, do not require mapping as above solution
+        for i, d1, d2 in zip(range(n), path(node1), path(node2)):
+            d = max(d1, d2)
+            if d < mi:
+                mi = d
+                ans = i
+        return ans
+
+
+# 2360 - Longest Cycle in a Graph - HARD
+class Solution:
+    def longestCycle(self, edges: List[int]) -> int:
+        def dfs(x: int) -> bool:
+            if vis[x]:
+                nonlocal end
+                end = x
+                return True
+            path.append(x)
+            vis[x] = True
+            if edges[x] == -1:
+                return False
+            return dfs(edges[x])
+
+        vis = [False] * len(edges)
+        ans = -1
+        for i in range(len(edges)):
+            if not vis[i]:
+                end = -1
+                path = []
+                if dfs(i):
+                    for i, p in enumerate(path):  # dfs with depth to optimize this step
+                        if p == end:
+                            ans = max(ans, len(path) - i)
+        return ans
+
+    def longestCycle(self, edges: List[int]) -> int:
+        def dfs(x: int, depth: int) -> None:
+            nonlocal ans
+            vis[x] = True
+            in_stk[x] = depth
+            y = edges[x]  # y is next vertex / node
+            if y != -1:
+                if not vis[y]:
+                    dfs(y, depth + 1)
+                elif in_stk[y]:
+                    ans = max(ans, depth + 1 - in_stk[y])
+            in_stk[x] = 0
+            return
+
+        vis = [False] * len(edges)
+        in_stk = [0] * len(edges)  # in stack, idea is like marking time, rank or depth
+        ans = -1
+        for i in range(len(edges)):
+            if not vis[i]:
+                dfs(i, 1)
+        return ans
+
+    def longestCycle(self, edges: List[int]) -> int:
+        vis = [False] * len(edges)
+        ans = -1
+        for i in range(len(edges)):
+            if not vis[i]:
+                end = -1
+                path = []
+                while i != -1:
+                    if vis[i]:
+                        end = i
+                        break
+                    path.append(i)
+                    vis[i] = True
+                    i = edges[i]
+                if end != -1:
+                    for i, p in enumerate(path):  # use time array to optimize this step
+                        if p == end:
+                            ans = max(ans, len(path) - i)
+        return ans
+
+    def longestCycle(self, edges: List[int]) -> int:
+        time = [0] * len(edges)
+        now = 1
+        ans = -1
+        for x in range(len(edges)):
+            if time[x]:  # visited
+                continue
+            start = now
+            while x != -1:
+                if time[x]:
+                    if time[x] >= start:  # find a cycle
+                        ans = max(ans, now - time[x])
+                    break
+                time[x] = now
+                now += 1
+                x = edges[x]
+        return ans

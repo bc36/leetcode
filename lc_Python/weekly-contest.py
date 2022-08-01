@@ -495,7 +495,7 @@ class Solution:
     def groupStrings(self, words):
         parent = [i for i in range(len(words))]
 
-        def find(i):
+        def find(i: int) -> int:
             if parent[i] != i:
                 parent[i] = find(parent[i])
             return parent[i]
@@ -986,14 +986,17 @@ T4: 1532 pass
 
 
 # https://leetcode.cn/contest/weekly-contest-301
-# 2707 / https://leetcode.cn/contest/weekly-contest-301/problems/move-pieces-to-obtain-a-string/
+# 1995 / https://leetcode.cn/contest/weekly-contest-301/problems/move-pieces-to-obtain-a-string/
+# 双指针
+# 176 / https://leetcode.cn/contest/weekly-contest-301/problems/count-the-number-of-ideal-arrays/
+# 组合数学, 数论, dp
 
 
 """
 AK, 2022-07-16
 https://leetcode-cn.com/contest/weekly-contest-302/
 Rank: 1616 / 4243
-WA: T2(1),  T4(3)
+WA: T2(1), T4(3)
 FT: 1:21:20
 T4: 2746 pass
 """
@@ -1004,3 +1007,13 @@ T4: 2746 pass
 # heapq, sortedcontainers
 # 993 / https://leetcode.cn/contest/weekly-contest-303/problems/number-of-excellent-pairs/
 # bit manipulation, hash table or 二分
+
+
+"""
+AK, 2022-07-30
+https://leetcode-cn.com/contest/weekly-contest-304/
+Rank: 1403 / 3230
+WA: T1(1), T2(1), T3(3)
+FT: 1:46:37
+T4: 1816 pass
+"""
