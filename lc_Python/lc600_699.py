@@ -50,6 +50,72 @@ class Solution:
         return root1 or root2
 
 
+# 622 - Design Circular Queue - MEDIUM
+class MyCircularQueue:
+    def __init__(self, k: int):
+        self.dq = collections.deque(maxlen=k)
+        self.k = k
+
+    def enQueue(self, value: int) -> bool:
+        if len(self.dq) == self.k:
+            return False
+        self.dq.append(value)
+        return True
+
+    def deQueue(self) -> bool:
+        if self.dq:
+            self.dq.popleft()
+            return True
+        return False
+
+    def Front(self) -> int:
+        if self.dq:
+            return self.dq[0]
+        return -1
+
+    def Rear(self) -> int:
+        if self.dq:
+            return self.dq[-1]
+        return -1
+
+    def isEmpty(self) -> bool:
+        return len(self.dq) == 0
+
+    def isFull(self) -> bool:
+        return len(self.dq) == self.k
+
+
+class MyCircularQueue:
+    def __init__(self, k: int):
+        self.front = self.rear = 0
+        self.arr = [0] * (k + 1)
+
+    def enQueue(self, value: int) -> bool:
+        if self.isFull():
+            return False
+        self.arr[self.rear] = value
+        self.rear = (self.rear + 1) % len(self.arr)
+        return True
+
+    def deQueue(self) -> bool:
+        if self.isEmpty():
+            return False
+        self.front = (self.front + 1) % len(self.arr)
+        return True
+
+    def Front(self) -> int:
+        return -1 if self.isEmpty() else self.arr[self.front]
+
+    def Rear(self) -> int:
+        return -1 if self.isEmpty() else self.arr[(self.rear - 1) % len(self.arr)]
+
+    def isEmpty(self) -> bool:
+        return self.rear == self.front
+
+    def isFull(self) -> bool:
+        return (self.rear + 1) % len(self.arr) == self.front
+
+
 # 630 - Course Schedule III - HARD
 class Solution:
     # O(nlogn) / O(n)
