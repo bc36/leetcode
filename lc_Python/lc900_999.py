@@ -2,6 +2,13 @@ import collections, math, heapq, functools, bisect, itertools, copy
 from typing import List
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -247,6 +254,71 @@ class Solution:
             if dpn < mi:
                 mi = dpn
         return max(sum(nums) - mi, mx) if mx > 0 else mx
+
+
+# 919 - Complete Binary Tree Inserter - MEDIUM
+class CBTInserter:
+    def __init__(self, root: TreeNode):
+        self.root = root
+        self.candidate = collections.deque()
+        dq = collections.deque([root])
+        while dq:
+            n = dq.popleft()
+            if n.left:
+                dq.append(n.left)
+            if n.right:
+                dq.append(n.right)
+            if not n.left or not n.right:
+                self.candidate.append(n)
+
+    def insert(self, val: int) -> int:
+        c = self.candidate
+        child = TreeNode(val)
+        ans = c[0].val
+        if not c[0].left:
+            c[0].left = child
+        else:
+            c[0].right = child
+            c.popleft()
+        c.append(child)
+        return ans
+
+    def get_root(self) -> TreeNode:
+        return self.root
+
+
+class CBTInserter:
+    def __init__(self, root: TreeNode):
+        self.root = root
+        self.cnt = 0
+        dq = collections.deque([root])
+        while dq:
+            self.cnt += 1
+            n = dq.popleft()
+            if n.left:
+                dq.append(n.left)
+            if n.right:
+                dq.append(n.right)
+
+    # TODO
+    def insert(self, val: int) -> int:
+        self.cnt += 1
+        child = TreeNode(val)
+        root = self.root
+        highbit = self.cnt.bit_length() - 1
+        for i in range(highbit - 1, 0, -1):
+            if self.cnt & (1 << i):
+                root = root.right
+            else:
+                root = root.left
+        if self.cnt & 1:
+            root.right = child
+        else:
+            root.left = child
+        return root.val
+
+    def get_root(self) -> TreeNode:
+        return self.root
 
 
 # 921 - Minimum Add to Make Parentheses Valid - MEDIUM
@@ -710,20 +782,19 @@ class Solution:
             for fac in get_prime_factor(n):
                 conn[fac].append(i)
         uf = UnionFind(len(nums))
-        for group in conn:
-            m = len(conn[group])
-            for j in range(1, m):
-                uf.union(conn[group][j - 1], conn[group][j])
+        for group in conn.values():
+            for i1, i2 in pairwise(group):
+                uf.union(i1, i2)
         return max(uf.sz)
 
 
 @functools.lru_cache(None)
-def getFactor(n):
+def get_factors(n: int) -> collections.defaultdict(int):
     if n == 1:
         return collections.defaultdict(int)
     for i in range(2, int(n**0.5) + 1):
         if n % i == 0:
-            tmp = copy.deepcopy(getFactor(n // i))
+            tmp = copy.deepcopy(get_factors(n // i))
             tmp[i] += 1
             return tmp
     tmp = collections.defaultdict(int)
@@ -741,7 +812,7 @@ class Solution:
         p = [i for i in range(max(nums) + 1)]
         cnt = collections.Counter()
         for i in range(len(nums)):
-            for n in getFactor(nums[i]).keys():
+            for n in get_factors(nums[i]).keys():
                 if n != 1:
                     p[find(nums[i])] = find(n)
         for i in range(len(nums)):

@@ -1,5 +1,5 @@
 import collections, math, copy, bisect, heapq, datetime
-from typing import List
+from typing import List, Optional
 
 
 class TreeNode:
@@ -589,6 +589,28 @@ class Solution:
     def countCharacters(self, words: List[str], chars: str) -> int:
         cnt = collections.Counter(chars)
         return sum(len(w) for w in words if collections.Counter(w) <= cnt)  # py3.10
+
+
+# 1161 - Maximum Level Sum of a Binary Tree - MEDIUM
+class Solution:
+    def maxLevelSum(self, root: Optional[TreeNode]) -> int:
+        ans = lv = 1
+        mx = total = root.val
+        dq = collections.deque([root])
+        while dq:
+            total = 0
+            for _ in range(len(dq)):
+                n = dq.popleft()
+                total += n.val
+                if n.left:
+                    dq.append(n.left)
+                if n.right:
+                    dq.append(n.right)
+            if total > mx:
+                ans = lv
+                mx = total
+            lv += 1
+        return ans
 
 
 # 1078 - Occurrences After Bigram - EASY

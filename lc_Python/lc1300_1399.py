@@ -382,6 +382,14 @@ class Solution:
         return -1
 
 
+# 1374 - Generate a String With Characters That Have Odd Counts - EASY
+class Solution:
+    def generateTheString(self, n: int) -> str:
+        if n & 1:
+            return "a" * n
+        return "a" + "b" * (n - 1)
+
+
 # 1380 - Lucky Numbers in a Matrix - EASY
 class Solution:
     def luckyNumbers(self, matrix: List[List[int]]) -> List[int]:

@@ -15,12 +15,6 @@ class ListNode:
         self.next = next
 
 
-class Node:
-    def __init__(self, val=0, neighbors=None):
-        self.val = val
-        self.neighbors = neighbors if neighbors is not None else []
-
-
 # 101 - Symmetric Tree - EASY
 class Solution:
     def isSymmetric(self, root: TreeNode) -> bool:
@@ -671,9 +665,15 @@ class Solution:
 
 
 # 133 - Clone Graph - MEDIUM
+class Node:
+    def __init__(self, val=0, neighbors=None):
+        self.val = val
+        self.neighbors = [neighbors if neighbors is not None else []]
+
+
 class Solution:
     def cloneGraph(self, node: "Node") -> "Node":
-        def dfs(node):
+        def dfs(node: "Node") -> "Node":
             if not node:
                 return
             if node.val in seen:

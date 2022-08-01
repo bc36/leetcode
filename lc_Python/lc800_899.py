@@ -709,7 +709,7 @@ class Solution:
         return 0
 
     def lenLongestFibSubseq(self, arr: List[int]) -> int:
-        def dfs(i, j):
+        def dfs(i: int, j: int) -> int:
             if memo[i][j] != 0:
                 return memo[i][j]
             v = arr[i] + arr[j]
@@ -722,6 +722,9 @@ class Solution:
 
         m = {v: i for i, v in enumerate(arr)}
         n = len(arr)
+        # TLE: don't know the reason
+        #   1. @cache
+        #   2. memo = collections.defaultdict(int)
         memo = [[0] * n for _ in range(n)]
         ans = max(dfs(i, j) for i in range(len(arr)) for j in range(i + 1, len(arr)))
         return 0 if ans == 2 else ans
