@@ -1,6 +1,19 @@
 import collections, bisect, itertools, functools, math, heapq
 from typing import List
 
+# 1920 - Build Array from Permutation - EASY
+class Solution:
+    def buildArray(self, nums: List[int]) -> List[int]:
+        return [nums[nums[i]] for i in range(len(nums))]
+
+
+# 1929 - Concatenation of Array - EASY
+class Solution:
+    def getConcatenation(self, nums: List[int]) -> List[int]:
+        return nums * 2
+        nums.extend(nums)
+        return nums
+
 
 # 1984 - Minimum Difference Between Highest and Lowest of K Scores - EASY
 class Solution:

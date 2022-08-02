@@ -41,6 +41,18 @@ class Solution:
         return [i for i in range(len(req)) if req[i] == m]
 
 
+# 1608 - Special Array With X Elements Greater Than or Equal X - EASY
+class Solution:
+    def specialArray(self, nums: List[int]) -> int:
+        nums.sort(reverse=True)
+        for i, v in enumerate(nums):
+            if v < i:
+                return i
+            if v == i:
+                return -1
+        return len(nums)
+
+
 # 1609 - Even Odd Tree - MEDIUM
 class Solution:
     # bfs
@@ -100,6 +112,19 @@ class Solution:
                 ans = max(ans, left)
             elif ch == ")":
                 left -= 1
+        return ans
+
+
+# 1624 - Largest Substring Between Two Equal Characters - EASY
+class Solution:
+    def maxLengthBetweenEqualCharacters(self, s: str) -> int:
+        ans = -1
+        arr = [-1] * 26
+        for i, c in enumerate(s):
+            if arr[ord(c) - 97] == -1:
+                arr[ord(c) - 97] = i
+            else:
+                ans = max(ans, i - arr[ord(c) - 97] - 1)
         return ans
 
 
