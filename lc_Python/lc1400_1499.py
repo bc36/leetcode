@@ -10,6 +10,27 @@ class TreeNode:
         self.right = right
 
 
+# 1403 - Minimum Subsequence in Non-Increasing Order - MEDIUM
+class Solution:
+    def minSubsequence(self, nums: List[int]) -> List[int]:
+        nums.sort(reverse=True)
+        arr = [0]
+        for v in nums:
+            arr.append(v + arr[-1])
+        for i in range(len(nums)):
+            if arr[i + 1] > arr[-1] - arr[i + 1]:
+                return nums[: i + 1]
+
+    def minSubsequence(self, nums: List[int]) -> List[int]:
+        nums.sort(reverse=True)
+        summ = sum(nums)
+        cur = 0
+        for i, v in enumerate(nums):
+            cur += v
+            if cur > summ - cur:
+                return nums[: i + 1]
+
+
 # 1405 - Longest Happy String - MEDIUM
 class Solution:
     def longestDiverseString(self, a: int, b: int, c: int) -> str:
@@ -72,6 +93,36 @@ class Solution:
             + usedB * bb
             + self.longestDiverseString(a - usedA, b - usedB, c, aa, bb, cc)
         )
+
+
+# 1408 - String Matching in an Array - EASY
+class Solution:
+    def stringMatching(self, words: List[str]) -> List[str]:
+        ans = []
+        s = " ".join(words)
+        for w in words:
+            if s.count(w) != 1:
+                ans.append(w)
+        return ans
+
+    def stringMatching(self, words: List[str]) -> List[str]:
+        ans = []
+        for x in words:
+            for y in words:
+                if x != y and x in y:
+                    ans.append(x)
+                    break
+        return ans
+
+
+# 1413 - Minimum Value to Get Positive Step by Step Sum - EASY
+class Solution:
+    def minStartValue(self, nums: List[int]) -> int:
+        ans = cur = 0
+        for v in nums:
+            cur += v
+            ans = min(ans, cur)
+        return 1 - ans if ans else 1
 
 
 # 1414 - Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - MEDIUM
