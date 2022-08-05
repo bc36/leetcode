@@ -116,6 +116,47 @@ class MyCircularQueue:
         return (self.rear + 1) % len(self.arr) == self.front
 
 
+# 623 - Add One Row to Tree - MEDIUM
+class Solution:
+    def addOneRow(self, root: TreeNode, val: int, depth: int) -> TreeNode:
+        if depth == 1:
+            return TreeNode(val, left=root)
+        q = [root]
+        for _ in range(1, depth - 1):
+            new = []
+            for node in q:
+                if node.left:
+                    new.append(node.left)
+                if node.right:
+                    new.append(node.right)
+            q = new
+        for node in q:
+            node.left = TreeNode(val, left=node.left)
+            node.right = TreeNode(val, right=node.right)
+        return root
+
+    def addOneRow(self, root: TreeNode, val: int, depth: int) -> TreeNode:
+        if depth == 1:
+            return TreeNode(val, root)
+        dq = collections.deque([root])
+        lv = 1
+        while dq:
+            if lv + 1 == depth:
+                for _ in range(len(dq)):
+                    n = dq.popleft()
+                    n.left = TreeNode(val, left=n.left)
+                    n.right = TreeNode(val, right=n.right)
+                return root
+            for _ in range(len(dq)):
+                n = dq.popleft()
+                if n.left:
+                    dq.append(n.left)
+                if n.right:
+                    dq.append(n.right)
+            lv += 1
+        return root
+
+
 # 630 - Course Schedule III - HARD
 class Solution:
     # O(nlogn) / O(n)
@@ -319,6 +360,21 @@ class Solution:
                     s[i], s[later[d]] = s[later[d]], s[i]
                     return "".join(s)
         return num
+
+
+# 674 - Longest Continuous Increasing Subsequence - EASY
+class Solution:
+    def findLengthOfLCIS(self, nums: List[int]) -> int:
+        ans = l = 0
+        pre = -1e9
+        for v in nums:
+            if pre >= v:
+                l = 1
+            else:
+                l += 1
+            pre = v
+            ans = max(ans, l)
+        return ans
 
 
 # 676 - Implement Magic Dictionary - MEDIUM
@@ -726,6 +782,20 @@ class Solution:
             else:
                 cur += 1
         ans += min(prev, cur)
+        return ans
+
+
+# 697 - Degree of an Array - EASY
+class Solution:
+    def findShortestSubArray(self, nums: List[int]) -> int:
+        ans = 1e9
+        cnt = collections.Counter(nums)
+        mx = max(cnt.values())
+        # if mx == 1:
+        #     return 1
+        degree = [k for k, v in cnt.items() if v == mx]
+        for k in degree:
+            ans = min(ans, len(nums) - nums[::-1].index(k) - nums.index(k))
         return ans
 
 
