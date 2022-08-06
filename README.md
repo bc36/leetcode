@@ -39,7 +39,7 @@ isbn: 978-7-83009-313-6
 
 * `collections.Counter(a) > collections.Counter(b)`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), All of those tests treat missing elements as having zero counts so that Counter(a=1) == Counter(a=1, b=0) returns true.
 
-
+* [Glossary](https://docs.python.org/3/glossary.html)
 
 <br><br><br>
 
