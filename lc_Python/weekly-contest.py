@@ -28,8 +28,8 @@ import collections, functools, itertools, heapq, math, bisect, sortedcontainers,
 # 274 / 3道 / 2022.1.1 #
 ########################
 # 5970
-# https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/
-# https://leetcode-cn.com/contest/weekly-contest-274/problems/maximum-employees-to-be-invited-to-a-meeting/
+# https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/
+# https://leetcode.cn/contest/weekly-contest-274/problems/maximum-employees-to-be-invited-to-a-meeting/
 class Solution:
     def maximumInvitations(self, f: List[int]) -> int:
         # functional graph
@@ -295,7 +295,7 @@ class Solution:
 ########################
 # 275 / 1道 / 2022.1.8 #
 ########################
-# https://leetcode-cn.com/problems/earliest-possible-day-of-full-bloom/
+# https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/
 # https://leetcode.com/problems/earliest-possible-day-of-full-bloom/
 # 5979. 全部开花的最早一天
 # 长的慢的先种, 播种的时间不能避免, 直接加
@@ -327,7 +327,7 @@ class Solution:
 ########################
 # 276 / 2道 / 2022.1.6 #
 ########################
-# https://leetcode-cn.com/problems/solving-questions-with-brainpower/
+# https://leetcode.cn/problems/solving-questions-with-brainpower/
 # https://leetcode.com/problems/solving-questions-with-brainpower/
 # 5982. 解决智力问题
 # 10^5 数据规模 O(n^2)明显不行, 因为dp[i]的值取决于dp[i]数组后面值，所以要倒推
@@ -412,7 +412,7 @@ class Solution:
         return dp[0]
 
 
-# https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/
+# https://leetcode.cn/problems/maximum-running-time-of-n-computers/
 # https://leetcode.com/problems/maximum-running-time-of-n-computers/
 # 5983. 同时运行 N 台电脑的最长时间
 class Solution:
@@ -466,7 +466,7 @@ class Solution:
 #########################
 
 
-# https://leetcode-cn.com/problems/find-substring-with-given-hash-value/
+# https://leetcode.cn/problems/find-substring-with-given-hash-value/
 # 5994. 查找给定哈希值的子串
 # 正向滑窗, 需要除以power再求模. 除法不满足取余的恒等性(本题的power和modulo也不一定满足互质)
 # 所以需要倒序, 乘法满足取余恒等. 除法取余: 逆元
@@ -489,7 +489,7 @@ class Solution:
         return s[ans : ans + k]
 
 
-# https://leetcode-cn.com/problems/groups-of-strings/
+# https://leetcode.cn/problems/groups-of-strings/
 # 5995. 字符串分组
 class Solution:
     def groupStrings(self, words):
@@ -600,7 +600,7 @@ class Solution:
 ########################
 
 
-# https://leetcode-cn.com/problems/design-bitset/
+# https://leetcode.cn/problems/design-bitset/
 # 6002. 设计位集
 class Bitset:
     def __init__(self, size: int):
@@ -638,7 +638,7 @@ class Bitset:
         return ans
 
 
-# https://leetcode-cn.com/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/
+# https://leetcode.cn/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/
 # 6003. 移除所有载有违禁货物车厢所需的最少时间
 class Solution:
     def minimumTime(self, s: str) -> int:
@@ -654,10 +654,10 @@ class Solution:
 #########################
 # 280 / 3道 / 2022.2.12 #
 #########################
-# https://leetcode-cn.com/contest/weekly-contest-280/
+# https://leetcode.cn/contest/weekly-contest-280/
 
 
-# https://leetcode-cn.com/problems/maximum-and-sum-of-array/
+# https://leetcode.cn/problems/maximum-and-sum-of-array/
 # 6007. 数组的最大与和
 # 状态压缩 状压 dp
 class Solution:
@@ -770,10 +770,10 @@ class Solution:
 ###################
 # 281 / 2022.2.19 #
 ###################
-# https://leetcode-cn.com/contest/weekly-contest-281/
+# https://leetcode.cn/contest/weekly-contest-281/
 
 
-# https://leetcode-cn.com/problems/count-array-pairs-divisible-by-k/
+# https://leetcode.cn/problems/count-array-pairs-divisible-by-k/
 # 6015. Count Array Pairs Divisible by K
 # 每个数都可能贡献一些因子 / gcd / 最大公因子
 class Solution:
@@ -841,31 +841,31 @@ class Solution:
 ###################
 # 282 / 2022.2.26 #
 ###################
-# https://leetcode-cn.com/contest/weekly-contest-282/
+# https://leetcode.cn/contest/weekly-contest-282/
 
-# https://leetcode-cn.com/problems/minimum-time-to-finish-the-race/
+# https://leetcode.cn/problems/minimum-time-to-finish-the-race/
 
 ##################
 # 283 / 2022.3.5 #
 ##################
-# https://leetcode-cn.com/contest/weekly-contest-283/
+# https://leetcode.cn/contest/weekly-contest-283/
 
-# https://leetcode-cn.com/contest/weekly-contest-283/problems/append-k-integers-with-minimal-sum/
+# https://leetcode.cn/contest/weekly-contest-283/problems/append-k-integers-with-minimal-sum/
 # 贪心 or check 空隙等差数列
 
-# https://leetcode-cn.com/contest/weekly-contest-283/problems/replace-non-coprime-numbers-in-array/
+# https://leetcode.cn/contest/weekly-contest-283/problems/replace-non-coprime-numbers-in-array/
 # gcd, Greatest Common Divisor
 # lcm, Least Common Multiple
 
 ###################
 # 284 / 2022.3.12 #
 ###################
-# https://leetcode-cn.com/contest/weekly-contest-284/
+# https://leetcode.cn/contest/weekly-contest-284/
 
-# https://leetcode-cn.com/contest/weekly-contest-284/problems/maximize-the-topmost-element-after-k-moves/
+# https://leetcode.cn/contest/weekly-contest-284/problems/maximize-the-topmost-element-after-k-moves/
 # 分类讨论
 
-# https://leetcode-cn.com/contest/weekly-contest-284/problems/minimum-weighted-subgraph-with-the-required-paths/
+# https://leetcode.cn/contest/weekly-contest-284/problems/minimum-weighted-subgraph-with-the-required-paths/
 # dijkstra
 # 图论经典套路: 枚举中间点
 # 记 d1[i] 为从 src1 出发到达点 i 的最短路，d2[i] 为从 src2 出发到达点 i 的最短路
@@ -875,72 +875,72 @@ class Solution:
 ###################
 # 285 / 2022.3.19 #
 ###################
-# https://leetcode-cn.com/contest/weekly-contest-285/
+# https://leetcode.cn/contest/weekly-contest-285/
 
 # dp, 贪心, 二进制枚举,
-# https://leetcode-cn.com/contest/weekly-contest-285/problems/maximum-points-in-an-archery-competition/
+# https://leetcode.cn/contest/weekly-contest-285/problems/maximum-points-in-an-archery-competition/
 
 # 线段树, segment tree
-# https://leetcode-cn.com/contest/weekly-contest-285/problems/longest-substring-of-one-repeating-character/
+# https://leetcode.cn/contest/weekly-contest-285/problems/longest-substring-of-one-repeating-character/
 
 ###################
 # 286 / 2022.3.26 #
 ###################
-# https://leetcode-cn.com/contest/weekly-contest-286/
+# https://leetcode.cn/contest/weekly-contest-286/
 
 # 数学, 构造
 # 左半部分，第q个回文数在前导0允许的情况下是
 # 第10 ^ (intLength // 2 + intLength % 2 - 1) + q - 1个,
 # 恰巧左半部分每一个数都会对应构造出一个回文数来
 # L = 7, the first one: [1000][001], the 376th one: [1375][731]
-# https://leetcode-cn.com/contest/weekly-contest-286/problems/find-palindrome-with-fixed-length/
+# https://leetcode.cn/contest/weekly-contest-286/problems/find-palindrome-with-fixed-length/
 
 # 分组背包, 前缀和, dp
-# https://leetcode-cn.com/contest/weekly-contest-286/problems/maximum-value-of-k-coins-from-piles/
+# https://leetcode.cn/contest/weekly-contest-286/problems/maximum-value-of-k-coins-from-piles/
 
 ##################
 # 288 / 2022.4.9 #
 ##################
-# https://leetcode-cn.com/contest/weekly-contest-288/
+# https://leetcode.cn/contest/weekly-contest-288/
 
-# https://leetcode-cn.com/contest/weekly-contest-288/problems/maximum-total-beauty-of-the-gardens/
+# https://leetcode.cn/contest/weekly-contest-288/problems/maximum-total-beauty-of-the-gardens/
 # 贪心, 枚举后缀
 
-# https://leetcode-cn.com/contest/weekly-contest-289/
+# https://leetcode.cn/contest/weekly-contest-289/
 
-# 1048 / https://leetcode-cn.com/contest/weekly-contest-289/problems/maximum-trailing-zeros-in-a-cornered-path/
+# 1048 / https://leetcode.cn/contest/weekly-contest-289/problems/maximum-trailing-zeros-in-a-cornered-path/
 # 前缀和
 
-# 739 / https://leetcode-cn.com/contest/weekly-contest-289/problems/longest-path-with-different-adjacent-characters/
+# 739 / https://leetcode.cn/contest/weekly-contest-289/problems/longest-path-with-different-adjacent-characters/
 # 树形DP, 树的直径 lc1245, lc687
 
-# https://leetcode-cn.com/contest/weekly-contest-290/
+# https://leetcode.cn/contest/weekly-contest-290/
 
-# 1104 / https://leetcode-cn.com/contest/weekly-contest-290/problems/count-number-of-rectangles-containing-each-point/
+# 1104 / https://leetcode.cn/contest/weekly-contest-290/problems/count-number-of-rectangles-containing-each-point/
 # 树状数组, 二维偏序问题, 有序容器 SortedList, 二分排序
 
-# https://leetcode-cn.com/contest/weekly-contest-291/
+# https://leetcode.cn/contest/weekly-contest-291/
 
-# 1078 / https://leetcode-cn.com/contest/weekly-contest-291/problems/total-appeal-of-a-string/
+# 1078 / https://leetcode.cn/contest/weekly-contest-291/problems/total-appeal-of-a-string/
 # 字符串贡献问题, 动态规划
 
-# https://leetcode-cn.com/contest/weekly-contest-292/
+# https://leetcode.cn/contest/weekly-contest-292/
 
-# 2057 / https://leetcode-cn.com/contest/weekly-contest-292/problems/count-number-of-texts/
+# 2057 / https://leetcode.cn/contest/weekly-contest-292/problems/count-number-of-texts/
 # dfs, dp, python大数运算取模TLE / MLE
 
-# 884 / https://leetcode-cn.com/contest/weekly-contest-292/problems/check-if-there-is-a-valid-parentheses-string-path/
+# 884 / https://leetcode.cn/contest/weekly-contest-292/problems/check-if-there-is-a-valid-parentheses-string-path/
 # dfs, dp, bfs
 
 
-# https://leetcode-cn.com/contest/weekly-contest-293/
+# https://leetcode.cn/contest/weekly-contest-293/
 # 542 / https://leetcode.cn/contest/weekly-contest-293/problems/count-integers-in-intervals/
 
-# https://leetcode-cn.com/contest/weekly-contest-294/
+# https://leetcode.cn/contest/weekly-contest-294/
 # 142 / https://leetcode.cn/contest/weekly-contest-294/problems/sum-of-total-strength-of-wizards/
 
 
-# https://leetcode-cn.com/contest/weekly-contest-295/
+# https://leetcode.cn/contest/weekly-contest-295/
 # 194 / https://leetcode.cn/contest/weekly-contest-295/problems/steps-to-make-array-non-decreasing/
 # 单调栈
 
@@ -950,7 +950,7 @@ class Solution:
 
 """
 AK, 2022-06-04
-https://leetcode-cn.com/contest/weekly-contest-296/
+https://leetcode.cn/contest/weekly-contest-296/
 Rank: 313 / 676
 WA: T1(1)
 FT: 0:42:44
@@ -994,7 +994,7 @@ T4: 1532 pass
 
 """
 AK, 2022-07-16
-https://leetcode-cn.com/contest/weekly-contest-302/
+https://leetcode.cn/contest/weekly-contest-302/
 Rank: 1616 / 4243
 WA: T2(1), T4(3)
 FT: 1:21:20
@@ -1005,15 +1005,15 @@ T4: 2746 pass
 # https://leetcode.cn/contest/weekly-contest-303
 # 1941 / https://leetcode.cn/contest/weekly-contest-303/problems/design-a-food-rating-system/
 # heapq, sortedcontainers
-# 993 / https://leetcode.cn/contest/weekly-contest-303/problems/number-of-excellent-pairs/
+# 991 / https://leetcode.cn/contest/weekly-contest-303/problems/number-of-excellent-pairs/
 # bit manipulation, hash table or 二分
 
 
 """
 AK, 2022-07-30
-https://leetcode-cn.com/contest/weekly-contest-304/
-Rank: 1403 / 3230
+https://leetcode.cn/contest/weekly-contest-304/
+Rank: 1329 / 3227
 WA: T1(1), T2(1), T3(3)
 FT: 1:46:37
-T4: 1816 pass
+T4: 1772 pass
 """

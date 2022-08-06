@@ -9,7 +9,7 @@ class TreeNode:
         self.right = None
 
 
-# https://leetcode-cn.com/problems/na-ying-bi/
+# https://leetcode.cn/problems/na-ying-bi/
 # LCP 06. 拿硬币 - EASY
 class Solution:
     def minCount(self, coins: List[int]) -> int:
@@ -25,7 +25,7 @@ class Solution:
         return sum([(x + 1) // 2 for x in coins])
 
 
-# https://leetcode-cn.com/problems/chuan-di-xin-xi/
+# https://leetcode.cn/problems/chuan-di-xin-xi/
 # LCP 07. 传递信息 - EASY
 class Solution:
     # bfs, O(n^k), O(n + len(relation) + n^k), length of queue:n^k
@@ -75,7 +75,7 @@ class Solution:
         return dp[-1][-1]
 
 
-# https://leetcode-cn.com/problems/ju-qing-hong-fa-shi-jian/
+# https://leetcode.cn/problems/ju-qing-hong-fa-shi-jian/
 # LCP 08. 剧情触发时间
 class Solution:
     # O(n * log(m)), O(n)
@@ -134,7 +134,7 @@ class Solution:
         return ans
 
 
-# https://leetcode-cn.com/problems/zui-xiao-tiao-yue-ci-shu/
+# https://leetcode.cn/problems/zui-xiao-tiao-yue-ci-shu/
 # LCP 09. 最小跳跃次数
 class Solution:
     def minJump(self, jump: List[int]) -> int:
@@ -173,7 +173,7 @@ class Solution:
         return dp[0]
 
 
-# https://leetcode-cn.com/problems/er-cha-shu-ren-wu-diao-du/
+# https://leetcode.cn/problems/er-cha-shu-ren-wu-diao-du/
 # LCP 10. 二叉树任务调度
 class Solution(object):
     def minimalExecTime(self, root: TreeNode) -> float:
@@ -212,14 +212,14 @@ class Solution(object):
         return dfs(root)[0]
 
 
-# https://leetcode-cn.com/problems/qi-wang-ge-shu-tong-ji/
+# https://leetcode.cn/problems/qi-wang-ge-shu-tong-ji/
 # LCP 11. 期望个数统计
 class Solution:
     def expectNumber(self, scores: List[int]) -> int:
         return len(set(scores))
 
 
-# https://leetcode-cn.com/problems/xiao-zhang-shua-ti-ji-hua/
+# https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/
 # LCP 12. 小张刷题计划
 class Solution:
     def minTime(self, time: List[int], m: int) -> int:
@@ -243,7 +243,7 @@ class Solution:
         return lo
 
 
-# https://leetcode-cn.com/problems/xun-bao/
+# https://leetcode.cn/problems/xun-bao/
 # LCP 13. 寻宝 - HARD
 class Solution:
     def minimalSteps(self, maze: List[str]) -> int:

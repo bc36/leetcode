@@ -4,7 +4,7 @@ from typing import List
 # 68 / 2021.12.25
 
 
-# https://leetcode-cn.com/problems/check-if-a-parentheses-string-can-be-valid/
+# https://leetcode.cn/problems/check-if-a-parentheses-string-can-be-valid/
 # 5948 判断一个括号字符串是否有效. 正反遍历, 可能的左括号最大最小值. 类似678
 class Solution:
     def canBeValid(self, s: str, locked: str) -> bool:
@@ -61,7 +61,7 @@ class Solution:
 
 
 # 69 / 2022.1.8
-# https://leetcode-cn.com/problems/stamping-the-grid/
+# https://leetcode.cn/problems/stamping-the-grid/
 # https://leetcode.com/problems/stamping-the-grid/
 # 5931. 用邮票贴满网格图
 # 直接check, 更改矩阵会超时 -> 二维前缀和
@@ -156,10 +156,10 @@ class Solution:
 #################
 # 71 / 2022.2.5 #
 #################
-# https://leetcode-cn.com/contest/biweekly-contest-71/
+# https://leetcode.cn/contest/biweekly-contest-71/
 
 
-# https://leetcode-cn.com/problems/minimum-difference-in-sums-after-removal-of-elements/
+# https://leetcode.cn/problems/minimum-difference-in-sums-after-removal-of-elements/
 # 5987. 删除元素后和的最小差值
 class Solution:
     # < 500ms
@@ -264,10 +264,10 @@ class Solution:
 ##################
 # 72 / 2022.2.19 #
 ##################
-# https://leetcode-cn.com/contest/biweekly-contest-72/
+# https://leetcode.cn/contest/biweekly-contest-72/
 
 
-# https://leetcode-cn.com/problems/maximum-split-of-positive-even-integers/
+# https://leetcode.cn/problems/maximum-split-of-positive-even-integers/
 # 5998. 拆分成最多数目的偶整数之和
 # 贪心, 从小到大枚举偶数, 多出来的加到最后一个
 class Solution:
@@ -284,7 +284,7 @@ class Solution:
         return ans
 
 
-# https://leetcode-cn.com/problems/count-good-triplets-in-an-array/
+# https://leetcode.cn/problems/count-good-triplets-in-an-array/
 # 5999. 统计数组中好三元组数目
 # 树状数组
 class Solution:
@@ -344,10 +344,10 @@ class Solution:
 #################
 # 73 / 2022.3.5 #
 #################
-# https://leetcode-cn.com/contest/biweekly-contest-73/
+# https://leetcode.cn/contest/biweekly-contest-73/
 
 
-# https://leetcode-cn.com/contest/biweekly-contest-73/problems/minimum-number-of-moves-to-make-palindrome/
+# https://leetcode.cn/contest/biweekly-contest-73/problems/minimum-number-of-moves-to-make-palindrome/
 # 5237. 得到回文串的最少操作次数
 # 贪心 从外往里
 # GREEDY
@@ -413,33 +413,33 @@ class Solution:
 ##################
 # 74 / 2022.3.19 #
 ##################
-# https://leetcode-cn.com/contest/biweekly-contest-74/
-# https://leetcode-cn.com/contest/biweekly-contest-74/problems/minimum-white-tiles-after-covering-with-carpets/
+# https://leetcode.cn/contest/biweekly-contest-74/
+# https://leetcode.cn/contest/biweekly-contest-74/problems/minimum-white-tiles-after-covering-with-carpets/
 
 
-# https://leetcode-cn.com/contest/biweekly-contest-75/
-# 365 / https://leetcode-cn.com/contest/biweekly-contest-75/problems/sum-of-scores-of-built-strings/
+# https://leetcode.cn/contest/biweekly-contest-75/
+# 365 / https://leetcode.cn/contest/biweekly-contest-75/problems/sum-of-scores-of-built-strings/
 # z算法, 扩展kmp
 
-# https://leetcode-cn.com/contest/biweekly-contest-76/
-# 320 / https://leetcode-cn.com/contest/biweekly-contest-76/problems/maximum-score-of-a-node-sequence/
+# https://leetcode.cn/contest/biweekly-contest-76/
+# 320 / https://leetcode.cn/contest/biweekly-contest-76/problems/maximum-score-of-a-node-sequence/
 
-# https://leetcode-cn.com/contest/biweekly-contest-77
-# 250 / https://leetcode-cn.com/contest/biweekly-contest-77/problems/escape-the-spreading-fire/
+# https://leetcode.cn/contest/biweekly-contest-77
+# 250 / https://leetcode.cn/contest/biweekly-contest-77/problems/escape-the-spreading-fire/
 
 
-# https://leetcode-cn.com/contest/biweekly-contest-78
+# https://leetcode.cn/contest/biweekly-contest-78
 # 796 / https://leetcode.cn/contest/biweekly-contest-78/problems/maximum-white-tiles-covered-by-a-carpet/
 
 # 144 / https://leetcode.cn/contest/biweekly-contest-78/problems/substring-with-largest-variance/
 
 
-# https://leetcode-cn.com/contest/biweekly-contest-79
+# https://leetcode.cn/contest/biweekly-contest-79
 # 244 / https://leetcode.cn/contest/biweekly-contest-79/problems/booking-concert-tickets-in-groups/
 # 线段树, 二分
 
 
-# https://leetcode-cn.com/contest/biweekly-contest-80
+# https://leetcode.cn/contest/biweekly-contest-80
 # 1123 / https://leetcode.cn/contest/biweekly-contest-80/problems/match-substring-after-replacement/
 # 模拟, 思路错了
 # 1222 / https://leetcode.cn/contest/biweekly-contest-80/problems/count-subarrays-with-score-less-than-k/
