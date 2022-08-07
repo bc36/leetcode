@@ -1,4 +1,4 @@
-import bisect, collections, copy, functools, heapq, math
+import bisect, collections, copy, functools, heapq, math, random
 from typing import List
 
 MOD = 10**9 + 7
@@ -25,7 +25,7 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
 
 """binary"""
 
-# pay attension to Operation Priority: Addition(+), Subtraction(-) higher than Bitwise shift operator(<<, >>)
+# be careful of Operation Priority: Addition(+), Subtraction(-) higher than Bitwise shift operator(<<, >>)
 def str2binary(s: str):
     n = 0
     for c in s:
@@ -45,6 +45,10 @@ def loop(grid: List[List[int]]) -> None:
 
 
 """math related"""
+
+
+def ceil(x: int, y: int) -> int:
+    return (x + y - 1) // y
 
 
 def gcd(a: int, b: int) -> int:

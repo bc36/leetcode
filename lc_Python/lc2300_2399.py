@@ -1987,3 +1987,130 @@ class Solution:
                 now += 1
                 x = edges[x]
         return ans
+
+
+# 2363 - Merge Similar Items - EASY
+class Solution:
+    def mergeSimilarItems(
+        self, items1: List[List[int]], items2: List[List[int]]
+    ) -> List[List[int]]:
+        d = collections.defaultdict(int)
+        for v, w in items1:
+            d[v] += w
+        for v, w in items2:
+            d[v] += w
+        return sorted(list(d.items()))
+
+
+# 2364 - Count Number of Bad Pairs - MEDIUM
+class Solution:
+    def countBadPairs(self, nums: List[int]) -> int:
+        d = collections.defaultdict(int)
+        ans = 0
+        summ = 0
+        for i, v in enumerate(nums):
+            ans += summ - d[v - i]
+            summ += 1
+            d[v - i] += 1
+        return ans
+
+    def countBadPairs(self, nums: List[int]) -> int:
+        d = collections.defaultdict(int)
+        for i, v in enumerate(nums):
+            d[v - i] += 1
+        ans = 0
+        for v in d.values():
+            ans += v * (v - 1) // 2
+        return len(nums) * (len(nums) - 1) // 2 - ans
+
+    def countBadPairs(self, nums: List[int]) -> int:
+        cnt = collections.Counter(v - i for i, v in enumerate(nums))
+        return len(nums) * (len(nums) - 1) // 2 - sum(
+            v * (v - 1) // 2 for v in cnt.values()
+        )
+
+
+# 2365 - Task Scheduler II - MEDIUM
+class Solution:
+    # solution 1: maintain the current time
+    def taskSchedulerII(self, tasks: List[int], space: int) -> int:
+        d = {}
+        cur = 0  # current time
+        for t in tasks:
+            cur += 1
+            if t in d and cur <= d[t] + space:
+                cur = d[t] + space + 1
+            # or
+            # if t in d:
+            #     cur = max(cur, d[t] + space + 1)
+            d[t] = cur
+        return cur
+
+    def taskSchedulerII(self, tasks: List[int], space: int) -> int:
+        d = collections.defaultdict(lambda: -1e9)
+        cur = 0
+        for t in tasks:
+            cur += 1
+            if cur <= d[t] + space:
+                cur = d[t] + space + 1
+            d[t] = cur
+        return cur
+
+    # solution 2: the time to finish the last task
+    def taskSchedulerII(self, tasks: List[int], space: int) -> int:
+        d = {}
+        r = 0
+        for t in tasks:
+            if t in d:
+                d[t] = max(r + 1, d[t] + space + 1)
+            else:
+                d[t] = r + 1
+            r = d[t]
+        return r
+
+
+# 2366 - Minimum Replacements to Sort the Array - HARD
+class Solution:
+    def minimumReplacement(self, nums: List[int]) -> int:
+        ans = 0
+        nxt = nums[-1]
+        for i in range(len(nums) - 2, -1, -1):
+            if nums[i] <= nxt:
+                nxt = nums[i]
+            else:
+                k = nums[i] // nxt
+                while k * nxt < nums[i]:
+                    k += 1
+                ans += k - 1
+                nxt = nums[i] // k
+        return ans
+
+    def minimumReplacement(self, nums: List[int]) -> int:
+        ans = 0
+        nxt = nums[-1]
+        for i in range(len(nums) - 2, -1, -1):
+            if nums[i] <= nxt:
+                nxt = nums[i]
+            else:
+                k = (nums[i] + nxt - 1) // nxt  # math.ceil(nums[i] / nxt)
+                ans += k - 1
+                nxt = nums[i] // k
+        return ans
+
+    def minimumReplacement(self, nums: List[int]) -> int:
+        ans = 0
+        nxt = nums[-1]
+        for i in range(len(nums) - 2, -1, -1):
+            k = (nums[i] - 1) // nxt
+            ans += k
+            nxt = nums[i] // (k + 1)
+        return ans
+
+    def minimumReplacement(self, nums: List[int]) -> int:
+        ans = 0
+        nxt = nums[-1]
+        for i in range(len(nums) - 2, -1, -1):
+            k = (nums[i] + nxt - 1) // nxt  # math.ceil(nums[i] / nxt)
+            ans += k - 1
+            nxt = nums[i] // k
+        return ans

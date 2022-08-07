@@ -463,3 +463,13 @@ class Solution:
 # https://leetcode.cn/contest/biweekly-contest-83
 # 763 / https://leetcode.cn/contest/biweekly-contest-83/problems/shortest-impossible-sequence-of-rolls/
 # brain teaser
+
+
+"""
+AK, 2022-08-06
+https://leetcode.cn/contest/biweekly-contest-84/
+Rank: 505 / 1081
+WA: T2(1)
+FT: 1:17:56
+T4: 840 pass
+"""
