@@ -1999,7 +1999,15 @@ class Solution:
             d[v] += w
         for v, w in items2:
             d[v] += w
-        return sorted(list(d.items()))
+        return sorted(d.items())
+
+    def mergeSimilarItems(
+        self, items1: List[List[int]], items2: List[List[int]]
+    ) -> List[List[int]]:
+        cnt = collections.Counter()
+        cnt += dict(items1)
+        cnt += dict(items2)
+        return sorted(cnt.items())
 
 
 # 2364 - Count Number of Bad Pairs - MEDIUM
@@ -2109,8 +2117,221 @@ class Solution:
     def minimumReplacement(self, nums: List[int]) -> int:
         ans = 0
         nxt = nums[-1]
-        for i in range(len(nums) - 2, -1, -1):
-            k = (nums[i] + nxt - 1) // nxt  # math.ceil(nums[i] / nxt)
-            ans += k - 1
-            nxt = nums[i] // k
+        for n in reversed(nums):
+            k = (n - 1) // nxt
+            ans += k
+            nxt = n // (k + 1)
         return ans
+
+
+# 2367 - Number of Arithmetic Triplets - EASY
+class Solution:
+    def arithmeticTriplets(self, nums: List[int], diff: int) -> int:
+        s = set(nums)
+        return sum(x - diff in s and x + diff in s for x in nums)
+
+    def arithmeticTriplets(self, nums: List[int], diff: int) -> int:
+        s = set()
+        ans = 0
+        for x in nums:
+            if x - diff in s and x - diff * 2 in s:
+                ans += 1
+            s.add(x)
+        return ans
+
+
+# 2368 - Reachable Nodes With Restrictions - MEDIUM
+class Solution:
+    def reachableNodes(
+        self, n: int, edges: List[List[int]], restricted: List[int]
+    ) -> int:
+        g = collections.defaultdict(list)
+        for a, b in edges:
+            g[a].append(b)
+            g[b].append(a)
+        r = set(restricted)
+        dq = collections.deque([0])
+        ans = 0
+        vis = [False] * n
+        vis[0] = True
+        while dq:
+            ans += len(dq)
+            for _ in range(len(dq)):
+                n = dq.popleft()
+                for x in g[n]:
+                    if not vis[x] and x not in r:
+                        dq.append(x)
+                        vis[x] = True
+        return ans
+
+    def reachableNodes(
+        self, n: int, edges: List[List[int]], restricted: List[int]
+    ) -> int:
+        g = collections.defaultdict(list)
+        for a, b in edges:
+            g[a].append(b)
+            g[b].append(a)
+        ans = 0
+        r = set(restricted)
+
+        def dfs(x: int, fa: int):
+            nonlocal ans
+            ans += 1
+            for y in g[x]:
+                # we need father? -> cuz it is a tree
+                if y != fa and y not in r:
+                    dfs(y, x)
+
+        dfs(0, -1)
+        return ans
+
+    def reachableNodes(
+        self, n: int, edges: List[List[int]], restricted: List[int]
+    ) -> int:
+        g = [[] for _ in range(n)]
+        for a, b in edges:
+            g[a].append(b)
+            g[b].append(a)
+        ans = 0
+        r = set(restricted)
+        vis = [False] * n
+        vis[0] = True
+
+        def dfs(x: int):
+            nonlocal ans
+            ans += 1
+            for y in g[x]:
+                if not vis[y] and y not in r:
+                    vis[y] = True
+                    dfs(y)
+
+        dfs(0)
+        return ans
+
+
+# 2369 - Check if There is a Valid Partition For The Array - MEDIUM
+class Solution:
+    # dp
+    def validPartition(self, nums: List[int]) -> bool:
+        @functools.lru_cache(None)
+        def dfs(i: int) -> bool:
+            if i == 2:
+                return (
+                    nums[0] == nums[1] == nums[2]
+                    or nums[0] + 2 == nums[1] + 1 == nums[2]
+                )
+            if i == 1:
+                return nums[0] == nums[1]
+            if i <= 0:
+                return False
+            if nums[i - 1] == nums[i] and dfs(i - 2):
+                return True
+            if nums[i - 2] == nums[i - 1] == nums[i] and dfs(i - 3):
+                return True
+            if nums[i - 2] + 2 == nums[i - 1] + 1 == nums[i] and dfs(i - 3):
+                return True
+            return False
+
+        return dfs(len(nums) - 1)
+
+    def validPartition(self, nums: List[int]) -> bool:
+        n = len(nums)
+
+        @functools.lru_cache(None)
+        def dfs(i: int) -> bool:
+            if i == n:
+                return True
+            if i + 1 < n and nums[i] == nums[i + 1] and dfs(i + 2):
+                return True
+            if i + 2 < n and nums[i] == nums[i + 1] == nums[i + 2] and dfs(i + 3):
+                return True
+            if (
+                i + 2 < n
+                and nums[i] + 1 == nums[i + 1] == nums[i + 2] - 1
+                and dfs(i + 3)
+            ):
+                return True
+            return False
+
+        return dfs(0)
+
+    def validPartition(self, nums: List[int]) -> bool:
+        n = len(nums)
+        f = [True] + [False] * n
+        for i in range(1, n):
+            if f[i - 1] and nums[i] == nums[i - 1]:
+                f[i + 1] = True
+            if i > 1:
+                if f[i - 2] and nums[i] == nums[i - 1] == nums[i - 2]:
+                    f[i + 1] = True
+                if f[i - 2] and nums[i] == nums[i - 1] + 1 == nums[i - 2] + 2:
+                    f[i + 1] = True
+        return f[n]
+
+    def validPartition(self, nums: List[int]) -> bool:
+        n = len(nums)
+        f = [True] + [False] * n
+        for i in range(n):
+            if i >= 1 and nums[i] == nums[i - 1]:
+                f[i + 1] |= f[i - 1]
+            if i >= 2 and nums[i] == nums[i - 1] and nums[i] == nums[i - 2]:
+                f[i + 1] |= f[i - 2]
+            if i >= 2 and nums[i] == nums[i - 1] + 1 and nums[i] == nums[i - 2] + 2:
+                f[i + 1] |= f[i - 2]
+        return f[n]
+
+    def validPartition(self, nums: List[int]) -> bool:
+        n = len(nums)
+        f = [False] * (n + 1)
+        f[0] = True
+        for i in range(n):
+            if not f[i]:
+                continue
+            if i + 2 <= n and nums[i] == nums[i + 1]:
+                f[i + 2] = True
+            if i + 3 <= n:
+                if (
+                    nums[i] == nums[i + 1] == nums[i + 2]
+                    or nums[i] + 2 == nums[i + 1] + 1 == nums[i + 2]
+                ):
+                    f[i + 3] = True
+        return f[n]
+
+    # save space
+    def validPartition(self, nums: List[int]) -> bool:
+        n = len(nums)
+        f = [False, False, False, True]
+        for i in range(n):
+            f[i % 4] = False
+            if i - 1 >= 0 and nums[i] == nums[i - 1]:
+                f[i % 4] |= f[(i - 2) % 4]
+            if i - 2 >= 0 and nums[i] == nums[i - 1] == nums[i - 2]:
+                f[i % 4] |= f[(i - 3) % 4]
+            if i - 2 >= 0 and nums[i] == nums[i - 1] + 1 == nums[i - 2] + 2:
+                f[i % 4] |= f[(i - 3) % 4]
+        return f[(n - 1) % 4]
+
+
+# 2370 - Longest Ideal Subsequence - MEDIUM
+class Solution:
+    def longestIdealString(self, s: str, k: int) -> int:
+        f = [0] * 26
+        for c in s:
+            i = ord(c) - ord("a")
+            f[i] = 1 + max(f[max(0, i - k) : i + k + 1])  # [ , )
+            # f[i] = 1 + max(f[max(0, i - k) : min(25, i + k) + 1])
+        return max(f)
+
+    def longestIdealString(self, s, k):
+        f = [0] * 123  # ord('z') = 122
+        for c in s:
+            i = ord(c)
+            f[i] = max(f[i - k : i + k + 1]) + 1
+        return max(f)
+
+    def longestIdealString(self, s: str, k: int) -> int:
+        f = collections.defaultdict(int)
+        for c in s:
+            i = ord(c)
+            f[i] = 1 + max(f[i + j] for j in range(-k, k + 1))
+        return max(f.values())
