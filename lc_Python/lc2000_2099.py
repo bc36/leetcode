@@ -1,5 +1,18 @@
 import collections, bisect, itertools, functools, math, heapq, re
-from typing import List
+from typing import List, Optional
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 2000 - Reverse Prefix of Word - EASY
@@ -575,4 +588,152 @@ class Solution:
             i = bisect.bisect_left(arr, a)
             j = bisect.bisect_right(arr, b) - 1
             ans.append((arr[j] - arr[i]) - (j - i) if i < j else 0)
+        return ans
+
+
+# 2094 - Finding 3-Digit Even Numbers - EASY
+class Solution:
+    def findEvenNumbers(self, digits: List[int]) -> List[int]:
+        ans = []
+        cnt = collections.Counter(digits)
+        for n in range(100, 1000, 2):
+            x = n
+            # a * 100 + b * 10 + c
+            x, c = divmod(x, 10)
+            x, b = divmod(x, 10)
+            _, a = divmod(x, 10)
+            cnt[a] -= 1
+            cnt[b] -= 1
+            cnt[c] -= 1
+            if cnt[a] >= 0 and cnt[b] >= 0 and cnt[c] >= 0:
+                ans.append(n)
+            cnt[a] += 1
+            cnt[b] += 1
+            cnt[c] += 1
+        return ans
+
+    def findEvenNumbers(self, digits: List[int]) -> List[int]:
+        ans = []
+        cnt = collections.Counter(digits)
+        for n in range(100, 1000, 2):
+            f = True
+            x = n
+            d = collections.defaultdict(int)
+            for _ in range(3):
+                x, m = divmod(x, 10)
+                d[m] += 1
+                if d[m] > cnt[m]:
+                    f = False
+                    break
+            if f:
+                ans.append(n)
+        return ans
+
+    def findEvenNumbers(self, digits: List[int]) -> List[int]:
+        ans = []
+        cnt = collections.Counter(digits)
+        for i in range(100, 1000, 2):
+            m = collections.Counter([int(d) for d in str(i)])
+            if all(cnt[d] >= m[d] for d in m.keys()):
+                ans.append(i)
+        return ans
+
+
+# 2095 - Delete the Middle Node of a Linked List - MEDIUM
+class Solution:
+    def deleteMiddle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        n = 0
+        h = head
+        while h:
+            n += 1
+            h = h.next
+        if n == 1:
+            return None
+        h = head
+        pre = None
+        for _ in range(n // 2):
+            pre = h
+            h = h.next
+        pre.next = h.next
+        return head
+
+    def deleteMiddle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode(next=head)
+        slow = dummy
+        fast = dummy
+        while fast.next and fast.next.next:
+            slow = slow.next
+            fast = fast.next.next
+        slow.next = slow.next.next
+        return dummy.next
+
+
+# 2096 - Step-By-Step Directions From a Binary Tree Node to Another - MEDIUM
+class Solution:
+    def getDirections(self, root: Optional[TreeNode], sv: int, dv: int) -> str:
+        def dfs(root: TreeNode, x: int, arr: List[int]):
+            if not root:
+                return False
+            if root.val == x:
+                return True
+            if dfs(root.left, x, arr):
+                arr.append("L")
+                return True
+            if dfs(root.right, x, arr):
+                arr.append("R")
+                return True
+            return False
+
+        a1 = []
+        a2 = []
+        dfs(root, sv, a1)
+        dfs(root, dv, a2)
+        while a1 and a2 and a1[-1] == a2[-1]:
+            a1.pop()
+            a2.pop()
+        return "U" * len(a1) + "".join(reversed(a2))
+
+    def getDirections(self, root: Optional[TreeNode], sv: int, dv: int) -> str:
+        def dfs(root: TreeNode) -> None:
+            """record each father node"""
+            nonlocal s, t
+            if root.val == sv:
+                s = root
+            if root.val == dv:
+                t = root
+            if root.left:
+                fa[root.left] = root
+                dfs(root.left)
+            if root.right:
+                fa[root.right] = root
+                dfs(root.right)
+            return
+
+        def path(cur: TreeNode) -> List[str]:
+            """the path from root to leave"""
+            p = []
+            while cur != root:
+                f = fa[cur]
+                if cur == f.left:
+                    p.append("L")
+                else:
+                    p.append("R")
+                cur = f
+            return p[::-1]
+
+        fa = {}
+        s = None
+        t = None
+
+        dfs(root)
+
+        p1 = path(s)
+        p2 = path(t)
+        i = 0
+        while i < min(len(p1), len(p2)):
+            if p1[i] == p2[i]:
+                i += 1
+            else:
+                break
+        ans = "U" * (len(p1) - i) + "".join(p2[i:])
         return ans

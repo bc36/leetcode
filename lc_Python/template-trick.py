@@ -1,4 +1,4 @@
-import bisect, collections, copy, functools, heapq, math, random
+import bisect, collections, copy, functools, heapq, math, random, string
 from typing import List
 
 MOD = 10**9 + 7
@@ -49,6 +49,7 @@ def loop(grid: List[List[int]]) -> None:
 
 def ceil(x: int, y: int) -> int:
     return (x + y - 1) // y
+    return (x - 1) // y + 1
 
 
 def gcd(a: int, b: int) -> int:

@@ -995,10 +995,10 @@ T4: 1532 pass
 """
 AK, 2022-07-16
 https://leetcode.cn/contest/weekly-contest-302/
-Rank: 1616 / 4243
+Rank: 1534 / 4039
 WA: T2(1), T4(3)
 FT: 1:21:20
-T4: 2746 pass
+T4: 2583 pass
 """
 
 
@@ -1016,4 +1016,14 @@ Rank: 1329 / 3227
 WA: T1(1), T2(1), T3(3)
 FT: 1:46:37
 T4: 1772 pass
+"""
+
+
+"""
+AK, 2022-08-06
+https://leetcode.cn/contest/weekly-contest-305/
+Rank: 1146 / 2857
+WA: T3(2), T4(1)
+FT: 1:18:28
+T4: 1899 pass
 """
