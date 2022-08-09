@@ -1,9 +1,13 @@
 # Leetcode diary 📅
+![Go version](https://img.shields.io/badge/Go-1.18-white?labelColor=deepskyblue&color=white)
+![Py version](https://img.shields.io/badge/Python-3.8-white?labelColor=blue&color=white)
 * Forgetting Go 😕
 * Training Python 🥱
 * ~~Java 🤯~~
+* When can I be a JavaScript master 🤔
 
-<br><br><br>
+
+<br><br>
 
 # 🔧
 [OI Wiki](https://oi-wiki.org/)  
@@ -22,12 +26,12 @@
 
 [GeeksforGeeks](https://www.geeksforgeeks.org/)
 
-<br><br><br>
+<br><br>
 
 # 📚: 
 isbn: 978-7-83009-313-6
 
-<br><br><br>
+<br><br>
 
 # Python:
 
@@ -41,7 +45,7 @@ isbn: 978-7-83009-313-6
 
 * [Glossary](https://docs.python.org/3/glossary.html)
 
-<br><br><br>
+<br><br>
 
 # Big O
 The O is short for “Order of”. If we’re discussing an algorithm with O(n), we say its **order of**, or **rate of growth**, is n, or linear complexity.
@@ -59,7 +63,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 
 ![big(O)](/pic/big-o-cheatsheet.png)
 
-<br><br><br>
+<br><br>
 
 # DP: top-down vs bottom-up
 
@@ -70,7 +74,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 * Difference:
 ![bottom-up vs top-down](/pic/Tabulation-vs-Memoization.png)
 
-<br><br><br>
+<br><br>
 
 # 坑 / 技巧
 * MOD:
@@ -84,7 +88,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
       * Python 中结果与除数同符号
 
 
-<br><br><br>
+<br><br>
 
 
 # 7788
