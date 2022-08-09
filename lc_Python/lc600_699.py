@@ -1,5 +1,5 @@
 import itertools, bisect, heapq, collections, math, functools
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
 class TreeNode:
@@ -214,6 +214,93 @@ class Solution:
             ans.append(summ / t)
             q = new
         return ans
+
+
+# 640 - Solve the Equation - MEDIUM
+class Solution:
+    def solveEquation(self, equation: str) -> str:
+        def calc(s: str) -> Tuple[int, int]:
+            x = val = n = 0
+            f = 1
+            near_f = True  # to handle "0x=0", "0x=1"
+            num = set("0123456789")
+            for c in s:
+                if c == "=":
+                    val += n * f
+                    break
+                if c == "-":
+                    near_f = True
+                    val += n * f
+                    f = -1
+                    n = 0
+                if c == "+":
+                    near_f = True
+                    val += n * f
+                    f = 1
+                    n = 0
+                if c in num:
+                    near_f = False
+                    n = 10 * n + int(c)
+                if c == "x":
+                    if near_f:
+                        x += 1 * f
+                    else:
+                        x += n * f
+                    n = 0
+            return x, val
+
+        idx = equation.index("=")
+        x, left = calc(equation[: idx + 1])
+        equation += "="
+        xx, right = calc(equation[idx + 1 :])
+        a = x - xx
+        b = right - left
+        if a == 0:
+            return "No solution" if b else "Infinite solutions"
+        return f"x={b // a}"
+
+
+# 643 - Maximum Average Subarray I - EASY
+class Solution:
+    def findMaxAverage(self, nums: List[int], k: int) -> float:
+        mx = w = sum(nums[:k])
+        for i in range(k, len(nums)):
+            w += nums[i] - nums[i - k]
+            mx = max(mx, w)
+        return mx / k
+
+
+# 645 - Set Mismatch - EASY
+class Solution:
+    def findErrorNums(self, nums: List[int]) -> List[int]:
+        arr = [1] * len(nums)
+        f = s = 0
+        for n in nums:
+            if arr[n - 1] == 0:
+                f = n
+            else:
+                arr[n - 1] -= 1
+        for n in range(1, len(nums) + 1):
+            if arr[n - 1]:
+                s = n
+                break
+        return [f, s]
+
+    def findErrorNums(self, nums):
+        cnt = collections.Counter(nums)
+        f = s = -1
+        for n in range(1, len(nums) + 1):
+            v = cnt.get(n, 0)
+            if v == 0:
+                s = n
+            elif v == 2:
+                f = n
+        return [f, s]
+
+    def findErrorNums(self, nums):
+        n = len(nums)
+        summ = sum(set(nums))
+        return [sum(nums) - summ, (1 + n) * n // 2 - summ]
 
 
 # 648 - Replace Words - MEDIUM
