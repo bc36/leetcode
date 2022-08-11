@@ -1,5 +1,5 @@
+import collections, itertools, math, bisect, functools
 from typing import List
-import collections, itertools, math
 
 
 class ListNode:
@@ -220,6 +220,7 @@ class Solution:
             for i, ch in zip(v, char):
                 s[i] = ch
         return "".join(s)
+
 
 # 1206 - Design Skiplist - HARD
 class Skiplist:
@@ -509,6 +510,41 @@ class Solution:
             p *= n % 10
             n //= 10
         return p - s
+
+
+# 1282 - Group the People Given the Group Size They Belong To - MEDIUM
+class Solution:
+    def groupThePeople(self, groupSizes: List[int]) -> List[List[int]]:
+        g = collections.defaultdict(list)
+        for i, v in enumerate(groupSizes):
+            g[v].append(i)
+        ans = []
+        for k, v in g.items():
+            ans.extend((v[i : i + k] for i in range(0, len(v), k)))
+            # for i in range(0, len(v), k):
+            #     ans.append(v[i : i + k])
+        return ans
+
+
+# 1283 - Find the Smallest Divisor Given a Threshold - MEDIUM
+class Solution:
+    def smallestDivisor(self, nums: List[int], threshold: int) -> int:
+        l = 1
+        r = max(nums)
+        while l < r:
+            m = l + r >> 1
+            if sum((v + m - 1) // m for v in nums) <= threshold:
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    def smallestDivisor(self, nums: List[int], threshold: int) -> int:
+        return 1 + bisect.bisect_left(
+            range(1, max(nums) + 1),
+            x=True,
+            key=lambda m: sum((v + m - 1) // m for v in nums) <= threshold,
+        )
 
 
 # 1286 - Iterator for Combination - MEDIUM

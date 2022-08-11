@@ -149,7 +149,75 @@ class Solution:
         return self.findMinFibonacciNumbers(k - f2) + 1
 
 
+# 1417 - Reformat The String - EASY
+class Solution:
+    def reformat(self, s: str) -> str:
+        a = [c for c in s if c.isdigit()]
+        b = [c for c in s if c.isalpha()]
+        if abs(len(a) - len(b)) >= 2:
+            return ""
+        if len(a) < len(b):
+            a, b = b, a
+
+        ans = [""] * len(s)
+        ans[::2], ans[1::2] = a, b
+        return "".join(ans)
+
+        ans = ""
+        while a or b:
+            if a:
+                ans += a.pop()
+            if b:
+                ans += b.pop()
+        return ans
+
+
+# 1419 - Minimum Number of Frogs Croaking - MEDIUM
+class Solution:
+    def minNumberOfFrogs(self, croakOfFrogs: str) -> int:
+        mx = c = r = o = a = k = 0
+        for ch in croakOfFrogs:
+            if ch == "c":
+                c += 1
+            elif ch == "r":
+                c -= 1
+                r += 1
+            elif ch == "o":
+                r -= 1
+                o += 1
+            elif ch == "a":
+                o -= 1
+                a += 1
+            elif ch == "k":
+                a -= 1
+            if c < 0 or r < 0 or o < 0 or a < 0 or k < 0:
+                return -1
+            mx = max(mx, c + r + o + a + k)
+        if c + r + o + a + k != 0:
+            return -1
+        return mx
+
+
+# 1422 - Maximum Score After Splitting a String - EASY
+class Solution:
+    def maxScore(self, s: str) -> int:
+        l = s[0] == "0"
+        r = sum(c == "1" for c in s[1:])
+        mx = l + r
+        for i in range(1, len(s) - 1):
+            l += s[i] == "0"
+            r -= s[i] == "1"
+            mx = max(mx, l + r)
+        return mx
+
+
 # 1428 - Leftmost Column with at Least a One - MEDIUM
+
+# 1431 - Kids With the Greatest Number of Candies - EASY
+class Solution:
+    def kidsWithCandies(self, candies: List[int], extraCandies: int) -> List[bool]:
+        mx = max(candies)
+        return [(c + extraCandies) >= mx for c in candies]
 
 
 # 1438 - Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit - MEDIUM
