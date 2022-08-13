@@ -1110,6 +1110,38 @@ class Solution:
 
 
 # 750
+
+
+# 757 - Set Intersection Size At Least Two - HARD
+class Solution:
+    def intersectionSizeTwo(self, intervals: List[List[int]]) -> int:
+        intervals.sort(key=lambda x: (x[1], -x[0]))
+        # 1. no overlap
+        # 2. only 1 number
+        # 3. >= 2 number
+        arr = [-1, -1]
+        for x in intervals:
+            if x[0] <= arr[-2]:
+                continue
+            if x[0] > arr[-1]:
+                arr.append(x[1] - 1)
+            arr.append(x[1])
+        return len(arr) - 2
+
+
+# 761 - Special Binary String - HARD
+class Solution:
+    def makeLargestSpecial(self, s: str) -> str:
+        cnt = pre = 0
+        arr = []
+        for i in range(len(s)):
+            cnt += 1 if s[i] == "1" else -1
+            if cnt == 0:
+                arr.append("1" + self.makeLargestSpecial(s[pre + 1 : i]) + "0")
+                pre = i + 1
+        return "".join(sorted(arr, reverse=True))
+
+
 # 762 - Prime Number of Set Bits in Binary Representation - EASY
 class Solution:
     # O((r - l) * sqrt(logr)) / O(1), how many '1': logr, isPrime:sqrt(x)
@@ -1235,6 +1267,79 @@ class Solution:
             if list(map(len, buckets)).count(1) <= 1
             else ""
         )
+
+
+# 768 - Max Chunks To Make Sorted II - HARD
+class Solution:
+    # O(n) / O(n)
+    def maxChunksToSorted(self, arr: List[int]) -> int:
+        # mx[x] = max(arr[: x + 1])
+        # mi[x] = min(arr[x:])
+        mx = []
+        cur = 0
+        for v in arr:
+            if v > cur:
+                cur = v
+            mx.append(cur)
+
+        mi = []
+        cur = 10**8
+        for i in range(len(arr) - 1, -1, -1):
+            if arr[i] < cur:
+                cur = arr[i]
+            mi.append(cur)
+        mi.reverse()
+
+        ans = 1
+        for i in range(len(arr) - 1):
+            if mx[i] <= mi[i + 1]:
+                ans += 1
+        return ans
+
+    def maxChunksToSorted(self, arr: List[int]) -> int:
+        n = len(arr)
+        mx = [0] * n
+        mi = [0] * n
+
+        mx[0] = arr[0]
+        for i in range(1, n):
+            mx[i] = max(mx[i - 1], arr[i])
+
+        mi[n - 1] = arr[n - 1]
+        for i in range(n - 2, -1, -1):
+            mi[i] = min(mi[i + 1], arr[i])
+
+        ans = 1
+        for i in range(1, n):
+            ans += mx[i - 1] <= mi[i]
+        return ans
+
+    def maxChunksToSorted(self, arr: List[int]) -> int:
+        st = []
+        for v in arr:
+            if not st or v >= st[-1]:
+                st.append(v)
+            else:
+                mx = st.pop()
+                while st and st[-1] > v:
+                    st.pop()
+                st.append(mx)
+        return len(st)
+
+    # O(n * logn) / O(n)
+    def maxChunksToSorted(self, arr: List[int]) -> int:
+        cnt = collections.Counter()
+        ans = 0
+        for x, y in zip(arr, sorted(arr)):
+            cnt[x] += 1
+            if cnt[x] == 0:
+                del cnt[x]
+            cnt[y] -= 1
+            if cnt[y] == 0:
+                del cnt[y]
+            if len(cnt) == 0:
+                ans += 1
+        return ans
 
 
 ################
