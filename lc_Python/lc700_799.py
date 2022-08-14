@@ -1326,6 +1326,15 @@ class Solution:
                 st.append(mx)
         return len(st)
 
+    def maxChunksToSorted(self, arr: List[int]) -> int:
+        st = [-1]
+        for v in arr:
+            x = max(v, st[-1])
+            while st[-1] > v:
+                st.pop()
+            st.append(x)
+        return len(st) - 1
+
     # O(n * logn) / O(n)
     def maxChunksToSorted(self, arr: List[int]) -> int:
         cnt = collections.Counter()
@@ -1338,6 +1347,22 @@ class Solution:
             if cnt[y] == 0:
                 del cnt[y]
             if len(cnt) == 0:
+                ans += 1
+        return ans
+
+
+# 769 - Max Chunks To Make Sorted - MEDIUM
+class Solution:
+    # all solutions in 768 can solve this problem
+
+    # other way: unique element + range(0, n-1) -> partition each chunk by index
+    def maxChunksToSorted(self, arr: List[int]) -> int:
+        ans = 0
+        mx = arr[0]
+        for i, v in enumerate(arr):
+            if v > mx:
+                mx = v
+            if mx == i:
                 ans += 1
         return ans
 
