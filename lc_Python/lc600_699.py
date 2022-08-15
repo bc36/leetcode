@@ -195,6 +195,45 @@ class Solution:
         return len(pq)
 
 
+# 636 - Exclusive Time of Functions - MEDIUM
+class Solution:
+    def exclusiveTime(self, n: int, logs: List[str]) -> List[int]:
+        ans = [0] * n
+        total = 0
+        st = []
+        for l in logs:
+            i, cmd, cur = l.split(":")
+            i = int(i)
+            cur = int(cur)
+            if cmd == "start":
+                st.append((i, cur, total))
+            else:
+                _, pre, other_task = st.pop()
+                used = cur - pre + 1 - (total - other_task)
+                ans[i] += used
+                total += used
+        return ans
+
+    def exclusiveTime(self, n: int, logs: List[str]) -> List[int]:
+        ans = [0] * n
+        pre = -1
+        st = []
+        for l in logs:
+            i, cmd, cur = l.split(":")
+            i = int(i)
+            cur = int(cur)
+            if cmd == "start":
+                if st:
+                    ans[st[-1]] += cur - pre
+                st.append(i)
+                pre = cur
+            else:
+                idx = st.pop()
+                ans[idx] += cur - pre + 1
+                pre = cur + 1
+        return ans
+
+
 # 637 - Average of Levels in Binary Tree - EASY
 class Solution:
     def averageOfLevels(self, root: Optional[TreeNode]) -> List[float]:
@@ -258,6 +297,53 @@ class Solution:
         if a == 0:
             return "No solution" if b else "Infinite solutions"
         return f"x={b // a}"
+
+
+# 641 - Design Circular Deque - MEDIUM
+class MyCircularDeque:
+    def __init__(self, k: int):
+        self.arr = [0] * (k + 1)
+        self.l = k + 1
+        self.f = 0  # front pointer
+        self.r = 0  # rear pointer
+
+    def insertFront(self, value: int) -> bool:
+        if self.isFull():
+            return False
+        self.f = (self.f - 1) % self.l
+        self.arr[self.f] = value
+        return True
+
+    def insertLast(self, value: int) -> bool:
+        if self.isFull():
+            return False
+        self.arr[self.r] = value
+        self.r = (self.r + 1) % self.l
+        return True
+
+    def deleteFront(self) -> bool:
+        if self.isEmpty():
+            return False
+        self.f = (self.f + 1) % self.l
+        return True
+
+    def deleteLast(self) -> bool:
+        if self.isEmpty():
+            return False
+        self.r = (self.r - 1) % self.l
+        return True
+
+    def getFront(self) -> int:
+        return -1 if self.isEmpty() else self.arr[self.f]
+
+    def getRear(self) -> int:
+        return -1 if self.isEmpty() else self.arr[(self.r - 1) % self.l]
+
+    def isEmpty(self) -> bool:
+        return self.f == self.r
+
+    def isFull(self) -> bool:
+        return (self.r + 1) % self.l == self.f
 
 
 # 643 - Maximum Average Subarray I - EASY
