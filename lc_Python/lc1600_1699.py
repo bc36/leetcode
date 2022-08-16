@@ -251,6 +251,21 @@ class Solution:
         return ans
 
 
+# 1656 - Design an Ordered Stream - EASY
+class OrderedStream:
+    def __init__(self, n: int):
+        self.arr = [""] * (n + 2)
+        self.ptr = 1
+
+    def insert(self, idKey: int, value: str) -> List[str]:
+        self.arr[idKey] = value
+        ans = []
+        while self.arr[self.ptr]:
+            ans.append(self.arr[self.ptr])
+            self.ptr += 1
+        return ans
+
+
 # 1672 - Richest Customer Wealth - EASY
 class Solution:
     def maximumWealth(self, accounts: List[List[int]]) -> int:
