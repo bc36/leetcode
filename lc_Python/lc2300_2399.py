@@ -2505,3 +2505,53 @@ class Solution:
             return ans
 
         return fn(0, 0, True, False)
+
+    def countSpecialNumbers(self, n: int) -> int:
+        # all numbers
+        nums = []
+        while n:
+            nums.append(n % 10)
+            n //= 10
+        ans = 0
+        # all numbers that length < m, m is the length of original number
+        for i in range(1, len(nums)):
+            t = k = 9
+            for j in range(i - 1):  # calculate permutation
+                t *= k
+                k -= 1
+            ans += t
+        nums.reverse()
+        vis = [0] * 10
+        for i in range(len(nums)):
+            for j in range(int(i == 0), nums[i]):  # no leading zore
+                if vis[j]:
+                    continue
+                t = 1
+                u = 9 - i
+                for k in range(len(nums) - i - 1):  # calculate permutation
+                    t *= u
+                    u -= 1
+                ans += t
+            if vis[nums[i]]:
+                break
+            vis[nums[i]] = True
+
+        # whether original number is qualified
+        s = set(nums)
+        if len(s) == len(nums):
+            ans += 1
+        return ans
+
+    # shorter version of above
+    def countSpecialNumbers(self, n: int) -> int:
+        nums = list(map(int, str(n + 1)))
+        ans = sum(9 * math.perm(9, i) for i in range(len(nums) - 1))
+        s = set()
+        for i, x in enumerate(nums):
+            for y in range(i == 0, x):
+                if y not in s:
+                    ans += math.perm(9 - i, len(nums) - i - 1)
+            if x in s:
+                break
+            s.add(x)
+        return ans

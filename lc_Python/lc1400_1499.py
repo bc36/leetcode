@@ -1,6 +1,5 @@
-from bisect import bisect
-from typing import List
 import collections, heapq, functools, itertools, math, sortedcontainers
+from typing import List
 
 
 class TreeNode:

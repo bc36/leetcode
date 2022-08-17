@@ -9,6 +9,44 @@ class TreeNode:
         self.right = right
 
 
+# 1302 - Deepest Leaves Sum - MEDIUM
+class Solution:
+    def deepestLeavesSum(self, root: Optional[TreeNode]) -> int:
+        def dfs(root: TreeNode, lv: int) -> None:
+            nonlocal ans, mx
+            if not root:
+                return
+            if lv > mx:
+                mx = lv
+                ans = root.val
+            elif lv == mx:
+                ans += root.val
+
+            dfs(root.left, lv + 1)
+            dfs(root.right, lv + 1)
+            return
+
+        ans = mx = 0
+        dfs(root, 0)
+        return ans
+
+    def deepestLeavesSum(self, root: Optional[TreeNode]) -> int:
+        q = [root]
+        while q:
+            new = []
+            summ = 0
+            while q:
+                n = q.pop()
+                summ += n.val
+                if n.left:
+                    new.append(n.left)
+                if n.right:
+                    new.append(n.right)
+            q = new
+            ans = summ
+        return ans
+
+
 # 1305 - All Elements in Two Binary Search Trees - MEDIUM
 class Solution:
     # O((m+n) * log(m+n)) / O(m + n)

@@ -1,4 +1,4 @@
-import bisect, collections, copy, functools, heapq, math, random, string
+import bisect, collections, copy, functools, heapq, itertools, math, random, string
 from typing import List
 
 MOD = 10**9 + 7
@@ -15,8 +15,10 @@ Trick:
 """
 Directory: (abcdefghijklmnopqrstuvwxyz)
     binary
+    dp
     math related
     loop
+    permutation
     segment tree
     set
     union-find, disjoint set
@@ -33,6 +35,28 @@ def str2binary(s: str):
     return n
 
 
+"""dp - digit DP"""
+
+
+def countSpecialNumbers(n: int) -> int:
+    s = str(n)
+
+    @functools.lru_cache(None)
+    def fn(i: int, mask: int, is_limit: bool, is_num: bool) -> int:
+        if i == len(s):
+            return int(is_num)
+        ans = 0
+        if not is_num:
+            ans = fn(i + 1, mask, False, False)
+        up = int(s[i]) if is_limit else 9
+        for d in range(0 if is_num else 1, up + 1):
+            if mask >> d & 1 == 0:
+                ans += fn(i + 1, mask | (1 << d), is_limit and d == up, True)
+        return ans
+
+    return fn(0, 0, True, False)
+
+
 """loop"""
 
 
@@ -41,6 +65,22 @@ def loop(grid: List[List[int]]) -> None:
         print(r)
     for c in zip(*grid):
         print(c)
+    return
+
+
+"""permutation"""
+
+
+def fn() -> None:
+    # 1. itertools.permutations
+    for lst in itertools.permutations(range(1, 4), 3):
+        # do sth
+        pass
+
+    # 2. math.perm
+    n = 3
+    k = 2
+    p = math.perm(n, k)
     return
 
 

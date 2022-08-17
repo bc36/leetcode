@@ -1522,55 +1522,44 @@ class Solution:
         if not head:
             return None
         a = []
-        l = 0
         while head:
-            l += 1
             a.append(head.val)
             head = head.next
-        d = l - k % l  # offset
+        d = len(a) - k % len(a)  # offset
         dummy = head = ListNode(-1)
-        for i in range(l):
-            head.next = ListNode(a[(i + d) % l])
+        for i in range(len(a)):
+            head.next = ListNode(a[(i + d) % len(a)])
             head = head.next
         return dummy.next
+
+    def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if not head:
+            return None
+        arr = []
+        while head:
+            arr.append(head)
+            head = head.next
+        k %= len(arr)
+        arr[-1].next = arr[0]
+        arr[-k - 1].next = None
+        return arr[-k]
 
     # O(n + k % l) / O(1)
     def rotateRight(self, head: ListNode, k: int) -> ListNode:
         if not head:
             return None
-        last = cur = head
-        l = 0
-        while cur:
-            l += 1
-            last = cur
-            cur = cur.next
-        pre = cur = head
-        x = k % l
-        if x == 0:
-            return head
-        for _ in range(l - x):
-            pre = cur
-            cur = cur.next
-        last.next = head  # make the linked list a circle
-        pre.next = None
-        return cur
-
-    def rotateRight(self, head: ListNode, k: int) -> ListNode:
-        if not head or not head.next:
-            return head
-        last, n = head, 1
+        last = head
+        l = 1
         while last.next:
+            l += 1
             last = last.next
-            n += 1
-        if k % n == 0:
-            return head
-        middle = head
-        for _ in range(n - k % n - 1):
-            middle = middle.next
-        new = middle.next
-        last.next = head
-        middle.next = None
-        return new
+        pre = head
+        for _ in range(l - k % l - 1):
+            pre = pre.next
+        last.next = head  # make the linked list a circle
+        ans = pre.next
+        pre.next = None
+        return ans
 
 
 # 62 - Unique Paths - MEDIUM
@@ -2322,6 +2311,33 @@ class Solution:
         if s[-2] != "0" and int(s[-2:]) < 27:
             two += self.numDecodings(s[:-2])
         return one + two
+
+
+# 93 - Restore IP Addresses - MEDIUM
+class Solution:
+    def restoreIpAddresses(self, s: str) -> List[str]:
+        def dfs(x: int, dot: int, path: List[str]) -> None:
+            if dot < 0:
+                return
+            if dot == 0:
+                tmp = s[x:]
+                if 0 <= int(tmp) <= 255 and str(int(tmp)) == tmp:
+                    path.append(tmp)
+                    ans.append(".".join(path))
+                    path.pop()
+                return
+
+            for i in range(x + 1, min(x + 4, len(s))):
+                tmp = s[x:i]
+                if 0 <= int(tmp) <= 255 and str(int(tmp)) == tmp:
+                    path.append(tmp)
+                    dfs(i, dot - 1, path)
+                    path.pop()
+            return
+
+        ans = []
+        dfs(0, 3, [])
+        return ans
 
 
 # 94 - Binary Tree Inorder Traversal - EASY
