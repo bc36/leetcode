@@ -1414,6 +1414,9 @@ class Solution:
         return True
 
 
+# 2338 - Count the Number of Ideal Arrays - HARD
+
+
 # 2341 - Maximum Number of Pairs in Array - EASY
 class Solution:
     def numberOfPairs(self, nums: List[int]) -> List[int]:
@@ -2335,3 +2338,170 @@ class Solution:
             i = ord(c)
             f[i] = 1 + max(f[i + j] for j in range(-k, k + 1))
         return max(f.values())
+
+
+# 2373 - Largest Local Values in a Matrix - EASY
+class Solution:
+    def largestLocal(self, grid: List[List[int]]) -> List[List[int]]:
+        n = len(grid)
+        for i in range(n - 2):
+            for j in range(n - 2):
+                grid[i][j] = max(max(r[j : j + 3]) for r in grid[i : i + 3])
+            grid[i].pop()
+            grid[i].pop()
+        grid.pop()
+        grid.pop()
+        return grid
+
+
+# 2374 - Node With Highest Edge Score - MEDIUM
+class Solution:
+    def edgeScore(self, edges: List[int]) -> int:
+        s = [0] * len(edges)
+        for i, v in enumerate(edges):
+            s[v] += i
+        ans = mx = 0
+        for i, sc in enumerate(s):
+            if sc > mx:
+                mx = sc
+                ans = i
+        return ans
+
+
+# 2375 - Construct Smallest Number From DI String - MEDIUM
+class Solution:
+    # O(n!) / O(n)
+    def smallestNumber(self, pattern: str) -> str:
+        for lst in itertools.permutations(range(1, 2 + len(pattern)), len(pattern) + 1):
+            for i in range(len(pattern)):
+                if lst[i] < lst[i + 1] and pattern[i] == "D":
+                    break
+                if lst[i] > lst[i + 1] and pattern[i] == "I":
+                    break
+            else:
+                return "".join([str(x) for x in lst])
+
+    # O(n!) / O(n), backtracking
+    def smallestNumber(self, pattern: str) -> str:
+        def dfs(x: int, pre: int, path: List[int]) -> bool:
+            if x == len(pattern):
+                return True
+            if pattern[x] == "I":
+                for i in range(pre + 1, 10):
+                    if used[i]:
+                        continue
+                    used[i] = True
+                    path.append(i)
+                    if dfs(x + 1, i, path):
+                        return True
+                    path.pop()
+                    used[i] = False
+            else:
+                for i in range(pre - 1, 0, -1):
+                    if used[i]:
+                        continue
+                    used[i] = True
+                    path.append(i)
+                    if dfs(x + 1, i, path):
+                        return True
+                    path.pop()
+                    used[i] = False
+            return False
+
+        for i in range(1, 10):
+            used = [False] * 10
+            arr = [i]
+            used[i] = True
+            if dfs(0, i, arr):
+                return "".join(map(str, arr))
+        return ""
+
+    def smallestNumber(self, pattern: str) -> str:
+        def dfs(x: int) -> None:
+            nonlocal find, ans
+            if find:
+                return
+            if x > len(pattern):
+                find = True
+                ans = "".join(str(p[i]) for i in range(x))
+                return
+            for i in range(1, 10):
+                if used[i]:
+                    continue
+                if x != 0:
+                    if pattern[x - 1] == "I" and p[x - 1] >= i:
+                        continue
+                    if pattern[x - 1] == "D" and p[x - 1] <= i:
+                        continue
+                used[i] = True
+                p[x] = i
+                dfs(x + 1)
+                used[i] = False
+                p[x] = 0
+            return
+
+        find = False
+        ans = ""
+        used = [False] * 10
+        p = [0] * 10
+        dfs(0)
+        return ans
+
+    # O(n) / O(n)
+    def smallestNumber(self, pattern: str) -> str:
+        ans = ""
+        st = []
+        for i, p in enumerate(pattern + "I", 1):
+            if p == "D":
+                st.append(str(i))
+            else:
+                ans += str(i)
+                while st:
+                    ans += st.pop()
+        return ans
+
+    def smallestNumber(self, pattern: str) -> str:
+        st = []
+        ans = []
+        for i, p in enumerate(pattern + "I", 1):
+            st.append(str(i))
+            if p == "I":
+                ans += st[::-1]
+                st = []
+        return "".join(ans)
+
+    def smallestNumber(self, pattern: str) -> str:
+        ans = []
+        for i, p in enumerate(pattern + "I", 1):
+            if p == "I":
+                ans += range(i, len(ans), -1)
+        return "".join(map(str, ans))
+
+    def smallestNumber(self, s):
+        res = []
+        for i, c in enumerate(s + "I", 1):
+            if c == "I":
+                res += range(i, len(res), -1)
+        return "".join(map(str, res))
+
+
+# 2376 - Count Special Integers - HARD
+class Solution:
+    # digit dp
+    def countSpecialNumbers(self, n: int) -> int:
+        s = str(n)
+
+        @functools.lru_cache(None)
+        def fn(i: int, mask: int, is_limit: bool, is_num: bool) -> int:
+            if i == len(s):
+                return int(is_num)
+            ans = 0
+            if not is_num:
+                ans = fn(i + 1, mask, False, False)
+            up = int(s[i]) if is_limit else 9
+            for d in range(0 if is_num else 1, up + 1):
+                if mask >> d & 1 == 0:
+                    ans += fn(i + 1, mask | (1 << d), is_limit and d == up, True)
+            return ans
+
+        return fn(0, 0, True, False)

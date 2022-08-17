@@ -1027,3 +1027,10 @@ WA: T3(2), T4(1)
 FT: 1:18:28
 T4: 1899 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-306
+# 3151 / https://leetcode.cn/contest/weekly-contest-306/problems/construct-smallest-number-from-di-string/
+# 回溯, 爆搜 / 贪心
+# 874 / https://leetcode.cn/contest/weekly-contest-306/problems/count-special-integers/
+# 数位dp
