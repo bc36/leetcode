@@ -9,6 +9,7 @@
 
 <br><br>
 
+
 # 🔧
 [OI Wiki](https://oi-wiki.org/)  
 
@@ -26,12 +27,16 @@
 
 [GeeksforGeeks](https://www.geeksforgeeks.org/)
 
+
 <br><br>
+
 
 # 📚: 
 isbn: 978-7-83009-313-6
 
+
 <br><br>
+
 
 # Python:
 
@@ -45,7 +50,9 @@ isbn: 978-7-83009-313-6
 
 * [Glossary](https://docs.python.org/3/glossary.html)
 
+
 <br><br>
+
 
 # Big O
 The O is short for “Order of”. If we’re discussing an algorithm with O(n), we say its **order of**, or **rate of growth**, is n, or linear complexity.
@@ -63,20 +70,41 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 
 ![big(O)](/pic/big-o-cheatsheet.png)
 
+
 <br><br>
 
-# DP: top-down vs bottom-up
 
-* Memoization and Tabulation
-  - **Tabulation(Bottom Up)(刷表)**: If you are calculating the Fibonacci sequence `fib(100)`, you would just call this, and it would call `fib(100) = fib(99) + fib(98)`, which would call `fib(99) = fib(98) + fib(97)`, ...etc..., which would call `fib(2) = fib(1) + fib(0) = 1 + 0 = 1`.
-  - **Memoization(Top Down)**:  If you are performing fibonacci, you might choose to calculate the numbers in this order: `fib(2), fib(3), fib(4)`... caching every value so you can compute the next ones more easily.
-* Memoization is easier to code.
+# DP
+
+* **Memoization** and **Tabulation**
+  - Tabulation(Bottom Up)(刷表)
+  - Memoization(Top Down)
 * Difference:
 ![bottom-up vs top-down](/pic/Tabulation-vs-Memoization.png)
 
+
 <br><br>
 
-# 坑 / 技巧
+
+# 🆚
+[大佬 0x3f 的b站](https://space.bilibili.com/206214)
+
+
+<br><br>
+
+
+# 🚩 
+大佬们的经验之谈:
+
+[🍭可乐可乐吗QAQ](https://leetcode.cn/circle/discuss/PDJMWs/)
+
+[mumuxinfie](https://leetcode.cn/circle/discuss/nv1nBg/)
+
+
+<br><br>
+
+
+# :seven::seven::eight::eight:
 * MOD:
   * 不取余python超时
   * dp中有减法, 负数 x 取余, 防止变一个大数: `(x + MOD) % MOD`
@@ -86,12 +114,10 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
     * 取模和求余应该是同一种运算, 只是在被除数和除数符号不同时, 余数的符号是有歧义的, 可为正也可为负
       * C, Go, JavaScript, Rust, Java, Swift, PHP中结果与被除数同符号
       * Python 中结果与除数同符号
+  
+* 回溯:
+  * 两重for循环, 内层for break之后, 回溯"路径"被打断了, 不能复原到初始状态
 
-
-<br><br>
-
-
-# 7788
 * XOR (exclusive OR)
   * 半加运算，其运算法则相当于不带进位的二进制加法
     * 与0异或 = 本身
