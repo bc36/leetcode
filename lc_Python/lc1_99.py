@@ -2403,6 +2403,102 @@ class Solution(object):
         return dp[n]
 
 
+# 97 - Interleaving String - MEDIUM
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int, k: int, f: bool) -> bool:
+            if i == -1 and j == -1 and k == -1:
+                return True
+            if f:
+                for x in range(min(i, k) + 1):
+                    if s1[i - x : i + 1] == s3[k - x : k + 1] and dfs(
+                        i - x - 1, j, k - x - 1, not f
+                    ):
+                        return True
+            else:
+                for x in range(min(j, k) + 1):
+                    if s2[j - x : j + 1] == s3[k - x : k + 1] and dfs(
+                        i, j - x - 1, k - x - 1, not f
+                    ):
+                        return True
+            return False
+
+        l1 = len(s1)
+        l2 = len(s2)
+        l3 = len(s3)
+        if dfs(l1 - 1, l2 - 1, l3 - 1, True) or dfs(l1 - 1, l2 - 1, l3 - 1, False):
+            return True
+        return False
+
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int, k: int) -> bool:
+            if k == -1:
+                return True
+            if i > -1 and s1[i] == s3[k] and dfs(i - 1, j, k - 1):
+                return True
+            if j > -1 and s2[j] == s3[k] and dfs(i, j - 1, k - 1):
+                return True
+            return False
+
+        if len(s1) + len(s2) != len(s3):
+            return False
+        return dfs(len(s1) - 1, len(s2) - 1, len(s3) - 1)
+
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        l1 = len(s1)
+        l2 = len(s2)
+        l3 = len(s3)
+        if l1 + l2 != l3:
+            return False
+        f = [[False] * (l2 + 1) for _ in range(l1 + 1)]
+        f[0][0] = True
+        for i in range(1, l1 + 1):
+            f[i][0] = f[i - 1][0] and s1[i - 1] == s3[i - 1]
+        for j in range(1, l2 + 1):
+            f[0][j] = f[0][j - 1] and s2[j - 1] == s3[j - 1]
+        for i in range(1, l1 + 1):
+            for j in range(1, l2 + 1):
+                f[i][j] = (f[i - 1][j] and s1[i - 1] == s3[i + j - 1]) or (
+                    f[i][j - 1] and s2[j - 1] == s3[i + j - 1]
+                )
+        return f[-1][-1]
+
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        l1 = len(s1)
+        l2 = len(s2)
+        l3 = len(s3)
+        if l1 + l2 != l3:
+            return False
+        f = [[False] * (l2 + 1) for _ in range(l1 + 1)]
+        f[0][0] = True
+        for i in range(l1 + 1):
+            for j in range(l2 + 1):
+                if i > 0:
+                    f[i][j] |= f[i - 1][j] and s1[i - 1] == s3[i + j - 1]
+                if j > 0:
+                    f[i][j] |= f[i][j - 1] and s2[j - 1] == s3[i + j - 1]
+        return f[-1][-1]
+
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        l1 = len(s1)
+        l2 = len(s2)
+        l3 = len(s3)
+        if l1 + l2 != l3:
+            return False
+        f = [False] * (l2 + 1)
+        f[0] = True
+        for i in range(l1 + 1):
+            for j in range(l2 + 1):
+                # TODO, hard to give explicit explanation
+                if i > 0:
+                    f[j] = f[j] and s1[i - 1] == s3[i + j - 1]
+                if j > 0:
+                    f[j] = f[j] or f[j - 1] and s2[j - 1] == s3[i + j - 1]
+        return f[-1]
+
+
 # 98 - Validate Binary Search Tree - MEDIUM
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
@@ -2451,3 +2547,35 @@ class Solution:
                 pre = cur.val
                 root = cur.right
         return True
+
+
+# 99 - Recover Binary Search Tree - MEDIUM
+class Solution:
+    def recoverTree(self, root: TreeNode) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        # a1, a2, a3, ... b1, b2, b3
+        # a1, b2, a3, ... b1, a2, b3
+        # b2 > a3 && b1 > a2
+        # that's why choose 'pre' at the first time and 'root' at the second time
+        f: TreeNode = None
+        s: TreeNode = None
+        pre = TreeNode(float("-inf"))
+
+        def inorder(root: TreeNode) -> None:
+            nonlocal f, s, pre
+            if not root:
+                return
+            inorder(root.left)
+            if pre.val > root.val:
+                if not f:
+                    f = pre
+                s = root
+            pre = root
+            inorder(root.right)
+            return
+
+        inorder(root)
+        f.val, s.val = s.val, f.val
+        return

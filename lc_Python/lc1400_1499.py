@@ -495,6 +495,14 @@ class Solution:
         return inorder(root, root.val)
 
 
+# 1450 - Number of Students Doing Homework at a Given Time - EASY
+class Solution:
+    def busyStudent(
+        self, startTime: List[int], endTime: List[int], queryTime: int
+    ) -> int:
+        return sum(s <= queryTime <= e for s, e in zip(startTime, endTime))
+
+
 # 1460 - Make Two Arrays Equal by Reversing Sub-arrays - EASY
 class Solution:
     def canBeEqual(self, target: List[int], arr: List[int]) -> bool:
