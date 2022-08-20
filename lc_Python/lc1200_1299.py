@@ -367,6 +367,25 @@ class Solution:
         return (a + e + i + o + u) % (10**9 + 7)
 
 
+# 1224 - Maximum Equal Frequency - HARD
+class Solution:
+    def maxEqualFreq(self, nums: List[int]) -> int:
+        d = collections.defaultdict(int)
+        ans = fmx = t = tmx = 0
+        for i, n in enumerate(nums):
+            if d[n] == 0:
+                t += 1
+            d[n] += 1
+            if d[n] > fmx:
+                fmx = d[n]
+                tmx = 1
+            elif d[n] == fmx:
+                tmx += 1
+            if fmx == 1 or fmx * tmx == i or tmx == 1 and (fmx - 1) * t == i:
+                ans = i + 1
+        return ans
+
+
 # 1232 - Check If It Is a Straight Line - EASY
 class Solution:
     # use multiplication '*' instead of division '/'

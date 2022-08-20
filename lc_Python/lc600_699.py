@@ -20,6 +20,24 @@ class Solution:
         return n <= 0
 
 
+# 611 - Valid Triangle Number - MEDIUM
+class Solution:
+    # O(n ** 2) / O(logn)
+    def triangleNumber(self, nums: List[int]) -> int:
+        nums.sort()
+        ans = 0
+        for i in range(len(nums) - 1, 1, -1):
+            j = i - 1
+            k = 0
+            while k < j:
+                if nums[k] + nums[j] > nums[i]:
+                    ans += j - k
+                    j -= 1
+                else:
+                    k += 1
+        return ans
+
+
 # 617 - Merge Two Binary Trees - EASY
 class Solution:
     def mergeTrees(self, root1: TreeNode, root2: TreeNode) -> TreeNode:
@@ -193,6 +211,22 @@ class Solution:
                 heapq.heappush(pq, -d)
                 t += d
         return len(pq)
+
+
+# 633 - Sum of Square Numbers - MEDIUM
+class Solution:
+    def judgeSquareSum(self, c: int) -> bool:
+        i = 0
+        j = int(c**0.5)  # (int(c**0.5) + 1) ** 2 is larger than c
+        while i <= j:
+            p = i * i + j * j
+            if p > c:
+                j -= 1
+            elif p < c:
+                i += 1
+            else:
+                return True
+        return False
 
 
 # 636 - Exclusive Time of Functions - MEDIUM
@@ -440,6 +474,23 @@ class Solution:
             if i.right:
                 bfs.append(i.right)
         return False
+
+
+# 654 - Maximum Binary Tree - MEDIUM
+class Solution:
+    def constructMaximumBinaryTree(self, nums: List[int]) -> Optional[TreeNode]:
+        if not nums:
+            return None
+        mx = p = 0
+        for i, v in enumerate(nums):
+            if v > mx:
+                p = i
+                mx = v
+
+        r = TreeNode(val=mx)
+        r.left = self.constructMaximumBinaryTree(nums[:p])
+        r.right = self.constructMaximumBinaryTree(nums[p + 1 :])
+        return r
 
 
 # 661 - Image Smoother - EASY
