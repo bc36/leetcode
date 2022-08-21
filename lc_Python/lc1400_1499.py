@@ -219,6 +219,18 @@ class Solution:
         return [(c + extraCandies) >= mx for c in candies]
 
 
+# 1437 - Check If All 1's Are at Least Length K Places Away - EASY
+class Solution:
+    def kLengthApart(self, nums: List[int], k: int) -> bool:
+        pre = -1e5
+        for i, v in enumerate(nums):
+            if v == 1:
+                if i - pre - 1 < k:
+                    return False
+                pre = i
+        return True
+
+
 # 1438 - Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit - MEDIUM
 class Solution:
     def longestSubarray(self, nums: List[int], limit: int) -> int:
@@ -403,6 +415,34 @@ class Solution:
         return left
 
 
+# 1441 - Build an Array With Stack Operations - EASY
+class Solution:
+    def buildArray(self, target: List[int], n: int) -> List[str]:
+        ans = []
+        j = 0
+        for i in range(1, n + 1):
+            ans.append("Push")
+            if i < target[j]:
+                ans.append("Pop")
+            if i == target[j]:
+                j += 1
+            if j == len(target):
+                break
+        return ans
+
+    def buildArray(self, target: List[int], n: int) -> List[str]:
+        ans = []
+        i = 1
+        for t in target:
+            while i < t:
+                i += 1
+                ans.append("Push")
+                ans.append("Pop")
+            ans.append("Push")
+            i += 1
+        return ans
+
+
 # 1446 - Consecutive Characters - EASY
 class Solution:
     def maxPower(self, s: str) -> int:
@@ -415,8 +455,6 @@ class Solution:
                 tmp = 1
         return ans
 
-
-class Solution:
     def maxPower(self, s: str) -> int:
         i, ans = 0, 1
         while i < len(s):
@@ -501,6 +539,15 @@ class Solution:
         self, startTime: List[int], endTime: List[int], queryTime: int
     ) -> int:
         return sum(s <= queryTime <= e for s, e in zip(startTime, endTime))
+
+
+# 1455 - Check If a Word Occurs As a Prefix of Any Word in a Sentence - EASY
+class Solution:
+    def isPrefixOfWord(self, sentence: str, searchWord: str) -> int:
+        for i, s in enumerate(sentence.split()):
+            if s.startswith(searchWord):
+                return i + 1
+        return -1
 
 
 # 1460 - Make Two Arrays Equal by Reversing Sub-arrays - EASY
