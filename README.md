@@ -3,7 +3,7 @@
 ![Py version](https://img.shields.io/badge/Python-3.8-white?labelColor=blue&color=white)
 * Forgetting Go 😕
 * Training Python 🥱
-* ~~Java 🤯~~
+* ~~Java 🙅~~
 * When can I be a JavaScript master 🤔
 
 
@@ -68,7 +68,10 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 | O(2^n)       | exponential |
 | O(n!)        | factorial   |
 
-![big(O)](/pic/big-o-cheatsheet.png)
+<details>
+<summary>Show Picture</summary>
+<img src="./pic/big-o-cheatsheet.png"/> 
+</details>
 
 
 <br><br>
