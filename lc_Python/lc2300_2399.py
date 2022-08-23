@@ -798,6 +798,166 @@ class Solution:
         return ans
 
 
+# 2322 - Minimum Score After Removals on a Tree - HARD
+class Solution:
+    # O(n ** 2) / O(n)
+
+    # 固定树根, 枚举删除的边, 两个边的关系有两种情况
+    # 1. 互为祖先 / 2. 并列不相交
+    def minimumScore(self, nums: List[int], edges: List[List[int]]) -> int:
+        n = len(nums)
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        xor = [0] * n
+        inn = [0] * n
+        out = [0] * n
+        t = 0  # timestamp
+
+        def dfs(x: int, fa: int) -> None:
+            nonlocal t
+            t += 1
+            inn[x] = t
+            xor[x] = nums[x]
+            for y in g[x]:
+                if y != fa:
+                    dfs(y, x)
+                    xor[x] ^= xor[y]
+            out[x] = t
+
+        dfs(0, -1)
+
+        ans = 10**9
+        for i in range(2, n):
+            for j in range(1, i):
+                if inn[i] < inn[j] <= out[i]:  # i is an ancestor of j
+                    a = xor[j]
+                    b = xor[i] ^ xor[j]
+                    c = xor[0] ^ xor[i]
+                elif inn[j] < inn[i] <= out[j]:  # j is an ancestor of i
+                    a = xor[i]
+                    b = xor[i] ^ xor[j]
+                    c = xor[0] ^ xor[j]
+                else:  # i and j do not overlap
+                    a = xor[i]
+                    b = xor[j]
+                    c = xor[0] ^ xor[i] ^ xor[j]
+
+                ans = min(ans, max(a, b, c) - min(a, b, c))
+                # speed up from min/max
+
+                # mn = mx = a
+                # if b < mn:
+                #     mn = b
+                # elif b > mx:
+                #     mx = b
+                # if c < mn:
+                #     mn = c
+                # elif c > mx:
+                #     mx = c
+                # if mx - mn < ans:
+                #     ans = mx - mn
+
+                # if a > b:
+                #     a, b = b, a
+                # if a > c:
+                #     a, c = c, a
+                # if b > c:
+                #     b, c = c, b
+                # ans = min(ans, c - a)
+
+                if ans == 0:
+                    return 0
+        return ans
+
+    # 枚举树根, 删除树根与某子节点的连边, 树 -> A + B, 包含树根的为连通块A, 不包含的为B
+    # B中枚举删除第二条边, B -> C + D, 包含树根的为连通块C, 不包含的为D, D为整棵树的一棵子树
+    # 求块A, C, D的异或和, T为整棵树异或和
+    # A = T ^ B, C = D ^ B
+    def minimumScore(self, nums: List[int], edges: List[List[int]]) -> int:
+        ans = 10**9
+        g = collections.defaultdict(list)
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        t = 0
+        for v in nums:
+            t ^= v
+
+        def dfs(x: int, fa: int, ban: int) -> int:
+            """以 x 为根, 不含 ban 的子树的异或和"""
+            r = nums[x]
+            for y in g[x]:
+                if y != fa and y != ban:
+                    r ^= dfs(y, x, ban)
+            return r
+
+        def dfs2(x: int, fa: int, ban: int) -> int:
+            """以 x 为根，不含 ban 的子树中枚举第二条被删除的边"""
+            nonlocal ans
+            r = nums[x]
+            # 枚举连通块 D 的根 y
+            for y in g[x]:
+                if y != fa and y != ban:
+                    # 连通块 D 的异或和
+                    a = dfs2(y, x, ban)
+                    r ^= a
+                    # 连通块 C 的异或和
+                    b = summ ^ a
+                    # 连通块 A 的异或和
+                    c = t ^ summ
+                    ans = min(ans, max(a, b, c) - min(a, b, c))
+            return r
+
+        for i in range(len(nums)):
+            for j in g[i]:
+                # 计算B, 即以 i 为根, 不含 j 的子树的异或和
+                summ = dfs(i, -1, j)
+                # 删除第二条边
+                dfs2(i, -1, j)
+        return ans
+
+    # 枚举根节点, 对每个根节点, 求一次每个子树的异或和
+    # 从根节点删除一个边, 枚举子树中删除一条边
+    def minimumScore(self, nums: List[int], edges: List[List[int]]) -> int:
+        ans = 10**9
+        g = collections.defaultdict(list)
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        t = 0
+        for v in nums:
+            t ^= v
+        xor = [0] * len(nums)
+
+        def dfs(x: int, fa: int) -> None:
+            xor[x] = nums[x]
+            for y in g[x]:
+                if y != fa:
+                    dfs(y, x)
+                    xor[x] ^= xor[y]
+            return
+
+        def calc(x: int, fa: int, summ: int) -> None:
+            nonlocal ans
+            for y in g[x]:
+                if y != fa:
+                    a = t ^ summ
+                    b = summ ^ xor[y]
+                    c = xor[y]
+                    ans = min(ans, max(a, b, c) - min(a, b, c))
+                    calc(y, x, summ)
+            return
+
+        for i in range(len(nums)):
+            dfs(i, -1)
+            for j in g[i]:
+                calc(j, i, xor[j])
+        return ans
+
+
 # 2325 - Decode the Message - EASY
 class Solution:
     def decodeMessage(self, key: str, message: str) -> str:
@@ -2555,3 +2715,207 @@ class Solution:
                 break
             s.add(x)
         return ans
+
+
+# 2379 - Minimum Recolors to Get K Consecutive Black Blocks - EASY
+class Solution:
+    def minimumRecolors(self, blocks: str, k: int) -> int:
+        ans = 100
+        for i in range(len(blocks) - k + 1):
+            ans = min(ans, blocks[i : i + k].count("W"))
+        return ans
+
+    def minimumRecolors(self, blocks: str, k: int) -> int:
+        cnt = 0
+        for i in range(k):
+            if blocks[i] == "W":
+                cnt += 1
+        ans = cnt
+        for i in range(k, len(blocks)):
+            if blocks[i] == "W":
+                cnt += 1
+            if blocks[i - k] == "W":
+                cnt -= 1
+            ans = min(ans, cnt)
+        return ans
+
+
+# 2380 - Time Needed to Rearrange a Binary String - MEDIUM
+class Solution:
+    def secondsToRemoveOccurrences(self, s: str) -> int:
+        ans = 0
+        while "01" in s:
+            ans += 1
+            s = s.replace("01", "10", -1)
+        return ans
+
+    def secondsToRemoveOccurrences(self, s: str) -> int:
+        ans = pre0 = 0
+        for c in s:
+            if c == "0":
+                pre0 += 1
+            if c == "1" and pre0:
+                ans = max(ans + 1, pre0)
+        return ans
+
+
+# 2381 - Shifting Letters II - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def shiftingLetters(self, s: str, shifts: List[List[int]]) -> str:
+        n = len(s)
+        d = [0] * (n + 1)
+        for l, r, t in shifts:
+            if t:
+                d[l] += 1
+                d[r + 1] -= 1
+            else:
+                d[l] -= 1
+                d[r + 1] += 1
+        # prefix_sum[i+1] = prefix_sum[i] + diff[i]
+        cur = 0
+        a = []
+        for i in range(n):
+            cur += d[i]
+            z = (ord(s[i]) - 97 + cur) % 26
+            a.append(chr(z + 97))
+        return "".join(a)
+
+
+# 2382 - Maximum Segment Sum After Removals - HARD
+class Solution:
+    def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+                self.sc = [0] * n
+
+            def find(self, x: int) -> int:
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                """x's root -> y"""
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                self.sc[py] += self.sc[px]
+                return
+
+        n = len(nums)
+        uf = UnionFind(n)
+        ans = [0]
+        mx = 0
+        for i in range(n - 1, 0, -1):
+            p = removeQueries[i]
+            v = nums[p]
+            uf.sc[p] = v
+            if p - 1 >= 0 and uf.sc[p - 1] != 0:
+                uf.union(p - 1, p)
+            if p + 1 < n and uf.sc[p + 1] != 0:
+                uf.union(p, p + 1)
+            f = uf.find(p)
+            mx = uf.sc[f] if uf.sc[f] > mx else mx
+            ans.append(mx)
+
+        ans.reverse()
+        return ans
+
+
+# 2383 - Minimum Hours of Training to Win a Competition - EASY
+class Solution:
+    def minNumberOfHours(
+        self, inEn: int, inEx: int, energy: List[int], experience: List[int]
+    ) -> int:
+        ans = 0
+        for n, x in zip(energy, experience):
+            if inEn <= n:
+                ans += n - inEn + 1
+                inEn = n + 1
+            inEn -= n
+            if inEx <= x:
+                ans += x - inEx + 1
+                inEx = x + 1
+            inEx += x
+        return ans
+
+
+# 2384 - Largest Palindromic Number - MEDIUM
+class Solution:
+    def largestPalindromic(self, num: str) -> str:
+        cnt = collections.Counter(num)
+        ans = ""
+        for i in range(9, -1, -1):
+            if i == 0 and ans == "":
+                break
+            c = str(i)
+            ans += c * (cnt[c] // 2)
+            cnt[c] -= cnt[c] // 2 * 2
+        half = ans[::-1]
+        for i in range(9, -1, -1):
+            c = str(i)
+            if cnt[c] > 0:
+                ans += c
+                break
+        return ans + half
+
+
+# 2385 - Amount of Time for Binary Tree to Be Infected - MEDIUM
+class Solution:
+    def amountOfTime(self, root: Optional[TreeNode], start: int) -> int:
+        def dfs(r: TreeNode) -> None:
+            if r.left:
+                g[r.val].append(r.left.val)
+                g[r.left.val].append(r.val)
+                dfs(r.left)
+            if r.right:
+                g[r.val].append(r.right.val)
+                g[r.right.val].append(r.val)
+                dfs(r.right)
+            return
+
+        g = collections.defaultdict(list)
+        dfs(root)
+
+        # def dfs2(r: TreeNode) -> int:
+        #     if r in vis:
+        #         return 0
+        #     vis.add(r)
+        #     depth = 1
+        #     for nei in g[r]:
+        #         depth = max(depth, 1 + dfs2(nei))
+        #     return depth
+
+        # vis = set()
+        # return dfs2(start) - 1
+
+        # unrooted tree(无根树), node.left / node.right / fa[node] three directions
+        def dfs3(son: TreeNode, fa: TreeNode) -> int:
+            depth = 0
+            for n in g[son]:
+                if n != fa:
+                    depth = max(depth, dfs3(n, son) + 1)
+            return depth
+
+        return dfs3(start, -1)
+
+        # def bfs() -> int:
+        #     q = [start]
+        #     step = -1
+        #     while q:
+        #         new = []
+        #         for _ in range(len(q)):
+        #             n = q.pop()
+        #             for nei in g[n]:
+        #                 if nei not in vis:
+        #                     new.append(nei)
+        #                     vis.add(nei)
+        #         q = new
+        #         step += 1
+        #     return step
+
+        # vis = {start}
+        # return bfs()
