@@ -473,3 +473,9 @@ WA: T2(1)
 FT: 1:17:56
 T4: 840 pass
 """
+
+# https://leetcode.cn/contest/biweekly-contest-85
+# 1578 / https://leetcode.cn/contest/biweekly-contest-85/problems/shifting-letters-ii/
+# 差分数组 / fenwick tree / 线段树
+# 594 / https://leetcode.cn/contest/biweekly-contest-85/problems/maximum-segment-sum-after-removals/
+# 倒序, 并查集

@@ -872,7 +872,7 @@ class Solution:
                     return 0
         return ans
 
-    # 枚举树根, 删除树根与某子节点的连边, 树 -> A + B, 包含树根的为连通块A, 不包含的为B
+    # 枚举树根, 删除树根与某子节点的连边, 树 -> A + B, 不包含树根的为连通块A, 包含的为B
     # B中枚举删除第二条边, B -> C + D, 包含树根的为连通块C, 不包含的为D, D为整棵树的一棵子树
     # 求块A, C, D的异或和, T为整棵树异或和
     # A = T ^ B, C = D ^ B
@@ -903,18 +903,18 @@ class Solution:
                 if y != fa and y != ban:
                     # 连通块 D 的异或和
                     a = dfs2(y, x, ban)
-                    r ^= a
                     # 连通块 C 的异或和
-                    b = summ ^ a
+                    b = xorB ^ a
                     # 连通块 A 的异或和
-                    c = t ^ summ
+                    c = t ^ xorB
                     ans = min(ans, max(a, b, c) - min(a, b, c))
+                    r ^= a
             return r
 
         for i in range(len(nums)):
             for j in g[i]:
                 # 计算B, 即以 i 为根, 不含 j 的子树的异或和
-                summ = dfs(i, -1, j)
+                xorB = dfs(i, -1, j)
                 # 删除第二条边
                 dfs2(i, -1, j)
         return ans
