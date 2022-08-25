@@ -493,6 +493,88 @@ class Solution:
         return r
 
 
+# 655 - Print Binary Tree - MEDIUM
+class Solution:
+    def printTree(self, root: Optional[TreeNode]) -> List[List[str]]:
+        def depth(root: TreeNode) -> int:
+            return max(
+                depth(root.left) + 1 if root.left else 0,
+                depth(root.right) + 1 if root.right else 0,
+            )
+            if root == None:
+                return -1
+            return max(depth(root.left), depth(root.right)) + 1
+
+        h = depth(root)
+
+        m = h + 1
+        n = 2**m - 1
+        ans = [[""] * n for _ in range(m)]
+
+        def dfs(root: TreeNode, r: int, c: int) -> None:
+            ans[r][c] = str(root.val)
+            if root.left:
+                dfs(root.left, r + 1, c - 2 ** (h - r - 1))
+            if root.right:
+                dfs(root.right, r + 1, c + 2 ** (h - r - 1))
+            return
+
+        dfs(root, 0, (n - 1) // 2)
+        return ans
+
+
+# 658 - Find K Closest Elements - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        d = [(abs(v - x), v) for v in arr]
+        return sorted(v for _, v in sorted(d)[:k])
+
+    # O(nlogn) / O(logn)
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        arr.sort(key=lambda v: abs(v - x))
+        return sorted(arr[:k])
+
+    # O(n) / O(1)
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        l = 0
+        r = len(arr) - 1
+        while l + k - 1 < r:
+            if x - arr[l] > arr[r] - x:
+                l += 1
+            else:
+                r -= 1
+        return arr[l : r + 1]
+
+    # O(logn + k) / O(1)
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        # [0, left] < x <= [right, n-1]
+        r = bisect.bisect_left(arr, x)
+        l = r - 1
+        for _ in range(k):
+            if l < 0:
+                r += 1
+            elif r > len(arr) - 1:
+                l -= 1
+            else:
+                if x - arr[l] <= arr[r] - x:
+                    l -= 1
+                else:
+                    r += 1
+        return arr[l + 1 : r]
+
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        l = 0
+        r = len(arr) - k
+        while l < r:
+            m = l + r >> 1
+            if x - arr[m] > arr[m + k] - x:
+                l = m + 1
+            else:
+                r = m
+        return arr[l : l + k]
+
+
 # 661 - Image Smoother - EASY
 class Solution:
     def imageSmoother(self, img: List[List[int]]) -> List[List[int]]:
