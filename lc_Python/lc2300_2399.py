@@ -2784,6 +2784,7 @@ class Solution:
 
 # 2382 - Maximum Segment Sum After Removals - HARD
 class Solution:
+    # O(nlogn) / O(n)
     def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
         class UnionFind:
             def __init__(self, n: int) -> None:
@@ -2820,8 +2821,129 @@ class Solution:
             f = uf.find(p)
             mx = uf.sc[f] if uf.sc[f] > mx else mx
             ans.append(mx)
+        return ans[::-1]
 
-        ans.reverse()
+    # O(nlogn) / O(n)
+    def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
+        n = len(nums)
+        p = list(range(n + 1))
+        summ = [0] * (n + 1)
+
+        def find(x: int) -> int:
+            if p[x] != x:
+                p[x] = find(p[x])
+            return p[x]
+
+        ans = [0] * n
+        for i in range(n - 1, 0, -1):
+            x = removeQueries[i]
+            fa = find(x + 1)
+            p[x] = fa
+            summ[fa] += summ[x] + nums[x]
+            ans[i - 1] = max(ans[i], summ[fa])
+        return ans
+
+    # O(n) / O(n)
+    def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
+        n = len(nums)
+        # left[i] 为位置 i 对应连续子段的左端点，right[i] 为位置 i 对应连续子段的右端点
+        left = list(range(n))
+        right = list(range(n))
+        vis = [False] * n
+        p = [0] + list(itertools.accumulate(nums))  # prefix sum
+        ans = []
+        mx = 0
+        for i in removeQueries[::-1]:
+            ans.append(mx)
+            l = r = i
+            if i - 1 >= 0 and vis[i - 1]:
+                l = left[i - 1]
+            if i + 1 < n and vis[i + 1]:
+                r = right[i + 1]
+            vis[i] = True
+            left[r] = l
+            right[l] = r
+            mx = max(mx, p[r + 1] - p[l])
+        return ans[::-1]
+
+    # O(n) / O(n)
+    def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
+        ans = []
+        d = {}  # segments
+        mx = 0
+        for i in removeQueries[::-1]:
+            ans.append(mx)
+            v = nums[i]
+            if i - 1 in d and i + 1 in d:
+                x, l, _ = d.pop(i - 1)
+                y, _, r = d.pop(i + 1)
+                d[l] = [x + y + v, l, r]
+                d[r] = [x + y + v, l, r]
+                v += x + y
+            elif i - 1 in d:
+                x, l, r = d.pop(i - 1)
+                d[l] = [v + x, l, i]
+                d[i] = [v + x, l, i]
+                v += x
+            elif i + 1 in d:
+                x, l, r = d.pop(i + 1)
+                d[i] = [v + x, i, r]
+                d[r] = [v + x, i, r]
+                v += x
+            else:
+                d[i] = [v, i, i]
+            mx = max(mx, v)
+        return ans[::-1]
+
+    # O(n) / O(n)
+    def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
+        ans = []
+        d = {}
+        mx = 0
+        for i in removeQueries[::-1]:
+            ans.append(mx)
+            d[i] = (nums[i], 1)
+            rv, rl = d.get(i + 1, (0, 0))
+            lv, ll = d.get(i - 1, (0, 0))
+            t = nums[i] + rv + lv
+            d[i + rl] = (t, ll + rl + 1)
+            d[i - ll] = (t, ll + rl + 1)
+            mx = max(mx, t)
+        return ans[::-1]
+
+    def maximumSegmentSum(self, nums, removeQueries):
+        from sortedcontainers import SortedList
+
+        n = len(nums)
+        p = [0]  # prefix sum
+        ans = []
+        segments = SortedList()
+        summ = SortedList([0])
+        for v in nums:
+            p.append(p[-1] + v)
+
+        def add(l: int, r: int) -> None:
+            """adding a segment with (left, right) borders and its sum"""
+            if l > r:
+                return
+            segments.add((l, r))
+            summ.add(p[r + 1] - p[l])
+            return
+
+        def remove(l: int, r: int) -> None:
+            """removing a segment"""
+            segments.remove((l, r))
+            summ.remove(p[r + 1] - p[l])
+            return
+
+        add(0, n - 1)
+        for i in removeQueries:
+            idx = segments.bisect_left((i + 1, -1)) - 1
+            l, r = segments[idx]
+            remove(l, r)
+            add(l, i - 1)
+            add(i + 1, r)
+            ans.append(summ[-1])
         return ans
 
 
@@ -2919,3 +3041,68 @@ class Solution:
 
         # vis = {start}
         # return bfs()
+
+
+# 2386 - Find the K-Sum of an Array - HARD
+class Solution:
+    # 求出非负最大和, 如何处理负数, 简化: 减去正数, 加上负数 操作 -> 取绝对值
+    # 类似 dijkstra
+    # 思考: 不重不漏生成所有子序列
+    # O(nlogn + klogk) / O(n + k)
+    def kSum(self, nums: List[int], k: int) -> int:
+        total = 0
+        for i, v in enumerate(nums):
+            if v >= 0:
+                total += v
+            else:
+                nums[i] = -v
+        nums.sort()
+        h = [(-total, 0)]
+        for _ in range(k - 1):
+            s, i = heapq.heappop(h)
+            if i < len(nums):
+                heapq.heappush(h, (s + nums[i], i + 1))
+                if i:
+                    heapq.heappush(h, (s + nums[i] - nums[i - 1], i + 1))
+        return -h[0][0]
+
+    def kSum(self, nums: List[int], k: int) -> int:
+        total = sum(max(0, v) for v in nums)
+        nums = sorted(abs(v) for v in nums)
+        s = 0
+        h = [(nums[0], 0)]
+        for _ in range(k - 1):
+            s, i = heapq.heappop(h)
+            if i + 1 < len(nums):
+                heapq.heappush(h, (s + nums[i + 1] - nums[i], i + 1))
+                heapq.heappush(h, (s + nums[i + 1], i + 1))
+        return total - s
+
+    def kSum(self, nums: List[int], k: int) -> int:
+        total = 0
+        for i, v in enumerate(nums):
+            nums[i] = abs(v)
+            total += v if v > 0 else 0
+        nums.sort()
+        h = [(nums[0], 0)]
+        s = 0
+        while k > 1:
+            s, i = heapq.heappop(h)
+            if i + 1 < len(nums):
+                heapq.heappush(h, (s + nums[i + 1] - nums[i], i + 1))
+                heapq.heappush(h, (s + nums[i + 1], i + 1))
+            k -= 1
+        return total - s
+
+    def kSum(self, nums: List[int], k: int) -> int:
+        total = sum(max(0, v) for v in nums)
+        nums = sorted(abs(v) for v in nums)
+        h = [(-total + nums[0], 0)]
+        while k > 1:
+            s, i = heapq.heappop(h)
+            total = -s
+            if i + 1 < len(nums):
+                heapq.heappush(h, (s + nums[i + 1] - nums[i], i + 1))
+                heapq.heappush(h, (s + nums[i + 1], i + 1))
+            k -= 1
+        return total

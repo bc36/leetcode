@@ -21,6 +21,7 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     permutation
     segment tree
     set
+    transpose
     union-find, disjoint set
 """
 
@@ -174,6 +175,13 @@ def set_operation() -> None:
 
 """TODO: segment tree"""
 
+"""transpose"""
+
+
+def transpose(matrix: List[List[int]]) -> List[List[int]]:
+    return list(zip(*matrix))
+
+
 """union-find, disjoint set"""
 
 
@@ -185,6 +193,7 @@ class UnionFind:
         # self.rank = [1] * n
 
     def find(self, x: int) -> int:
+        """path compression"""
         if self.p[x] != x:
             self.p[x] = self.find(self.p[x])
         return self.p[x]
@@ -212,3 +221,22 @@ class UnionFind:
         while need_compress:
             self.p[need_compress.pop()] = x
         return x
+
+
+"""
+区间运算:
+add:              query: O(n), update: O(1)
+prefix sum:       query: O(1), update: O(n)
+difference array: query: O(1), update: O(n)
+
+前缀和数组 <-> 差分数组
+积分      <-> 导数
+差分数组: 
+    它可以维护多次对序列的一个区间加上一个数，并在最后询问某一位的数或是多次询问某一位的数
+    注意修改操作一定要在查询操作之前
+
+多次 query and update
+BIT:              query: O(logn), update: O(logn)
+
+segment tree:     query: O(logn), update: O(logn)
+"""

@@ -974,9 +974,9 @@ T4: 1532 pass
 
 # https://leetcode.cn/contest/weekly-contest-299
 # 1976 / https://leetcode.cn/contest/weekly-contest-299/problems/maximum-score-of-spliced-array/
-
+# dp
 # 314 / https://leetcode.cn/contest/weekly-contest-299/problems/minimum-score-after-removals-on-a-tree/
-
+# 树, 枚举, 时间戳, dfs
 
 # https://leetcode.cn/contest/weekly-contest-300
 # 1724 / https://leetcode.cn/contest/weekly-contest-300/problems/number-of-people-aware-of-a-secret/
@@ -1034,3 +1034,8 @@ T4: 1899 pass
 # 回溯, 爆搜 / 贪心
 # 874 / https://leetcode.cn/contest/weekly-contest-306/problems/count-special-integers/
 # 数位dp
+
+
+# https://leetcode.cn/contest/weekly-contest-307
+# 134 / https://leetcode.cn/contest/weekly-contest-307/problems/find-the-k-sum-of-an-array/
+# 堆
