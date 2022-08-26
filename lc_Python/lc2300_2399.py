@@ -3106,3 +3106,16 @@ class Solution:
                 heapq.heappush(h, (s + nums[i + 1], i + 1))
             k -= 1
         return total
+
+    # O(nlogn + k * (2k * log2k))
+    def kSum(self, nums: List[int], k: int) -> int:
+        total = sum(x for x in nums if x > 0)
+        nums = [abs(x) for x in nums]
+        p = [0]
+        nums.sort()
+        for x in nums[:k]:
+            q = [x + y for y in p]
+            p = p + q
+            p.sort()
+            p = p[:k]
+        return total - p[k - 1]

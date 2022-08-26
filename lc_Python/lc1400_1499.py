@@ -557,6 +557,33 @@ class Solution:
         return sorted(target) == sorted(arr)
 
 
+# 1464 - Maximum Product of Two Elements in an Array - EASY
+class Solution:
+    # O(n ** 2) / O(1)
+    def maxProduct(self, nums: List[int]) -> int:
+        return max(
+            (v - 1) * (u - 1)
+            for i, v in enumerate(nums)
+            for j, u in enumerate(nums)
+            if i != j
+        )
+
+    # O(nlogn) / O(1)
+    def maxProduct(self, nums: List[int]) -> int:
+        s = sorted(nums)
+        return (s[-1] - 1) * (s[-2] - 1)
+
+    def maxProduct(self, nums: List[int]) -> int:
+        f = max(nums[0], nums[1])
+        s = min(nums[0], nums[1])
+        for v in nums[2:]:
+            if v > f:
+                f, s = v, f
+            elif v > s:
+                s = v
+        return (f - 1) * (s - 1)
+
+
 # 1491 - Average Salary Excluding the Minimum and Maximum Salary - EASY
 class Solution:
     def average(self, s: List[int]) -> float:

@@ -109,7 +109,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 
 # :seven::seven::eight::eight:
 * MOD:
-  * 不取余python超时
+  * **不取余python超时**
   * dp中有减法, 负数 x 取余, 防止变一个大数: `(x + MOD) % MOD`
   * 区别: 
     * 取余(rem): 采用fix(), 向 0 方向舍入, `rem(x, y) = x - y. * fix(x./y)`
@@ -121,8 +121,22 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 * 回溯:
   * 两重for循环, 内层for break之后, 回溯"路径"被打断了, 不能复原到初始状态
 
+* python堆 / heapq / 堆不保证直接list的顺序
+  ```py
+    # 不断push tuple 到堆中
+    0 [(5, 0)]
+    0 [(5, 0), (5, 0)]
+    1 [(4, 1), (5, 0), (5, 0)]
+    2 [(3, 2), (4, 1), (5, 0), (5, 0)]
+    3 [(2, 3), (3, 2), (5, 0), (5, 0), (4, 1)]
+    3 [(2, 3), (3, 2), (2, 3), (5, 0), (4, 1), (5, 0)]
+    4 [(1, 4), (3, 2), (2, 3), (5, 0), (4, 1), (5, 0), (2, 3)]
+    7 [(1, 4), (2, 7), (2, 3), (3, 2), (4, 1), (5, 0), (2, 3), (5, 0)]
+    7 [(1, 4), (2, 7), (2, 3), (2, 7), (4, 1), (5, 0), (2, 3), (5, 0), (3, 2)]
+    ```
+
 * XOR (exclusive OR)
-  * 半加运算，其运算法则相当于不带进位的二进制加法
+  * 半加运算，不带进位的二进制加法
     * 与0异或 = 本身
     * 与1异或 = 取反 -> 翻转特定位
       * 翻转10100001的第2位和第3位 -> 10100001 ^ 00000110 = 10100111
@@ -140,7 +154,8 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
         lower, upper to upper: asc &= -33
         ```
 
-* ```py
+* Trick
+  ```py
   # cf 快读
   fn = sys.stdin.readline
   l = int(fn())
