@@ -190,7 +190,7 @@ class UnionFind:
         self.p = [i for i in range(n)]
         self.sz = [1] * n
         self.part = n
-        # self.rank = [1] * n
+        self.rank = [1] * n
 
     def find(self, x: int) -> int:
         """path compression"""
@@ -221,6 +221,12 @@ class UnionFind:
         while need_compress:
             self.p[need_compress.pop()] = x
         return x
+
+    def disconnect(self, x: int) -> None:
+        self.p[x] = x
+        # self.rank[x] = 1
+        # self.part += 1
+        return
 
 
 """

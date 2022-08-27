@@ -3,6 +3,11 @@ import collections, functools, itertools, heapq, math, bisect, sortedcontainers,
 
 
 """exercise"""
+# AK
+# https://leetcode.cn/contest/weekly-contest-269/ranking/
+# 584 / https://leetcode.cn/contest/weekly-contest-269/problems/find-all-people-with-secret/
+
+
 # https://leetcode.cn/contest/weekly-contest-270/ranking/
 # 84 / https://leetcode.cn/contest/weekly-contest-270/problems/valid-arrangement-of-pairs/
 # 欧拉路径

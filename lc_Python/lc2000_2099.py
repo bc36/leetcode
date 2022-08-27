@@ -591,6 +591,171 @@ class Solution:
         return ans
 
 
+# 2089 - Find Target Indices After Sorting Array - EASY
+class Solution:
+    def targetIndices(self, nums: List[int], target: int) -> List[int]:
+        return [i for i, v in enumerate(sorted(nums)) if v == target]
+
+    def targetIndices(self, nums: List[int], target: int) -> List[int]:
+        less = equal = 0
+        for v in nums:
+            if v < target:
+                less += 1
+            elif v == target:
+                equal += 1
+        return list(range(less, less + equal))
+
+
+# 2090 - K Radius Subarray Averages - MEDIUM
+class Solution:
+    def getAverages(self, nums: List[int], k: int) -> List[int]:
+        p = [0]
+        for v in nums:
+            p.append(p[-1] + v)
+        ans = [-1] * len(nums)
+        for i in range(k, len(nums) - k):
+            ans[i] = (p[i + k + 1] - p[i - k]) // (2 * k + 1)
+        return ans
+
+    def getAverages(self, nums: List[int], k: int) -> List[int]:
+        ans = [-1] * len(nums)
+        summ = 0
+        for i, v in enumerate(nums):
+            summ += v
+            if i > 2 * k - 1:
+                ans[i - k] = summ // (2 * k + 1)
+                summ -= nums[i - 2 * k]
+        return ans
+
+
+# 2091 - Removing Minimum and Maximum From Array - MEDIUM
+class Solution:
+    def minimumDeletions(self, nums: List[int]) -> int:
+        px = nums.index(max(nums))
+        pi = nums.index(min(nums))
+        l = min(px, pi)
+        r = max(px, pi)
+        return min(l + 1 + len(nums) - r, r + 1, len(nums) - l)
+
+
+# 2092 - Find All People With Secret - HARD
+class Solution:
+    # O(mlogm + m) / O(m)
+    def findAllPeople(self, n: int, m: List[List[int]], firstPerson: int) -> List[int]:
+        m.sort(key=lambda x: x[2])
+        arr = [False] * n
+        arr[0] = arr[firstPerson] = True
+        l = 0
+        while l < len(m):
+            r = l
+            e = collections.defaultdict(list)
+            vis = set()
+            while r < len(m) and m[l][2] == m[r][2]:
+                x = m[r][0]
+                y = m[r][1]
+                e[x].append(y)
+                e[y].append(x)
+                if arr[x]:
+                    vis.add(x)
+                if arr[y]:
+                    vis.add(y)
+                r += 1
+            q = list(vis)
+            while q:
+                new = []
+                for v in q:
+                    for nei in e[v]:
+                        if nei not in vis:
+                            arr[nei] = True
+                            vis.add(nei)
+                            new.append(nei)
+                q = new
+            l = r
+        return [i for i, v in enumerate(arr) if v]
+
+    def findAllPeople(self, n: int, m: List[List[int]], firstPerson: int) -> List[int]:
+        m.sort(key=lambda x: x[2])
+        arr = [False] * n
+        arr[0] = arr[firstPerson] = True
+        l = 0
+        while l < len(m):
+            r = l
+            e = collections.defaultdict(list)
+            pool = set()
+            while r < len(m) and m[l][2] == m[r][2]:
+                x = m[r][0]
+                y = m[r][1]
+                e[x].append(y)
+                e[y].append(x)
+                pool.add(x)
+                pool.add(y)
+                r += 1
+            q = [v for v in pool if arr[v]]
+            while q:
+                new = []
+                for v in q:
+                    for nei in e[v]:
+                        if not arr[nei]:
+                            arr[nei] = True
+                            new.append(nei)
+                q = new
+            l = r
+        return [i for i, v in enumerate(arr) if v]
+
+    def findAllPeople(self, n: int, m: List[List[int]], firstPerson: int) -> List[int]:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+
+            def find(self, x: int) -> int:
+                """path compression"""
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                """x's root -> y"""
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                return
+
+            def disconnect(self, x: int) -> None:
+                self.p[x] = x
+                return
+
+        uf = UnionFind(n)
+        uf.union(0, firstPerson)
+
+        # method 1
+        d = collections.defaultdict(list)
+        for x, y, t in m:
+            d[t].append((x, y))
+        for t, experts in sorted(d.items()):
+            for x, y in experts:
+                uf.union(x, y)
+            for x, y in experts:
+                if uf.find(x) != uf.find(0):
+                    uf.disconnect(x)
+                    uf.disconnect(y)
+        return [i for i in range(n) if uf.find(i) == uf.find(0)]
+
+        # method 2
+        m.sort(key=lambda x: x[2])
+        for _, grp in itertools.groupby(m, key=lambda x: x[2]):
+            pool = set()
+            for x, y, _ in grp:
+                uf.union(x, y)
+                pool.add(x)
+                pool.add(y)
+            for p in pool:
+                if uf.find(p) != uf.find(0):
+                    uf.disconnect(p)
+        return [i for i in range(n) if uf.find(i) == uf.find(0)]
+
+
 # 2094 - Finding 3-Digit Even Numbers - EASY
 class Solution:
     def findEvenNumbers(self, digits: List[int]) -> List[int]:
