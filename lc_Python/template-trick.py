@@ -17,7 +17,6 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     binary
     dp
     math related
-    loop
     permutation
     segment tree
     set
@@ -58,17 +57,6 @@ def countSpecialNumbers(n: int) -> int:
     return fn(0, 0, True, False)
 
 
-"""loop"""
-
-
-def loop(grid: List[List[int]]) -> None:
-    for r in grid:
-        print(r)
-    for c in zip(*grid):
-        print(c)
-    return
-
-
 """permutation"""
 
 
@@ -86,6 +74,13 @@ def fn() -> None:
 
 
 """math related"""
+
+
+def mathRelated() -> None:
+    math.factorial(5) == 1 * 2 * 3 * 4 * 5  # n!
+    math.perm(5, 2)  # n! // (n - k)!
+    math.comb(5, 2)  # n! // (k! * (n - k)!)
+    return
 
 
 def ceil(x: int, y: int) -> int:
@@ -179,6 +174,13 @@ def set_operation() -> None:
 
 
 def transpose(matrix: List[List[int]]) -> List[List[int]]:
+    def loop(grid: List[List[int]]) -> None:
+        for r in grid:
+            print(r)
+        for c in zip(*grid):
+            print(c)
+        return
+
     return list(zip(*matrix))
 
 
