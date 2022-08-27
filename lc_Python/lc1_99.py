@@ -810,6 +810,55 @@ class Solution:
         return
 
 
+# 32 - Longest Valid Parentheses - HARD
+class Solution:
+    # O(n) / O(n)
+    def longestValidParentheses(self, s: str) -> int:
+        ans = 0
+        st = [-1]
+        for i, c in enumerate(s):
+            if c == "(":
+                st.append(i)
+            else:
+                st.pop()
+                if st:
+                    ans = max(ans, i - st[-1])
+                else:
+                    st.append(i)
+        return ans
+
+    # dp 方程难想, dp[i] 表示以 i 结尾的最长有效括号长度
+    def longestValidParentheses(self, s: str) -> int:
+        ans = 0
+        f = [0] * len(s)
+        for i in range(1, len(s)):
+            if s[i] == ")":
+                if s[i - 1] == "(":
+                    if i - 2 >= 0:
+                        f[i] = f[i - 2] + 2
+                    else:
+                        f[i] = 2
+                elif i - f[i - 1] > 0 and s[i - f[i - 1] - 1] == "(":
+                    if i - f[i - 1] - 2 >= 0:
+                        f[i] = f[i - 1] + f[i - f[i - 1] - 2] + 2
+                    else:
+                        f[i] = f[i - 1] + 2
+                ans = max(ans, f[i])
+        return ans
+
+    def longestValidParentheses(self, s: str) -> int:
+        f = [0] * len(s)
+        for i in range(1, len(s)):
+            if s[i] == ")":
+                if s[i - 1] == "(":
+                    f[i] = f[i - 2] + 2
+                else:
+                    j = i - f[i - 1] - 1
+                    if j >= 0 and s[j] == "(":
+                        f[i] = f[j - 1] + f[i - 1] + 2
+        return max(f, default=0)  # ValueError: max([])
+
+
 # 33 - Search in Rotated Sorted Array - MEDIUM
 class Solution:
     def search(self, nums: List[int], target: int) -> int:
@@ -1926,19 +1975,11 @@ class Solution:
 
 # 75 - Sort Colors - MEDIUM
 class Solution:
-    # O(2n) / O(n)
-    def sortColors(self, nums: List[int]) -> None:
-        cnt = collections.Counter(nums)
-        i = 0
-        for k in sorted(cnt.keys()):
-            while cnt[k] != 0:
-                nums[i] = k
-                i += 1
-                cnt[k] -= 1
-        return
-
     # O(n) / O(1)
     def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
         p = 0
         for i in range(len(nums)):
             if nums[i] == 0:
@@ -1950,7 +1991,6 @@ class Solution:
                 p += 1
         return
 
-    # O(n) / O(1)
     def sortColors(self, nums: List[int]) -> None:
         p0 = p1 = 0
         for i in range(len(nums)):
@@ -1963,6 +2003,46 @@ class Solution:
                     nums[i], nums[p1] = nums[p1], nums[i]
                 p0 += 1
                 p1 += 1
+        return
+
+    def sortColors(self, nums: List[int]) -> None:
+        z, o, t = 0, 0, len(nums) - 1
+        while o <= t:
+            if nums[o] == 0:
+                nums[z], nums[o] = nums[o], nums[z]
+                z += 1
+                o += 1
+            elif nums[o] == 1:
+                o += 1
+            else:
+                nums[o], nums[t] = nums[t], nums[o]
+                t -= 1
+        return
+
+    def sortColors(self, nums: List[int]) -> None:
+        l = 0
+        r = len(nums) - 1
+        while l < r:
+            if nums[l] == 0:
+                l += 1
+                continue
+            if nums[r] in [1, 2]:
+                r -= 1
+                continue
+            nums[l], nums[r] = nums[r], nums[l]
+            l += 1
+            # r -= 1 # [1, 0, 0] -> [0, 1, 0]
+        r = len(nums) - 1
+        while l < r:
+            if nums[l] == 1:
+                l += 1
+                continue
+            if nums[r] == 2:
+                r -= 1
+                continue
+            nums[l], nums[r] = nums[r], nums[l]
+            l += 1
+            r -= 1
         return
 
 
