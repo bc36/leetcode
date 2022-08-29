@@ -523,6 +523,12 @@ class Solution:
         return ans
 
 
+# 657 - Robot Return to Origin - EASY
+class Solution:
+    def judgeCircle(self, m: str) -> bool:
+        return m.count("U") == m.count("D") and m.count("L") == m.count("R")
+
+
 # 658 - Find K Closest Elements - MEDIUM
 class Solution:
     # O(nlogn) / O(n)
@@ -613,6 +619,36 @@ class Solution:
         return ans
 
 
+# 662 - Maximum Width of Binary Tree - MEDIUM
+class Solution:
+    def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        dq = collections.deque([(root, 0)])
+        ans = 0
+        while dq:
+            ans = max(ans, dq[-1][1] - dq[0][1] + 1)
+            for _ in range(len(dq)):
+                n, p = dq.popleft()
+                if n.left:
+                    dq.append((n.left, 2 * p))
+                if n.right:
+                    dq.append((n.right, 2 * p + 1))
+        return ans
+
+    def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        q = [(root, 0)]
+        ans = 0
+        while q:
+            new = []
+            ans = max(ans, q[-1][1] - q[0][1] + 1)
+            for n, p in q:
+                if n.left:
+                    new.append([n.left, 2 * p])
+                if n.right:
+                    new.append([n.right, 2 * p + 1])
+            q = new
+        return ans
+
+
 # 673 - Number of Longest Increasing Subsequence - MEDIUM
 class Solution:
     # O(n^2)
@@ -652,11 +688,11 @@ class Solution:
 
 
 # 670 - Maximum Swap - MEDIUM
-# Greedy, O(n)
-# find the last occurrence of each number (guarantee that the rightmost number)
-# enumerate each number from left to right,
-# swap the number when a larger number is found
 class Solution:
+    # O(n), Greedy
+    # find the last occurrence of each number (guarantee that the rightmost number)
+    # enumerate each number from left to right,
+    # swap the number when a larger number is found
     def maximumSwap(self, num: int) -> int:
         s = list(str(num))
         later = {int(x): i for i, x in enumerate(s)}
@@ -666,6 +702,44 @@ class Solution:
                     s[i], s[later[d]] = s[later[d]], s[i]
                     return "".join(s)
         return num
+
+
+# 671 - Second Minimum Node In a Binary Tree - EASY
+class Solution:
+    def findSecondMinimumValue(self, root: Optional[TreeNode]) -> int:
+        def dfs(root: TreeNode) -> None:
+            if not root:
+                return
+            nonlocal f, s
+            if root.val < f:
+                f, s = root.val, f
+            elif f < root.val < s:
+                s = root.val
+            dfs(root.left)
+            dfs(root.right)
+            return
+
+        f = s = math.inf
+        dfs(root)
+        return s if s != math.inf else -1
+
+    def findSecondMinimumValue(self, root: TreeNode) -> int:
+        def dfs(root: TreeNode) -> None:
+            if not root:
+                return
+            nonlocal ans
+            if ans != -1 and root.val >= ans:
+                return
+            if root.val > rv:
+                ans = root.val
+            dfs(root.left)
+            dfs(root.right)
+            return
+
+        ans = -1
+        rv = root.val
+        dfs(root)
+        return ans
 
 
 # 674 - Longest Continuous Increasing Subsequence - EASY
