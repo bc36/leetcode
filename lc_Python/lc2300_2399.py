@@ -3119,3 +3119,302 @@ class Solution:
             p.sort()
             p = p[:k]
         return total - p[k - 1]
+
+
+# 2389 - Longest Subsequence With Limited Sum - EASY
+class Solution:
+    # O(nlogn + nm) / O(n)
+    def answerQueries(self, nums: List[int], queries: List[int]) -> List[int]:
+        nums.sort()
+        ans = [0] * len(queries)
+        for i, v in enumerate(queries):
+            x = 0
+            for j in nums:
+                if v >= j:
+                    v -= j
+                    x += 1
+                else:
+                    break
+            ans[i] = x
+        return ans
+
+    # O((n+m)logn) / O(n)
+    def answerQueries(self, nums: List[int], queries: List[int]) -> List[int]:
+        nums.sort()
+        p = [0] * (len(nums) + 1)
+        for i, v in enumerate(nums):
+            p[i + 1] = p[i] + v
+        return [bisect.bisect_right(p, q) - 1 for q in queries]
+
+    # O((n+m)logn) / O(1)
+    def answerQueries(self, nums: List[int], queries: List[int]) -> List[int]:
+        nums.sort()
+        for i in range(1, len(nums)):
+            nums[i] += nums[i - 1]
+        return [bisect.bisect_right(nums, q) for q in queries]
+
+
+# 2390 - Removing Stars From a String - MEDIUM
+class Solution:
+    def removeStars(self, s: str) -> str:
+        l = list(s)
+        dq = collections.deque()
+        for i in range(len(s) - 1, -1, -1):
+            if s[i] == "*":
+                dq.append(i)
+            else:
+                if dq:
+                    p = dq.popleft()
+                    l[p] = ""
+                    l[i] = ""
+        return "".join(l)
+
+    def removeStars(self, s: str) -> str:
+        ans = []
+        for c in s:
+            if c == "*":
+                ans.pop()
+            else:
+                ans.append(c)
+        return "".join(ans)
+
+
+# 2391 - Minimum Amount of Time to Collect Garbage - MEDIUM
+class Solution:
+    def garbageCollection(self, garbage: List[str], travel: List[int]) -> int:
+        ans = 0
+        m = p = g = 0  # pre location
+        for i, v in enumerate(garbage):
+            cnt = collections.Counter(v)
+            ans += sum(cnt.values())
+            if "M" in cnt:
+                ans += sum(travel[m:i])
+                m = i
+            if "G" in cnt:
+                ans += sum(travel[g:i])
+                g = i
+            if "P" in cnt:
+                ans += sum(travel[p:i])
+                p = i
+        return ans
+
+    def garbageCollection(self, garbage: List[str], travel: List[int]) -> int:
+        ans = 0
+        m = p = g = 0
+        for i in reversed(range(1, len(garbage))):
+            pp = garbage[i].count("P")
+            gg = garbage[i].count("G")
+            mm = garbage[i].count("M")
+            p += pp
+            g += gg
+            m += mm
+            if p != 0:
+                p += travel[i - 1]
+            if g != 0:
+                g += travel[i - 1]
+            if m != 0:
+                m += travel[i - 1]
+        p += garbage[0].count("P")
+        g += garbage[0].count("G")
+        m += garbage[0].count("M")
+        return ans + m + g + p
+
+    def garbageCollection(self, garbage: List[str], travel: List[int]) -> int:
+        ans = 0
+        d = {}  # rightmost position
+        for i, g in enumerate(garbage):
+            ans += len(g)
+            for c in g:
+                d[c] = i
+        return ans + sum(sum(travel[:v]) for v in d.values())
+
+    def garbageCollection(self, garbage: List[str], travel: List[int]) -> int:
+        p = [0] * (len(travel) + 1)
+        for i, t in enumerate(travel):
+            p[i + 1] = p[i] + t
+        ans = sum(map(len, garbage))
+        for c in "GMP":
+            idx = 0
+            for i, g in enumerate(garbage):
+                idx = i if c in g else idx
+            ans += p[idx]
+        return ans
+
+
+# 2392 - Build a Matrix With Conditions - HARD
+class Solution:
+    # 拓扑排序找环两种方法:
+    # 1. 检查入度是否都为 0
+    # 2. 检查排序后长度是否为 n, (方便一点)
+    def buildMatrix(
+        self, k: int, rowConditions: List[List[int]], colConditions: List[List[int]]
+    ) -> List[List[int]]:
+        # 先排序, 而后将所有 孤立点 加入序列尾部
+        def topo_sort(edges: List[List[int]]) -> List[int]:
+            e = collections.defaultdict(list)
+            ind = [0] * k
+            vis = set()
+            for x, y in edges:
+                x -= 1
+                y -= 1
+                vis.add(x)
+                vis.add(y)
+                e[x].append(y)
+                ind[y] += 1
+            q = [i for i, d in enumerate(ind) if i in vis and d == 0]
+            arr = q.copy()
+            while q:
+                new = []
+                for x in q:
+                    for y in e[x]:
+                        ind[y] -= 1
+                        if ind[y] == 0:
+                            new.append(y)
+                            arr.append(y)
+                            # vis.add(y)  # 可以不要, 因为若可排序排序, arr 会和 vis 有相同元素
+                q = new
+
+            # 注释掉 any, 改为如下判断, 由此可以证明: 若可排序, arr 会和 vis 有相同元素
+            # if len(arr) != len(vis):
+            #     return []
+
+            if any(d > 0 for d in ind):
+                return []
+            for i in range(k):
+                if i not in vis:
+                    arr.append(i)
+            return arr
+
+        row = topo_sort(rowConditions)
+        if not row:
+            return []
+        col = topo_sort(colConditions)
+        if not col:
+            return []
+
+        r = {v: i for i, v in enumerate(row)}
+        c = {v: i for i, v in enumerate(col)}
+        g = [[0] * k for _ in range(k)]
+        for i in range(k):
+            g[r[i]][c[i]] = i + 1
+        return g
+
+    def buildMatrix(
+        self, k: int, rowConditions: List[List[int]], colConditions: List[List[int]]
+    ) -> List[List[int]]:
+        # 直接排序, 孤立点 穿插在序列中
+        # 孤立点会进入队列一次然后append 到 arr 中
+        def topo_sort(edges: List[List[int]]) -> List[int]:
+            e = [[] for _ in range(k)]
+            ind = [0] * k
+            for x, y in edges:
+                x -= 1
+                y -= 1
+                e[x].append(y)
+                ind[y] += 1
+            arr = []
+            dq = collections.deque(i for i, d in enumerate(ind) if d == 0)
+            while dq:
+                x = dq.popleft()
+                arr.append(x)
+                for y in e[x]:
+                    ind[y] -= 1
+                    if ind[y] == 0:
+                        dq.append(y)
+            return arr if len(arr) == k else []
+
+        row = topo_sort(rowConditions)
+        if not row:
+            return []
+        col = topo_sort(colConditions)
+        if not col:
+            return []
+
+        r = {v: i for i, v in enumerate(row)}
+        c = {v: i for i, v in enumerate(col)}
+        g = [[0] * k for _ in range(k)]
+        for i in range(k):
+            g[r[i]][c[i]] = i + 1
+        return g
+
+    def buildMatrix(
+        self, k: int, rowConditions: List[List[int]], colConditions: List[List[int]]
+    ) -> List[List[int]]:
+        # dfs排序:
+        # 1. 如下, 找一个最优结果, 然后验证
+        # 2. vis 打标记, dfs 中已 vis 则退出
+        def topo_sort(edges: List[List[int]]) -> List[int]:
+            e = [[] for _ in range(k + 1)]
+            for x, y in edges:
+                e[x].append(y)
+            vis = [False] * (k + 1)
+            arr = []
+
+            def dfs(x: int) -> None:
+                vis[x] = True
+                for y in e[x]:
+                    if not vis[y]:
+                        dfs(y)
+                arr.append(x)
+                return
+
+            for i in range(1, k + 1):
+                if not vis[i]:
+                    dfs(i)
+            arr.reverse()
+            d = {x: i for i, x in enumerate(arr)}
+            if all(d[x] < d[y] for x, y in edges):
+                return arr
+            return []
+
+        row = topo_sort(rowConditions)
+        if not row:
+            return []
+        col = topo_sort(colConditions)
+        if not col:
+            return []
+        g = [[0] * k for _ in range(k)]
+        r = {v: i for i, v in enumerate(row)}
+        c = {v: i for i, v in enumerate(col)}
+        for i in range(1, k + 1):
+            g[r[i]][c[i]] = i
+        return g
+
+    def buildMatrix(
+        self, k: int, rowConditions: List[List[int]], colConditions: List[List[int]]
+    ) -> List[List[int]]:
+        def topo_sort(edges: List[List[int]]) -> List[int]:
+            e = [[] for _ in range(k)]
+            for x, y in edges:
+                e[x - 1].append(y - 1)
+            arr = []
+            vis = [0] * k
+            q = list(range(k))
+            while q:
+                n = q.pop()
+                if n < 0:
+                    arr.append(~n)
+                elif not vis[n]:
+                    vis[n] = 1
+                    q.append(~n)
+                    q += e[n]
+            # cycle check
+            for x in arr:
+                if any(vis[y] for y in e[x]):
+                    return []
+                vis[x] = 0
+            return arr[::-1]
+
+        row = topo_sort(rowConditions)
+        if not row:
+            return []
+        col = topo_sort(colConditions)
+        if not col:
+            return []
+
+        r = {v: i for i, v in enumerate(row)}
+        c = {v: i for i, v in enumerate(col)}
+        g = [[0] * k for _ in range(k)]
+        for i in range(k):
+            g[r[i]][c[i]] = i + 1
+        return g
