@@ -106,6 +106,11 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 
 <br><br>
 
+# 💡
+[python3 模版 / 技巧](./lc_Python/template-trick.py)
+
+
+<br><br>
 
 # :seven::seven::eight::eight:
 * MOD:
