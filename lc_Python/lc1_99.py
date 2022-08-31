@@ -97,55 +97,69 @@ class Solution:
 # 3 - Longest Substring Without Repeating Characters - MEDIUM
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        res = 0
-        longest_substr = ""
-        for ch in s:
-            if ch not in longest_substr:
-                longest_substr += ch
-                if len(longest_substr) > res:
-                    res += 1
+        ans = 0
+        sub = ""
+        for c in s:
+            if c not in sub:
+                sub += c
+                if len(sub) > ans:
+                    ans += 1
             else:
-                i = longest_substr.find(ch)
-                longest_substr = longest_substr[i + 1 :] + ch
-        return res
+                i = sub.find(c)
+                sub = sub[i + 1 :] + c
+        return ans
 
     # sliding window + hashmap
     def lengthOfLongestSubstring(self, s: str) -> int:
-        slow, fast, ans = 0, 0, 0
-        dic = {}
+        ans = slow = fast = 0
+        d = {}
         while fast < len(s):
-            if s[fast] in dic and dic[s[fast]] >= slow:
-                slow = dic[s[fast]] + 1
-            dic[s[fast]] = fast
+            if s[fast] in d and d[s[fast]] >= slow:
+                slow = d[s[fast]] + 1
+            d[s[fast]] = fast
             fast += 1
             ans = max(ans, fast - slow)
         return ans
 
     # set
     def lengthOfLongestSubstring(self, s: str) -> int:
-        st, ans, slow, fast = set(), 0, 0, 0
+        ans = slow = fast = 0
+        vis = set()
         while fast < len(s):
-            if s[fast] not in st:
-                st.add(s[fast])
+            if s[fast] not in vis:
+                vis.add(s[fast])
                 fast += 1
             else:
-                st.remove(s[slow])
+                vis.remove(s[slow])
                 slow += 1
-            ans = max(ans, len(st))
+            ans = max(ans, len(vis))
         return ans
 
     # ord(), chr() / byte -> position
     def lengthOfLongestSubstring(self, s: str) -> int:
-        exist = [0 for _ in range(256)]
-        slow, fast, ans = 0, 0, 0
+        ans = slow = fast = 0
+        vis = [0 for _ in range(256)]
         while fast < len(s):
-            if exist[ord(s[fast])] == 0:
-                exist[ord(s[fast])] += 1
+            if vis[ord(s[fast])] == 0:
+                vis[ord(s[fast])] += 1
                 fast += 1
             else:
-                exist[ord(s[slow])] -= 1
+                vis[ord(s[slow])] -= 1
                 slow += 1
             ans = max(ans, fast - slow)
+        return ans
+
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        ans = l = 0
+        vis = set()
+        for r, c in enumerate(s):
+            if c not in vis:
+                ans = max(ans, r - l + 1)
+            else:
+                while c in vis:
+                    vis.remove(s[l])
+                    l += 1
+            vis.add(c)
         return ans
 
 

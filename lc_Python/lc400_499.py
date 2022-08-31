@@ -1,5 +1,5 @@
 import collections, bisect, functools, math, heapq, random, itertools
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
 # Definition for a Node.
@@ -136,8 +136,8 @@ class Solution:
 class Solution:
     # O(mn) / O(mn)
     def pacificAtlantic(self, h: List[List[int]]) -> List[List[int]]:
-        def dfs(x, y, ocean):
-            s.add((x, y))
+        def dfs(x: int, y: int, ocean: str) -> None:
+            vis.add((x, y))
             if ocean == "p":
                 pac[x][y] = 1
             else:
@@ -146,14 +146,15 @@ class Solution:
                 if (
                     0 <= nx < m
                     and 0 <= ny < n
-                    and (nx, ny) not in s
+                    and (nx, ny) not in vis
                     and h[nx][ny] >= h[x][y]
                 ):
                     dfs(nx, ny, ocean)
+            return
 
         m = len(h)
         n = len(h[0])
-        s = set()
+        vis = set()
         ans = []
         pac = [[0] * n for _ in range(m)]
         atl = [[0] * n for _ in range(m)]
@@ -161,7 +162,7 @@ class Solution:
             dfs(i, 0, "p")
         for j in range(1, n):
             dfs(0, j, "p")
-        s.clear()
+        vis.clear()
         for i in range(m):
             dfs(i, n - 1, "a")
         for j in range(n - 1):
@@ -179,7 +180,7 @@ class Solution:
         atl = [[0] * n for _ in range(m)]
         ans = []
 
-        def dfs(h, can, r, c):
+        def dfs(h: List[List[int]], can: List[List[int]], r: int, c: int) -> None:
             if can[r][c]:
                 return
             can[r][c] = 1
@@ -209,16 +210,17 @@ class Solution:
         p_vis = set()
         a_vis = set()
 
-        def dfs(s: set, x: int, y: int):
-            s.add((x, y))
+        def dfs(vis: set, x: int, y: int) -> None:
+            vis.add((x, y))
             for nx, ny in [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]:
                 if (
                     0 <= nx < m
                     and 0 <= ny < n
-                    and (nx, ny) not in s
+                    and (nx, ny) not in vis
                     and h[nx][ny] >= h[x][y]
                 ):
-                    dfs(s, nx, ny)
+                    dfs(vis, nx, ny)
+            return
 
         for i in range(m):
             dfs(p_vis, i, 0)
@@ -227,6 +229,35 @@ class Solution:
             dfs(p_vis, 0, j)
             dfs(a_vis, m - 1, j)
         return list(p_vis.intersection(a_vis))
+
+    def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
+        m = len(heights)
+        n = len(heights[0])
+
+        def bfs(q: List[Tuple[int, int]]) -> set:
+            vis = set(q)
+            while q:
+                new = []
+                for x, y in q:
+                    for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                        if (
+                            0 <= nx < m
+                            and 0 <= ny < n
+                            and (nx, ny) not in vis
+                            and heights[x][y] <= heights[nx][ny]
+                        ):
+                            vis.add((nx, ny))
+                            new.append((nx, ny))
+                q = new
+            return vis
+
+        p = [(i, 0) for i in range(m)] + [(0, j) for j in range(1, n)]
+        pac = bfs(p)
+        a = [(i, n - 1) for i in range(m)] + [(m - 1, j) for j in range(n - 1)]
+        atl = bfs(a)
+        return [x for x in pac if x in atl]
+        return list(pac.intersection(atl))
+        return list(map(list, pac & atl))
 
 
 # 419 - Battleships in a Board - MEDIUM
