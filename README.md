@@ -13,19 +13,19 @@
 # 🔧
 [OI Wiki](https://oi-wiki.org/)  
 
-[周赛评分算法](https://leetcode.cn/circle/article/neTUV4/) 
-
-[力扣竞赛 - 勋章及成就规则](https://leetcode.cn/circle/discuss/0fKGDu/) 
-
-[排名分数计算脚本](https://leetcode.cn/circle/discuss/6gnvEj/view/WbN5TH/) 
-
 [clist.by](https://clist.by/) 
-
-[Markdown语法](https://markdown.com.cn)
 
 [Algorithms for Competitive Programming (translate from http://e-maxx.ru/algo/)](https://cp-algorithms.com/index.html)
 
+[Markdown](https://markdown.com.cn)
+
 [GeeksforGeeks](https://www.geeksforgeeks.org/)
+
+[力扣竞赛 - 勋章及成就规则](https://leetcode.cn/circle/discuss/0fKGDu/) 
+
+[周赛评分算法](https://leetcode.cn/circle/article/neTUV4/) 
+
+[排名分数计算脚本](https://leetcode.cn/circle/discuss/6gnvEj/view/WbN5TH/) 
 
 
 <br><br>
