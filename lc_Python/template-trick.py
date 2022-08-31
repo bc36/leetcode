@@ -247,4 +247,27 @@ difference array: query: O(1), update: O(n)
 BIT:              query: O(logn), update: O(logn)
 
 segment tree:     query: O(logn), update: O(logn)
+
+
+
+拓扑排序: topological sort
+
+# 拓扑排序找环两种方法:
+# 1. 检查排序后每个点入度是否都为 0
+# 2. 检查排序后长度是否为 n, (方便一点)
+
+# BFS:
+# 1. BFS先排序, 而后将所有 孤立点 加入序列尾部 (较麻烦) O(2n)
+
+# 2. 直接排序, 入度为 0 的点入队孤立点 穿插在序列中 O(n)
+#    孤立点会进入队列一次然后 append 到 arr 中
+
+
+# DFS:
+# 1. vis 数组, 枚举点, 前向搜索, 找一个结果, 然后验证, O(2n)
+# 2. vis 打标记, dfs 中已 vis 则退出, O(n)
+
+
+
+~n, 用取反打标记, 因为要区分 0 , 0 的补码为 -1
 """

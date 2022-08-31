@@ -584,6 +584,19 @@ class Solution:
         return (f - 1) * (s - 1)
 
 
+# 1470 - Shuffle the Array - EASY
+class Solution:
+    def shuffle(self, nums: List[int], n: int) -> List[int]:
+        ans = [0] * (2 * n)
+        ans[::2] = nums[:n:]
+        ans[1::2] = nums[n::]
+        return ans
+
+    def shuffle(self, nums: List[int], n: int) -> List[int]:
+        nums[::2], nums[1::2] = nums[:n], nums[n:]
+        return nums
+
+
 # 1491 - Average Salary Excluding the Minimum and Maximum Salary - EASY
 class Solution:
     def average(self, s: List[int]) -> float:

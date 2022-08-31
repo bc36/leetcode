@@ -3303,7 +3303,7 @@ class Solution:
         self, k: int, rowConditions: List[List[int]], colConditions: List[List[int]]
     ) -> List[List[int]]:
         # 直接排序, 孤立点 穿插在序列中
-        # 孤立点会进入队列一次然后append 到 arr 中
+        # 孤立点会进入队列一次然后 append 到 arr 中
         def topo_sort(edges: List[List[int]]) -> List[int]:
             e = [[] for _ in range(k)]
             ind = [0] * k
