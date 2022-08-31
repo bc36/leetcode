@@ -688,24 +688,11 @@ class Solution:
     def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
         st = []
         i = 0
-        for n in pp:
-            while (not st or st[-1] != n) and i < len(ps):
-                st.append(ps[i])
-                i += 1
-            if st[-1] != n:
-                return False
-            else:
-                st.pop()
-        return True
-
-    def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
-        i = 0
-        st = []
-        for n in ps:
+        for v in ps:
             while st and st[-1] == pp[i]:
                 st.pop()
                 i += 1
-            st.append(n)
+            st.append(v)
         while st and st[-1] == pp[i]:
             st.pop()
             i += 1
@@ -714,17 +701,30 @@ class Solution:
     def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
         st = []
         i = 0
-        for n in ps:
-            st.append(n)
+        for v in ps:
+            st.append(v)
             while st and i < len(pp) and st[-1] == pp[i]:
                 st.pop()
                 i += 1
         return st == []
 
     def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
+        st = []
+        i = 0
+        for v in pp:
+            while (not st or st[-1] != v) and i < len(ps):
+                st.append(ps[i])
+                i += 1
+            if st[-1] != v:
+                return False
+            else:
+                st.pop()
+        return True
+
+    def validateStackSequences(self, ps: List[int], pp: List[int]) -> bool:
         i = j = 0
-        for n in ps:
-            ps[i] = n
+        for v in ps:
+            ps[i] = v
             while i >= 0 and ps[i] == pp[j]:
                 i -= 1
                 j += 1
@@ -1140,3 +1140,12 @@ class Solution:
             if i[j] == n - 1 and o[j] == 0:
                 return j + 1
         return -1
+
+
+# 998 - Maximum Binary Tree II - MEDIUM
+class Solution:
+    def insertIntoMaxTree(self, root: TreeNode, val: int) -> TreeNode:
+        if not root or root.val < val:
+            return TreeNode(val, root)
+        root.right = self.insertIntoMaxTree(root.right, val)
+        return root
