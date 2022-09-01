@@ -164,6 +164,33 @@ class Solution:
         return head
 
 
+# 205 - Isomorphic Strings - EASY
+class Solution:
+    def isIsomorphic(self, s: str, t: str) -> bool:
+        s2t = {}
+        t2s = {}
+        for x, y in zip(s, t):
+            if x in s2t and s2t[x] != y:
+                return False
+            if y in t2s and x != t2s[y]:
+                return False
+            s2t[x] = y
+            t2s[y] = x
+        return True
+
+    def isIsomorphic(self, s: str, t: str) -> bool:
+        s2t = {}
+        t2s = {}
+        for x, y in zip(s, t):
+            if s2t.get(x, y) != y:
+                return False
+            if t2s.get(y, x) != x:
+                return False
+            s2t[x] = y
+            t2s[y] = x
+        return True
+
+
 # 206 - Reverse Linked List - EASY
 class Solution:
     # iterative
@@ -725,6 +752,80 @@ class Solution:
         return ans + sign * n
 
 
+# 225 - Implement Stack using Queues - EASY
+class MyStack:
+    def __init__(self):
+        self.d1 = collections.deque()
+        self.d2 = collections.deque()
+
+    def push(self, x: int) -> None:
+        if self.d1:
+            self.d1.append(x)
+        else:
+            self.d2.append(x)
+        return
+
+    def pop(self) -> int:
+        if self.d1:
+            while len(self.d1) > 1:
+                self.d2.append(self.d1.popleft())
+            return self.d1.popleft()
+        else:
+            while len(self.d2) > 1:
+                self.d1.append(self.d2.popleft())
+            return self.d2.popleft()
+
+    def top(self) -> int:
+        if self.d1:
+            return self.d1[-1]
+        return self.d2[-1]
+
+    def empty(self) -> bool:
+        return len(self.d1) == len(self.d2) == 0
+
+
+class MyStack:
+    def __init__(self):
+        self.d1 = collections.deque()
+        self.d2 = collections.deque()
+
+    def push(self, x: int) -> None:
+        self.d2.append(x)
+        while self.d1:
+            self.d2.append(self.d1.popleft())
+        self.d1, self.d2 = self.d2, self.d1
+        return
+
+    def pop(self) -> int:
+        return self.d1.popleft()
+
+    def top(self) -> int:
+        return self.d1[0]
+
+    def empty(self) -> bool:
+        return not self.d1
+
+
+class MyStack:
+    def __init__(self):
+        self.dq = collections.deque()
+
+    def push(self, x: int) -> None:
+        self.dq.append(x)
+        for _ in range(len(self.dq) - 1):
+            self.dq.append(self.dq.popleft())
+        return
+
+    def pop(self) -> int:
+        return self.dq.popleft()
+
+    def top(self) -> int:
+        return self.dq[0]
+
+    def empty(self) -> bool:
+        return not self.dq
+
+
 # 226 - Invert Binary Tree - EASY
 class Solution:
     # breadth-first search
@@ -1228,6 +1329,26 @@ class Solution:
         return min(costs[-1])
 
 
+# 257 - Binary Tree Paths - EASY
+class Solution:
+    def binaryTreePaths(self, root: Optional[TreeNode]) -> List[str]:
+        def preorder(root: TreeNode, p: str) -> None:
+            if not root:
+                return
+            if not root.left and not root.right:
+                p += str(root.val)
+                ans.append(p)
+                return
+            p += str(root.val) + "->"
+            preorder(root.left, p)
+            preorder(root.right, p)
+            return
+
+        ans = []
+        preorder(root, "")
+        return ans
+
+
 # 258 - Add Digits - EASY
 class Solution:
     def addDigits(self, num: int) -> int:
@@ -1308,7 +1429,7 @@ class Solution:
                 p5 += 1
         return dp[-1]
 
-    # much faster 40ms, it does not compute time spent before entering objective function
+    # much faster, 40ms, it does not compute time spent before entering objective function
     ugly = sorted(
         2**a * 3**b * 5**c
         for a in range(32)
@@ -1358,6 +1479,7 @@ class Solution:
 
 # 278 - First Bad Version - EASY
 def isBadVersion(n: int) -> bool:
+    """provided by leetcode"""
     pass
 
 

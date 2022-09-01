@@ -1,5 +1,5 @@
 import collections, heapq, functools, itertools, math, sortedcontainers
-from typing import List
+from typing import List, Union
 
 
 class TreeNode:
@@ -491,14 +491,14 @@ class Solution:
 # 1448 - Count Good Nodes in Binary Tree - MEDIUM
 class Solution:
     def goodNodes(self, root: TreeNode) -> int:
-        def inorder(root, premax):
+        def inorder(root: TreeNode, mx: Union[int, float]) -> None:
             if not root:
                 return
-            if root.val >= premax:
+            if root.val >= mx:
                 self.cnt += 1
-                premax = root.val
-            inorder(root.left, premax)
-            inorder(root.right, premax)
+                mx = root.val
+            inorder(root.left, mx)
+            inorder(root.right, mx)
             return
 
         self.cnt = 0
@@ -506,13 +506,13 @@ class Solution:
         return self.cnt
 
     def goodNodes(self, root: TreeNode) -> int:
-        def inorder(root, premax):
-            if root.val >= premax:
+        def inorder(root: TreeNode, mx: int) -> None:
+            if root.val >= mx:
                 self.cnt += 1
             if root.left:
-                inorder(root.left, max(premax, root.val))
+                inorder(root.left, max(mx, root.val))
             if root.right:
-                inorder(root.right, max(premax, root.val))
+                inorder(root.right, max(mx, root.val))
             return
 
         self.cnt = 0
@@ -520,17 +520,22 @@ class Solution:
         return self.cnt
 
     def goodNodes(self, root: TreeNode) -> int:
-        def inorder(root, premax):
+        def inorder(root: TreeNode, mx: int) -> int:
             if not root:
                 return 0
-            premax = max(root.val, premax)
-            return (
-                (root.val >= premax)
-                + inorder(root.left, premax)
-                + inorder(root.right, premax)
-            )
+            mx = max(root.val, mx)
+            return (root.val >= mx) + inorder(root.left, mx) + inorder(root.right, mx)
 
         return inorder(root, root.val)
+
+    def goodNodes(self, root: TreeNode, mx=-(10**4)) -> int:
+        if not root:
+            return 0
+        ans = 0
+        if root.val >= mx:
+            mx = root.val
+            ans += 1
+        return ans + self.goodNodes(root.left, mx) + self.goodNodes(root.right, mx)
 
 
 # 1450 - Number of Students Doing Homework at a Given Time - EASY
@@ -595,6 +600,29 @@ class Solution:
     def shuffle(self, nums: List[int], n: int) -> List[int]:
         nums[::2], nums[1::2] = nums[:n], nums[n:]
         return nums
+
+
+# 1475 - Final Prices With a Special Discount in a Shop - EASY
+class Solution:
+    # O(n ** 2) / O(1)
+    def finalPrices(self, prices: List[int]) -> List[int]:
+        for i, p in enumerate(prices):
+            for j in range(i + 1, len(prices)):
+                if p >= prices[j]:
+                    prices[i] = p - prices[j]
+                    break
+        return prices
+
+    # O(n) / O(n)
+    def finalPrices(self, prices: List[int]) -> List[int]:
+        ans = [0] * len(prices)
+        st = [0]
+        for i in range(len(prices) - 1, -1, -1):
+            while st[-1] != 0 and st[-1] > prices[i]:
+                st.pop()
+            ans[i] = prices[i] - st[-1]
+            st.append(prices[i])
+        return ans
 
 
 # 1491 - Average Salary Excluding the Minimum and Maximum Salary - EASY

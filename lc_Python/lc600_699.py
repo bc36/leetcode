@@ -958,39 +958,62 @@ class Solution:
 # 687 - Longest Univalue Path - MEDIUM
 class Solution:
     def longestUnivaluePath(self, root: TreeNode) -> int:
-        def postorder(root: TreeNode):  # return root.val and the longest path
+        def postorder(root: TreeNode) -> Tuple[int, int]:
+            # return root.val and the longest path
             if not root:
-                return (-1001, 0)
-            left, ll = postorder(root.left)
-            right, rl = postorder(root.right)
+                return -1001, 0
+            lv, lmx = postorder(root.left)
+            rv, rmx = postorder(root.right)
             l = 0
-            if root.val == left == right:
+            if root.val == lv == rv:
                 # two subtree may consist a longer path
-                self.ans = max(self.ans, ll + rl + 2)
-                l += max(ll, rl) + 1
-            elif left == root.val:
-                l += ll + 1
-            elif right == root.val:
-                l += rl + 1
+                self.ans = max(self.ans, lmx + rmx + 2)
+                l += max(lmx, rmx) + 1
+            elif lv == root.val:
+                l += lmx + 1
+            elif rv == root.val:
+                l += rmx + 1
             self.ans = max(self.ans, l)
-            return (root.val, l)
+            return root.val, l
 
         self.ans = 0
         postorder(root)
         return self.ans
 
     def longestUnivaluePath(self, root: TreeNode) -> int:
-        def postorder(node: TreeNode, parent_val: int) -> int:
-            if not node:
+        def postorder(root: TreeNode, parent_val: int) -> int:
+            if not root:
                 return 0
-            left = postorder(node.left, node.val)
-            right = postorder(node.right, node.val)
-            self.longest = max(self.longest, left + right)
-            return 1 + max(left, right) if node.val == parent_val else 0
+            l = postorder(root.left, root.val)
+            r = postorder(root.right, root.val)
+            self.ans = max(self.ans, l + r)
+            return 1 + max(l, r) if root.val == parent_val else 0
 
-        self.longest = 0
-        postorder(root, None)
-        return self.longest
+        self.ans = 0
+        postorder(root, -1001)
+        return self.ans
+
+    def longestUnivaluePath(self, root: Optional[TreeNode]) -> int:
+        def postorder(root: TreeNode) -> Tuple[int, int]:
+            if not root:
+                return -1001, 0
+            lv, lmx = postorder(root.left)
+            rv, rmx = postorder(root.right)
+            l = 0
+            if lv == rv == root.val:
+                self.ans = max(self.ans, lmx + rmx + 2)
+                l = max(l, lmx + 1, rmx + 1)
+            elif root.val == lv:
+                self.ans = max(self.ans, lmx + 1)
+                l = max(l, lmx + 1)
+            elif root.val == rv:
+                self.ans = max(self.ans, rmx + 1)
+                l = max(l, rmx + 1)
+            return root.val, l
+
+        self.ans = 0
+        postorder(root)
+        return self.ans
 
 
 # 688 - Knight Probability in Chessboard - MEDIUM
