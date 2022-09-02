@@ -423,6 +423,51 @@ class Solution:
         return [sum(nums) - summ, (1 + n) * n // 2 - summ]
 
 
+# 646 - Maximum Length of Pair Chain - MEDIUM
+class Solution:
+    # O(n ** 2) / O(n)
+    def findLongestChain(self, pairs: List[List[int]]) -> int:
+        pairs.sort()
+        f = [1] * len(pairs)
+        for i, (a, _) in enumerate(pairs):
+            for j in range(i):
+                if pairs[j][1] < a and f[j] >= f[i]:
+                    f[i] = f[j] + 1
+        return f[-1]
+
+    # O(n ** 2) / O(n)
+    def findLongestChain(self, pairs: List[List[int]]) -> int:
+        pairs.sort()
+        f = [1] * len(pairs)
+        for i in range(len(pairs)):
+            for j in range(i):
+                if pairs[j][1] < pairs[i][0]:
+                    f[i] = max(f[i], f[j] + 1)
+        return f[-1]
+
+    # O(nlogn) / O(n)
+    def findLongestChain(self, pairs: List[List[int]]) -> int:
+        pairs.sort()
+        arr = []
+        for x, y in pairs:
+            i = bisect.bisect_left(arr, x)
+            if i < len(arr):
+                arr[i] = min(arr[i], y)
+            else:
+                arr.append(y)
+        return len(arr)
+
+    # O(nlogn) / O(logn)
+    def findLongestChain(self, pairs: List[List[int]]) -> int:
+        cur = -math.inf
+        ans = 0
+        for x, y in sorted(pairs, key=lambda p: p[1]):
+            if cur < x:
+                cur = y
+                ans += 1
+        return ans
+
+
 # 648 - Replace Words - MEDIUM
 class Solution:
     # O(sdw + dlogd) / O(s + logd), w = len(each word in d)
