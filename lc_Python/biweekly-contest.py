@@ -479,3 +479,8 @@ T4: 840 pass
 # 差分数组 / fenwick tree / 线段树
 # 594 / https://leetcode.cn/contest/biweekly-contest-85/problems/maximum-segment-sum-after-removals/
 # 倒序, 并查集
+
+
+# https://leetcode.cn/contest/biweekly-contest-86
+# 1716 / https://leetcode.cn/contest/biweekly-contest-86/problems/maximum-rows-covered-by-columns/
+# 状态压缩 / 枚举 / 位运算

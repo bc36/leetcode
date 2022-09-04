@@ -3418,3 +3418,143 @@ class Solution:
         for i in range(k):
             g[r[i]][c[i]] = i + 1
         return g
+
+
+# 2395 - Find Subarrays With Equal Sum - EASY
+class Solution:
+    def findSubarrays(self, nums: List[int]) -> bool:
+        s = set()
+        for i in range(len(nums) - 1):
+            summ = nums[i] + nums[i + 1]
+            if summ in s:
+                return True
+            s.add(summ)
+        return False
+
+
+# 2396 - Strictly Palindromic Number - MEDIUM
+class Solution:
+    # 对于所有 n > 4, 它们的 n - 1 进制表示是 11,  n - 2 进制表示都是 12 (已经不是回文)
+    def isStrictlyPalindromic(self, n: int) -> bool:
+        return False
+
+
+# 2397 - Maximum Rows Covered by Columns - MEDIUM
+class Solution:
+    # O(2 ** n * (mn)) / O(1)
+    def maximumRows(self, mat: List[List[int]], cols: int) -> int:
+        def to_num(row):
+            a = 0
+            for v in row:
+                a = (a << 1) + v
+            return a
+
+        ans = 0
+        nums = [to_num(r) for r in mat]
+        for comb in itertools.combinations(range(len(mat[0])), cols):
+            mask = sum(1 << c for c in comb)
+            ans = max(ans, sum((mask & v) == v for v in nums))
+        return ans
+
+    def maximumRows(self, mat: List[List[int]], cols: int) -> int:
+        m = len(mat)
+        n = len(mat[0])
+        ans = 0
+        b = [0] * m
+        for i, r in enumerate(mat):
+            for j, v in enumerate(r):
+                b[i] |= v << j
+
+        def calc(sub: int) -> int:
+            cnt = 0
+            for v in b:
+                if sub & v == v:
+                    cnt += 1
+            return cnt
+
+        for sub in range(1 << n):
+            if bin(sub).count("1") != cols:
+                continue
+            ans = max(ans, calc(sub))
+        return ans
+
+    def maximumRows(self, mat: List[List[int]], cols: int) -> int:
+        m = len(mat)
+        n = len(mat[0])
+        ans = 0
+        for mask in range(1 << n):
+            if bin(mask).count("1") != cols:
+                continue
+            cnt = 0
+            for i in range(m):
+                ok = 1
+                for j in range(n):
+                    if mat[i][j] == 1 and not ((mask >> j) & 1):
+                        ok = 0
+                        break
+                cnt += ok
+            ans = max(ans, cnt)
+        return ans
+
+
+# 2398 - Maximum Number of Robots Within Budget - HARD
+class Solution:
+    # O(nlogn) / O(n)
+    def maximumRobots(
+        self, chargeTimes: List[int], runningCosts: List[int], budget: int
+    ) -> int:
+        n = len(chargeTimes)
+        pre = [0]
+        for i in range(n):
+            pre.append(pre[-1] + runningCosts[i])
+        ans = l = summ = 0
+        mx = []
+        for r in range(n):
+            heapq.heappush(mx, (-chargeTimes[r], r))
+            summ += runningCosts[r] * (r - l) + (pre[r + 1] - pre[l])
+            while mx and summ - mx[0][0] > budget:
+                summ -= runningCosts[l] * (r - l) + (pre[r + 1] - pre[l])
+                l += 1
+                if mx and mx[0][1] < l:
+                    heapq.heappop(mx)
+            ans = max(ans, r - l + 1)
+        return ans
+
+    def maximumRobots(
+        self, chargeTimes: List[int], runningCosts: List[int], budget: int
+    ) -> int:
+        def get_mx(pq: List[int], i: int) -> int:
+            while pq and pq[0][1] <= i:
+                heapq.heappop(pq)
+            return -pq[0][0] if pq else 0
+
+        ans = summ = 0
+        l = -1
+        pq = []
+        for r in range(len(runningCosts)):
+            summ += runningCosts[r]
+            heapq.heappush(pq, (-chargeTimes[r], r))
+            while summ * (r - l) + get_mx(pq, l) > budget:
+                l += 1
+                summ -= runningCosts[l]
+            ans = max(ans, r - l)
+        return ans
+
+    # O(n) / O(n)
+    def maximumRobots(
+        self, chargeTimes: List[int], runningCosts: List[int], budget: int
+    ) -> int:
+        n = len(chargeTimes)
+        cur = l = 0
+        dq = collections.deque()
+        for r in range(n):
+            cur += runningCosts[r]
+            while dq and chargeTimes[dq[-1]] < chargeTimes[r]:
+                dq.pop()
+            dq.append(r)
+            if chargeTimes[dq[0]] + (r - l + 1) * cur > budget:
+                if dq[0] == l:
+                    dq.popleft()
+                cur -= runningCosts[l]
+                l += 1
+        return n - l
