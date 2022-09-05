@@ -258,6 +258,18 @@ class Solution:
         return "".join(s[1:-1])
 
 
+# 1582 - Special Positions in a Binary Matrix - EASY
+class Solution:
+    def numSpecial(self, mat: List[List[int]]) -> int:
+        row = [sum(r) for r in mat]
+        col = [sum(c) for c in zip(*mat)]
+        return sum(
+            v == row[i] == col[j] == 1
+            for i, r in enumerate(mat)
+            for j, v in enumerate(r)
+        )
+
+
 # 1588 - Sum of All Odd Length Subarrays - EASY
 class Solution:
     # O(n ^ 2) / O(n)

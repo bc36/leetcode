@@ -102,29 +102,31 @@ class Solution:
 # 1010 - Pairs of Songs With Total Durations Divisible by 60 - MEDIUM
 class Solution:
     def numPairsDivisibleBy60(self, time: List[int]) -> int:
-        c, ret = [0] * 60, 0
+        ans = 0
+        c = [0] * 60
         for t in time:
-            ret += c[-t % 60]
+            ans += c[-t % 60]
             c[t % 60] += 1
-        return ret
-
-    def numPairsDivisibleBy60(self, time: List[int]) -> int:
-        dic, ans = collections.defaultdict(int), 0
-        for t in time:
-            mod = t % 60
-            dic[mod] += 1
-            if mod == 30 or mod == 0:
-                ans += dic[mod] - 1
-            elif 60 - mod in dic:
-                ans += dic[60 - mod]
         return ans
 
     def numPairsDivisibleBy60(self, time: List[int]) -> int:
-        ans, cnt = 0, collections.Counter()
+        ans = 0
+        cnt = collections.Counter()
         for t in time:
-            theOther = -t % 60
-            ans += cnt[theOther]
+            ans += cnt[-t % 60]
             cnt[t % 60] += 1
+        return ans
+
+    def numPairsDivisibleBy60(self, time: List[int]) -> int:
+        ans = 0
+        d = collections.defaultdict(int)
+        for t in time:
+            mod = t % 60
+            d[mod] += 1
+            if mod == 30 or mod == 0:
+                ans += d[mod] - 1
+            elif 60 - mod in d:
+                ans += d[60 - mod]
         return ans
 
 

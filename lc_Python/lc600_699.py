@@ -504,6 +504,53 @@ class Solution:
         return " ".join(sentence)
 
 
+# 652 - Find Duplicate Subtrees - MEDIUM
+class Solution:
+    # O(n ** 2) / O(n ** 2), 字符串 O(n), 分割不同节点的值, 并且保留空节点
+    def findDuplicateSubtrees(self, root: TreeNode) -> List[TreeNode]:
+        cnt = collections.Counter()
+        ans = []
+
+        def dfs(root: TreeNode) -> str:
+            if not root:
+                return "#"
+            s = ""
+            s += dfs(root.left) + dfs(root.right)
+            s += str(root.val) + "+"
+            cnt[s] += 1
+            if cnt[s] == 2:
+                ans.append(root)
+            return s
+
+        dfs(root)
+        return ans
+
+    # O(n) / O(n)
+    # 三元组 (x, l, r) 表示一棵子树, 优化时间和空间复杂度
+    # x 为值, l, r 为子树的序号: 每当我们发现一棵新的子树，就给这棵子树一个序号，用来表示其结构
+    def findDuplicateSubtrees(self, root: TreeNode) -> List[TreeNode]:
+        def dfs(root: TreeNode) -> int:
+            if not root:
+                return 0
+
+            x = (root.val, dfs(root.left), dfs(root.right))
+            if x in vis:
+                (tree, index) = vis[x]
+                ans.add(tree)
+                return index
+            else:
+                nonlocal idx
+                idx += 1
+                vis[x] = (root, idx)
+                return idx
+
+        idx = 0
+        vis = dict()
+        ans = set()
+        dfs(root)
+        return list(ans)
+
+
 # 653 - Two Sum IV - Input is a BST - EASY
 class Solution:
     def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
