@@ -1,5 +1,5 @@
 import collections, math, heapq, functools, bisect, itertools, copy
-from typing import List
+from typing import List, Optional, Tuple
 
 
 def pairwise(iterable):
@@ -48,6 +48,20 @@ class Solution:
 
     def smallestRangeI(self, nums: List[int], k: int) -> int:
         return max(0, max(nums) - min(nums) - 2 * k)
+
+
+# 910 - Smallest Range II - MEDIUM
+class Solution:
+    def smallestRangeII(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        li = nums[0]
+        rx = nums[-1]
+        ans = rx - li
+        for i in range(len(nums) - 1):
+            lx = nums[i]
+            ri = nums[i + 1]
+            ans = min(ans, max(rx - k, lx + k) - min(li + k, ri - k))
+        return ans
 
 
 # 911 - Online Election - MEDIUM
@@ -894,6 +908,45 @@ class Solution:
         return dfs(root, root.val)
 
 
+# 967 - Numbers With Same Consecutive Differences - MEDIUM
+class Solution:
+    # O(2 ** n) / O(2 ** n)
+    def numsSameConsecDiff(self, n: int, k: int) -> List[int]:
+        def dfs(n: int, num: int) -> None:
+            if n == 0:
+                ans.append(num)
+                return
+            for x in set([num % 10 + k, num % 10 - k]):
+                if 0 <= x < 10:
+                    dfs(n - 1, num * 10 + x)
+            return
+
+        ans = []
+        for i in range(1, 10):
+            dfs(n - 1, i)
+        return ans
+
+    def numsSameConsecDiff(self, n: int, k: int) -> List[int]:
+        q = list(range(1, 10))
+        for _ in range(n - 1):
+            new = set()
+            for v in q:
+                if v % 10 + k < 10:
+                    new.add(v * 10 + v % 10 + k)
+                if 0 <= v % 10 - k < 10:
+                    new.add(v * 10 + v % 10 - k)
+            q = list(new)
+        return q
+
+    def numsSameConsecDiff(self, n: int, k: int) -> List[int]:
+        cur = range(1, 10)
+        for i in range(n - 1):
+            cur = {
+                x * 10 + y for x in cur for y in [x % 10 + k, x % 10 - k] if 0 <= y <= 9
+            }
+        return list(cur)
+
+
 # 969 - Pancake Sorting - MEDIUM
 class Solution:
     def pancakeSort(self, arr: List[int]) -> List[int]:
@@ -1030,6 +1083,27 @@ class Solution:
             # else:
             #     j += 1
         return ans
+
+
+# 987 - Vertical Order Traversal of a Binary Tree - HARD
+class Solution:
+    def verticalTraversal(self, root: Optional[TreeNode]) -> List[List[int]]:
+        # 国服未提交
+        dq = collections.deque([(root, 0)])
+        ans = collections.defaultdict(list)
+        while dq:
+            tmp = collections.defaultdict(list)
+            for _ in range(len(dq)):
+                n, p = dq.popleft()
+                tmp[p].append(n.val)
+                if n.left:
+                    dq.append((n.left, p - 1))
+                if n.right:
+                    dq.append((n.right, p + 1))
+            for k, v in tmp.items():
+                ans[k].extend(sorted(v))
+        return [v for _, v in sorted(ans.items())]
+        return [ans[k] for k in sorted(ans)]  # sorting directly will return sorted keys
 
 
 # 992 - Subarrays with K Different Integers - HARD
