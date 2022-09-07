@@ -136,7 +136,7 @@ class Solution:
 # 814 - Binary Tree Pruning - MEDIUM
 class Solution:
     def pruneTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
-        def postorder(root) -> int:
+        def postorder(root: TreeNode) -> int:
             if not root:
                 return 0
             l = postorder(root.left)
@@ -154,7 +154,7 @@ class Solution:
             return None
         root.left = self.pruneTree(root.left)
         root.right = self.pruneTree(root.right)
-        if root.val == 0 and (not root.left and not root.right):
+        if root.val == 0 and not root.left and not root.right:
             return None
         return root
 

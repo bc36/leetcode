@@ -20,6 +20,40 @@ class Solution:
         return n <= 0
 
 
+# 606 - Construct String from Binary Tree - EASY
+class Solution:
+    def tree2str(self, root: Optional[TreeNode]) -> str:
+        if not root:
+            return ""
+        l = self.tree2str(root.left)
+        r = self.tree2str(root.right)
+        if r:
+            return str(root.val) + "(" + l + ")" + "(" + r + ")"
+        if l:
+            return str(root.val) + "(" + l + ")"
+        return str(root.val)
+
+    def tree2str(self, root: Optional[TreeNode]) -> str:
+        if not root:
+            return ""
+        l = self.tree2str(root.left)
+        r = self.tree2str(root.right)
+        if r:
+            return f"{str(root.val)}({l})({r})"
+        if l:
+            return f"{str(root.val)}({l})"
+        return str(root.val)
+
+    def tree2str(self, root: Optional[TreeNode]) -> str:
+        if not root:
+            return ""
+        if not root.left and not root.right:
+            return str(root.val)
+        if not root.right:
+            return f"{root.val}({self.tree2str(root.left)})"
+        return f"{root.val}({self.tree2str(root.left)})({self.tree2str(root.right)})"
+
+
 # 611 - Valid Triangle Number - MEDIUM
 class Solution:
     # O(n ** 2) / O(logn)
@@ -739,6 +773,12 @@ class Solution:
                     new.append([n.right, 2 * p + 1])
             q = new
         return ans
+
+
+# 667 - Beautiful Arrangement II - MEDIUM
+class Solution:
+    def constructArray(self, n: int, k: int) -> List[int]:
+        return
 
 
 # 673 - Number of Longest Increasing Subsequence - MEDIUM

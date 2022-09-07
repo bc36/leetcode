@@ -1088,7 +1088,6 @@ class Solution:
 # 987 - Vertical Order Traversal of a Binary Tree - HARD
 class Solution:
     def verticalTraversal(self, root: Optional[TreeNode]) -> List[List[int]]:
-        # 国服未提交
         dq = collections.deque([(root, 0)])
         ans = collections.defaultdict(list)
         while dq:
