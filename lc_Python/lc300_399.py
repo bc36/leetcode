@@ -671,8 +671,6 @@ class Solution:
             ans += 1
         return ans
 
-
-class Solution:
     def bulbSwitch(self, n: int) -> int:
         return int(math.sqrt(n))
 
@@ -693,15 +691,17 @@ class Solution:
         return dp[-1] if dp[-1] != float("inf") else -1
 
     def coinChange(self, coins: List[int], amount: int) -> int:
-        ans, dq, visited = 0, collections.deque([amount]), set()
+        ans = 0
+        dq = collections.deque([amount])
+        vis = set()
         while dq:
             for _ in range(len(dq)):
                 val = dq.popleft()
                 if val == 0:
                     return ans
                 for coin in coins:
-                    if val >= coin and val - coin not in visited:
-                        visited.add(val - coin)
+                    if val >= coin and val - coin not in vis:
+                        vis.add(val - coin)
                         dq.append(val - coin)
             ans += 1
         return -1
