@@ -295,3 +295,16 @@ class Solution:
         w = text.split()
         cnt = sp // (len(w) - 1) if len(w) > 1 else 0
         return (" " * cnt).join(w) + " " * (sp - cnt * (len(w) - 1))
+
+
+# 1598 - Crawler Log Folder - EASY
+class Solution:
+    def minOperations(self, logs: List[str]) -> int:
+        ans = 0
+        for l in logs:
+            if l[0] == ".":
+                if l[1] == ".":
+                    ans = 0 if ans == 0 else ans - 1
+            else:
+                ans += 1
+        return ans

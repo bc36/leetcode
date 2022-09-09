@@ -2447,7 +2447,15 @@ class Solution:
         )
 
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
-        def inorder(root):
+        if not root:
+            return []
+        l = self.inorderTraversal(root.left)
+        m = [root.val]
+        r = self.inorderTraversal(root.right)
+        return l + m + r
+
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        def inorder(root: TreeNode) -> None:
             if not root:
                 return
             inorder(root.left)
@@ -2461,26 +2469,26 @@ class Solution:
 
     # iteratively
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
-        stack, ans = [], []
-        while root or stack:
+        st = []
+        ans = []
+        while root or st:
             if root:
-                stack.append(root)
+                st.append(root)
                 root = root.left
             else:
-                cur = stack.pop()
+                cur = st.pop()
                 ans.append(cur.val)
                 root = cur.right
         return ans
 
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
-        if not root:
-            return []
-        stack, ans = [], []
-        while root or stack:
+        st = []
+        ans = []
+        while root or st:
             while root:
-                stack.append(root)
+                st.append(root)
                 root = root.left
-            cur = stack.pop()
+            cur = st.pop()
             ans.append(cur.val)
             root = cur.right
         return ans
