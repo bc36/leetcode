@@ -781,42 +781,57 @@ class Solution:
         return
 
 
-# 673 - Number of Longest Increasing Subsequence - MEDIUM
+# 669 - Trim a Binary Search Tree - MEDIUM
 class Solution:
-    # O(n^2)
-    def findNumberOfLIS(self, nums: List[int]) -> int:
-        dp = [1] * len(nums)
-        cnt = [1] * len(nums)
-        for i in range(len(nums)):
-            for j in range(i):
-                if nums[j] < nums[i]:
-                    if dp[j] + 1 > dp[i]:
-                        dp[i] = dp[j] + 1
-                        cnt[i] = cnt[j]
-                    elif dp[j] + 1 == dp[i]:
-                        cnt[i] += cnt[j]
-        ans = 0
-        for i in range(len(nums)):
-            if dp[i] == max(dp):
-                ans += cnt[i]
-        return ans
+    def trimBST(self, root: TreeNode, low: int, high: int) -> TreeNode:
+        if not root:
+            return
+        left = self.trimBST(root.left, low, high)
+        right = self.trimBST(root.right, low, high)
+        if root.val < low:
+            root = right
+        elif root.val > high:
+            root = left
+        else:
+            root.left = left
+            root.right = right
+        return root
 
-    # O(nlogn)
-    def findNumberOfLIS(self, nums: List[int]) -> int:
-        dp = []
-        cnt = collections.defaultdict(list)
-        for num in nums:
-            idx = bisect.bisect_left(dp, num)
-            if idx == len(dp):
-                dp.append(num)
+    def trimBST(self, root: TreeNode, low: int, high: int) -> TreeNode:
+        if not root:
+            return
+        if root.val < low:
+            return self.trimBST(root.right, low, high)
+        if root.val > high:
+            return self.trimBST(root.left, low, high)
+        root.left = self.trimBST(root.left, low, high)
+        root.right = self.trimBST(root.right, low, high)
+        return root
+
+    def trimBST(self, root: TreeNode, low: int, high: int) -> TreeNode:
+
+        while root:
+            if root.val < low:
+                root = root.right
+            elif root.val > high:
+                root = root.left
             else:
-                dp[idx] = num
-            total = 0
-            for count, last in cnt[idx]:
-                if last < num:
-                    total += count
-            cnt[idx + 1].append((max(1, total), num))
-        return sum([count for count, _ in cnt[len(dp)]])
+                break
+        if root is None:
+            return None
+        node = root
+        while node.left:
+            if node.left.val < low:
+                node.left = node.left.right
+            else:
+                node = node.left
+        node = root
+        while node.right:
+            if node.right.val > high:
+                node.right = node.right.left
+            else:
+                node = node.right
+        return root
 
 
 # 670 - Maximum Swap - MEDIUM
@@ -872,6 +887,44 @@ class Solution:
         rv = root.val
         dfs(root)
         return ans
+
+
+# 673 - Number of Longest Increasing Subsequence - MEDIUM
+class Solution:
+    # O(n^2)
+    def findNumberOfLIS(self, nums: List[int]) -> int:
+        dp = [1] * len(nums)
+        cnt = [1] * len(nums)
+        for i in range(len(nums)):
+            for j in range(i):
+                if nums[j] < nums[i]:
+                    if dp[j] + 1 > dp[i]:
+                        dp[i] = dp[j] + 1
+                        cnt[i] = cnt[j]
+                    elif dp[j] + 1 == dp[i]:
+                        cnt[i] += cnt[j]
+        ans = 0
+        for i in range(len(nums)):
+            if dp[i] == max(dp):
+                ans += cnt[i]
+        return ans
+
+    # O(nlogn)
+    def findNumberOfLIS(self, nums: List[int]) -> int:
+        dp = []
+        cnt = collections.defaultdict(list)
+        for num in nums:
+            idx = bisect.bisect_left(dp, num)
+            if idx == len(dp):
+                dp.append(num)
+            else:
+                dp[idx] = num
+            total = 0
+            for count, last in cnt[idx]:
+                if last < num:
+                    total += count
+            cnt[idx + 1].append((max(1, total), num))
+        return sum([count for count, _ in cnt[len(dp)]])
 
 
 # 674 - Longest Continuous Increasing Subsequence - EASY
