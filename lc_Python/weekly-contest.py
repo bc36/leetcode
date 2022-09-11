@@ -1044,3 +1044,13 @@ T4: 1899 pass
 # https://leetcode.cn/contest/weekly-contest-307
 # 134 / https://leetcode.cn/contest/weekly-contest-307/problems/find-the-k-sum-of-an-array/
 # 堆
+
+
+# https://leetcode.cn/contest/weekly-contest-308
+# 1330 / https://leetcode.cn/contest/weekly-contest-308/problems/build-a-matrix-with-conditions/
+# 拓扑排序
+
+
+# https://leetcode.cn/contest/weekly-contest-309
+# 1045 / https://leetcode.cn/contest/weekly-contest-309/problems/meeting-rooms-iii/
+# 双堆

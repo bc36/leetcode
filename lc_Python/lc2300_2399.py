@@ -3496,6 +3496,27 @@ class Solution:
             ans = max(ans, cnt)
         return ans
 
+    def maximumRows(self, mat: List[List[int]], cols: int) -> int:
+        ans = 0
+        mask = [sum(v << j for j, v in enumerate(r)) for r in mat]
+        for s in range(1 << len(mat[0])):
+            if bin(s).count("1") == cols:  # s.bit_count()
+                ans = max(ans, sum(r & s == r for r in mask))
+        return ans
+
+    # O(m * comb(n, cols)) / O(m), 优化掉上述的无效枚举, 直接枚举所有包含 cols 个 1 的集合
+    def maximumRows(self, mat: List[List[int]], cols: int) -> int:
+        ans = 0
+        mask = [sum(v << j for j, v in enumerate(r)) for r in mat]
+        s = (1 << cols) - 1
+        while s < 1 << len(mat[0]):
+            # r & s = r 表示 r 是 s 的子集，所有 1 都被覆盖
+            ans = max(ans, sum(r & s == r for r in mask))
+            lb = s & -s  # low bit
+            x = s + lb
+            s = (s ^ x) // lb >> 2 | x
+        return ans
+
 
 # 2398 - Maximum Number of Robots Within Budget - HARD
 class Solution:
@@ -3558,3 +3579,60 @@ class Solution:
                 cur -= runningCosts[l]
                 l += 1
         return n - l
+
+    # 单调队列 / 单调栈原理: 及时弹出无用数据
+    def maximumRobots(
+        self, chargeTimes: List[int], runningCosts: List[int], budget: int
+    ) -> int:
+        ans = s = l = 0
+        dq = collections.deque()
+        for r, (t, c) in enumerate(zip(chargeTimes, runningCosts)):
+            while dq and t >= chargeTimes[dq[-1]]:
+                dq.pop()
+            dq.append(r)
+            s += c
+            while dq and chargeTimes[dq[0]] + (r - l + 1) * s > budget:
+                if dq[0] == l:
+                    dq.popleft()
+                s -= runningCosts[l]
+                l += 1
+            ans = max(ans, r - l + 1)
+        return ans
+
+    # 如果题目改为子序列该怎么做?
+    def maximumRobotsSubseq(
+        self, chargeTimes: List[int], runningCosts: List[int], budget: int
+    ) -> int:
+        ans = summ = 0
+        hp = []
+        # 按照限制排序: max(chargeTimes), 左边都是可选的
+        for t, c in sorted(zip(chargeTimes, runningCosts)):
+            heapq.heappush(hp, -c)
+            summ += c
+            while hp and t + len(hp) * summ > budget:
+                # 弹出一个最大花费, 即使弹出的是当前的 c 也没关系，这不会得到更大的 ans
+                summ += heapq.heappop(hp)
+            ans = max(ans, len(hp))
+        return ans
+
+
+# 2399 - Check Distances Between Same Letters - EASY
+class Solution:
+    def checkDistances(self, s: str, distance: List[int]) -> bool:
+        pre = dict()
+        for i in range(len(s)):
+            if s[i] in pre:
+                if i - pre[s[i]] - 1 != distance[ord(s[i]) - ord("a")]:
+                    return False
+            else:
+                pre[s[i]] = i
+        return True
+
+    def checkDistances(self, s: str, distance: List[int]) -> bool:
+        vis = [0] * 26
+        for i, ch in enumerate(s):
+            c = ord(ch) - ord("a")
+            if vis[c] and i - vis[c] != distance[c]:
+                return False
+            vis[c] = i + 1
+        return True
