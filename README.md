@@ -38,11 +38,13 @@ isbn: 978-7-83009-313-6
 <br><br>
 
 
-# Python:
+# Python3:
 
 * `math.lcm(*integers)`, [New in version 3.9](https://docs.python.org/3/library/math.html#math.lcm), If any of the arguments is zero, then the returned value is 0. lcm() without arguments returns 1.
 
 * `@functools.cache(user_function)`, [New in version 3.9](https://docs.python.org/3/library/functools.html#functools.cache), Returns the same as lru_cache(maxsize=None).
+
+* `int.bit_count()`, [New in version 3.10](https://docs.python.org/3/library/stdtypes.html#int.bit_count), Equivalent to: `bin(self).count("1")`.
 
 * `itertools.pairwise(iterable)`, [New in version 3.10](https://docs.python.org/3/library/itertools.html#itertools.pairwise), list(pairwise('a')) -> [], list(pairwise('abc')) -> [('ab', 'bc')].
 
@@ -50,6 +52,17 @@ isbn: 978-7-83009-313-6
 
 * [Glossary](https://docs.python.org/3/glossary.html)
 
+
+<br><br>
+
+
+# JavaScript
+```js
+// for loop:
+for ... in // 循环出 key, 并且还会遍历到属性, 实际上遍历的是对象的属性名称, ❎
+for ... of // 循环出 value, 不能遍历普通对象(ES6)
+arr.forEach(function (v, i, array) {});
+```
 
 <br><br>
 
