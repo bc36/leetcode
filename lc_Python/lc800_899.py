@@ -1,5 +1,6 @@
-import collections, math, itertools, re, bisect, functools
+import collections, math, itertools, re, bisect, functools, heapq
 from typing import List, Optional
+from sortedcontainers import SortedList
 
 
 class ListNode:
@@ -573,6 +574,108 @@ class Solution:
                 inDeg[y] -= 1
                 if inDeg[y] == 0:
                     q.append(y)
+        return ans
+
+
+# 855 - Exam Room - MEDIUM
+class ExamRoom:
+    def __init__(self, n: int):
+        self.n = n
+        self.hp = []
+        self.pairs = {}
+        self.add(0, n)
+
+    def add(self, l: int, r: int) -> None:
+        # 处理前两个人, 坐在两端
+        if l == 0 or r == self.n:
+            d = r - l
+        else:
+            d = (r - l + 1) >> 1
+        heapq.heappush(self.hp, (-d, l, r))
+        self.pairs[l] = r
+        self.pairs[r] = l
+        return
+
+    def seat(self) -> int:
+        l = r = -1
+        while self.hp:
+            _, l, r = heapq.heappop(self.hp)
+            # check for lasy deletion
+            if l == self.pairs.get(r, -1) and r == self.pairs.get(l, -1):
+                break
+
+        # try:  # check full
+        #     assert l != r
+        # except AssertionError:
+        #     print("No free seats.")
+        #     self.add(l, r)
+        #     return 0
+
+        # 处理前两个人, 坐在两端
+        if l == 0:
+            p = 0
+        elif r == self.n:
+            p = self.n - 1
+        else:
+            p = (l + r - 1) >> 1
+        self.add(l, p)
+        self.add(p + 1, r)
+        return p
+
+    def leave(self, p: int) -> None:
+        l = self.pairs.pop(p)
+        r = self.pairs.pop(p + 1)
+        self.add(l, r)
+        return
+
+
+# 857 - Minimum Cost to Hire K Workers - HARD
+class Solution:
+    # O(nlogn) / O(n)
+    def mincostToHireWorkers(
+        self, quality: List[int], wage: List[int], k: int
+    ) -> float:
+        qw = sorted(zip(quality, wage), key=lambda x: x[1] / x[0])
+        hp = [-q for q, _ in qw[:k]]
+        heapq.heapify(hp)
+        summ = -sum(hp)
+        ans = summ * qw[k - 1][1] / qw[k - 1][0]
+        for q, w in qw[k:]:
+            if q < -hp[0]:
+                summ += heapq.heapreplace(hp, -q) + q
+                ans = min(ans, summ * w / q)
+        return ans
+
+    def mincostToHireWorkers(
+        self, quality: List[int], wage: List[int], k: int
+    ) -> float:
+        ans = math.inf
+        hp = []
+        summ = 0
+        for q, w in sorted(zip(quality, wage), key=lambda x: x[1] / x[0]):
+            summ += q
+            heapq.heappush(hp, -q)
+            if len(hp) > k:
+                summ += heapq.heappop(hp)
+            if len(hp) == k:
+                ans = min(ans, summ * w / q)
+        return ans
+
+    def mincostToHireWorkers(
+        self, quality: List[int], wage: List[int], k: int
+    ) -> float:
+        qw = sorted(zip(quality, wage), key=lambda p: p[1] / p[0])
+        ans = math.inf
+        summ = 0
+        hp = []
+        for q, w in qw[: k - 1]:
+            summ += q
+            heapq.heappush(hp, -q)
+        for q, w in qw[k - 1 :]:
+            summ += q
+            heapq.heappush(hp, -q)
+            ans = min(ans, summ * w / q)
+            summ += heapq.heappop(hp)
         return ans
 
 

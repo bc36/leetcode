@@ -842,13 +842,31 @@ class Solution:
     # swap the number when a larger number is found
     def maximumSwap(self, num: int) -> int:
         s = list(str(num))
-        later = {int(x): i for i, x in enumerate(s)}
+        pos = {int(x): i for i, x in enumerate(s)}
         for i, x in enumerate(s):
             for d in range(9, int(x), -1):
-                if later.get(d, -1) > i:
-                    s[i], s[later[d]] = s[later[d]], s[i]
-                    return "".join(s)
+                if pos.get(d, -1) > i:
+                    s[i], s[pos[d]] = s[pos[d]], s[i]
+                    return int("".join(s))
         return num
+
+    def maximumSwap(self, num: int) -> int:
+        s = list(str(num))
+        t = sorted(s, reverse=True)
+        n = len(s)
+        i = j = 0
+        while i < n:
+            if s[i] != t[j]:
+                break
+            i += 1
+            j += 1
+        if i == n:
+            return num
+        for k in range(n - 1, -1, -1):
+            if s[k] == t[j]:
+                s[i], s[k] = s[k], s[i]
+                break
+        return int("".join(s))
 
 
 # 671 - Second Minimum Node In a Binary Tree - EASY

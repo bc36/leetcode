@@ -1,5 +1,6 @@
-from typing import List, Optional, Deque
 import collections, random, heapq, math, bisect
+from typing import List, Optional, Deque
+from sortedcontainers import SortedList
 
 
 class ListNode:
@@ -1617,6 +1618,71 @@ class Solution:
         return len(set(zip(pattern, s))) == len(set(pattern)) == len(set(s)) and len(
             pattern
         ) == len(s)
+
+
+# 295 - Find Median from Data Stream - HARD
+class MedianFinder:
+    def __init__(self):
+        self.l = []
+        self.r = []  # one more or equal
+
+    def addNum(self, num: int) -> None:
+        if not self.r:
+            heapq.heappush(self.r, num)
+            return
+        if len(self.l) == len(self.r):
+            if num >= -self.l[0]:
+                heapq.heappush(self.r, num)
+            else:
+                heapq.heappush(self.r, -heapq.heappushpop(self.l, -num))
+        else:
+            if num >= self.r[0]:
+                heapq.heappush(self.l, -heapq.heappushpop(self.r, num))
+            else:
+                heapq.heappush(self.l, -num)
+        return
+
+    def findMedian(self) -> float:
+        if len(self.l) < len(self.r):
+            return self.r[0]
+        return (self.r[0] - self.l[0]) / 2
+
+
+class MedianFinder:
+    def __init__(self):
+        self.l = []
+        self.r = []  # one more or equal
+
+    def addNum(self, num: int) -> None:
+        if not self.r or num >= self.r[0]:
+            heapq.heappush(self.r, num)
+            if len(self.r) > len(self.l) + 1:
+                heapq.heappush(self.l, -heapq.heappop(self.r))
+        else:
+            heapq.heappush(self.l, -num)
+            if len(self.l) > len(self.r):
+                heapq.heappush(self.r, -heapq.heappop(self.l))
+        return
+
+    def findMedian(self) -> float:
+        if len(self.l) < len(self.r):
+            return self.r[0]
+        return (self.r[0] - self.l[0]) / 2
+
+
+class MedianFinder:
+    def __init__(self):
+        self.a = SortedList()
+
+    def addNum(self, num: int) -> None:
+        self.a.add(num)
+        return
+
+    def findMedian(self) -> float:
+        n = len(self.a)
+        if n & 1:
+            return self.a[n // 2]
+        return (self.a[n // 2 - 1] + self.a[n // 2]) / 2
 
 
 # 297 - Serialize and Deserialize Binary Tree - HARD
