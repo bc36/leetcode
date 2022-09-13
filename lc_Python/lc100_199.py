@@ -1117,15 +1117,16 @@ class LRUCache:
         self.head.next = self.tail
         self.tail.prev = self.head
 
-    def remove(self, node: ListNode):
+    def remove(self, node: ListNode) -> None:
         #      hashmap[key]                               hashmap[key]
         #           |                                          |
         #           V              -->                         V
         # prev <-> node <-> next         pre <-> next   ...   node
         node.prev.next = node.next
         node.next.prev = node.prev
+        return
 
-    def add(self, node: ListNode):
+    def add(self, node: ListNode) -> None:
         #                 hashmap[key]                 hashmap[key]
         #                      |                            |
         #                      V        -->                 V
@@ -1134,11 +1135,13 @@ class LRUCache:
         node.next = self.tail
         self.tail.prev.next = node
         self.tail.prev = node
+        return
 
-    def move_to_end(self, key: int):
+    def move_to_end(self, key: int) -> None:
         node = self.dic[key]
         self.remove(node)
         self.add(node)
+        return
 
     def get(self, key: int) -> int:
         if key not in self.dic:
@@ -1158,6 +1161,7 @@ class LRUCache:
             node = ListNode(key, value)
             self.dic[key] = node
             self.add(node)
+        return
 
 
 # 147 - Insertion Sort List - MEDIUM

@@ -115,6 +115,14 @@ class Solution:
         return ans
 
 
+# 1619 - Mean of Array After Removing Some Elements - EASY
+class Solution:
+    def trimMean(self, arr: List[int]) -> float:
+        arr.sort()
+        n = len(arr)
+        return sum(arr[n // 20 : -n // 20]) / (n * 0.9)
+
+
 # 1624 - Largest Substring Between Two Equal Characters - EASY
 class Solution:
     def maxLengthBetweenEqualCharacters(self, s: str) -> int:

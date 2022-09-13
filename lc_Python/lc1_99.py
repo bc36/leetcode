@@ -1472,7 +1472,7 @@ class Solution:
 
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         ans = []
-        intervals = sorted(intervals, key=lambda x: x[0])
+        intervals.sort()
         l, r = intervals[0]
         for i in range(1, len(intervals)):
             if intervals[i][0] <= r:
@@ -1481,6 +1481,20 @@ class Solution:
                 ans.append([l, r])
                 l, r = intervals[i]
         ans.append([l, r])
+        return ans
+
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        ans = []
+        intervals.sort()
+        x, y = intervals[0]
+        for l, r in intervals[1:]:
+            if l <= y:
+                y = max(y, r)
+            else:
+                ans.append((x, y))
+                x, y = l, r
+        if not ans or ans[-1] != (x, y):
+            ans.append((x, y))
         return ans
 
 
