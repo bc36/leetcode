@@ -1,5 +1,5 @@
 import collections, heapq, functools, itertools, math, sortedcontainers
-from typing import List, Union
+from typing import List, Union, Optional
 
 
 class TreeNode:
@@ -555,6 +555,63 @@ class Solution:
         return -1
 
 
+# 1457 - Pseudo-Palindromic Paths in a Binary Tree - MEDIUM
+class Solution:
+    # O(9n) / O(9n)
+    def pseudoPalindromicPaths(self, root: Optional[TreeNode]) -> int:
+        def dfs(root: TreeNode, cnt: List[int]):
+            nonlocal ans
+            if not root:
+                return
+            cnt[root.val] += 1
+            dfs(root.left, cnt[::])
+            dfs(root.right, cnt[::])
+            if not root.left and not root.right:
+                odd = 0
+                ok = True
+                for v in cnt:
+                    if v & 1:
+                        if odd:
+                            ok = False
+                            break
+                        odd = 1
+                ans += ok
+            return
+
+        ans = 0
+        dfs(root, [0] * 10)
+        return ans
+
+    # O(n) / O(n)
+    def pseudoPalindromicPaths(self, root: TreeNode) -> int:
+        # hashmap
+        return
+
+    # O(n) / O(n)
+    def pseudoPalindromicPaths(self, root: TreeNode) -> int:
+        def dfs(r: TreeNode, mask: int) -> int:
+            if not r:
+                return 0
+            mask ^= 1 << (r.val - 1)
+            if not r.left and not r.right:
+                return int(not mask & (mask - 1))
+            return dfs(r.left, mask) + dfs(r.right, mask)
+
+        return dfs(root, 0)
+
+    def pseudoPalindromicPaths(self, root: TreeNode, mask=0):
+        if not root:
+            return 0
+        mask ^= 1 << (root.val - 1)
+        ans = self.pseudoPalindromicPaths(
+            root.left, mask
+        ) + self.pseudoPalindromicPaths(root.right, mask)
+        if root.left == root.right == None:
+            if mask & (mask - 1) == 0:
+                ans += 1
+        return ans
+
+
 # 1460 - Make Two Arrays Equal by Reversing Sub-arrays - EASY
 class Solution:
     def canBeEqual(self, target: List[int], arr: List[int]) -> bool:
@@ -622,6 +679,24 @@ class Solution:
                 st.pop()
             ans[i] = prices[i] - st[-1]
             st.append(prices[i])
+        return ans
+
+
+# 1486 - XOR Operation in an Array - EASY
+class Solution:
+    # O(n) / O(n)
+    def xorOperation(self, n: int, start: int) -> int:
+        nums = [start + 2 * i for i in range(n)]
+        ans = 0
+        for v in nums:
+            ans ^= v
+        return ans
+
+    # O(n) / O(1)
+    def xorOperation(self, n: int, start: int) -> int:
+        ans = 0
+        for i in range(n):
+            ans ^= start + i * 2
         return ans
 
 
