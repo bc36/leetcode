@@ -566,7 +566,6 @@ class Solution:
         def dfs(root: TreeNode) -> int:
             if not root:
                 return 0
-
             x = (root.val, dfs(root.left), dfs(root.right))
             if x in vis:
                 (tree, index) = vis[x]

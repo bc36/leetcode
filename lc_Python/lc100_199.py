@@ -1295,6 +1295,16 @@ class Solution:
         return ans
 
 
+# 151 - Reverse Words in a String - MEDIUM
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        t = s.split()
+        return " ".join(t[::-1])
+
+    def reverseWords(self, s: str) -> str:
+        return " ".join(reversed(s.split()))
+
+
 # 152 - Maximum Product Subarray - MEDIUM
 class Solution:
     def maxProduct(self, nums: List[int]) -> int:
@@ -1340,56 +1350,59 @@ class Solution:
         return nums[l]
 
 
-# 155 - Min Stack - EASY
+# 155 - Min Stack - MEDIUM
 class MinStack:
-    # O(1) / O(n)
+    # O(1) / O(2n)
     def __init__(self):
-        self.stack = []
-        self.min_stack = [math.inf]
+        self.st = []
+        self.mi = [math.inf]
 
-    def push(self, x: int) -> None:
-        self.stack.append(x)
-        self.min_stack.append(min(x, self.min_stack[-1]))
+    def push(self, val: int) -> None:
+        self.st.append(val)
+        self.mi.append(min(val, self.mi[-1]))
+        return
 
     def pop(self) -> None:
-        self.stack.pop()
-        self.min_stack.pop()
-
-    def top(self) -> int:
-        return self.stack[-1]
-
-    def getMin(self) -> int:
-        return self.min_stack[-1]
-
-
-class MinStack:
-    # O(1) / O(1), save diff in stack
-    def __init__(self):
-        self.stack = []
-        self.mi = -1
-
-    def push(self, x: int) -> None:
-        if not self.stack:
-            self.stack.append(0)
-            self.mi = x
-        else:
-            diff = x - self.mi
-            self.stack.append(diff)
-            if diff < 0:
-                self.mi = x
-
-    def pop(self) -> None:
-        if not self.stack:
-            return
-        diff = self.stack.pop()
-        if diff < 0:
-            self.mi = self.mi - diff
+        self.st.pop()
+        self.mi.pop()
         return
 
     def top(self) -> int:
-        if self.stack[-1] < 0:
-            return self.mi
-        return self.stack[-1] + self.mi
+        return self.st[-1]
+
+    def getMin(self) -> int:
+        return self.mi[-1]
+
+
+class MinStack:
+    # O(1) / O(n), save diff in stack
+    def __init__(self):
+        self.st = []
+        self.mi = -1
+
+    def push(self, val: int) -> None:
+        if not self.st:
+            self.st.append(0)
+            self.mi = val
+        else:
+            diff = val - self.mi
+            self.st.append(diff)
+            if diff < 0:
+                self.mi = val
+        return
+
+    def pop(self) -> None:
+        if not self.st:
+            return
+        diff = self.st.pop()
+        if diff < 0:
+            self.mi -= diff  # 更新最小值
+        return
+
+    def top(self) -> int:
+        if self.st[-1] < 0:
+            return self.mi  # 栈顶就是最小的
+        return self.st[-1] + self.mi  # 栈顶不是最小的, 复原
 
     def getMin(self) -> int:
         return self.mi

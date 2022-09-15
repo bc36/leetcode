@@ -306,6 +306,46 @@ class Solution:
         return c.replace("()", "o").replace("(al)", "al")
 
 
+# 1679 - Max Number of K-Sum Pairs - MEDIUM
+class Solution:
+    # O(nlogn) / O(logn)
+    def maxOperations(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        ans = l = 0
+        r = len(nums) - 1
+        while l < r:
+            if nums[l] + nums[r] > k:
+                r -= 1
+            elif nums[l] + nums[r] < k:
+                l += 1
+            else:
+                ans += 1
+                l += 1
+                r -= 1
+        return ans
+
+    # O(n) / O(n)
+    def maxOperations(self, nums: List[int], k: int) -> int:
+        ans = 0
+        cnt = collections.Counter(nums)
+        for key, val in cnt.items():
+            if key * 2 == k:
+                ans += val // 2
+            elif key * 2 < k and k - key in cnt:
+                ans += min(val, cnt[k - key])
+        return ans
+
+    def maxOperations(self, nums: List[int], k: int) -> int:
+        cnt = collections.Counter(nums)
+        ans = 0
+        for key in cnt:
+            if key * 2 < k:
+                ans += min(cnt[key], cnt.get(k - key, 0))
+            elif key * 2 == k:
+                ans += cnt[key] // 2
+        return ans
+
+
 # 1688 - Count of Matches in Tournament - EASY
 class Solution:
     def numberOfMatches(self, n: int) -> int:
