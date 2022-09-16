@@ -2,12 +2,19 @@ import collections, bisect, functools, math, heapq, random, itertools
 from typing import List, Optional, Tuple
 
 
-# Definition for a Node.
 class Node:
     def __init__(self, val, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
+
+
+class Node:
+    def __init__(self, val, prev, next, child):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
 
 
 class TreeNode:
@@ -474,6 +481,31 @@ class Solution:
             ans.append([node.val for node in q])
             q = [ch for node in q for ch in node.children]
         return ans
+
+
+# 430 - Flatten a Multilevel Doubly Linked List - MEDIUM
+class Solution:
+    def flatten(self, head: "Node") -> "Node":
+        def dfs(node: "Node") -> "Node":
+            last = None
+            while node:
+                nxt = node.next
+                if node.child:
+                    chLast = dfs(node.child)
+                    node.next = node.child
+                    node.child.prev = node
+                    if nxt:
+                        chLast.next = nxt
+                        nxt.prev = chLast
+                    node.child = None
+                    last = chLast
+                else:
+                    last = node
+                node = nxt
+            return last
+
+        dfs(head)
+        return head
 
 
 # 432 - All O`one Data Structure - HARD

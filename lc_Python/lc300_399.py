@@ -1043,7 +1043,42 @@ class Solution:
         return
 
 
-# 345
+# 345 - Reverse Vowels of a String - EASY
+class Solution:
+    def reverseVowels(self, s: str) -> str:
+        a = []
+        b = []
+        for i, c in enumerate(s):
+            if c in "aeiouAEIOU":
+                a.append(c)
+            else:
+                b.append((c, i))
+        j = 0
+        ans = ""
+        for i in range(len(s)):
+            if j < len(b) and i == b[j][1]:
+                ans += b[j][0]
+                j += 1
+            else:
+                ans += a.pop()
+        return ans
+
+    def reverseVowels(self, s: str) -> str:
+        n = len(s)
+        s = list(s)
+        i = 0
+        j = n - 1
+        while i < j:
+            while i < n and s[i] not in "aeiouAEIOU":
+                i += 1
+            while j > 0 and s[j] not in "aeiouAEIOU":
+                j -= 1
+            if i < j:
+                s[i], s[j] = s[j], s[i]
+                i += 1
+                j -= 1
+        return "".join(s)
+
 
 # 346
 
@@ -1710,21 +1745,23 @@ class Solution:
 # 394 - Decode String - MEDIUM
 class Solution:
     def decodeString(self, s: str) -> str:
-        stack, time, ans = [], 0, ""
-        for ch in s:
-            if ch == "[":
-                stack.append(ans)
-                stack.append(time)
+        st = []
+        d = 0
+        ans = ""
+        for c in s:
+            if c == "[":
+                st.append(ans)
+                st.append(d)
                 ans = ""
-                time = 0
-            elif ch == "]":
-                pre_num = stack.pop()
-                pre_string = stack.pop()
+                d = 0
+            elif c == "]":
+                pre_num = st.pop()
+                pre_string = st.pop()
                 ans = pre_string + pre_num * ans
-            elif ch.isdigit():
-                time = time * 10 + int(ch)
+            elif c.isdigit():
+                d = d * 10 + int(c)
             else:
-                ans += ch
+                ans += c
         return ans
 
 
