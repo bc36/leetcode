@@ -201,7 +201,7 @@ class Solution:
 
 # 2208 - Minimum Operations to Halve Array Sum -  MEDIUM
 class Solution:
-    # O(n * logn + m * logn) / O(n), where m is the number of operations
+    # O(nlogn + m * logn) / O(n), where m is the number of operations
     def halveArray(self, nums: List[int]) -> int:
         t = sum(nums)
         half = t / 2
@@ -1000,7 +1000,7 @@ class Solution:
 
 # 2234 - Maximum Total Beauty of the Gardens - HARD
 class Solution:
-    # O(n * logn) / O(1)
+    # O(nlogn) / O(1)
     def maximumBeauty(
         self, f: List[int], newFlowers: int, target: int, full: int, partial: int
     ) -> int:

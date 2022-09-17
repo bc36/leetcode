@@ -1500,7 +1500,7 @@ class Solution:
 
 # 57 - Insert Interval - MEDIUM
 class Solution:
-    # O(n * logn)
+    # O(nlogn)
     def insert(
         self, intervals: List[List[int]], newInterval: List[int]
     ) -> List[List[int]]:
@@ -2094,9 +2094,9 @@ class Solution:
                 # update new answer
                 if j - i < right - left:
                     left, right = i, j
-                i += 1
-                needdic[s[i]] += 1
                 need += 1
+                needdic[s[i]] += 1
+                i += 1
         return "" if right > len(s) else s[left : right + 1]
 
 

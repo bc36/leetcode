@@ -292,7 +292,7 @@ class Solution:
         # or
         return len(nums) - l
 
-    # O(n * logn) / O(n)
+    # O(nlogn) / O(n)
     def longestSubarray(self, A, limit):
         maxq, minq = [], []
         res = i = 0

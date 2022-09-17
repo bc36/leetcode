@@ -885,7 +885,7 @@ class Solution:
 
 # 954 - Array of Doubled Pairs - MEDIUM
 class Solution:
-    # O(n * logn) / O(n)
+    # O(nlogn) / O(n)
     def canReorderDoubled(self, arr: List[int]) -> bool:
         cnt = collections.Counter(arr)
         for x in sorted(cnt, key=abs):

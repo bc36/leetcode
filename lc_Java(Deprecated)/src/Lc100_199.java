@@ -92,7 +92,7 @@ public class Lc100_199 {
 		return -1;
 	}
 
-	// O(n * logn) / O(logn)
+	// O(nlogn) / O(logn)
 	public int majorityElement3(int[] nums) {
 		Arrays.sort(nums);
 		return nums[nums.length / 2];

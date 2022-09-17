@@ -647,7 +647,7 @@ class Solution:
 
 # 440 - K-th Smallest in Lexicographical Order - HARD
 class Solution:
-    # O(logn * logn) / O(1)
+    # O(lognlogn) / O(1)
     def findKthNumber(self, n: int, k: int) -> int:
         def getCnt(first: int) -> int:
             cnt = 0

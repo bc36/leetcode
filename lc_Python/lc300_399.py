@@ -66,7 +66,7 @@ class Solution:
                     dp[i] = max(dp[i], dp[j] + 1)
         return max(dp)
 
-    # O(n * logn) / O(n)
+    # O(nlogn) / O(n)
     def lengthOfLIS(self, nums: List[int]) -> int:
         tail = []
         for num in nums:

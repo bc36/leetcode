@@ -769,7 +769,7 @@ class Solution:
         return ans[0]
 
 
-class Solution:  # 没看懂
+class Solution:  # TODO
     def singleNumber(self, nums: List[int]) -> int:
         b1, b2 = 0, 0  # 出现一次的位，和两次的位
         for n in nums:
@@ -1188,7 +1188,7 @@ class Solution:
 
 # 148 - Sort List - MEDIUM
 class Solution:
-    # O(n * logn) / O(n)
+    # O(nlogn) / O(n)
     def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         arr = []
         while head:
@@ -1213,7 +1213,7 @@ class Solution:
             cur = cur.next
         return head
 
-    # O(n * logn) / O(logn)
+    # O(nlogn) / O(logn)
     def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         if not head or not head.next:
             return head
@@ -1601,7 +1601,7 @@ class Solution:
         cnt = collections.Counter(nums)
         return max(cnt.keys(), key=cnt.get)
 
-    # O(n * logn) / O(logn)
+    # O(nlogn) / O(logn)
     def majorityElement(self, nums: List[int]) -> int:
         nums.sort()
         return nums[len(nums) // 2]
