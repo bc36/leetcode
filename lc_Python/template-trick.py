@@ -270,4 +270,9 @@ segment tree:     query: O(logn), update: O(logn)
 
 
 ~n, 用取反打标记, 因为要区分 0 , 0 的补码为 -1
+
+
+
+求区间最大值:
+线段树 / ST表 / 单调队列
 """
