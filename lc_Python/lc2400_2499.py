@@ -1,5 +1,6 @@
-import bisect, collections, functools, math, itertools, heapq, string, operator, sortedcontainers
+import bisect, collections, functools, math, itertools, heapq, string, operator
 from typing import List, Optional
+import sortedcontainers
 
 
 class TreeNode:
@@ -199,6 +200,110 @@ class Solution:
             t[choice] += e - s
             cnt[choice] += 1
         return cnt.index(max(cnt))
+
+
+# 2404 - Most Frequent Even Element - EASY
+class Solution:
+    def mostFrequentEven(self, nums: List[int]) -> int:
+        cnt = collections.Counter()
+        ans = mx = 0
+        for v in nums:
+            if v & 1 == 0:
+                cnt[v] += 1
+                if cnt[v] == mx and v < ans:
+                    mx = cnt[v]
+                    ans = v
+                if cnt[v] > mx:
+                    mx = cnt[v]
+                    ans = v
+        return ans if len(cnt) else -1
+
+    def mostFrequentEven(self, nums: List[int]) -> int:
+        cnt = collections.Counter(v for v in nums if v % 2 == 0)
+        if len(cnt) == 0:
+            return -1
+        mx = max(cnt.values())
+        return min(k for k, v in cnt.items() if v == mx)
+
+
+# 2405 - Optimal Partition of String - MEDIUM
+class Solution:
+    def partitionString(self, s: str) -> int:
+        ans = 0
+        vis = set()
+        for c in s:
+            if c in vis:
+                vis.clear()
+                ans += 1
+            vis.add(c)
+        return ans + 1
+
+    def partitionString(self, s: str) -> int:
+        ans = 1
+        cur = ""
+        for c in s:
+            if c in cur:
+                ans += 1
+                cur = ""
+            cur += c
+        return ans
+
+
+# 2406 - Divide Intervals Into Minimum Number of Groups - MEDIUM
+class Solution:
+    # 答案 / 划分与输入的顺序无关 -> 排序
+    def minGroups(self, intervals: List[List[int]]) -> int:
+        intervals.sort()
+        q = sortedcontainers.SortedList()
+        for l, r in intervals:
+            i = bisect.bisect_left(q, l)
+            i -= 1
+            if i == -1:
+                q.add(r)
+            else:
+                q.remove(q[i])
+                q.add(r)
+        return len(q)
+
+    def minGroups(self, intervals: List[List[int]]) -> int:
+        intervals.sort()
+        q = []
+        for l, r in intervals:
+            if q and l > q[0]:
+                heapq.heapreplace(q, r)
+            else:
+                heapq.heappush(q, r)
+        return len(q)
+
+    # 差分, 最大堆叠次数
+    def minGroups(self, intervals: List[List[int]]) -> int:
+        # 直接开数组慢, 900ms
+        diff = [0] * 1000005
+        for l, r in intervals:
+            diff[l] += 1
+            diff[r + 1] -= 1
+        return max(itertools.accumulate(diff))
+
+    def minGroups(self, intervals: List[List[int]]) -> int:
+        # 500ms
+        diff = collections.defaultdict(int)
+        for l, r in intervals:
+            diff[l] += 1
+            diff[r + 1] -= 1
+        arr = sorted((k, v) for k, v in diff.items())
+        ans = cur = 0
+        for _, v in arr:
+            cur += v
+            ans = max(ans, cur)
+        return ans
+
+    def minGroups(self, intervals: List[List[int]]) -> int:
+        # 300ms
+        diff = collections.defaultdict(int)
+        for l, r in intervals:
+            diff[l] += 1
+            diff[r + 1] -= 1
+        return max(itertools.accumulate(diff[k] for k in sorted(diff)))
 
 
 # 2413 - Smallest Even Multiple - EASY
