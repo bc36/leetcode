@@ -21,6 +21,7 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     segment tree
     set
     transpose
+    trie
     union-find, disjoint set
 """
 
@@ -132,6 +133,21 @@ def getcomb(m: int, n: int) -> int:
     return math.comb(m, n) % MOD
 
 
+# n in 10 base convert to other base
+def n2xbase(n: int, b: int) -> int:
+    if 0 <= n < b:
+        return n
+    return n2xbase(n // b, b) * 10 + n % b
+
+
+def n2xbase(n: int, b: int) -> str:
+    s = ""
+    while n:
+        s += str(n % b)
+        n //= b
+    return s[::-1]
+
+
 """set"""
 
 
@@ -182,6 +198,106 @@ def transpose(matrix: List[List[int]]) -> List[List[int]]:
         return
 
     return list(zip(*matrix))
+
+
+"""trie"""
+
+
+def build(words: List[List[int]]) -> None:
+    trie = {}
+    for w in words:
+        r = trie
+        for c in w:
+            if c not in r:
+                r[c] = {}
+            r = r[c]
+        r["end"] = True
+    return
+
+
+# wc 311 T4, 2416
+class Solution:
+    # 1.3s
+    def sumPrefixScores(self, words: List[str]) -> List[int]:
+        Trie = lambda: collections.defaultdict(Trie)
+        CNT = "#"
+
+        trie = Trie()
+        for w in words:
+            r = trie
+            for ch in w:
+                r = r[ch]
+                r[CNT] = r.get(CNT, 0) + 1
+        ans = []
+        for w in words:
+            r = trie
+            score = 0
+            for ch in w:
+                r = r[ch]
+                score += r[CNT]
+            ans.append(score)
+        return ans
+
+
+# 小慢 2s
+def build(words: List[List[int]]) -> None:
+    trie = {}
+    for w in words:
+        r = trie
+        for c in w:
+            if c not in r:
+                r[c] = {}
+                r[(c, "#")] = 1  # 打标记, 当前多有少个以 word[: i + 1] 为前缀, wc 311 T4
+            else:
+                r[(c, "#")] += 1
+            r = r[c]
+        r["end"] = True
+    return
+
+
+# 小慢 2s
+def build(words: List[List[int]]) -> None:
+    trie = [None] * 27  # 最后一位用于计数
+    trie[26] = 0
+    for w in words:
+        r = trie
+        for ch in w:
+            c = ord(ch) - ord("a")
+            if r[c] is None:
+                r[c] = [None] * 27
+                r[c][26] = 0
+            r = r[c]
+            r[26] += 1
+    return
+
+
+# 1s
+def build(words: List[List[int]]) -> None:
+    trie = {}
+    for w in words:
+        r = trie
+        for c in w:
+            if c not in r:
+                r[c] = {}
+                r[c]["cnt"] = 1  # 打标记, 当前多有少个以 word[: i + 1] 为前缀, wc 311 T4
+            else:
+                r[c]["cnt"] += 1
+            r = r[c]
+        r["end"] = True
+    return
+
+
+def build(words: List[List[int]]) -> None:
+    trie = {}
+    for w in words:
+        r = trie
+        for c in w:
+            if c not in r:
+                r[c] = {}
+            r = r[c]
+            r["cnt"] = r.get("cnt", 0) + 1  # 打标记, 当前多有少个以 word[: i + 1] 为前缀, wc 311 T4
+        r["end"] = True
+    return
 
 
 """union-find, disjoint set"""

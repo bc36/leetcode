@@ -830,7 +830,7 @@ class Solution:
         cnt = [0] * (mx + 1)
         for x in nums:
             cnt[x] += 1
-        # n * (1 + 1/2 + 1/3 + 1/4 ...) -> n * logn
+        # n * (1 + 1/2 + 1/3 + 1/4 ...) -> nlogn
         for i in range(1, mx + 1):
             for j in range(2 * i, mx + 1, i):
                 cnt[i] += cnt[j]
@@ -1054,3 +1054,13 @@ T4: 1899 pass
 # https://leetcode.cn/contest/weekly-contest-309
 # 1045 / https://leetcode.cn/contest/weekly-contest-309/problems/meeting-rooms-iii/
 # 双堆
+
+
+"""
+AK, 2022-09-17
+https://leetcode.cn/contest/weekly-contest-311/
+Rank: 993 / 2857
+WA: T4(1)
+FT: 0:45:53
+T4: 2378 pass
+"""
