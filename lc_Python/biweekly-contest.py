@@ -1,5 +1,6 @@
 import collections, itertools, functools, heapq, math
 from typing import List
+import sortedcontainers
 
 # 68 / 2021.12.25
 
@@ -320,9 +321,6 @@ class Solution:
         for i in range(n):
             ans += left[i] * right[i]
         return ans
-
-
-import sortedcontainers
 
 
 class Solution:

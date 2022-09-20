@@ -1,4 +1,4 @@
-import collections, math, copy, bisect, heapq, datetime
+import collections, math, copy, bisect, heapq, datetime, itertools
 from typing import List, Optional
 
 
@@ -370,6 +370,22 @@ class Solution:
                     )
                 )
         return res
+
+
+# 1029 - Two City Scheduling - MEDIUM
+class Solution:
+    # O(nlogn) / O(logn)
+    def twoCitySchedCost(self, costs: List[List[int]]) -> int:
+        costs.sort(key=lambda x: x[0] - x[1])
+        n = len(costs)
+        return sum(x for x, _ in costs[: n // 2]) + sum(y for _, y in costs[n // 2 : n])
+
+    # O(nlogn) / O(n)
+    def twoCitySchedCost(self, costs: List[List[int]]) -> int:
+        # all go to one city at first, then move to another, find the minimum difference
+        first = [x for x, _ in costs]
+        diff = [y - x for x, y in costs]  # negative diff means we get a refund
+        return sum(first) + sum(sorted(diff)[: len(costs) // 2])
 
 
 # 1030 - Matrix Cells in Distance Order - EASY

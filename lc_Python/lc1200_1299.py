@@ -261,6 +261,32 @@ class Skiplist:
         return True
 
 
+# 1209 - Remove All Adjacent Duplicates in String II - MEDIUM
+class Solution:
+    def removeDuplicates(self, s: str, k: int) -> str:
+        st = [("", 1)]
+        for c in s:
+            if st[-1][0] == c:
+                st.append((c, st[-1][1] + 1))
+            else:
+                st.append((c, 1))
+            if st[-1][1] == k:
+                for _ in range(k):
+                    st.pop()
+        return "".join(x for x, _ in st)
+
+    def removeDuplicates(self, s: str, k: int) -> str:
+        st = [["", 1]]
+        for c in s:
+            if st[-1][0] == c:
+                st[-1][1] += 1
+                if st[-1][1] == k:
+                    st.pop()
+            else:
+                st.append([c, 1])
+        return "".join(c * t for c, t in st)
+
+
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
 class Solution:
     def minCostToMoveChips(self, position: List[int]) -> int:

@@ -1,5 +1,6 @@
-import collections, heapq, functools, itertools, math, sortedcontainers
+import collections, heapq, functools, itertools, math
 from typing import List, Union, Optional
+import sortedcontainers
 
 
 class TreeNode:
