@@ -1,6 +1,6 @@
 import collections, math, itertools, re, bisect, functools, heapq
 from typing import List, Optional
-from sortedcontainers import SortedList
+import sortedcontainers
 
 
 class ListNode:
@@ -287,48 +287,101 @@ class Solution:
 
 # 827 - Making A Large Island - HARD
 class Solution:
-    # STEP 1: Explore every island using DFS, count its area
-    #         give it an island index and save the result to a {index: area} map.
-    # STEP 2: Loop every cell == 0,
-    #         check its connected islands and calculate total islands area.
     def largestIsland(self, grid: List[List[int]]) -> int:
-        N = len(grid)
-
-        # move(int x, int y), return all possible next position in 4 directions.
-        def move(x: int, y: int):
+        def move(x: int, y: int) -> None:
             for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                if 0 <= x + i < N and 0 <= y + j < N:
+                if 0 <= x + i < n and 0 <= y + j < n:
                     yield x + i, y + j
+            return
 
-        # Change the value of grid[x][y] to its index so act as an area
         def dfs(x: int, y: int, index: int) -> int:
-            ret = 0
+            area = 0
             grid[x][y] = index
             for i, j in move(x, y):
                 if grid[i][j] == 1:
-                    ret += dfs(i, j, index)
-            return ret + 1
+                    area += dfs(i, j, index)
+            return area + 1
 
-        # Since the grid has elements 0 or 1.
-        # The island index is initialized with 2
+        n = len(grid)
         index = 2
         areas = {0: 0}
-        # DFS every island and give it an index of island
-        for x in range(N):
-            for y in range(N):
+        for x in range(n):
+            for y in range(n):
                 if grid[x][y] == 1:
                     areas[index] = dfs(x, y, index)
                     index += 1
-        # Traverse every 0 cell and count biggest island it can conntect
-        # The 'possible' connected island index is stored in a set to remove duplicate index.
-        ret = max(areas.values())
-        for x in range(N):
-            for y in range(N):
+        ans = max(areas.values())
+        for x in range(n):
+            for y in range(n):
                 if grid[x][y] == 0:
                     possible = set(grid[i][j] for i, j in move(x, y))
-                    # '+1' means grid[x][y] itself
-                    ret = max(ret, sum(areas[index] for index in possible) + 1)
-        return ret
+                    ans = max(ans, 1 + sum(areas[index] for index in possible))
+        return ans
+
+    def largestIsland(self, grid: List[List[int]]) -> int:
+        def bfs(i, j, l) -> int:
+            area = 1
+            grid[i][j] = l
+            dq = collections.deque([(i, j)])
+            while dq:
+                for _ in range(len(dq)):
+                    x, y = dq.popleft()
+                    for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                        if 0 <= nx < n and 0 <= ny < n and grid[nx][ny] == 1:
+                            area += 1
+                            grid[nx][ny] = l
+                            dq.append((nx, ny))
+            return area
+
+        n = len(grid)
+        l = 2
+        areas = {}
+        ans = 0
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 1:
+                    areas[l] = bfs(i, j, l)
+                    ans = max(ans, areas[l])
+                    l += 1
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 0:
+                    can = set()
+                    for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                        if 0 <= x < n and 0 <= y < n:
+                            can.add(grid[x][y])
+                    ans = max(ans, 1 + sum(areas.get(l, 0) for l in can))
+        return ans
+
+    def largestIsland(self, grid: List[List[int]]) -> int:
+        def dfs(i: int, j: int, label: int) -> None:
+            grid[i][j] = label
+            area[label] += 1
+            for x, y in (i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1):
+                if 0 <= x < n and 0 <= y < n and grid[x][y] == 1:
+                    dfs(x, y, label)
+            return
+
+        n = len(grid)
+        area = collections.Counter()
+        label = 2
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 1:
+                    dfs(i, j, label)
+                    label += 1
+        ans = max(area.values(), default=0)
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 0:
+                    new = 1
+                    connected = {0}
+                    for x, y in (i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1):
+                        if 0 <= x < n and 0 <= y < n and grid[x][y] not in connected:
+                            new += area[grid[x][y]]
+                            connected.add(grid[x][y])
+                    ans = max(ans, new)
+        return ans
 
 
 # 829 - Consecutive Numbers Sum - HARD

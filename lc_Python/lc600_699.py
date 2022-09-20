@@ -1404,6 +1404,60 @@ class Solution:
         return ans
 
 
+# 698 - Partition to K Equal Sum Subsets - MEDIUM
+class Solution:
+    def canPartitionKSubsets(self, nums: List[int], k: int) -> bool:
+        def dfs(i: int) -> bool:
+            if i == len(nums):
+                # 能递归到末尾的一定是可行解
+                return True
+            for j in range(k):
+                # 考察剪枝: 1. 桶溢出 2. 两个相邻桶装的一样多
+                if b[j] + nums[i] > sz or j and b[j - 1] == b[j]:
+                    continue
+                b[j] += nums[i]
+                if dfs(i + 1):
+                    return True
+                b[j] -= nums[i]
+            return False
+
+        summ = sum(nums)
+        if summ % k != 0:
+            return False
+        sz = summ // k
+        b = [0] * k  # 桶
+        nums.sort(reverse=True)  # 容易装满, 减少递归深度
+        return dfs(0)
+
+    def canPartitionKSubsets(self, nums: List[int], k: int) -> bool:
+        def dfs(i: int) -> bool:
+            nonlocal ans
+            if ans or i == len(nums):
+                return True
+            for j in range(k):
+                if b[j] + nums[i] > sz or j and b[j - 1] == b[j]:
+                    continue
+                b[j] += nums[i]
+                # FIXME 有什么区别 ?
+                x = dfs(i + 1)
+                ans |= x
+                # ans |= dfs(i + 1) # 为什么这个不可以
+                b[j] -= nums[i]
+            return False
+
+        summ = sum(nums)
+        if summ % k != 0:
+            return False
+        sz = summ // k
+        b = [0] * k
+        nums.sort(reverse=True)
+        ans = False
+        dfs(0)
+        return ans
+
+    # TODO 状态压缩
+
+
 # 699 - Falling Squares - HARD
 class Solution:
     # O(n ** 2) / O(1)
