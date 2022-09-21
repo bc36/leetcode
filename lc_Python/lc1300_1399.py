@@ -420,6 +420,13 @@ class Solution:
         return -1
 
 
+# 1347 - Minimum Number of Steps to Make Two Strings Anagram - MEDIUM
+class Solution:
+    def minSteps(self, s: str, t: str) -> int:
+        d = collections.Counter(s) - collections.Counter(t)
+        return sum(abs(v) for v in d.values())
+
+
 # 1374 - Generate a String With Characters That Have Odd Counts - EASY
 class Solution:
     def generateTheString(self, n: int) -> str:
@@ -521,3 +528,49 @@ class CustomStack:
         l = min(k - 1, self.top)
         if l >= 0:
             self.add[l] += val
+
+
+# 1396 - Design Underground System - MEDIUM
+class UndergroundSystem:
+    def __init__(self):
+        self.p = {}
+        self.ids = {}
+
+    def checkIn(self, id: int, stationName: str, t: int) -> None:
+        self.ids[id] = (stationName, t)
+        return
+
+    def checkOut(self, id: int, stationName: str, t: int) -> None:
+        start, pre = self.ids.pop(id)
+        if (start, stationName) in self.p:
+            total, cnt = self.p.pop((start, stationName))
+        else:
+            total, cnt = 0, 0
+        total += t - pre
+        cnt += 1
+        self.p[(start, stationName)] = (total, cnt)
+        return
+
+    def getAverageTime(self, startStation: str, endStation: str) -> float:
+        t, c = self.p[(startStation, endStation)]
+        return t / c
+
+
+class UndergroundSystem:
+    def __init__(self):
+        self.ids = {}
+        self.p = collections.defaultdict(int)
+        self.freq = collections.defaultdict(int)
+
+    def checkIn(self, id, stationName, t):
+        self.ids[id] = (stationName, t)
+
+    def checkOut(self, id, stationName, t):
+        name, pre = self.ids.pop(id)
+        self.p[(name, stationName)] += t - pre
+        self.freq[(name, stationName)] += 1
+
+    def getAverageTime(self, startStation, endStation):
+        return (
+            self.p[(startStation, endStation)] / self.freq[(startStation, endStation)]
+        )
