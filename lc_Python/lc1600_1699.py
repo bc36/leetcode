@@ -160,6 +160,31 @@ class Solution:
         return sorted(nums, key=lambda x: (cnt.get(x), -x))
 
 
+# 1640 - Check Array Formation Through Concatenation - EASY
+class Solution:
+    def canFormArray(self, arr: List[int], pieces: List[List[int]]) -> bool:
+        s = set(map(tuple, pieces))
+        l = 0
+        for r in range(len(arr)):
+            if tuple(arr[l : r + 1]) in s:
+                l = r + 1
+        return l == len(arr)
+
+    def canFormArray(self, arr: List[int], pieces: List[List[int]]) -> bool:
+        try:
+            pieces.sort(key=lambda x: arr.index(x[0]))  # 元素不匹配, index ValueError
+        except ValueError:
+            return False
+        i = 0
+        for p in pieces:
+            for v in p:
+                if v == arr[i]:
+                    i += 1
+                else:
+                    return False
+        return True
+
+
 # 1648 - Sell Diminishing-Valued Colored Balls - MEDIUM
 class Solution:
     # O(nlogC) / O(1), C = max(inventory)

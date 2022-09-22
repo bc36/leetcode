@@ -1062,6 +1062,42 @@ class Solution:
         return ans
 
 
+# 985 - Sum of Even Numbers After Queries - MEDIUM
+class Solution:
+    def sumEvenAfterQueries(
+        self, nums: List[int], queries: List[List[int]]
+    ) -> List[int]:
+        summ = sum(v for v in nums if not v & 1)
+        ans = []
+        for v, i in queries:
+            x = nums[i] + v
+            if nums[i] % 2 == v % 2:
+                if v & 1:
+                    summ += x
+                else:
+                    summ += v
+            else:
+                if nums[i] % 2 == 0:
+                    summ -= nums[i]
+            nums[i] = x
+            ans.append(summ)
+        return ans
+
+    def sumEvenAfterQueries(
+        self, nums: List[int], queries: List[List[int]]
+    ) -> List[int]:
+        summ = sum(v for v in nums if v % 2 == 0)
+        ans = []
+        for v, i in queries:
+            if nums[i] % 2 == 0:
+                summ -= nums[i]
+            nums[i] += v
+            if nums[i] % 2 == 0:
+                summ += nums[i]
+            ans.append(summ)
+        return ans
+
+
 # 986 - Interval List Intersections - MEDIUM
 class Solution:
     def intervalIntersection(

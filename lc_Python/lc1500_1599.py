@@ -258,6 +258,33 @@ class Solution:
         return "".join(s[1:-1])
 
 
+# 1578 - Minimum Time to Make Rope Colorful - MEDIUM
+class Solution:
+    def minCost(self, colors: str, neededTime: List[int]) -> int:
+        ans = l = 0
+        pre = colors[0]
+        for r, c in enumerate(colors + "#"):
+            if c != pre:
+                mx = max(neededTime[l:r])
+                ans += sum(neededTime[l:r]) - mx
+                l = r
+            pre = c
+        return ans
+
+    def minCost(self, colors: str, neededTime: List[int]) -> int:
+        ans = mx = 0
+        pre = ""
+        for c, t in zip(colors, neededTime):
+            if c != pre:
+                ans += mx
+                pre = c
+                mx = t
+            elif t > mx:
+                mx = t
+        ans += mx
+        return sum(neededTime) - ans
+
+
 # 1582 - Special Positions in a Binary Matrix - EASY
 class Solution:
     def numSpecial(self, mat: List[List[int]]) -> int:
