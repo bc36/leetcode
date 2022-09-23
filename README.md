@@ -27,6 +27,8 @@
 
 [排名分数计算脚本](https://leetcode.cn/circle/discuss/6gnvEj/view/WbN5TH/) 
 
+[Guardian / Knight 历史门槛](https://leetcode.cn/circle/discuss/SKzRis/) 
+
 
 <br><br>
 
@@ -126,6 +128,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 <br><br>
 
 # :seven::seven::eight::eight:
+* C++: 一年精通, 三年熟悉, 五年了解, 十年用过
 * MOD:
   * **不取余python超时**
   * dp中有减法, 负数 x 取余, 防止变一个大数: `(x + MOD) % MOD`
