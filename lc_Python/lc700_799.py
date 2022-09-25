@@ -1,5 +1,6 @@
-from typing import List
 import collections, itertools, functools, bisect, math, random, heapq
+from typing import List
+import sortedcontainers
 
 
 class TreeNode:
@@ -102,6 +103,39 @@ class Solution:
             else:
                 l = m + 1
         return l if nums[l] == target else -1
+
+
+# 707 - Design Linked List - MEDIUM
+class MyLinkedList:
+    def __init__(self):
+        self.arr = []
+
+    def get(self, index: int) -> int:
+        if not self.arr or not 0 <= index < len(self.arr):
+            return -1
+        return self.arr[index]
+
+    def addAtHead(self, val: int) -> None:
+        self.arr.insert(0, val)
+        return
+
+    def addAtTail(self, val: int) -> None:
+        self.arr.append(val)
+        return
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        if index < 0:
+            self.arr.insert(0, val)
+        elif 0 <= index < len(self.arr):
+            self.arr.insert(index, val)
+        elif index == len(self.arr):
+            self.arr.append(val)
+        return
+
+    def deleteAtIndex(self, index: int) -> None:
+        if 0 <= index < len(self.arr):
+            self.arr.pop(index)
+        return
 
 
 # 708 - Insert Into a Sorted Circular Linked List - MEDIUM
@@ -276,7 +310,7 @@ class Solution:
         nums.sort()
         return bisect.bisect_left(range(nums[-1] - nums[0]), k, key=check)
 
-    # O(n * logn * logD) / O(logn + logD), D = max(nums) - min(nums)
+    # O(nlogn * logD) / O(logn + logD), D = max(nums) - min(nums)
     def smallestDistancePair(self, nums: List[int], k: int) -> int:
         def count(dist: int) -> int:
             cnt = 0
@@ -649,12 +683,9 @@ class MyCalendarTwo:
         return True
 
 
-from sortedcontainers import SortedDict
-
-
 class MyCalendarTwo:
     def __init__(self):
-        self.d = SortedDict()
+        self.d = sortedcontainers.SortedDict()
 
     def book(self, start: int, end: int) -> bool:
         self.d[start] = self.d.get(start, 0) + 1
@@ -1335,7 +1366,7 @@ class Solution:
             st.append(x)
         return len(st) - 1
 
-    # O(n * logn) / O(n)
+    # O(nlogn) / O(n)
     def maxChunksToSorted(self, arr: List[int]) -> int:
         cnt = collections.Counter()
         ans = 0
@@ -1414,11 +1445,11 @@ def calc(exp: str, start=0):
     return ans / 1.0
 
 
-print(calc("1+2"))  # => 3
-print(calc("1+2*3"))  # => 7
-print(calc("1+2*3/3"))  # => 3
-print(calc("1/3+2*3"))  # => 6.333333
-print(calc("1/3*6+2*3"))  # => 8
+# print(calc("1+2"))  # => 3
+# print(calc("1+2*3"))  # => 7
+# print(calc("1+2*3/3"))  # => 3
+# print(calc("1/3+2*3"))  # => 6.333333
+# print(calc("1/3*6+2*3"))  # => 8
 
 
 # 773 - Sliding Puzzle - HARD
@@ -1568,6 +1599,60 @@ class Solution:
         )
 
 
+# 782 - Transform to Chessboard - HARD
+class Solution:
+    def movesToChessboard(self, board: List[List[int]]) -> int:
+        def check():
+            if abs(n - sum(board[0]) - sum(board[0])) > 1:
+                return False
+            if abs(n - sum(list(zip(*board))[0]) - sum(list(zip(*board))[0])) > 1:
+                return False
+            f = 0
+            for i, x in enumerate(board[0]):
+                f |= x << i
+            for b in board[1:]:
+                tmp = 0
+                for i, x in enumerate(b):
+                    tmp |= x << i
+                if not (f == tmp or f == ((1 << n) - 1) ^ tmp):
+                    return False
+            return True
+
+        row = board[0]
+        cnt = collections.Counter(row)
+        if abs(cnt[0] - cnt[1]) > 1:
+            return -1
+
+        col = [x[0] for x in board]
+        cnt = collections.Counter(col)
+        if abs(cnt[0] - cnt[1]) > 1:
+            return -1
+
+        n = len(board)
+        for i in range(n):
+            for j in range(n):
+                if board[i][j] ^ board[0][0] ^ board[i][0] ^ board[0][j] != 0:
+                    return -1
+
+        # if not check():
+        #     return -1
+
+        def fn(lst: List[int]) -> int:
+            if len(lst) % 2:
+                cnt = collections.Counter(lst)
+                starter = 1 if cnt[1] > cnt[0] else 0
+                ans = 0  # assume start with 0, 010101...
+                for i, v in enumerate(lst):
+                    ans += (i + v - starter) % 2
+                return ans // 2
+            ans = 0
+            for i, v in enumerate(lst):
+                ans += (i + v) % 2
+            return min(ans, n - ans) // 2
+
+        return fn(row) + fn(col)
+
+
 # 784 - Letter Case Permutation - MEDIUM
 class Solution:
     def letterCasePermutation(self, s: str) -> List[str]:
@@ -1644,7 +1729,41 @@ class Solution:
 
 # 787
 
-# 788
+# 788 - Rotated Digits - MEDIUM
+class Solution:
+    # O(nlogn) / O(logn)
+    def rotatedDigits(self, n: int) -> int:
+        ans = 0
+        for x in range(n + 1):
+            ok = False
+            while x:
+                if x % 10 in [2, 5, 6, 9]:
+                    ok = True
+                if x % 10 in [3, 4, 7]:
+                    ok = False
+                    break
+                x //= 10
+            ans += ok
+        return ans
+
+    # O(logn) / O(logn)
+    def rotatedDigits(self, n: int) -> int:
+        can = [0, 0, 1, -1, -1, 1, 1, -1, 0, 1]
+        s = str(n)
+
+        @functools.lru_cache(None)
+        def dfs(i: int, is_limit: bool, has2579: bool) -> int:
+            if i == len(s):
+                return int(has2579)
+            ans = 0
+            bound = int(s[i]) if is_limit else 9
+            for d in range(0, bound + 1):
+                if can[d] != -1:
+                    ans += dfs(i + 1, is_limit and d == bound, has2579 or can[d] == 1)
+            return ans
+
+        return dfs(0, True, False)
+
 
 # 789
 
@@ -1679,6 +1798,19 @@ class Solution:
                 cnt.pop(ch)
 
         return ans + "".join(ch * cnt[ch] for ch in cnt)
+
+
+# 793 - Preimage Size of Factorial Zeroes Function - HARD
+class Solution:
+    def preimageSizeFZF(self, k: int) -> int:
+        summ = [1] * 12
+        for i in range(1, 12):
+            summ[i] = summ[i - 1] * 5 + 1
+        for i in range(11, -1, -1):
+            if k // summ[i] == 5:
+                return 0
+            k %= summ[i]
+        return 5
 
 
 # 794 - Valid Tic-Tac-Toe State - MEDIUM
