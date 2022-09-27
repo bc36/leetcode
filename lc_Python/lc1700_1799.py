@@ -186,6 +186,80 @@ class Solution:
         )
 
 
+# 1770 - Maximum Score from Performing Multiplication Operations - MEDIUM
+class Solution:
+    def maximumScore(self, nums: List[int], multipliers: List[int]) -> int:
+        n = len(nums)
+        m = len(multipliers)
+        f = [[0] * (m + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            f[i][0] = f[i - 1][0] + nums[i - 1] * multipliers[i - 1]
+        for j in range(1, m + 1):
+            f[0][j] = f[0][j - 1] + nums[n - j] * multipliers[j - 1]
+        ans = f[0][m] if f[0][m] > f[m][0] else f[m][0]
+        # i: 左边拿走数量, j: 右边拿走数量
+        for i in range(1, m + 1):
+            for j in range(1, m - i + 1):
+                left = f[i - 1][j] + nums[i - 1] * multipliers[i + j - 1]
+                right = f[i][j - 1] + nums[n - j] * multipliers[i + j - 1]
+                f[i][j] = max(left, right)
+            ans = max(ans, f[i][m - i])
+        return ans
+
+    def maximumScore(self, nums: List[int], multipliers: List[int]) -> int:
+        n = len(nums)
+        m = len(multipliers)
+        # l, r 是左右下标, i 是 mul 里的下标
+        f = [[0] * (m + 1) for _ in range(m + 1)]
+        for l in range(m - 1, -1, -1):
+            for i in range(m - 1, -1, -1):
+                r = n - (i - l) - 1
+                if r < 0 or r >= n:
+                    break
+                a = f[l + 1][i + 1] + nums[l] * multipliers[i]
+                b = f[l][i + 1] + nums[r] * multipliers[i]
+                f[l][i] = max(a, b)
+        return f[0][0]
+
+    # cache maxsize is set to None will TLE
+    def maximumScore(self, nums: List[int], multipliers: List[int]) -> int:
+        @functools.lru_cache(len(multipliers))
+        def dfs(l: int, r: int, k: int) -> int:
+            if k == len(multipliers):
+                return 0
+            a = nums[l] * multipliers[k] + dfs(l + 1, r, k + 1)
+            b = nums[r] * multipliers[k] + dfs(l, r - 1, k + 1)
+            return max(a, b)
+            dfs.cache_clear()
+
+        return dfs(0, len(nums) - 1, 0)
+
+
+# 1775 - Equal Sum Arrays With Minimum Number of Operations - MEDIUM
+class Solution:
+    def minOperations(self, nums1: List[int], nums2: List[int]) -> int:
+        s1 = sum(nums1)
+        s2 = sum(nums2)
+        if s1 == s2:
+            return 0
+        if s1 < s2:
+            return self.minOperations(nums2, nums1)
+        diff = s1 - s2
+        cnt = collections.Counter(v - 1 for v in nums1) + collections.Counter(
+            6 - v for v in nums2
+        )
+        ans = 0
+        for k in range(5, 0, -1):
+            if diff >= cnt[k] * k:
+                diff -= cnt[k] * k
+                ans += cnt[k]
+            else:
+                ans += (diff + k - 1) // k
+                diff = 0
+                break
+        return ans if diff == 0 else -1
+
+
 # 1779 - Find Nearest Point That Has the Same X or Y Coordinate - EASY
 class Solution:
     def nearestValidPoint(self, x: int, y: int, points: List[List[int]]) -> int:

@@ -1,8 +1,15 @@
+import collections
 from typing import List
 
 """
 Cracking the Coding Interview
 """
+# https://leetcode.cn/problems/check-permutation-lcci/
+# 面试题 01.02. 判定是否互为字符重排 - EASY
+class Solution:
+    def CheckPermutation(self, s1: str, s2: str) -> bool:
+        return collections.Counter(s1) == collections.Counter(s2)
+        return sorted(s1) == sorted(s2)
 
 
 # https://leetcode.cn/problems/missing-two-lcci/
