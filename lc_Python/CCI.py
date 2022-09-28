@@ -36,6 +36,101 @@ class Solution:
         return S[:length].replace(" ", "%20")
 
 
+# https://leetcode.cn/problems/palindrome-permutation-lcci/
+# 面试题 01.04. 回文排列 - EASY
+class Solution:
+    def canPermutePalindrome(self, s: str) -> bool:
+        cnt = collections.Counter(s)
+        odd = sum(v & 1 for v in cnt.values())
+        return True if odd <= 1 else False
+
+    def canPermutePalindrome(self, s: str) -> bool:
+        st = set()
+        for c in s:
+            if c in st:
+                st.remove(c)
+            else:
+                st.add(c)
+        return len(st) <= 1
+
+    def canPermutePalindrome(self, s: str) -> bool:
+        mask = 0
+        for c in s:
+            if mask & 1 << ord(c):
+                mask &= ~(1 << ord(c))
+                # mask ^= 1 << ord(c)
+            else:
+                mask |= 1 << ord(c)
+        return sum(1 for i in range(128) if mask & 1 << i) <= 1
+
+
+# https://leetcode.cn/problems/compress-string-lcci/
+# 面试题 01.06. 字符串压缩 - EASY
+class Solution:
+    def compressString(self, S: str) -> str:
+        ans = pre = ""
+        cnt = 0
+        for c in S + "#":
+            if c == pre:
+                cnt += 1
+            else:
+                ans += pre + str(cnt) if cnt > 0 else ""
+                cnt = 1
+            pre = c
+        return ans if len(ans) < len(S) else S
+
+    def compressString(self, S: str) -> str:
+        if S == "":
+            return ""
+        ans = ""
+        pre = S[0]
+        cnt = 0
+        for c in S + "#":
+            if c == pre:
+                cnt += 1
+            else:
+                ans += pre + str(cnt)
+                cnt = 1
+            pre = c
+        return ans if len(ans) < len(S) else S
+
+
+# https://leetcode.cn/problems/string-rotation-lcci/
+# 面试题 01.09. 字符串轮转 - EASY
+class Solution:
+    def isFlipedString(self, s1: str, s2: str) -> bool:
+        if collections.Counter(s1) != collections.Counter(s2):
+            return False
+        if s1 == s2 == "":
+            return True
+        q1 = collections.deque(s1)
+        q2 = collections.deque(s2)
+        i = len(s1)
+        while i:
+            if q1[0] == q2[0] and q1 == q2:
+                return True
+            q1.append(q1.popleft())
+            i -= 1
+        return False
+
+    def isFlipedString(self, s1: str, s2: str) -> bool:
+        return len(s1) == len(s2) and s2 in s1 + s1
+
+    def isFlipedString(self, s1: str, s2: str) -> bool:
+        m = len(s1)
+        n = len(s2)
+        if m != n:
+            return False
+        if m == 0 and n == 0:
+            return True
+        # python 切片还是很快的
+        for i in range(m):
+            if s1[i] == s2[0]:
+                if s2 == s1[i:] + s1[:i]:
+                    return True
+        return False
+
+
 # https://leetcode.cn/problems/get-kth-magic-number-lcci/
 # 面试题 17.09. 第 k 个数 - MEDIUM
 class Solution:
