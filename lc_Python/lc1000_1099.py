@@ -565,6 +565,19 @@ class Solution:
         return (x, y) == (0, 0) or not (dx == 0 and dy > 0)
 
 
+# 1046 - Last Stone Weight - EASY
+class Solution:
+    def lastStoneWeight(self, stones: List[int]) -> int:
+        q = [-v for v in stones]
+        heapq.heapify(q)
+        while len(q) > 1:
+            a = -heapq.heappop(q)
+            b = -heapq.heappop(q)
+            if a > b:
+                heapq.heappush(q, -a + b)
+        return -q[0] if q else 0
+
+
 # 1047 - Remove All Adjacent Duplicates In String - EASY
 class Solution:
     # stack

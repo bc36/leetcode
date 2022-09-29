@@ -95,6 +95,52 @@ class Solution:
         return ans if len(ans) < len(S) else S
 
 
+# https://leetcode.cn/problems/zero-matrix-lcci/
+# 面试题 01.08. 零矩阵 - MEDIUM
+class Solution:
+    # O(mn) / O(m + n)
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        row = set()
+        col = set()
+        for i, r in enumerate(matrix):
+            for j, v in enumerate(r):
+                if v == 0:
+                    row.add(i)
+                    col.add(j)
+        for r in row:
+            for j in range(len(matrix[0])):
+                matrix[r][j] = 0
+        for c in col:
+            for i in range(len(matrix)):
+                matrix[i][c] = 0
+        return
+
+    # O(mn) / O(1)
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        m = len(matrix)
+        n = len(matrix[0])
+        flag_col0 = any(matrix[i][0] == 0 for i in range(m))
+        flag_row0 = any(matrix[0][j] == 0 for j in range(n))
+        for i in range(1, m):
+            for j in range(1, n):
+                if matrix[i][j] == 0:
+                    matrix[i][0] = matrix[0][j] = 0
+        for i in range(1, m):
+            for j in range(1, n):
+                if matrix[i][0] == 0 or matrix[0][j] == 0:
+                    matrix[i][j] = 0
+        if flag_col0:
+            for i in range(m):
+                matrix[i][0] = 0
+        if flag_row0:
+            for j in range(n):
+                matrix[0][j] = 0
+        return
+
+
 # https://leetcode.cn/problems/string-rotation-lcci/
 # 面试题 01.09. 字符串轮转 - EASY
 class Solution:
