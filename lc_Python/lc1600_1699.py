@@ -386,3 +386,40 @@ class Solution:
 
     def numberOfMatches(self, n: int) -> int:
         return n - 1
+
+
+# 1694 - Reformat Phone Number - EASY
+class Solution:
+    def reformatNumber(self, number: str) -> str:
+        number = list(number.replace(" ", "").replace("-", ""))
+        ans = []
+        t = 0
+        p = ""
+        for i, v in enumerate(number):
+            if t == 0 and i >= len(number) - 4:
+                break
+            p += v
+            t += 1
+            if t >= 3:
+                ans.append(p)
+                t = 0
+                p = ""
+        if i == len(number) - 4:
+            ans.extend([number[-4] + number[-3], number[-2] + number[-1]])
+        else:
+            ans.append("".join(number[i:]))
+        return "-".join(ans)
+
+    def reformatNumber(self, number: str) -> str:
+        number = number.replace(" ", "").replace("-", "")
+        ans = []
+        i = 0
+        while i < len(number) - 4:
+            ans.append(number[i : i + 3])
+            i += 3
+        number = number[i:]
+        if len(number) == 4:
+            ans.extend([number[:2], number[2:]])
+        else:
+            ans.append(number)
+        return "-".join(ans)

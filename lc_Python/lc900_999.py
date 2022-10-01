@@ -1062,6 +1062,22 @@ class Solution:
         return ans
 
 
+# 981 - Time Based Key-Value Store - MEDIUM
+class TimeMap:
+    def __init__(self):
+        self.d = collections.defaultdict(list)
+
+    def set(self, key: str, value: str, timestamp: int) -> None:
+        self.d[key].append((timestamp, value))
+        return
+
+    def get(self, key: str, timestamp: int) -> str:
+        # p = bisect.bisect_right(self.d[key], (timestamp, "z" * 100))
+        # p = bisect.bisect_right(self.d[key], (timestamp, chr(ord("z") + 1)))
+        p = bisect.bisect_right(self.d[key], (timestamp, chr(127)))
+        return "" if p == 0 else self.d[key][p - 1][1]
+
+
 # 985 - Sum of Even Numbers After Queries - MEDIUM
 class Solution:
     def sumEvenAfterQueries(

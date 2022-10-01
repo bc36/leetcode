@@ -402,7 +402,7 @@ class Solution:
 
     def consecutiveNumbersSum(self, n: int) -> int:
         ans = 0
-        end = n << 1
+        end = n * 2
         i = 1
         while i * i <= end:
             ans += (n - (i + 1) * i // 2) % i == 0

@@ -1,5 +1,5 @@
-from typing import List, Optional
-import collections, functools, copy, random, math
+import collections, copy, functools, itertools, math, random
+from typing import List, Literal, Optional, Callable
 
 
 class TreeNode:
@@ -1704,6 +1704,15 @@ class BSTIterator:
             self.stack.append(root)
             root = root.left
         return
+
+
+# 179 - Largest Number - MEDIUM
+class Solution:
+    def largestNumber(self, nums: List[int]) -> str:
+        # cmp: Callable[[str, str], Literal[1, -1]] = (lambda x, y: 1 if y + x > x + y else -1)
+        cmp: Callable[[str, str], int] = lambda x, y: int(y + x) - int(x + y)
+        ans = "".join(sorted(map(str, nums), key=functools.cmp_to_key(cmp)))
+        return "0" if ans[0] == "0" else ans
 
 
 # 189 - Rotate Array - MEDIUM

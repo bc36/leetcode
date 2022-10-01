@@ -1393,15 +1393,10 @@ class Solution:
 # 697 - Degree of an Array - EASY
 class Solution:
     def findShortestSubArray(self, nums: List[int]) -> int:
-        ans = 1e9
         cnt = collections.Counter(nums)
         mx = max(cnt.values())
-        # if mx == 1:
-        #     return 1
         degree = [k for k, v in cnt.items() if v == mx]
-        for k in degree:
-            ans = min(ans, len(nums) - nums[::-1].index(k) - nums.index(k))
-        return ans
+        return min(len(nums) - nums[::-1].index(k) - nums.index(k) for k in degree)
 
 
 # 698 - Partition to K Equal Sum Subsets - MEDIUM

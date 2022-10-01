@@ -387,10 +387,17 @@ class Solution:
 class Solution:
     def countVowelPermutation(self, n: int) -> int:
         # only: ae, ea, ei, ia, ie, io, iu, oi, ou, ua
-        a, e, i, o, u = 1, 1, 1, 1, 1
+        a = e = i = o = u = 1
+        mod = 10**9 + 7
         for _ in range(n - 1):
-            a, e, i, o, u = e + u + i, a + i, o + e, i, i + o
-        return (a + e + i + o + u) % (10**9 + 7)
+            a, e, i, o, u = (
+                (e + u + i) % mod,
+                (a + i) % mod,
+                (o + e) % mod,
+                i % mod,
+                (i + o) % mod,
+            )
+        return (a + e + i + o + u) % mod
 
 
 # 1224 - Maximum Equal Frequency - HARD
