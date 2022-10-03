@@ -604,6 +604,53 @@ class Solution:
         return "".join(ls[: end + 1])
 
 
+# 1048 - Longest String Chain - MEDIUM
+class Solution:
+    def longestStrChain(self, words: List[str]) -> int:
+        f = collections.defaultdict(list)
+        for w in words:
+            for i in range(len(w)):
+                f[w[:i] + "*" + w[i + 1 :]].append(w)
+
+        def dfs(w: str) -> int:
+            r = 1
+            for i in range(len(w) + 1):
+                new = w[:i] + "*" + w[i:]
+                for nxt in f[new]:
+                    if nxt not in vis:
+                        vis.add(nxt)
+                        x = dfs(nxt) + 1
+                        r = x if x > r else r
+            return r
+
+        vis = set()
+        ans = 1
+        for w in sorted(words, key=len):
+            if w not in vis:
+                vis.add(w)
+                ans = max(ans, dfs(w))
+        return ans
+
+    # dp
+    def longestStrChain(self, words: List[str]) -> int:
+        f = {}
+        ans = 1
+        for w in sorted(words, key=len):
+            f[w] = 1
+            for i in range(len(w)):
+                tmp = w[:i] + w[i + 1 :]
+                if tmp in f:
+                    f[w] = max(f[w], f[tmp] + 1)
+                    ans = max(ans, f[w])
+        return ans
+
+    def longestStrChain(self, words: List[str]) -> int:
+        f = {}
+        for w in sorted(words, key=len):
+            f[w] = max(f.get(w[:i] + w[i + 1 :], 0) + 1 for i in range(len(w)))
+        return max(f.values())
+
+
 # 1051 - Height Checker - EASY
 class Solution:
     def heightChecker(self, heights: List[int]) -> int:

@@ -228,7 +228,6 @@ class Solution:
             sell, buy = max(sell, buy + prices[i] - fee), max(buy, sell - prices[i])
         return sell
 
-
 # 717 - 1-bit and 2-bit Characters - EASY
 class Solution:
     def isOneBitCharacter(self, bits: List[int]) -> bool:
@@ -1570,8 +1569,38 @@ class Solution:
         return -1
 
 
+# 777 - Swap Adjacent in LR String - MEDIUM
+class Solution:
+    def canTransform(self, start: str, end: str) -> bool:
+        if "".join(start.replace("X", "")) != "".join(end.replace("X", "")):
+            return False
+        sl = [i for i, v in enumerate(start) if v == "L"]
+        sr = [i for i, v in enumerate(start) if v == "R"]
+        el = [i for i, v in enumerate(end) if v == "L"]
+        er = [i for i, v in enumerate(end) if v == "R"]
+        if any(a > b for a, b in zip(sr, er)):
+            return False
+        if any(a < b for a, b in zip(sl, el)):
+            return False
+        return True
+
+    def canTransform(self, start: str, end: str) -> bool:
+        l = r = 0
+        for c1, c2 in zip(start, end):
+            if (c1 == "L" and r > 0) or (c1 == "R" and l < 0):
+                return False
+            l += c1 == "L"
+            r += c1 == "R"
+            l -= c2 == "L"
+            r -= c2 == "R"
+            if (l != 0 and r != 0) or l > 0 or r < 0:
+                return False
+        return l == r == 0
+
+
 # 780 - Reaching Points - HARD
 class Solution:
+    # O(log max(tx, ty)) / O(1)
     def reachingPoints(self, sx: int, sy: int, tx: int, ty: int) -> bool:
         while sx < tx and sy < ty:
             if tx > ty:
@@ -1597,6 +1626,22 @@ class Solution:
             and sx <= tx
             and (tx - sx) % sy == 0
         )
+
+    def reachingPoints(self, sx: int, sy: int, tx: int, ty: int) -> bool:
+        if sx > tx or sy > ty:
+            return False
+        if (
+            sx == tx
+            and sy == ty
+            or sx == tx
+            and (ty - sy) % sx == 0
+            or (tx - sx) % sy == 0
+            and sy == ty
+        ):
+            return True
+        if tx > ty:
+            return self.reachingPoints(sx, sy, tx % ty, ty)
+        return self.reachingPoints(sx, sy, tx, ty % tx)
 
 
 # 782 - Transform to Chessboard - HARD
