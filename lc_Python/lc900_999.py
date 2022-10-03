@@ -342,20 +342,30 @@ class Solution:
             s = s.replace("()", "")
         return len(s)
 
-    # stack
     def minAddToMakeValid(self, s: str) -> int:
-        left = right = 0
-        for ch in s:
-            if ch == "(":
-                # an extra opening parenthesis
-                left += 1
+        ans = l = 0
+        for c in s:
+            if c == "(":
+                l += 1
             else:
-                left -= 1
-            if left == -1:
-                # need a closing parenthesis to pair an extra opening parenthesis
-                right += 1
-                left += 1
-        return left + right
+                if l <= 0:
+                    ans += -l + 1
+                    l = 0
+                else:
+                    l -= 1
+        ans += l
+        return ans
+
+    def minAddToMakeValid(self, s: str) -> int:
+        ans = l = 0
+        for c in s:
+            if c == "(":
+                l += 1
+            elif l > 0:
+                l -= 1
+            else:
+                ans += 1
+        return ans + l
 
 
 # 926 - Flip String to Monotone Increasing - MEDIUM

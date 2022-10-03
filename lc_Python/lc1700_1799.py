@@ -274,6 +274,13 @@ class Solution:
         return ans
 
 
+# 1784 - Check if Binary String Has at Most One Segment of Ones - EASY
+class Solution:
+    def checkOnesSegment(self, s: str) -> bool:
+        return len(list(v for v in s.split("0") if v != "")) <= 1
+        return "01" not in s
+
+
 # 1790 - Check if One String Swap Can Make Strings Equal - EASY
 class Solution:
     def areAlmostEqual(self, s1: str, s2: str) -> bool:
