@@ -124,6 +124,35 @@ class Solution:
         return sum(min(i, j) for i in rows for j in cols) - sum(map(sum, grid))
 
 
+# 811 - Subdomain Visit Count - MEDIUM
+class Solution:
+    def subdomainVisits(self, cpdomains: List[str]) -> List[str]:
+        d = {}
+        for c in cpdomains:
+            x, y = c.split()
+            x = int(x)
+            z = y.split(".")
+            if len(z) == 2:
+                d[z[1]] = d.get(z[1], 0) + x
+                d[y] = d.get(y, 0) + x
+            else:
+                d[z[2]] = d.get(z[2], 0) + x
+                d[z[1] + "." + z[2]] = d.get(z[1] + "." + z[2], 0) + x
+                d[y] = d.get(y, 0) + x
+        return [str(v) + " " + k for k, v in d.items()]
+
+    def subdomainVisits(self, cpdomains: List[str]) -> List[str]:
+        cnt = collections.Counter()
+        for d in cpdomains:
+            c, s = d.split()
+            c = int(c)
+            cnt[s] += c
+            while "." in s:
+                s = s[s.index(".") + 1 :]
+                cnt[s] += c
+        return [f"{c} {s}" for s, c in cnt.items()]
+
+
 # 812 - Largest Triangle Area - EASY
 class Solution:
     # heron's formula
@@ -435,6 +464,43 @@ class Solution:
     #     if n > 1:
     #         ans *= 2
     #     return ans
+
+
+# 830 - Positions of Large Groups - EASY
+class Solution:
+    def largeGroupPositions(self, s: str) -> List[List[int]]:
+        ans = []
+        p = ""
+        l = 0
+        for r, c in enumerate(s + "#"):
+            if c != p:
+                if l + 3 <= r:
+                    ans.append([l, r - 1])
+                l = r
+            p = c
+        return ans
+
+
+# 832 - Flipping an Image - EASY
+class Solution:
+    def flipAndInvertImage(self, image: List[List[int]]) -> List[List[int]]:
+        for i, r in enumerate(image):
+            image[i] = r[::-1]
+        for i, r in enumerate(image):
+            for j, v in enumerate(r):
+                image[i][j] = 1 - v
+        return image
+
+    def flipAndInvertImage(self, image: List[List[int]]) -> List[List[int]]:
+        for r in image:
+            for j in range((len(r) + 1) // 2):
+                if r[j] == r[-1 - j]:
+                    r[j] = r[-1 - j] = 1 - r[j]
+        return image
+
+    def flipAndInvertImage(self, image: List[List[int]]) -> List[List[int]]:
+        return [[v ^ 1 for v in r[::-1]] for r in image]
+        return [[1 - v for v in r[::-1]] for r in image]
 
 
 # 838 - Push Dominoes - MEDIUM
