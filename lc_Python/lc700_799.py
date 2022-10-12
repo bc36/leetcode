@@ -1303,45 +1303,45 @@ class Solution:
 class Solution:
     # O(n) / O(n)
     def maxChunksToSorted(self, arr: List[int]) -> int:
-        # mx[x] = max(arr[: x + 1])
-        # mi[x] = min(arr[x:])
-        mx = []
+        # leftMx[x] = max(arr[: x + 1])
+        # rightMi[x] = min(arr[x:])
+        leftMx = []
         cur = 0
         for v in arr:
             if v > cur:
                 cur = v
-            mx.append(cur)
+            leftMx.append(cur)
 
-        mi = []
+        rightMi = []
         cur = 10**8
         for i in range(len(arr) - 1, -1, -1):
             if arr[i] < cur:
                 cur = arr[i]
-            mi.append(cur)
-        mi.reverse()
+            rightMi.append(cur)
+        rightMi.reverse()
 
         ans = 1
         for i in range(len(arr) - 1):
-            if mx[i] <= mi[i + 1]:
+            if leftMx[i] <= rightMi[i + 1]:
                 ans += 1
         return ans
 
     def maxChunksToSorted(self, arr: List[int]) -> int:
         n = len(arr)
-        mx = [0] * n
-        mi = [0] * n
-
-        mx[0] = arr[0]
+        leftMx = [0] * n
+        rightMi = [0] * n
+        # arr[0] ~ arr[i] 最大值
+        leftMx[0] = arr[0]
         for i in range(1, n):
-            mx[i] = max(mx[i - 1], arr[i])
-
-        mi[n - 1] = arr[n - 1]
+            leftMx[i] = max(leftMx[i - 1], arr[i])
+        # arr[i] ~ arr[n-1] 最小值
+        rightMi[n - 1] = arr[n - 1]
         for i in range(n - 2, -1, -1):
-            mi[i] = min(mi[i + 1], arr[i])
-
+            rightMi[i] = min(rightMi[i + 1], arr[i])
+        # 可以在 i-1 和 i 之间切断
         ans = 1
         for i in range(1, n):
-            ans += mx[i - 1] <= mi[i]
+            ans += leftMx[i - 1] <= rightMi[i]
         return ans
 
     def maxChunksToSorted(self, arr: List[int]) -> int:
@@ -1359,10 +1359,10 @@ class Solution:
     def maxChunksToSorted(self, arr: List[int]) -> int:
         st = [-1]
         for v in arr:
-            x = max(v, st[-1])
+            mx = max(v, st[-1])
             while st[-1] > v:
                 st.pop()
-            st.append(x)
+            st.append(mx)
         return len(st) - 1
 
     # O(nlogn) / O(n)
@@ -1387,13 +1387,10 @@ class Solution:
 
     # other way: unique element + range(0, n-1) -> partition each chunk by index
     def maxChunksToSorted(self, arr: List[int]) -> int:
-        ans = 0
-        mx = arr[0]
+        ans = mx = 0
         for i, v in enumerate(arr):
-            if v > mx:
-                mx = v
-            if mx == i:
-                ans += 1
+            mx = max(v, mx)
+            ans += mx == i
         return ans
 
 

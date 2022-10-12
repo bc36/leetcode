@@ -368,6 +368,33 @@ class Solution:
         return ans + l
 
 
+# 922 - Sort Array By Parity II - EASY
+class Solution:
+    def sortArrayByParityII(self, nums: List[int]) -> List[int]:
+        nums.sort(key=lambda x: x & 1)
+        nums[::2], nums[1::2] = nums[: len(nums) // 2], nums[len(nums) // 2 :]
+        return nums
+
+    def sortArrayByParityII(self, nums: List[int]) -> List[int]:
+        o = [v for v in nums if v & 1]
+        e = [v for v in nums if not v & 1]
+        return [v for x in zip(e, o) for v in x]
+
+
+# 925 - Long Pressed Name - EASY
+class Solution:
+    def isLongPressedName(self, name: str, typed: str) -> bool:
+        i = 0
+        for j in range(len(typed)):
+            if i < len(name) and name[i] == typed[j]:
+                i += 1
+            elif j > 0 and typed[j - 1] == typed[j]:
+                continue
+            else:
+                return False
+        return i == len(name)
+
+
 # 926 - Flip String to Monotone Increasing - MEDIUM
 class Solution:
     # O(n) / O(1)

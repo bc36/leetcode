@@ -1,6 +1,6 @@
-import collections, random, heapq, math, bisect
+import collections, random, heapq, math, bisect, itertools
 from typing import List, Optional, Deque
-from sortedcontainers import SortedList
+import sortedcontainers
 
 
 class ListNode:
@@ -204,6 +204,7 @@ class Solution:
             head = tmp
             # one line:
             # head.next, head, pre = pre, head.next, head
+            # head.next, pre, head = pre, head, head.next
         return pre
 
     # recursive
@@ -214,6 +215,13 @@ class Solution:
         head.next.next = head
         head.next = None
         return new
+
+    def reverseList(self, head: ListNode, pre=None) -> ListNode:
+        if not head:
+            return pre
+        x = head.next
+        head.next = pre
+        return self.reverseList(x, head)
 
 
 # 207 - Course Schedule I - MEDIUM
@@ -361,9 +369,8 @@ class Trie:
 class Solution:
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
         s = l = r = 0
-        n = len(nums)
         ans = float("inf")
-        while r < n:
+        while r < len(nums):
             s += nums[r]
             while s >= target:
                 ans = min(ans, r - l + 1)
@@ -371,6 +378,19 @@ class Solution:
                 l += 1
             r += 1
         return ans if ans != float("inf") else 0
+
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        l = 0
+        ans = math.inf
+        summ = 0
+        for r, v in enumerate(nums):
+            summ += v
+            while summ - nums[l] >= target:
+                summ -= nums[l]
+                l += 1
+            if summ >= target:
+                ans = min(ans, r - l + 1)
+        return 0 if ans == math.inf else ans
 
 
 # 210 - Course Schedule II - MEDIUM
@@ -1672,7 +1692,7 @@ class MedianFinder:
 
 class MedianFinder:
     def __init__(self):
-        self.a = SortedList()
+        self.a = sortedcontainers.SortedList()
 
     def addNum(self, num: int) -> None:
         self.a.add(num)

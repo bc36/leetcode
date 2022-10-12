@@ -189,6 +189,22 @@ class Solution:
         return root
 
 
+# 817 - Linked List Components - MEDIUM
+class Solution:
+    def numComponents(self, head: Optional[ListNode], nums: List[int]) -> int:
+        ans = 0
+        s = set(nums)
+        isHead = False
+        while head:
+            if head.val not in s:
+                isHead = False
+            elif not isHead:
+                ans += 1
+                isHead = True
+            head = head.next
+        return ans
+
+
 # 819 - Most Common Word - EASY
 class Solution:
     def mostCommonWord(self, p: str, banned: List[str]) -> str:
@@ -748,6 +764,60 @@ class ExamRoom:
         return
 
 
+# 856 - Score of Parentheses - MEDIUM
+class Solution:
+    # O(n ** 2) / O(n ** 2)
+    def scoreOfParentheses(self, s: str) -> int:
+        if len(s) == 2:
+            return 1
+        cur = l = p = 0
+        for r, c in enumerate(s):
+            p += 1 if c == "(" else -1
+            if p == 0:
+                if l + 1 == r:
+                    cur += 1
+                else:
+                    cur += 2 * self.scoreOfParentheses(s[l + 1 : r])
+                l = r + 1
+        return cur
+
+    def scoreOfParentheses(self, s: str) -> int:
+        if len(s) == 2:
+            return 1
+        p = 0
+        for i, c in enumerate(s):
+            p += 1 if c == "(" else -1
+            if p == 0:
+                if i == len(s) - 1:
+                    return 2 * self.scoreOfParentheses(s[1:-1])
+                return self.scoreOfParentheses(s[: i + 1]) + self.scoreOfParentheses(
+                    s[i + 1 :]
+                )
+
+    # O(n) / O(n)
+    def scoreOfParentheses(self, s: str) -> int:
+        st = [0]
+        for c in s:
+            if c == ")":
+                cur = st.pop()
+                st[-1] += max(2 * cur, 1)
+            else:
+                st.append(0)
+        return st[-1]
+
+    # O(n) / O(1)
+    def scoreOfParentheses(self, s: str) -> int:
+        ans = dep = 0
+        for i, c in enumerate(s):
+            if c == ")":
+                dep -= 1
+                if s[i - 1] == "(":
+                    ans += 1 << dep
+            else:
+                dep += 1
+        return ans
+
+
 # 857 - Minimum Cost to Hire K Workers - HARD
 class Solution:
     # O(nlogn) / O(n)
@@ -910,6 +980,44 @@ class Solution:
                 c += 1 if c > 0 else 0
             n >>= 1
         return ans
+
+
+# 870 - Advantage Shuffle - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def advantageCount(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        nums1.sort()
+        idx = sorted(range(len(nums1)), key=lambda i: nums2[i])
+        i = 0
+        can = collections.defaultdict(list)
+        cannot = list()
+        for v in nums1:
+            if v > nums2[idx[i]]:
+                can[nums2[idx[i]]].append(v)
+                i += 1
+            else:
+                cannot.append(v)
+        for i, v in enumerate(nums2):
+            if v in can and can[v]:
+                nums1[i] = can[v].pop()
+            else:
+                nums1[i] = cannot.pop()
+        return nums1
+
+    def advantageCount(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        n = len(nums1)
+        nums1.sort()
+        idx = sorted(range(n), key=lambda i: nums2[i])
+        l = 0
+        r = n - 1
+        for v in nums1:
+            if v > nums2[idx[l]]:
+                nums2[idx[l]] = v  # 用下等马比下等马
+                l += 1
+            else:
+                nums2[idx[r]] = v  # 用下等马比上等马
+                r -= 1
+        return nums2
 
 
 # 873 - Length of Longest Fibonacci Subsequence - MEDIUM

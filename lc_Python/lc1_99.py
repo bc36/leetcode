@@ -940,7 +940,7 @@ class Solution:
         for i, row in enumerate(board):
             for j, c in enumerate(row):
                 if c != ".":
-                    seen += [(c, j), (i, c), (i // 3, j // 3, c)]
+                    seen += [(i, c), (c, j), (i // 3, j // 3, c)]
         return len(seen) == len(set(seen))
 
     def isValidSudoku(self, board: List[List[str]]) -> bool:
@@ -948,12 +948,12 @@ class Solution:
         c = [[False] * 9 for _ in range(9)]
         sub = [[False] * 9 for _ in range(9)]
         for i, row in enumerate(board):
-            for j, ch in enumerate(row):
-                if ch != ".":
-                    ch = int(ch) - 1
-                    if r[i][ch] or c[j][ch] or sub[i // 3 * 3 + j // 3][ch]:
+            for j, v in enumerate(row):
+                if v != ".":
+                    v = int(v) - 1
+                    if r[i][v] or c[j][v] or sub[i // 3 * 3 + j // 3][v]:
                         return False
-                    r[i][ch] = c[j][ch] = sub[i // 3 * 3 + j // 3][ch] = True
+                    r[i][v] = c[j][v] = sub[i // 3 * 3 + j // 3][v] = True
         return True
 
 
@@ -1011,29 +1011,45 @@ class Solution:
 # 39 - Combination Sum - MEDIUM
 class Solution:
     def combinationSum(self, c: List[int], target: int) -> List[List[int]]:
-        def backtrack(begin: int, path: List[int], target: int):
+        def backtrack(path: List[int], p: int, target: int):
             if target == 0:
                 ans.append(path)
                 return
-            for i in range(begin, len(c)):
+            for i in range(p, len(c)):
                 if target < c[i]:
                     break
-                backtrack(i, path + [c[i]], target - c[i])
+                backtrack(path + [c[i]], i, target - c[i])
             return
 
         ans = []
         c.sort()
-        backtrack(0, [], target)
+        backtrack([], 0, target)
         return ans
 
     def combinationSum(self, c: List[int], target: int) -> List[List[int]]:
-        def backtrack(path, target, idx):
+        def backtrack(path: List[int], target: int, idx: int):
             if target == 0:
                 ans.append(path)
                 return
             for i in range(idx, len(c)):
                 if target >= c[i]:
                     backtrack(path + [c[i]], target - c[i], i)
+            return
+
+        ans = []
+        backtrack([], target, 0)
+        return ans
+
+    def combinationSum(self, c: List[int], target: int) -> List[List[int]]:
+        def backtrack(path: List[int], target: int, idx: int):
+            if target == 0:
+                ans.append(path.copy())
+                return
+            for i in range(idx, len(c)):
+                if target >= c[i]:
+                    path.append(c[i])
+                    backtrack(path, target - c[i], i)
+                    path.pop()
             return
 
         ans = []
@@ -1066,53 +1082,68 @@ class Solution:
 class Solution:
     def trap(self, height: List[int]) -> int:
         n = len(height)
-        left = [0] * n
-        right = [0] * n
-        maxL, maxR = 0, 0
+        l = [0] * n
+        r = [0] * n
+        maxL = maxR = 0
         for i in range(n):
             if height[i] > maxL:
                 maxL = height[i]
-            left[i] = maxL
+            l[i] = maxL
             if height[n - 1 - i] > maxR:
                 maxR = height[n - 1 - i]
-            right[n - 1 - i] = maxR
-        ans = 0
+            r[n - 1 - i] = maxR
+        return sum(min(a, b) - height[i] for a, b, i in zip(l, r, range(n)))
+
+    def trap(self, height: List[int]) -> int:
+        n = len(height)
+        l = [0] * n
+        p = 0
         for i in range(n):
-            ans += min(left[i], right[i]) - height[i]
-        return ans
+            if p > height[i]:
+                l[i] = p - height[i]
+            else:
+                p = height[i]
+        r = [0] * n
+        p = 0
+        for i in range(n - 1, -1, -1):
+            if height[i] < p:
+                r[i] = p - height[i]
+            else:
+                p = height[i]
+        return sum(min(a, b) for a, b in zip(l, r))
 
     def trap(self, height: List[int]) -> int:
-        left = [0] * len(height)
-        right = [0] * len(height)
-        ans = prel = prer = 0
-        for i in range(len(height)):
-            if height[i] > prel:
-                left[i] = prel = height[i]
+        n = len(height)
+        l = [0] * n
+        r = [0] * n
+        pl = pr = 0
+        for i in range(n):
+            if height[i] > pl:
+                l[i] = pl = height[i]
             else:
-                left[i] = prel
-            if height[~i] > prer:
-                right[~i] = prer = height[~i]
+                l[i] = pl
+            if height[~i] > pr:
+                r[~i] = pr = height[~i]
             else:
-                right[~i] = prer
-        for i in range(len(height)):
-            if height[i] < left[i] and height[i] < right[i]:
-                ans += min(left[i], right[i]) - height[i]
-        return ans
+                r[~i] = pr
+        return sum(min(a, b) - height[i] for a, b, i in zip(l, r, range(n)))
 
     def trap(self, height: List[int]) -> int:
-        w = [0] * len(height)  # w: water level
-        left = right = 0
-        for i in range(len(height)):
-            left = max(left, height[i])
-            w[i] = left  # over-fill it to left max height
-        for i in range(len(height) - 1, -1, -1):
-            right = max(right, height[i])
-            w[i] = min(w[i], right) - height[i]  # drain to the right height
+        n = len(height)
+        w = [0] * n  # w: water level
+        l = r = 0
+        for i in range(n):
+            l = max(l, height[i])
+            w[i] = l  # over-fill it to left max height
+        for i in range(n - 1, -1, -1):
+            r = max(r, height[i])
+            w[i] = min(w[i], r) - height[i]  # drain to the right height
         return sum(w)
 
     # monotonic stack
     def trap(self, height: List[int]) -> int:
-        ans, stack = 0, []
+        ans = 0
+        stack = []
         for i in range(len(height)):
             while stack and height[i] > height[stack[-1]]:
                 w = stack.pop()  # water level
@@ -2077,27 +2108,43 @@ class Solution:
 # 76 - Minimum Window Substring - HARD
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        needdic = collections.Counter(t)
-        need = len(t)
-        left, right = 0, float("inf")  # record answer
-        i = 0
-        for j, ch in enumerate(s):
-            # ch in needdic
-            if needdic[ch] > 0:
-                need -= 1
-            needdic[ch] -= 1
-            if need == 0:
+        cnt = collections.Counter(t)
+        f = len(t)  # how many letters do we need to fill
+        i = l = 0
+        r = float("inf")  # record answer
+        for j, c in enumerate(s):
+            if cnt[c] > 0:
+                f -= 1
+            cnt[c] -= 1
+            if f == 0:
                 # move left point
-                while i < j and needdic[s[i]] < 0:
-                    needdic[s[i]] += 1
+                while i < j and cnt[s[i]] < 0:
+                    cnt[s[i]] += 1
                     i += 1
                 # update new answer
-                if j - i < right - left:
-                    left, right = i, j
-                need += 1
-                needdic[s[i]] += 1
+                if j - i < r - l:
+                    l, r = i, j
+                f += 1
+                cnt[s[i]] += 1
                 i += 1
-        return "" if right > len(s) else s[left : right + 1]
+        return "" if r > len(s) else s[l : r + 1]
+
+    def minWindow(self, s: str, t: str) -> str:
+        # keep all c[key] = value <= 0, then we can move the left pointer
+        c = collections.Counter(t)
+        f = len(c.keys())
+        i = l = 0
+        r = math.inf
+        for j, v in enumerate(s):
+            c[v] -= 1
+            if c[v] == 0:
+                f -= 1
+            while i < j and c[s[i]] < 0:
+                c[s[i]] += 1
+                i += 1
+            if f == 0 and r - l > j - i:
+                l, r = i, j
+        return "" if r == math.inf else s[l : r + 1]
 
 
 # 77 - Combinations - MEDIUM
@@ -2232,6 +2279,20 @@ class Solution:
             return cur
 
         return solve(2)
+
+
+# 81 - Search in Rotated Sorted Array II - MEDIUM
+class Solution:
+    def search(self, nums: List[int], target: int) -> bool:
+        try:
+            nums.index(target)
+            return True
+        except:
+            return False
+
+    def search(self, nums: List[int], target: int) -> bool:
+        return any(v == target for v in nums)
+        return target in nums
 
 
 # 82 - Remove Duplicates from Sorted List II - MEDIUM
