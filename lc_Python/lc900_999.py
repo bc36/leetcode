@@ -421,6 +421,95 @@ class Solution:
         return min(pre[j] + len(s) - j - (pre[-1] - pre[j]) for j in range(len(pre)))
 
 
+# 927 - Three Equal Parts - HARD
+class Solution:
+    # 1. 每一部分的 1 的数量是一定的
+    # 2. -> 右边部分的大小可以确定
+    # 3. -> 调整左边部分的大小 (对确定个数的 1 之后, 在右边补零)
+    # 4. -> 确定中间部分的大小 (最后剩余部分)
+    # O(n) / O(1)
+    def threeEqualParts(self, arr: List[int]) -> List[int]:
+        summ = sum(arr)
+        if summ % 3:
+            return [-1, -1]
+        if not summ:
+            return [0, 2]
+        n = len(arr)
+        t = summ // 3
+        x = y = z = one = l = 0
+        r = n - 1
+        while r > -1 and one < t:
+            if arr[r]:
+                one += 1
+                z |= 1 << (n - 1 - r)
+            r -= 1
+        one = 0
+        while l < r and one < t:
+            x = (x << 1) + arr[l]
+            one += arr[l]
+            l += 1
+        while x < z and l < r and arr[l] == 0:
+            x <<= 1
+            l += 1
+        for i in range(l, r + 1):
+            y = (y << 1) + arr[i]
+            if y >= z:
+                r = i
+                break
+        if not x == y == z:
+            return [-1, -1]
+        return [l - 1, r + 1]
+
+    # 判断三组 1 从第一个 1 开始是否构成同样的分布
+    def threeEqualParts(self, arr: List[int]) -> List[int]:
+        def find(x: int) -> int:
+            s = 0
+            for i, v in enumerate(arr):
+                s += v
+                if s == x:
+                    return i
+            return -1
+
+        n = len(arr)
+        t, mod = divmod(sum(arr), 3)
+        if mod:
+            return [-1, -1]
+        if t == 0:
+            return [0, 2]
+        i = find(1)
+        j = find(t + 1)
+        k = find(t * 2 + 1)
+        while k < n and arr[i] == arr[j] == arr[k]:
+            i += 1
+            j += 1
+            k += 1
+        return [i - 1, j] if k == n else [-1, -1]
+
+    def threeEqualParts(self, arr: List[int]) -> List[int]:
+        summ = sum(arr)
+        if summ % 3:
+            return [-1, -1]
+        if not summ:
+            return [0, 2]
+        t = summ // 3
+        cnt = 0
+        i = j = k = -1
+        for idx, v in enumerate(arr):
+            if v:
+                cnt += 1
+            if i == -1 and cnt:
+                i = idx
+            if j == -1 and cnt > t:
+                j = idx
+            if cnt > t * 2:
+                k = idx
+                break
+        l = len(arr) - k
+        if arr[i : i + l] == arr[j : j + l] == arr[k:]:
+            return [i + l - 1, j + l]
+        return [-1, -1]
+
+
 # 929 - Unique Email Addresses - EASY
 class Solution:
     def numUniqueEmails(self, emails: List[str]) -> int:
@@ -686,6 +775,46 @@ class Solution:
                 if node.right:
                     dq.append(node.right)
         return ans
+
+
+# 940 - Distinct Subsequences II - HARD
+class Solution:
+    def distinctSubseqII(self, s: str) -> int:
+        # 定义 f[i][j] 表示前 i 个字符中，以字符 j 结尾的不同子序列的个数
+        # f[i][s[i]] = 1 + sum(f[i-1][j] for j in range(26))
+
+        # f[i] 表示以 s[i] 为最后一个字符的子序列的数目
+        mod = 10**9 + 7
+        f = [0] * 26
+        for c in s:
+            p = ord(c) - ord("a")
+            for i in range(26):
+                if p != i:
+                    f[p] += f[i]
+            f[p] = (1 + f[p]) % mod
+        return sum(f) % mod
+
+    def distinctSubseqII(self, s: str) -> int:
+        mod = 10**9 + 7
+        total = 0
+        f = [0] * 26
+        for c in s:
+            i = ord(c) - ord("a")
+            others = total - f[i]
+            f[i] = total + 1
+            total = (f[i] + others) % mod
+        return total
+
+    def distinctSubseqII(self, s: str) -> int:
+        mod = 10**9 + 7
+        total = 0
+        f = [0] * 26
+        for c in s:
+            i = ord(c) - ord("a")
+            pre = f[i]
+            f[i] = total + 1
+            total = (total - pre + f[i]) % mod
+        return total
 
 
 # 941 - Valid Mountain Array - EASY

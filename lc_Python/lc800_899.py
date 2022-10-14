@@ -16,6 +16,116 @@ class TreeNode:
         self.right = right
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
+# 801 - Minimum Swaps To Make Sequences Increasing - HARD
+class Solution:
+    # O(n) / O(n)
+    def minSwap(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums1)
+        # f[i][0]: 不交换 nums1[i] 和 nums2[i], f[i][1]: 交换
+        f = [[math.inf, math.inf] for _ in range(n)]
+        f[0][0] = 0
+        f[0][1] = 1
+        for i in range(1, n):
+            # if (
+            #     nums1[i - 1] < nums1[i]
+            #     and nums2[i - 1] < nums2[i]
+            #     and nums1[i - 1] < nums2[i]
+            #     and nums2[i - 1] < nums1[i]
+            # ):
+            #     f[i][0] = min(f[i - 1][0], f[i - 1][1])
+            #     f[i][1] = min(f[i - 1][0], f[i - 1][1]) + 1
+            # elif nums1[i - 1] < nums1[i] and nums2[i - 1] < nums2[i]:
+            #     f[i][0] = f[i - 1][0]
+            #     f[i][1] = f[i - 1][1] + 1
+            # elif nums1[i - 1] < nums2[i] and nums2[i - 1] < nums1[i]:
+            #     f[i][0] = f[i - 1][1]
+            #     f[i][1] = f[i - 1][0] + 1
+
+            # 上述可化简为
+            if nums1[i - 1] < nums1[i] and nums2[i - 1] < nums2[i]:
+                f[i][0] = f[i - 1][0]
+                f[i][1] = f[i - 1][1] + 1
+            if nums1[i - 1] < nums2[i] and nums2[i - 1] < nums1[i]:
+                f[i][0] = min(f[i - 1][1], f[i][0])
+                f[i][1] = min(f[i - 1][0] + 1, f[i][1])
+
+            # 或者为
+            # if nums1[i] > nums1[i - 1] and nums2[i] > nums2[i - 1]:
+            #     f[i][0] = f[i - 1][0]
+            #     f[i][1] = f[i - 1][1] + 1
+            #     # 如果当前的 nums1 和 nums2 都是严格单调递增的, 那么交换的状态就必须和 i-1 一样才行
+            #     # 比如当前 i 时刻进行了交换, 那么 i-1 必须也进行交换, 因为 i-1 到 i 这一段是严格单调递增的
+            #     # 那么 i 时刻如果是进行了交换才变得单增, 那么 i-1 时刻一定也是进行了交换了的
+            #     # 同理, i 时刻没有变化, i-1 也是没有变化的
+            # if nums1[i] > nums2[i - 1] and nums2[i] > nums1[i - 1]:
+            #     f[i][0] = min(f[i][0], f[i - 1][1])
+            #     f[i][1] = min(f[i][1], f[i - 1][0] + 1)
+
+        return min(f[-1])
+
+    # O(n) / O(1)
+    def minSwap(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums1)
+        # x 不交换当前 对应的最小交换次数, y 交换当前 对应的最小交换次数
+        x, y = 0, 1
+        for i in range(1, n):
+            prex, prey = x, y
+            x = y = n
+            if nums1[i] > nums1[i - 1] and nums2[i] > nums2[i - 1]:  # 能不能不交换
+                x = prex
+                y = prey + 1  # 前面交换, 当前也需要交换
+            if nums1[i] > nums2[i - 1] and nums2[i] > nums1[i - 1]:  # 能不能交换
+                x = min(x, prey)  # 等价于前面交换了, 当前没交换
+                y = min(y, prex + 1)  # 前面没交换, 当前交换
+        return min(x, y)
+
+    def minSwap(self, nums1: List[int], nums2: List[int]) -> int:
+        prex, prey = 0, 1
+        for (a1, b1), (a2, b2) in pairwise(zip(nums1, nums2)):
+            x = y = math.inf
+            if a1 < a2 and b1 < b2:
+                x = prex
+                y = prey + 1
+            if b1 < a2 and a1 < b2:
+                x = min(x, prey)
+                y = min(y, prex + 1)
+            prex, prey = x, y
+        return min(prex, prey)
+
+    def minSwap(self, nums1: List[int], nums2: List[int]) -> int:
+        x = y = 0  # x 不交换当前 对应的最小交换次数, y 交换当前 对应的最小交换次数
+        a1 = b1 = -1  # a1, b1 前一个数据
+        for a2, b2 in zip(nums1, nums2):
+            if a1 >= a2 or b1 >= b2:  # 这一步一定交换
+                x, y = y, x + 1  # 状态反转
+            elif a1 >= b2 or b1 >= a2:  # 状态跟随
+                y = y + 1
+            else:  # 可交换 也可不交换, 满足 a1, b1 < a2, b2
+                x, y = min(x, y), min(x, y) + 1
+            a1, b1 = a2, b2
+        return min(x, y)
+
+    def minSwap(self, nums1: List[int], nums2: List[int]) -> int:
+        x, y = 0, 1
+        for i in range(1, len(nums1)):
+            # In this case, the ith manipulation should be same as the i-1th manipulation
+            if nums1[i - 1] >= nums2[i] or nums2[i - 1] >= nums1[i]:
+                y = y + 1
+            # In this case, the ith manipulation should be the opposite of the i-1th manipulation
+            elif nums1[i - 1] >= nums1[i] or nums2[i - 1] >= nums2[i]:
+                x, y = y, x + 1
+            else:
+                x, y = min(x, y), min(x, y) + 1
+        return min(x, y)
+
+
 # 804 - Unique Morse Code Words - EASY
 class Solution:
     def uniqueMorseRepresentations(self, words: List[str]) -> int:

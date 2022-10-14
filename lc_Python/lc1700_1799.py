@@ -288,14 +288,61 @@ class Solution:
         cnt2 = collections.Counter(s2)
         if cnt1 != cnt2:
             return False
-        cnt = 0
-        for c1, c2 in zip(s1, s2):
-            if c1 != c2:
-                cnt += 1
-        if cnt == 0 or cnt == 2:
+        diff = 0
+        for x, y in zip(s1, s2):
+            if x != y:
+                diff += 1
+        if diff == 0 or diff == 2:
             return True
-        else:
-            return False
+        return False
+
+    def areAlmostEqual(self, s1: str, s2: str) -> bool:
+        px = py = ""
+        for x, y in zip(s1, s2):
+            if x != y:
+                if px == "used":
+                    return False
+                if px == "":
+                    px = x
+                    py = y
+                elif px != y or py != x:
+                    return False
+                else:
+                    px = "used"
+        return True if px in "used" else False
+
+    def areAlmostEqual(self, s1: str, s2: str) -> bool:
+        px = py = ""
+        for x, y in zip(s1, s2):
+            if x != y:
+                if px == y and py == x:
+                    px = "used"
+                elif px == "":
+                    px = x
+                    py = y
+                else:
+                    return False
+        return True if px in "used" else False
+
+    def areAlmostEqual(self, s1: str, s2: str) -> bool:
+        i = j = -1
+        for idx, (x, y) in enumerate(zip(s1, s2)):
+            if x != y:
+                if i < 0:
+                    i = idx
+                elif j < 0:
+                    j = idx
+                else:
+                    return False
+        return i < 0 or j >= 0 and s1[i] == s2[j] and s1[j] == s2[i]
+
+    def areAlmostEqual(self, s1: str, s2: str) -> bool:
+        arr = []
+        for x, y in zip(s1, s2):
+            if x != y:
+                arr.append(x)
+                arr.append(y)
+        return len(arr) <= 4 and arr == arr[::-1]
 
 
 # 1791 - Find Center of Star Graph - EASY

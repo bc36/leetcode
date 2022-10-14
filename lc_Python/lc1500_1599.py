@@ -53,9 +53,9 @@ class Solution:
         return "".join(ans)
 
 
-###############
-# 2022.1.6 VO #
-###############
+#################
+# 2022.01.06 VO #
+#################
 # 1530 - Number of Good Leaf Nodes Pairs - MEDIUM
 class Solution:
     # postorder

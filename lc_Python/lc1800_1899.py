@@ -1,6 +1,19 @@
 import collections, itertools, functools, math, re
 from typing import List
 
+# 1800 - Maximum Ascending Subarray Sum - EASY
+class Solution:
+    def maxAscendingSum(self, nums: List[int]) -> int:
+        ans = cur = p = 0
+        for v in nums:
+            if p < v:
+                cur += v
+            else:
+                cur = v
+            p = v
+            ans = max(ans, cur)
+        return ans
+
 
 # 1805 - Number of Different Integers in a String - EASY
 class Solution:

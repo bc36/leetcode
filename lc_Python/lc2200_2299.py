@@ -10,6 +10,13 @@ class TreeNode:
         self.right = right
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 # 2200 - Find All K-Distant Indices in an Array - EASY
 class Solution:
     def findKDistantIndices(self, nums: List[int], key: int, k: int) -> List[int]:
@@ -2264,19 +2271,12 @@ class Solution:
                 # s.add((k, b)) # Using k obtained by division will have precision problems
         return len(s)
 
-    # itertools.pairwise, New in version 3.10
-    def pairwise(self, iterable):
-        # pairwise('ABCDEFG') --> AB BC CD DE EF FG
-        a, b = itertools.tee(iterable)
-        next(b, None)
-        return zip(a, b)
-
     def minimumLines(self, stockPrices: List[List[int]]) -> int:
         stockPrices.sort()
         ans = 0
         pre_dy = 1  # 1 / 0, infinite slope, different with any line in test case
         pre_dx = 0
-        for (x1, y1), (x2, y2) in self.pairwise(stockPrices):
+        for (x1, y1), (x2, y2) in pairwise(stockPrices):
             dy, dx = y2 - y1, x2 - x1
             # different k, no float point precision error
             if dy * pre_dx != pre_dy * dx:

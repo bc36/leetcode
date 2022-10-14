@@ -1482,9 +1482,9 @@ class Solution:
         return False
 
 
-################
-# 2022.3.28 VO #
-################
+#################
+# 2022.03.28 VO #
+#################
 # 56 - Merge Intervals - MEDIUM
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
@@ -2105,26 +2105,27 @@ class Solution:
         return
 
 
+#################
+# 2022.09.15 VO #
+#################
 # 76 - Minimum Window Substring - HARD
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
         cnt = collections.Counter(t)
-        f = len(t)  # how many letters do we need to fill
+        need = len(t)  # how many letters do we need to fill
         i = l = 0
-        r = float("inf")  # record answer
+        r = float("inf")
         for j, c in enumerate(s):
             if cnt[c] > 0:
-                f -= 1
+                need -= 1
             cnt[c] -= 1
-            if f == 0:
-                # move left point
+            if need == 0:
                 while i < j and cnt[s[i]] < 0:
                     cnt[s[i]] += 1
                     i += 1
-                # update new answer
                 if j - i < r - l:
                     l, r = i, j
-                f += 1
+                need += 1
                 cnt[s[i]] += 1
                 i += 1
         return "" if r > len(s) else s[l : r + 1]
@@ -2145,6 +2146,24 @@ class Solution:
             if f == 0 and r - l > j - i:
                 l, r = i, j
         return "" if r == math.inf else s[l : r + 1]
+
+    def minWindow(self, s: str, t: str) -> str:
+        ans = ""
+        need = len(t)
+        cnt = collections.Counter(t)
+        l = 0
+        for r, c in enumerate(s):
+            if cnt[c] > 0:
+                need -= 1
+            cnt[c] -= 1
+            while need == 0:
+                if ans == "" or r - l + 1 < len(ans):
+                    ans = s[l : r + 1]
+                cnt[s[l]] += 1
+                if cnt[s[l]] > 0:
+                    need += 1
+                l += 1
+        return ans
 
 
 # 77 - Combinations - MEDIUM
