@@ -69,7 +69,7 @@ class Solution:
     def longestNiceSubarray(self, nums: List[int]) -> int:
         """
         双指针, 对每一位求 1 的位置, 某一位 1 有 2 个, 就移动左边指针
-        我们需要选出最长的区间，使得区间中每个二进制位最多出现一个 1
+        我们需要选出最长的区间, 使得区间中每个二进制位最多出现一个 1
         1 <= nums[i] <= 1e9, 30位
         """
         l = 0
@@ -449,8 +449,6 @@ class Node:
         self.ids = []
         self.score = 0
 
-
-class Solution:
     def sumPrefixScores(self, words: List[str]) -> List[int]:
         trie = Node()
         for i, word in enumerate(words):
@@ -472,4 +470,148 @@ class Solution:
             return
 
         dfs(trie, 0)
+        return ans
+
+
+
+# 2441 - Largest Positive Integer That Exists With Its Negative - EASY
+class Solution:
+    def findMaxK(self, nums: List[int]) -> int:
+        s = set(nums)
+        ans = -1
+        for v in nums:
+            if -v in s:
+                ans = max(v, ans)
+        return ans
+
+    def findMaxK(self, nums: List[int]) -> int:
+        s = set()
+        ans = -1
+        for v in nums:
+            if -v in s:
+                ans = max(ans, abs(v))
+            s.add(v)
+        return ans
+
+
+# 2442 - Count Number of Distinct Integers After Reverse Operations - MEDIUM
+class Solution:
+    def countDistinctIntegers(self, nums: List[int]) -> int:
+        s = set(nums)
+        for v in nums:
+            s.add(int(str(v)[::-1]))
+        return len(s)
+
+    def countDistinctIntegers(self, nums: List[int]) -> int:
+        return len(set(nums) | set(int(str(v)[::-1]) for v in nums))
+
+    def countDistinctIntegers(self, nums: List[int]) -> int:
+        s = set()
+        for v in nums:
+            s.add(v)
+            r = 0
+            while v:
+                r = r * 10 + v % 10
+                v //= 10
+            s.add(r)
+        return len(s)
+
+
+# 2443 - Sum of Number and Its Reverse - MEDIUM
+class Solution:
+    def sumOfNumberAndReverse(self, num: int) -> bool:
+        for v in range(num, num // 2 - 1, -1):
+            if v + int(str(v)[::-1]) == num:
+                return True
+        return False
+
+    def sumOfNumberAndReverse(self, num: int) -> bool:
+        return any(v + int(str(v)[::-1]) == num for v in range(num, num // 2 - 1, -1))
+
+    def sumOfNumberAndReverse(self, num: int) -> bool:
+        for v in range(num, num // 2 - 1, -1):
+            r = 0
+            x = v
+            while x:
+                r = r * 10 + x % 10
+                x //= 10
+            if v + r == num:
+                return True
+        return False
+
+
+# 2444 - Count Subarrays With Fixed Bounds - HARD
+class Solution:
+    def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
+        ans = cmin = cmax = j = last = 0
+        for i, v in enumerate(nums):
+            if v < minK or v > maxK:
+                j = last = i + 1
+                cmin = cmax = 0
+                continue
+            if v == minK:
+                cmin += 1
+            if v == maxK:
+                cmax += 1
+            while j <= i:
+                if nums[j] == minK:
+                    cmin -= 1
+                if nums[j] == maxK:
+                    cmax -= 1
+                if not cmin or not cmax:
+                    if nums[j] == minK:
+                        cmin += 1
+                    if nums[j] == maxK:
+                        cmax += 1
+                    break
+                j += 1
+            if cmin and cmax:
+                ans += j - last + 1
+        return ans
+
+    def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
+        ans = 0
+        mii = mxi = pre = -1
+        for i, v in enumerate(nums):
+            if v < minK or v > maxK:
+                mii = mxi = -1
+                pre = i
+            else:
+                if v == minK:
+                    mii = i
+                if v == maxK:
+                    mxi = i
+                if mii != -1 and mxi != -1:
+                    ans += min(mii, mxi) - pre
+                # ans += max(0, min(mii, mxi) - pre)
+        return ans
+
+    # 枚举以 i 为右端点的定界子数组数量
+    # 分别维护 maxK 和 minK 从 i 往左看, 第一次出现的位置 x, y
+    # 表示左端点必须在 min⁡(x, y) 及其左侧，否则子数组中会缺少 maxK 或 minK
+    # 以 i 为右边界的子数组数量(如果存在) = min(x, y) - l
+    def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
+        ans = 0
+        mii = mxi = pre = -1
+        for i, v in enumerate(nums):
+            if not minK <= v <= maxK:
+                pre = i
+            if v == minK:
+                mii = i
+            if v == maxK:
+                mxi = i
+            ans += max(0, min(mii, mxi) - pre)
+        return ans
+
+    def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
+        ans = l = 0
+        mii = mxi = -1
+        for r, v in enumerate(nums):
+            if v == minK:
+                mii = r
+            if v == maxK:
+                mxi = r
+            if v < minK or v > maxK:
+                l = r + 1
+            ans += max(0, min(mii, mxi) - l + 1)
         return ans

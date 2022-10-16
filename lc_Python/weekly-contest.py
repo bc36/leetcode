@@ -1069,3 +1069,8 @@ WA: T4(1)
 FT: 0:45:53
 T4: 2378 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-315
+# 950 / https://leetcode.cn/contest/weekly-contest-315/problems/count-subarrays-with-fixed-bounds/
+# 双指针
