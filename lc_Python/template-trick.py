@@ -43,19 +43,19 @@ def countSpecialNumbers(n: int) -> int:
     s = str(n)
 
     @functools.lru_cache(None)
-    def fn(i: int, mask: int, is_limit: bool, is_num: bool) -> int:
+    def dfs(i: int, mask: int, is_limit: bool, is_num: bool) -> int:
         if i == len(s):
             return int(is_num)
         ans = 0
         if not is_num:
-            ans = fn(i + 1, mask, False, False)
-        up = int(s[i]) if is_limit else 9
-        for d in range(0 if is_num else 1, up + 1):
+            ans = dfs(i + 1, mask, False, False)
+        bound = int(s[i]) if is_limit else 9
+        for d in range(0 if is_num else 1, bound + 1):
             if mask >> d & 1 == 0:
-                ans += fn(i + 1, mask | (1 << d), is_limit and d == up, True)
+                ans += dfs(i + 1, mask | (1 << d), is_limit and d == bound, True)
         return ans
 
-    return fn(0, 0, True, False)
+    return dfs(0, 0, True, False)
 
 
 """permutation"""
@@ -184,7 +184,101 @@ def set_operation() -> None:
     return
 
 
-"""TODO: segment tree"""
+"""TODO: segment tree
+1. 每个区间拆分成 O(logn) 个区间
+2. O(n) 个区间, 可以拼成任意区间
+
+lazy:
+    1. 如果当前节点对应区间被查询区间完整包含, 停止递归, 对于更新操作, 需要记录更新内容 lazy tag, 在这里打住
+    2. 后续某个更新操作需要递归的话, 带着 lazy tag 继续递归
+
+"""
+
+
+class SegmentTree:
+    def __init__(self, data, merge=sum):
+        """
+        data: 传入的数组
+        merge: 处理的业务逻辑, 例如求和/最大值/最小值, lambda 表达式
+        """
+        self.data = data
+        self.n = len(data)
+        self.tree = [None] * (4 * self.n)  # 索引 i 的左孩子索引为 2i+1, 右孩子为 2i+2
+        self._merge = merge
+        if self.n:
+            self._build(0, 0, self.n - 1)
+
+    def query(self, ql, qr) -> int:
+        """
+        返回区间[ql, ... , qr] 的值
+        """
+        return self._query(0, 0, self.n - 1, ql, qr)
+
+    def update(self, index, value) -> None:
+        # 将 data 数组 index 位置的值更新为 value, 然后递归更新线段树中被影响的各节点的值
+        self.data[index] = value
+        self._update(0, 0, self.n - 1, index)
+        return
+
+    def _build(self, tree_index, l, r) -> None:
+        """
+        递归创建线段树
+        tree_index: 线段树节点在数组中位置
+        l, r: 该节点表示的区间的左, 右边界
+        """
+        if l == r:
+            self.tree[tree_index] = self.data[l]
+            return
+        mid = (l + r) // 2  # 区间中点, 对应左孩子区间结束, 右孩子区间开头
+        left = 2 * tree_index + 1  # tree_index 的左右子树索引
+        right = 2 * tree_index + 2
+        self._build(left, l, mid)
+        self._build(right, mid + 1, r)
+        self.tree[tree_index] = self._merge(self.tree[left], self.tree[right])
+        return
+
+    def _query(self, tree_index, l, r, ql, qr) -> int:
+        """
+        递归查询区间 [ql, ... ,qr] 的值
+        tree_index : 某个根节点的索引
+        l, r : 该节点表示的区间的左右边界
+        ql, qr: 待查询区间的左右边界
+        """
+        if l == ql and r == qr:
+            return self.tree[tree_index]
+        mid = (l + r) // 2  # 区间中点, 对应左孩子区间结束,右孩子区间开头
+        left = 2 * tree_index + 1
+        right = 2 * tree_index + 2
+        if qr <= mid:
+            return self._query(left, l, mid, ql, qr)  # 查询区间全在左子树
+        elif ql > mid:
+            return self._query(right, mid + 1, r, ql, qr)  # 查询区间全在右子树
+        # 查询区间一部分在左子树一部分在右子树
+        return self._merge(
+            self._query(left, l, mid, ql, mid),
+            self._query(right, mid + 1, r, mid + 1, qr),
+        )
+
+    def _update(self, tree_index, l, r, index) -> None:
+        """
+        tree_index: 某个根节点索引
+        l, r : 此根节点代表区间的左右边界
+        index : 更新的值的索引
+        """
+        if l == r == index:
+            self.tree[tree_index] = self.data[index]
+            return
+        mid = (l + r) // 2
+        left = 2 * tree_index + 1
+        right = 2 * tree_index + 2
+        if index > mid:
+            self._update(right, mid + 1, r, index)  # 要更新的区间在右子树
+        else:
+            self._update(left, l, mid, index)  # 要更新的区间在左子树 index <= mid
+        # 里面的小区间变化了, 包裹的大区间也要更新
+        self.tree[tree_index] = self._merge(self.tree[left], self.tree[right])
+        return
+
 
 """transpose"""
 
@@ -239,8 +333,8 @@ class Solution:
         return ans
 
 
-# 小慢 2s
 def build(words: List[List[int]]) -> None:
+    # 小慢 2s
     trie = {}
     for w in words:
         r = trie
@@ -252,11 +346,8 @@ def build(words: List[List[int]]) -> None:
                 r[(c, "#")] += 1
             r = r[c]
         r["end"] = True
-    return
 
-
-# 小慢 2s
-def build(words: List[List[int]]) -> None:
+    # 小慢 2s
     trie = [None] * 27  # 最后一位用于计数
     trie[26] = 0
     for w in words:
@@ -268,11 +359,8 @@ def build(words: List[List[int]]) -> None:
                 r[c][26] = 0
             r = r[c]
             r[26] += 1
-    return
 
-
-# 1s
-def build(words: List[List[int]]) -> None:
+    # 1s
     trie = {}
     for w in words:
         r = trie
@@ -284,10 +372,7 @@ def build(words: List[List[int]]) -> None:
                 r[c]["cnt"] += 1
             r = r[c]
         r["end"] = True
-    return
 
-
-def build(words: List[List[int]]) -> None:
     trie = {}
     for w in words:
         r = trie
@@ -307,8 +392,8 @@ class UnionFind:
     def __init__(self, n: int) -> None:
         self.p = [i for i in range(n)]
         self.sz = [1] * n
-        self.part = n
-        self.rank = [1] * n
+        self.part = n  # 连通块数量
+        self.rank = [1] * n  # 按秩合并
 
     def find(self, x: int) -> int:
         """path compression"""
