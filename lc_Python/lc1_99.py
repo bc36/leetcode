@@ -258,6 +258,75 @@ class Solution:
         )
 
 
+# 9 - Palindrome Number - EASY
+class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        return str(x) == str(x)[::-1]
+
+    def isPalindrome(self, x: int) -> bool:
+        if x < 0:
+            return False
+        r = 0
+        y = x
+        while y:
+            r = r * 10 + y % 10
+            y //= 10
+        return r == x
+
+    def isPalindrome(self, x: int) -> bool:
+        if x < 0 or x > 0 and x % 10 == 0:
+            return False
+        r = 0
+        while x > r:
+            r = r * 10 + x % 10
+            x //= 10
+        return x == r or x == r // 10
+
+
+# 10 - Regular Expression Matching - HARD
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        # f[i][j]: s[i], p[j]
+        m = len(s)
+        n = len(p)
+        f = [[False] * (n + 1) for _ in range(m + 1)]
+        f[0][0] = True
+        for j in range(1, n + 1):
+            if p[j - 1] == "*":
+                f[0][j] = f[0][j - 2]
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if p[j - 1] == "." or s[i - 1] == p[j - 1]:
+                    f[i][j] = f[i - 1][j - 1]
+
+                elif p[j - 1] == "*":
+                    if s[i - 1] != p[j - 2] and p[j - 2] != ".":
+                        f[i][j] = f[i][j - 2]
+                    else:
+                        f[i][j] = f[i][j - 2] | f[i - 1][j]
+
+                # 存在 b* 的模式时, 冗余的状态转移只发生在 f[][j-1]中
+                # 而 f[i][j] 只与 f[][j-2] 有关, 与 f[][j-1]无关, 所以答案不会受影响。
+                # elif p[j - 1] == "*":
+                #     if s[i - 1] == p[j - 2] or p[j - 2] == ".":
+                #         f[i][j] = f[i][j - 2] | f[i - 1][j]  # 0 次或 >= 2 次, 跳过 f[i-1][j-2]
+                #     else:
+                #         f[i][j] = f[i][j - 2]
+        return f[m][n]
+
+    def isMatch(self, s: str, p: str) -> bool:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> bool:
+            if j == len(p):
+                return i == len(s)
+            firstMatch = i < len(s) and (s[i] == p[j] or p[j] == ".")
+            if j + 1 < len(p) and p[j + 1] == "*":
+                return dfs(i, j + 2) or (firstMatch and dfs(i + 1, j))
+            return firstMatch and dfs(i + 1, j + 1)
+
+        return dfs(0, 0)
+
+
 # 11 - Container With Most Water - MEDIUM
 class Solution:
     def maxArea(self, height: List[int]) -> int:
@@ -591,20 +660,20 @@ class Solution:
 # 23 - Merge k Sorted Lists - HARD
 class Solution:
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
-        hp = []
+        q = []
         dummy = head = ListNode(-1)
         for i in range(len(lists)):
             if lists[i]:
                 # heap cannot compare 'ListNode'
                 # need 'i' just to avoid comparing 'ListNode'
-                heapq.heappush(hp, (lists[i].val, i, lists[i]))
-        while hp:
-            n, i, cur = heapq.heappop(hp)
-            head.next = ListNode(n)
+                heapq.heappush(q, (lists[i].val, i, lists[i]))
+        while q:
+            val, i, cur = heapq.heappop(q)
+            head.next = ListNode(val)
             head = head.next
             if cur.next:
                 cur = cur.next
-                heapq.heappush(hp, (cur.val, i, cur))
+                heapq.heappush(q, (cur.val, i, cur))
         return dummy.next
 
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
@@ -621,6 +690,25 @@ class Solution:
             lists[i] = lists[i].next
             if lists[i]:
                 heapq.heappush(q, (lists[i].val, i))
+        return dummy.next
+
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        def __lt__(self, other):
+            return self.val < other.val
+
+        ListNode.__lt__ = __lt__
+
+        q = []
+        dummy = head = ListNode(-1)
+        for l in lists:
+            if l:
+                heapq.heappush(q, l)
+        while q:
+            node = heapq.heappop(q)
+            head.next = ListNode(node.val)
+            head = head.next
+            if node.next:
+                heapq.heappush(q, node.next)
         return dummy.next
 
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
@@ -1341,18 +1429,6 @@ class Solution:
 
 
 # 50 - Pow(x, n) - MEDIUM
-"""
-operators '>>', '&' are just used for 'int' and not used for 'float', '%' can be.
-e.g.: 
->>> 5.00 >> 1
-TypeError: unsupported operand type(s) for >>: 'float' and 'int'
->>> 5.00 & 1
-TypeError: unsupported operand type(s) for &: 'float' and 'int
->>> 5.00 % 2
-1.0
-"""
-
-
 class Solution:
     # iterative
     def myPow(self, x: float, n: int) -> float:
@@ -1364,7 +1440,7 @@ class Solution:
             if n & 1:
                 ans *= x
             x *= x
-            n >>= 1  # equal to n //= 2
+            n >>= 1
         return ans
 
     # recursive
@@ -1375,7 +1451,7 @@ class Solution:
             return 1 / self.myPow(x, -n)
         if n % 2:
             return x * self.myPow(x, n - 1)
-        return self.myPow(x * x, n / 2)
+        return self.myPow(x * x, n // 2)
 
 
 # 53 - Maximum Subarray - EASY
@@ -2408,22 +2484,61 @@ class Solution:
         return ans
 
 
+# 85 - Maximal Rectangle - HARD
+# TODO
+
+# 86 - Partition List - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def partition(self, head: Optional[ListNode], x: int) -> Optional[ListNode]:
+        a = b = ListNode(-1)
+        c = d = ListNode(-1)
+        while head:
+            if head.val < x:
+                b.next = ListNode(head.val)
+                b = b.next
+            else:
+                d.next = ListNode(head.val)
+                d = d.next
+            head = head.next
+        b.next = c.next
+        return a.next
+
+    # O(n) / O(1)
+    def partition(self, head: Optional[ListNode], x: int) -> Optional[ListNode]:
+        a = b = ListNode(-1)
+        c = d = ListNode(-1)
+        while head:
+            if head.val < x:
+                b.next = head
+                b = b.next
+            else:
+                d.next = head
+                d = d.next
+            head = head.next
+        b.next = c.next
+        d.next = None  # 切断原链表: 可能会沿着原来的链表路径往后走, 找到一个小于 x 的节点导致形成环
+        return a.next
+
+
 # 88 - Merge Sorted Array - EASY
 class Solution:
     def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
-        i, j, insertPos = m - 1, n - 1, m + n - 1
-        while i >= 0 and j >= 0:
-            if nums1[i] > nums2[j]:
-                nums1[insertPos] = nums1[i]
-                i -= 1
+        p = m + n - 1
+        m -= 1
+        n -= 1
+        while m >= 0 and n >= 0:
+            if nums1[m] > nums2[n]:
+                nums1[p] = nums1[m]
+                m -= 1
             else:
-                nums1[insertPos] = nums2[j]
-                j -= 1
-            insertPos -= 1
-        while j >= 0:
-            nums1[insertPos] = nums2[j]
-            j -= 1
-            insertPos -= 1
+                nums1[p] = nums2[n]
+                n -= 1
+            p -= 1
+        while n >= 0:
+            nums1[p] = nums2[n]
+            n -= 1
+            p -= 1
         return
 
     def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:

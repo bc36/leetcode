@@ -16,6 +16,23 @@ class TreeNode:
         self.right = right
 
 
+# 904 - Fruit Into Baskets - MEDIUM
+class Solution:
+    def totalFruit(self, fruits: List[int]) -> int:
+        ans = l = 0
+        d = {}
+        for r, v in enumerate(fruits):
+            d[v] = d.get(v, 0) + 1
+            while len(d) > 2:
+                d[fruits[l]] -= 1
+                if d[fruits[l]] == 0:
+                    del d[fruits[l]]
+                l += 1
+            ans = max(ans, r - l + 1)
+            r += 1
+        return ans
+
+
 # 905 - Sort Array By Parity - EASY
 class Solution:
     def sortArrayByParity(self, nums: List[int]) -> List[int]:

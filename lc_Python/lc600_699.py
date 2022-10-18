@@ -706,6 +706,63 @@ class Solution:
         return arr[l : l + k]
 
 
+# 659 - Split Array into Consecutive Subsequences - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def isPossible(self, nums: List[int]) -> bool:
+        d = collections.defaultdict(list)
+        for v in nums[::-1]:
+            if not d[v + 1]:
+                heapq.heappush(d[v], 1)
+            else:
+                l = heapq.heappop(d[v + 1])
+                heapq.heappush(d[v], l + 1)
+        for lst in d.values():
+            for l in lst:
+                if l < 3:
+                    return False
+        return True
+
+    def isPossible(self, nums: List[int]) -> bool:
+        d = collections.defaultdict(list)
+        for v in nums[::-1]:
+            l = 0
+            if d[v + 1]:
+                l = heapq.heappop(d[v + 1])
+            heapq.heappush(d[v], l + 1)
+        return all(lst and lst[0] >= 3 for lst in d.values())
+
+    def isPossible(self, nums: List[int]) -> bool:
+        d = collections.defaultdict(list)
+        for v in nums:
+            if d[v - 1]:
+                l = heapq.heappop(d[v - 1])
+                heapq.heappush(d[v], l + 1)
+            else:
+                heapq.heappush(d[v], 1)
+        return not any(lst and lst[0] < 3 for lst in d.values())
+
+    # O(n) / O(n)
+    def isPossible(self, nums: List[int]) -> bool:
+        cnt = collections.Counter(nums)
+        end = collections.defaultdict(int)
+        for v in nums:
+            if not cnt[v]:
+                continue
+            if end[v] > 0:
+                cnt[v] -= 1
+                end[v] -= 1
+                end[v + 1] += 1
+            elif cnt[v + 1] > 0 and cnt[v + 2] > 0:
+                cnt[v] -= 1
+                cnt[v + 1] -= 1
+                cnt[v + 2] -= 1
+                end[v + 3] += 1
+            else:
+                return False
+        return True
+
+
 # 661 - Image Smoother - EASY
 class Solution:
     def imageSmoother(self, img: List[List[int]]) -> List[List[int]]:

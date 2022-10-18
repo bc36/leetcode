@@ -1379,6 +1379,77 @@ class Solution:
         return ans
 
 
+# 886 - Possible Bipartition - MEDIUM
+class Solution:
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        g = [[] * n for _ in range(n)]
+        for a, b in dislikes:
+            g[a - 1].append(b - 1)
+            g[b - 1].append(a - 1)
+        color = [0] * n
+
+        def dfs(x: int, c: int) -> bool:
+            color[x] = c
+            return all(color[y] != c and (color[y] or dfs(y, 3 - c)) for y in g[x])
+
+        return all(c or dfs(i, 1) for i, c in enumerate(color))
+
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        g = [[] for _ in range(n)]
+        for a, b in dislikes:
+            g[a - 1].append(b - 1)
+            g[b - 1].append(a - 1)
+        color = [0] * n
+        for i, c in enumerate(color):
+            if not c:
+                q = collections.deque([i])
+                color[i] = 1
+                while q:
+                    x = q.popleft()
+                    for y in g[x]:
+                        if color[y] == color[x]:
+                            return False
+                        if not color[y]:
+                            color[y] = 3 - color[x]
+                            q.append(y)
+        return True
+
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+                self.sz = [1] * n
+
+            def find(self, x: int) -> int:
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                self.sz[py] += self.sz[px]
+                return
+
+            def is_connected(self, x: int, y: int) -> bool:
+                return self.find(x) == self.find(y)
+
+        g = [[] for _ in range(n)]
+        for a, b in dislikes:
+            g[a - 1].append(b - 1)
+            g[b - 1].append(a - 1)
+        uf = UnionFind(n)
+        for x, adj in enumerate(g):
+            for y in adj:
+                uf.union(y, adj[0])
+                if uf.is_connected(x, y):
+                    return False
+        return True
+
+
 # 890 - Find and Replace Pattern - MEDIUM
 class Solution:
     def findAndReplacePattern(self, words: List[str], pattern: str) -> List[str]:

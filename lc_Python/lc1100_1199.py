@@ -125,7 +125,7 @@ class SnapshotArray:
             return d[snap_id]
         k = list(d.keys())
         i = bisect.bisect_left(k, snap_id)
-        return d[k[i - 1]]
+        return d[k[i - 1]] # [4, 6] 查找 5, 指向下标 1
 
 
 # 1154 - Day of the Year - EASY
