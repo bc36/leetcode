@@ -2,6 +2,35 @@ from typing import List
 import heapq, collections, itertools, functools, math
 
 
+# 1700 - Number of Students Unable to Eat Lunch - EASY
+class Solution:
+    def countStudents(self, students: List[int], sandwiches: List[int]) -> int:
+        cnt = collections.Counter(students)
+        st = collections.deque(students)
+        ans = len(students)
+        for v in sandwiches:
+            if cnt[v] == 0:
+                break
+            while st and st[0] != v:
+                st.append(st.popleft())
+            st.popleft()
+            cnt[v] -= 1
+            ans -= 1
+        return ans
+
+    def countStudents(self, students: List[int], sandwiches: List[int]) -> int:
+        s1 = sum(students)
+        s0 = len(students) - s1
+        for v in sandwiches:
+            if v == 0 and s0:
+                s0 -= 1
+            elif v == 1 and s1:
+                s1 -= 1
+            else:
+                break
+        return s0 + s1
+
+
 # 1705 - Maximum Number of Eaten Apples - MEDIUM
 class Solution:
     def eatenApples(self, apples: List[int], days: List[int]) -> int:
