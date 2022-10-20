@@ -15,6 +15,7 @@ Trick:
 """
 Directory: (abcdefghijklmnopqrstuvwxyz)
     binary
+    bit
     dp
     math related
     permutation
@@ -34,6 +35,53 @@ def str2binary(s: str):
     for c in s:
         n |= 1 << ord(c) - ord("a")
     return n
+
+
+"""bit"""
+
+
+class BIT:
+    __slots__ = "size", "bit", "tree"
+
+    def __init__(self, n: int):
+        self.size = n
+        self.bit = n.bit_length()
+        self.tree = dict()
+
+    def add(self, index: int, delta: int) -> None:
+        while index <= self.size:
+            self.tree[index] = self.tree.get(index, 0) + delta
+            index += index & -index
+        return
+
+    def query(self, index: int) -> int:
+        res = 0
+        while index > 0:
+            res += self.tree.get(index, 0)
+            index -= index & -index
+        return res
+
+
+class BIT:
+    def __init__(self, n):
+        self.n = n
+        self.a = [0] * (n + 1)
+
+    @staticmethod
+    def lowbit(x):
+        return x & (-x)
+
+    def query(self, x):
+        ret = 0
+        while x > 0:
+            ret += self.a[x]
+            x -= BIT.lowbit(x)
+        return ret
+
+    def update(self, x, dt):
+        while x <= self.n:
+            self.a[x] += dt
+            x += BIT.lowbit(x)
 
 
 """dp - digit DP"""
@@ -430,6 +478,9 @@ class UnionFind:
         # self.rank[x] = 1
         # self.part += 1
         return
+
+    def is_connected(self, x: int, y: int) -> bool:
+        return self.find(x) == self.find(y)
 
 
 """
