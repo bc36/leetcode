@@ -16,6 +16,54 @@ class TreeNode:
         self.right = right
 
 
+# 901 - Online Stock Span - MEDIUM
+class StockSpanner:
+    # O(n) / O(n), 往前数最多有连续多少日的是小于等于今日的, 同 lc 496,
+    def __init__(self):
+        self.st = []
+        self.i = -1
+
+    def next(self, price: int) -> int:
+        self.i += 1
+        r = -1
+        while self.st and price >= self.st[-1][0]:
+            _, r = self.st.pop()
+        if r != -1:
+            self.st.append((price, r))
+            return self.i - r + 1
+        else:
+            self.st.append((price, self.i))
+            return 1
+
+
+class StockSpanner:
+    def __init__(self):
+        self.st = []
+        self.i = -1
+
+    def next(self, price: int) -> int:
+        self.i += 1
+        r = -1
+        while self.st and price >= self.st[-1][0]:
+            _, r = self.st.pop()
+        pre = r if r != -1 else self.i
+        self.st.append((price, pre))
+        return self.i - pre + 1
+
+
+class StockSpanner:
+    def __init__(self):
+        self.st = [(math.inf, -1)]
+        self.i = -1
+
+    def next(self, price: int) -> int:
+        self.i += 1
+        while price >= self.st[-1][0]:
+            self.st.pop()
+        self.st.append((price, self.i))
+        return self.i - self.st[-2][1]
+
+
 # 904 - Fruit Into Baskets - MEDIUM
 class Solution:
     def totalFruit(self, fruits: List[int]) -> int:
