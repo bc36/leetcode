@@ -1237,6 +1237,18 @@ class Solution:
         return partition
 
 
+# 766 - Toeplitz Matrix - EASY
+class Solution:
+    def isToeplitzMatrix(self, matrix: List[List[int]]) -> bool:
+        m = len(matrix)
+        n = len(matrix[0])
+        for i in range(1, m):
+            for j in range(1, n):
+                if matrix[i][j] != matrix[i - 1][j - 1]:
+                    return False
+        return True
+
+
 # 767 - Reorganize String - MEDIUM
 class Solution:
     # O(n * logk + n) / O(n)
@@ -1394,9 +1406,16 @@ class Solution:
         return ans
 
 
-################
-# 2022.3.30 VO #
-################
+# 771 - Jewels and Stones - EASY
+class Solution:
+    def numJewelsInStones(self, jewels: str, stones: str) -> int:
+        cnt = collections.Counter(stones)
+        return sum(cnt[j] for j in jewels)
+
+
+#################
+# 2022.03.30 VO #
+#################
 # 772 - Basic Calculator III - HARD - PREMIUM
 # Write a calculator with support for +, -, *, / and parentheses.
 # Assume the input expression is valid -> no /0, no 1+-2, no other operator
