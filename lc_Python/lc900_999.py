@@ -277,6 +277,50 @@ class Solution:
         return search(1, 2, 0)
 
 
+# 915 - Partition Array into Disjoint Intervals - MEDIUM
+class Solution:
+    # O(3n) / O(2n)
+    def partitionDisjoint(self, nums: List[int]) -> int:
+        n = len(nums)
+        mx = [0] * n
+        mx[0] = nums[0]
+        for i in range(1, len(nums)):
+            mx[i] = max(mx[i - 1], nums[i])
+        mi = [1e6] * n
+        mi[-1] = nums[-1]
+        for i in range(len(nums) - 2, -1, -1):
+            mi[i] = min(mi[i + 1], nums[i])
+        for i in range(n - 1):
+            if mx[i] <= mi[i + 1]:
+                return i + 1
+        return -1
+
+    # O(2n) / O(n)
+    def partitionDisjoint(self, nums: List[int]) -> int:
+        n = len(nums)
+        mi = [1e6] * n
+        mi[-1] = nums[-1]
+        for i in range(len(nums) - 2, -1, -1):
+            mi[i] = min(mi[i + 1], nums[i])
+        mx = nums[0]
+        for i in range(n - 1):
+            if mx <= mi[i + 1]:
+                return i + 1
+            mx = max(mx, nums[i])
+        return -1
+
+    # O(n) / O(1)
+    def partitionDisjoint(self, nums: List[int]) -> int:
+        leftMx = mx = nums[0]
+        p = 0
+        for i in range(1, len(nums) - 1):
+            mx = max(mx, nums[i])
+            if nums[i] < leftMx:
+                leftMx = mx
+                p = i
+        return p + 1
+
+
 # 917 - Reverse Only Letters - EASY
 class Solution:
     def reverseOnlyLetters(self, s: str) -> str:
