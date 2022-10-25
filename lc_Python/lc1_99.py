@@ -1282,6 +1282,33 @@ class Solution:
         return str(res)
 
 
+# 44 - Wildcard Matching - HARD
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        i = j = sRecord = 0
+        pRecord = -1
+        while i < len(s):
+            if j < len(p) and (s[i] == p[j] or p[j] == "?"):
+                i += 1
+                j += 1
+            # 尝试匹配 * 之后的字符串 和 sRecord 之后
+            elif j < len(p) and p[j] == "*":
+                sRecord = i
+                pRecord = j
+                j += 1
+            # 不匹配, 尝试新的起点, sRecord + 1, p 回退
+            elif pRecord != -1:
+                i = sRecord + 1
+                j = pRecord + 1
+                sRecord += 1
+            else:
+                return False
+        # s 已匹配完, p 剩余部分必须是 *
+        while j < len(p) and p[j] == "*":
+            j += 1
+        return j == len(p)
+
+
 # 45 - Jump Game II - MEDIUM
 class Solution:
     # slow, O(n^2)

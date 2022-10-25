@@ -690,7 +690,7 @@ class Solution:
         n = len(grid[0])
         dq = collections.deque()
 
-        # def dfs(i, j):
+        # def dfs(i: int, j: int) -> None:
         #     grid[i][j] = 2
         #     for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
         #         if 0 <= x < m and 0 <= y < n and grid[x][y] == 1:
@@ -698,7 +698,7 @@ class Solution:
         #             dq.append((x, y))
         #     return
 
-        def dfs(r, c):
+        def dfs(r: int, c: int) -> None:
             if 0 <= r < m and 0 <= c < n:
                 if grid[r][c] != 1:
                     return
@@ -708,6 +708,7 @@ class Solution:
                 dfs(r - 1, c)
                 dfs(r, c - 1)
                 dfs(r, c + 1)
+            return
 
         f = False
         for i in range(m):
@@ -719,7 +720,6 @@ class Solution:
                     break
             if f:
                 break
-
         ans = 0
         while dq:
             for _ in range(len(dq)):
@@ -728,11 +728,50 @@ class Solution:
                     if 0 <= x < m and 0 <= y < n:
                         if grid[x][y] == 1:
                             return ans
-                        elif grid[x][y] == 0:
+                        if grid[x][y] == 0:
                             grid[x][y] = 2
                             dq.append((x, y))
             ans += 1
         return ans
+
+    def shortestBridge(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        island = []
+        ok = False
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 1:
+                    q = [(i, j)]
+                    island.append((i, j))
+                    grid[i][j] = 2
+                    while q:
+                        x, y = q.pop()
+                        for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                            if 0 <= nx < m and 0 <= ny < n:
+                                if grid[nx][ny] == 1:
+                                    grid[nx][ny] = -1  # sink the first island
+                                    island.append((nx, ny))
+                                    q.append((nx, ny))
+                    ok = True
+                    break
+            if ok:
+                break
+        q = island
+        ans = 0
+        while q:
+            nxt = []
+            for x, y in q:
+                for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                    if 0 <= nx < m and 0 <= ny < n:
+                        if grid[nx][ny] == 1:
+                            return ans
+                        if grid[nx][ny] == 0:
+                            grid[nx][ny] = -1
+                            nxt.append((nx, ny))
+            q = nxt
+            ans += 1
+        return -1
 
 
 # 935 - Knight Dialer - MEDIUM
