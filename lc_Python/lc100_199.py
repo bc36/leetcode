@@ -18,7 +18,7 @@ class ListNode:
 # 101 - Symmetric Tree - EASY
 class Solution:
     def isSymmetric(self, root: TreeNode) -> bool:
-        def dfs(left, right):
+        def dfs(left: TreeNode, right: TreeNode) -> bool:
             if not (left or right):
                 return True
             if not (left and right):
@@ -28,6 +28,14 @@ class Solution:
             return dfs(left.left, right.right) and dfs(left.right, right.left)
 
         return dfs(root.left, root.right)
+
+    def isSymmetric(self, root: TreeNode) -> bool:
+        def isSym(p: TreeNode, q: TreeNode) -> bool:
+            if p and q and p.val == q.val:
+                return isSym(p.left, q.right) and isSym(p.right, q.left)
+            return p == q
+
+        return not root or isSym(root.left, root.right)
 
     def isSymmetric(self, root: TreeNode) -> bool:
         if not root or not (root.left or root.right):
@@ -415,10 +423,19 @@ class Solution:
 # 121 - Best Time to Buy and Sell Stock - EASY
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        mi, ans = prices[0], 0
+        ans = 0
+        mi = prices[0]
         for p in prices:
             ans = max(ans, p - mi)
             mi = min(p, mi)
+        return ans
+
+    def maxProfit(self, prices: List[int]) -> int:
+        ans = 0
+        buy = math.inf
+        for p in prices:
+            buy = min(buy, p)
+            ans = max(ans, p - buy)
         return ans
 
 
@@ -1096,6 +1113,7 @@ class LRUCache:
         # # del is faster, pop() or popitem() used to get the return value
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
+        return
 
 
 # Doubly linked list + Hashmap
@@ -1103,14 +1121,14 @@ class ListNode:
     def __init__(self, key=0, value=0):
         self.key = key
         self.value = value
-        self.prev = None
-        self.next = None
+        self.prev: ListNode = None
+        self.next: ListNode = None
 
 
 class LRUCache:
     def __init__(self, capacity: int):
         self.cap = capacity
-        self.dic = {}
+        self.d = {}
         self.head = ListNode()
         self.tail = ListNode()
         # head <-> tail
@@ -1138,28 +1156,28 @@ class LRUCache:
         return
 
     def move_to_end(self, key: int) -> None:
-        node = self.dic[key]
+        node = self.d[key]
         self.remove(node)
         self.add(node)
         return
 
     def get(self, key: int) -> int:
-        if key not in self.dic:
+        if key not in self.d:
             return -1
         self.move_to_end(key)
-        node = self.dic[key]
+        node = self.d[key]
         return node.value
 
     def put(self, key: int, value: int) -> None:
-        if key in self.dic:
-            self.dic[key].value = value
+        if key in self.d:
+            self.d[key].value = value
             self.move_to_end(key)
         else:
-            if len(self.dic) == self.cap:
-                self.dic.pop(self.head.next.key)
+            if len(self.d) == self.cap:
+                self.d.pop(self.head.next.key)
                 self.remove(self.head.next)
             node = ListNode(key, value)
-            self.dic[key] = node
+            self.d[key] = node
             self.add(node)
         return
 
@@ -1713,6 +1731,19 @@ class Solution:
         cmp: Callable[[str, str], int] = lambda x, y: int(y + x) - int(x + y)
         ans = "".join(sorted(map(str, nums), key=functools.cmp_to_key(cmp)))
         return "0" if ans[0] == "0" else ans
+
+
+# 188 - Best Time to Buy and Sell Stock IV - HARD
+class Solution:
+    def maxProfit(self, k: int, prices: List[int]) -> int:
+        buy = [-math.inf] * (k + 1)
+        sell = [-math.inf] * (k + 1)
+        buy[0] = 0
+        sell[0] = 0
+        for p in prices:
+            for i in range(k, 0, -1):
+                buy[i] = bu
+        return
 
 
 # 189 - Rotate Array - MEDIUM
