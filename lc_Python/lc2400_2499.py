@@ -3,6 +3,13 @@ from typing import List, Optional
 import sortedcontainers
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -472,6 +479,172 @@ class Node:
         dfs(trie, 0)
         return ans
 
+# 2432 - The Employee That Worked on the Longest Task - EASY
+class Solution:
+    def hardestWorker(self, n: int, logs: List[List[int]]) -> int:
+        p = mx = 0
+        for i, t in logs:
+            if t - p > mx:
+                ans = i
+                mx = t - p
+            elif t - p == mx:
+                ans = min(ans, i)
+            p = t
+        return ans
+
+
+# 2433 - Find The Original Array of Prefix Xor - MEDIUM
+class Solution:
+    def findArray(self, pref: List[int]) -> List[int]:
+        ans = [pref[0]]
+        for i in range(1, len(pref)):
+            ans.append(pref[i] ^ pref[i - 1])
+        return ans
+
+    def findArray(self, pref: List[int]) -> List[int]:
+        return [pref[0]] + [x ^ y for x, y in pairwise(pref)]
+
+
+# 2434 - Using a Robot to Print the Lexicographically Smallest String - MEDIUM
+class Solution:
+    # O(n + 26) / O(n + 26)
+    def robotWithString(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        st = []
+        ans = []
+        i = 97
+        while cnt[chr(i)] == 0:
+            i += 1
+        for c in s:
+            if cnt[chr(i)] != 0 and c != chr(i):
+                st.append(c)
+                cnt[c] -= 1
+                continue
+            cnt[chr(i)] -= 1
+            ans.append(c)
+            while cnt[chr(i)] == 0 and i <= ord("z"):
+                i += 1
+                while st and ord(st[-1]) <= i:
+                    ans.append(st.pop())
+        while st:
+            ans.append(st.pop())
+        return "".join(ans)
+
+    def robotWithString(self, s: str) -> str:
+        ans = []
+        cnt = collections.Counter(s)
+        i = 0
+        st = []
+        for c in s:
+            cnt[c] -= 1
+            while i < 25 and cnt[chr(i + 97)] == 0:
+                i += 1
+            st.append(c)
+            while st and st[-1] <= chr(i + 97):
+                ans.append(st.pop())
+        return "".join(ans)
+
+
+# 2435 - Paths in Matrix Whose Sum Is Divisible by K - HARD
+class Solution:
+    def numberOfPaths(self, grid: List[List[int]], k: int) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+        f = [[[0] * k for _ in range(n)] for _ in range(m)]
+        f[0][0][grid[0][0] % k] = 1
+        for i in range(m):
+            for j in range(n):
+                for h in range(k):
+                    f[i][j][h] %= mod
+                    if i + 1 < m:
+                        f[i + 1][j][(h + grid[i + 1][j]) % k] += f[i][j][h]
+                    if j + 1 < n:
+                        f[i][j + 1][(h + grid[i][j + 1]) % k] += f[i][j][h]
+        return f[m - 1][n - 1][0] % mod
+
+    def numberOfPaths(self, grid: List[List[int]], k: int) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+        f = [[[0] * k for _ in range(n)] for _ in range(m)]
+        x = 0
+        for i in range(m):
+            x = (x + grid[i][0]) % k
+            f[i][0][x] = 1
+        x = 0
+        for j in range(n):
+            x = (x + grid[0][j]) % k
+            f[0][j][x] = 1
+        for i in range(1, m):
+            for j in range(1, n):
+                for p in range(k):
+                    x = (p - grid[i][j]) % k
+                    f[i][j][p] = (f[i - 1][j][x] + f[i][j - 1][x]) % mod
+        return f[-1][-1][0]
+
+    def numberOfPaths(self, grid: List[List[int]], k: int) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+        f = [[[0] * k for _ in range(n + 1)] for _ in range(m + 1)]
+
+        # f[0][1][0] = 1 / f[1][0][0], 为什么这样初始化:
+        # 因为是从 f[1][1][] 开始算的, f[0][1][0] 和 f[1][0][0] 必须有一个是 1
+        f[0][1][0] = 1
+
+        for i in range(m):
+            for j in range(n):
+                for v in range(k):
+                    f[i + 1][j + 1][(v + grid[i][j]) % k] = (
+                        f[i + 1][j][v] + f[i][j + 1][v]
+                    ) % mod
+
+        return f[-1][-1][0]
+
+    def numberOfPaths(self, grid: List[List[int]], k: int) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int, v: int) -> int:
+            if i >= m or j >= n:
+                return 0
+            v = (v + grid[i][j]) % k
+            if i == m - 1 and j == n - 1 and v == 0:
+                return 1
+
+            return (dfs(i + 1, j, v) % mod + dfs(i, j + 1, v) % mod) % mod
+
+        ans = dfs(0, 0, 0)
+        dfs.cache_clear()
+        return ans
+
+    def numberOfPaths(self, grid: List[List[int]], k: int) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        mod = 10**9 + 7
+
+        # 不需要 dfs.cache_clear()
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> List[int]:
+            g = grid[i][j]
+            ans = [0] * k
+            if i == 0 == j:
+                ans[g % k] = 1
+                return ans
+            if i:
+                for v, r in enumerate(dfs(i - 1, j)):
+                    v = (v + g) % k
+                    ans[v] = (ans[v] + r) % mod
+            if j:
+                for v, r in enumerate(dfs(i, j - 1)):
+                    v = (v + g) % k
+                    ans[v] = (ans[v] + r) % mod
+            return ans
+
+        return dfs(m - 1, n - 1)[0]
 
 
 # 2441 - Largest Positive Integer That Exists With Its Negative - EASY
@@ -588,7 +761,7 @@ class Solution:
 
     # 枚举以 i 为右端点的定界子数组数量
     # 分别维护 maxK 和 minK 从 i 往左看, 第一次出现的位置 x, y
-    # 表示左端点必须在 min⁡(x, y) 及其左侧，否则子数组中会缺少 maxK 或 minK
+    # 表示左端点必须在 min⁡(x, y) 及其左侧, 否则子数组中会缺少 maxK 或 minK
     # 以 i 为右边界的子数组数量(如果存在) = min(x, y) - l
     def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
         ans = 0
@@ -615,3 +788,22 @@ class Solution:
                 l = r + 1
             ans += max(0, min(mii, mxi) - l + 1)
         return ans
+
+    # TODO
+    def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
+        def ask(x: int, y: int) -> int:
+            s = j = 0
+            for v in nums:
+                if x <= v <= y:
+                    j += 1
+                else:
+                    j = 0
+                s += j
+            return s
+
+        return (
+            ask(minK, maxK)
+            - ask(minK + 1, maxK)
+            - ask(minK, maxK - 1)
+            + ask(minK + 1, maxK - 1)
+        )
