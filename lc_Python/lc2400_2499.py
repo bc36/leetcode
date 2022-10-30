@@ -313,6 +313,206 @@ class Solution:
         return max(itertools.accumulate(diff[k] for k in sorted(diff)))
 
 
+
+# 2409 - Count Days Spent Together - EASY
+class Solution:
+    def countDaysTogether(
+        self, arriveAlice: str, leaveAlice: str, arriveBob: str, leaveBob: str
+    ) -> int:
+        m = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+        def f(s: str) -> int:
+            x, y = s.split("-")
+            x = int(x)
+            y = int(y)
+            return y + sum(m[: x - 1])
+
+        aa = f(arriveAlice)
+        la = f(leaveAlice)
+        ab = f(arriveBob)
+        lb = f(leaveBob)
+        return max(0, min(la, lb) - max(aa, ab) + 1)
+
+    def countDaysTogether(
+        self, arriveAlice: str, leaveAlice: str, arriveBob: str, leaveBob: str
+    ) -> int:
+        m = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        presum = list(itertools.accumulate(m, initial=0))
+
+        def calc(date: str) -> int:
+            return presum[int(date[:2]) - 1] + int(date[3:])
+
+        start = calc(min(leaveAlice, leaveBob))
+        end = calc(max(arriveAlice, arriveBob))
+        return max(start - end + 1, 0)
+
+
+# 2410 - Maximum Matching of Players With Trainers - MEDIUM
+class Solution:
+    def matchPlayersAndTrainers(self, players: List[int], trainers: List[int]) -> int:
+        players.sort()
+        trainers.sort()
+        ans = 0
+        while players and trainers:
+            if players[-1] <= trainers[-1]:
+                players.pop()
+                trainers.pop()
+                ans += 1
+            else:
+                players.pop()
+        return ans
+
+    def matchPlayersAndTrainers(self, players: List[int], trainers: List[int]) -> int:
+        players.sort()
+        trainers.sort()
+        ans = i = 0
+        m = len(trainers)
+        for p in players:
+            while i < m and trainers[i] < p:
+                i += 1
+            if i < m:
+                ans += 1
+                i += 1
+            else:
+                break
+        return ans
+
+
+# 2411 - Smallest Subarrays With Maximum Bitwise OR - MEDIUM
+class Solution:
+    # O(nlogU) / O(1), U = max(nums) -> logU = 30
+    def smallestSubarrays(self, nums: List[int]) -> List[int]:
+        # 如果 nums[j] | nums[i] != nums[j], 说明 nums[j] 可以变大 -> 集合元素增多, 更新 nums[j] 和 ans[j]
+        # 如果 nums[j] | nums[i] == nums[j], 说明 nums[i] 是左边所有 nums[0...j] 的子集, break
+        # 分析, 为什么很容易 break:
+        # 如果每个位置都不一样, 前 30 次循环之后, 后面每个都可以 break, O(30 + n)
+        # 最坏结果, 前面的都一样, 最后 30 个才出现每个位置不同的情况, 每个 j 可以减到 0, 最多 O(30n)
+        ans = [0] * len(nums)
+        for i, v in enumerate(nums):
+            ans[i] = 1
+            for j in range(i - 1, -1, -1):
+                if nums[j] | v == nums[j]:
+                    break
+                nums[j] |= v
+                ans[j] = i - j + 1
+        return ans
+
+    def smallestSubarrays(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        ans = [0] * n
+        p = [0] * 30  # 记录该位为 1 的最近遍历到的数的索引
+        for i in range(n - 1, -1, -1):
+            s = bin(nums[i])[2:][::-1]
+            for j, c in enumerate(s):
+                if c == "1":
+                    p[j] = i
+            ans[i] = max(max(p) - i + 1, 1)
+        return ans
+
+    def smallestSubarrays(self, nums: List[int]) -> List[int]:
+        # TODO, 421, 898, 1521
+        # 该模板可以:
+        # 求出所有子数组的按位或的结果, 以及值等于该结果的子数组的个数
+        # 求按位或结果等于任意给定数字的子数组的最短长度 / 最长长度
+        n = len(nums)
+        ans = [0] * n
+        ors = []  # 按位或的值 + 对应子数组的右端点的最小值
+        for i in range(n - 1, -1, -1):
+            ors.append([0, i])
+            k = 0
+            for p in ors:
+                p[0] |= nums[i]
+                if ors[k][0] == p[0]:
+                    ors[k][1] = p[1]  # 合并相同值，下标取最小的
+                else:
+                    k += 1
+                    ors[k] = p
+            del ors[k + 1 :]
+            # 本题只用到了 ors[0]，如果题目改成任意给定数值，可以在 ors 中查找
+            ans[i] = ors[0][1] - i + 1
+        return ans
+
+
+# 2412 - Minimum Money Required Before Transactions - HARD
+class Solution:
+    def minimumMoney(self, transactions: List[List[int]]) -> int:
+        """
+        lose 为亏钱情况 cost - back 之和
+        枚举交易, 分类讨论:
+            1. cost <= back, 挣钱, 让其发生在亏钱之后, ans = lose + cost[i]
+            2. cost > back, 亏钱, 让其发生在最后一笔亏钱时, 已经计算过了, 先把差值退回去, 再减 cost[i]
+                ans = lose - (cost[i] - back[i]) + cost[i] = lose + back[i]
+        """
+        lose = mx = 0
+        for c, b in transactions:
+            lose += max(c - b, 0)
+            mx = max(mx, min(c, b))
+            # 拆开
+            # if c > b:
+            #     lose += c - b
+            #     mx = b if b > mx else mx
+            # else:
+            #     mx = c if c > mx else mx
+        return lose + mx
+
+    def minimumMoney(self, transactions: List[List[int]]) -> int:
+        """或者写成这样"""
+        ans = lose = 0
+        for c, b in transactions:
+            if c > b:
+                lose += c - b
+        for c, b in transactions:
+            if c > b:
+                lose -= c - b
+            ans = max(ans, lose + c)
+            if c > b:
+                lose += c - b
+        return ans
+
+    def minimumMoney(self, transactions: List[List[int]]) -> int:
+        """
+        哪个环节会导致交易失败? 只可能是需要 cost 的代价, 但当前金钱不足 cost 才会失败
+        最差情况下, 进行交易 T 之前, 我们会首先完成其它所有负收益交易, 这样才会让我们的当前金钱变得最少
+        初始至少需要 cost(T) - sum(负收益之和) 的金钱. 最终答案就是该式的最大值
+        """
+        ans = neg = 0
+        for c, b in transactions:
+            if c > b:
+                neg += b - c
+        for c, b in transactions:
+            diff = b - c
+            if diff < 0:
+                ans = max(ans, c - (neg - diff))
+            else:
+                ans = max(ans, c - neg)
+        return ans
+
+    def minimumMoney(self, transactions: List[List[int]]) -> int:
+        """
+        summ 维护最大扣钱和, 然后枚举每一笔交易作为最少钱时购买的
+        x > y: 拿的就是扣钱中的一个, 把减去的 y 补回来 / 反之继续拿新的, 不在原有和之中, 还得扣新的 x
+        """
+        ans = summ = 0
+        for x, y in transactions:
+            if x > y:
+                summ += x - y
+        for x, y in transactions:
+            if x > y:
+                ans = max(ans, y + summ)
+            else:
+                ans = max(ans, summ + x)
+        return ans
+
+    # 使用贪心排序的比较函数很难想
+    #   1. 亏钱的排前面
+    #   2. 亏钱的中, cashback 最大的排最后
+    #   3. 赚钱的中, cost 最大的排最前
+    # 不过问题的本质不是排序:
+    #   其实只要保证亏钱部分 cashback 最大的放最后, 赚钱部分只把 cost 最大的那个放到最前就行了, 其他交易的顺序无关紧要
+
+    # TODO 1665
+
+
 # 2413 - Smallest Even Multiple - EASY
 class Solution:
     def smallestEvenMultiple(self, n: int) -> int:

@@ -482,3 +482,15 @@ T4: 840 pass
 # https://leetcode.cn/contest/biweekly-contest-86
 # 1716 / https://leetcode.cn/contest/biweekly-contest-86/problems/maximum-rows-covered-by-columns/
 # 状态压缩 / 枚举 / 位运算
+
+
+# https://leetcode.cn/contest/biweekly-contest-87
+# 999 / https://leetcode.cn/contest/biweekly-contest-87/problems/smallest-subarrays-with-maximum-bitwise-or/
+# 位运算 / 集合
+# 529 / https://leetcode.cn/contest/biweekly-contest-87/problems/minimum-money-required-before-transactions/
+# 贪心
+
+
+# https://leetcode.cn/contest/biweekly-contest-88
+# 712 / https://leetcode.cn/contest/biweekly-contest-88/problems/number-of-pairs-satisfying-inequality/
+# 树状数组 + 离散化 / 归并排序
