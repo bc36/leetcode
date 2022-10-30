@@ -15,6 +15,17 @@ class Solution:
         return nums
 
 
+# 1979 - Find Greatest Common Divisor of Array - EASY
+class Solution:
+    def findGCD(self, nums: List[int]) -> int:
+        def gcd(a: int, b: int) -> int:
+            while b:
+                a, b = b, a % b
+            return a
+
+        return math.gcd(min(nums), max(nums))
+
+
 # 1984 - Minimum Difference Between Highest and Lowest of K Scores - EASY
 class Solution:
     def minimumDifference(self, nums: List[int], k: int) -> int:

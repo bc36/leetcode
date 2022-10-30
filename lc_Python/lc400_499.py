@@ -1187,6 +1187,41 @@ class Solution:
         return dfs(0, 0)
 
 
+# 475 - Heaters - MEDIUM
+class Solution:
+    def findRadius(self, houses: List[int], heaters: List[int]) -> int:
+        heaters = heaters + [float("-inf"), float("inf")]
+        houses.sort()
+        heaters.sort()
+        ans, i = 0, 0
+        for h in houses:
+            while h > heaters[i + 1]:
+                i += 1
+            dis = min(h - heaters[i], heaters[i + 1] - h)
+            ans = max(ans, dis)
+        return ans
+
+
+# 476 - Number Complement - EASY
+class Solution:
+    def findComplement(self, num: int) -> int:
+        mask = num
+        mask |= mask >> 1
+        mask |= mask >> 2
+        mask |= mask >> 4
+        mask |= mask >> 8
+        mask |= mask >> 16
+        return num ^ mask
+
+    def findComplement(self, num: int) -> int:
+        a = 1  # sum is -1
+        while True:
+            if num >= a:
+                a <<= 1
+            else:
+                return a - num - 1
+
+
 # 478 - Generate Random Point in a Circle - MEDIUM
 class Solution:
     def __init__(self, radius: float, x_center: float, y_center: float):
@@ -1228,39 +1263,57 @@ class Solution:
         return
 
 
-# 475 - Heaters - MEDIUM
+# 481 - Magical String - MEDIUM
 class Solution:
-    def findRadius(self, houses: List[int], heaters: List[int]) -> int:
-        heaters = heaters + [float("-inf"), float("inf")]
-        houses.sort()
-        heaters.sort()
-        ans, i = 0, 0
-        for h in houses:
-            while h > heaters[i + 1]:
-                i += 1
-            dis = min(h - heaters[i], heaters[i + 1] - h)
-            ans = max(ans, dis)
-        return ans
+    def magicalString(self, n: int) -> int:
+        s = "122"
+        i = f = 2
+        while len(s) < n:
+            f = 3 - f
+            s += str(f) * int(s[i])
+            i += 1
+        return s[:n].count("1")
+
+    def magicalString(self, n: int) -> int:
+        s = "122"
+        i = 2
+        score = ["1", "2"]
+        signal = 0
+        while len(s) < n:
+            s += score[signal] * int(s[i])
+            i += 1
+            signal ^= 1
+        return s[:n].count("1")
 
 
-# 476 - Number Complement - EASY
+# 打表, 预处理
+s = "122"
+i = f = 2
+while len(s) < 1e5:
+    f = 3 - f  # f ^= 3
+    s += str(f) * int(s[i])
+    i += 1
+
+
 class Solution:
-    def findComplement(self, num: int) -> int:
-        mask = num
-        mask |= mask >> 1
-        mask |= mask >> 2
-        mask |= mask >> 4
-        mask |= mask >> 8
-        mask |= mask >> 16
-        return num ^ mask
+    def magicalString(self, n: int) -> int:
+        return sum(c == "1" for c in s[:n])
+        return s[:n].count("1")
 
-    def findComplement(self, num: int) -> int:
-        a = 1  # sum is -1
-        while True:
-            if num >= a:
-                a <<= 1
-            else:
-                return a - num - 1
+
+s = "122"
+i = 2
+score = ["1", "2"]
+signal = 0
+while len(s) < 1e5:
+    s += score[signal] * int(s[i])
+    i += 1
+    signal ^= 1
+
+
+class Solution:
+    def magicalString(self, n: int) -> int:
+        return s[:n].count("1")
 
 
 # 489 - Robot Room Cleaner - HARD - PREMIUM

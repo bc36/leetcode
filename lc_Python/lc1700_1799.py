@@ -264,6 +264,21 @@ class Solution:
         return dfs(0, len(nums) - 1, 0)
 
 
+# 1773 - Count Items Matching a Rule - EASY
+class Solution:
+    def countMatches(self, items: List[List[str]], ruleKey: str, ruleValue: str) -> int:
+        if ruleKey == "type":
+            return sum(x == ruleValue for x, _, _ in items)
+        if ruleKey == "color":
+            return sum(x == ruleValue for _, x, _ in items)
+        if ruleKey == "name":
+            return sum(x == ruleValue for _, _, x in items)
+
+    def countMatches(self, items: List[List[str]], ruleKey: str, ruleValue: str) -> int:
+        idx = {"type": 0, "color": 1, "name": 2}[ruleKey]
+        return sum(v[idx] == ruleValue for v in items)
+
+
 # 1775 - Equal Sum Arrays With Minimum Number of Operations - MEDIUM
 class Solution:
     def minOperations(self, nums1: List[int], nums2: List[int]) -> int:

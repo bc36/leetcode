@@ -1073,7 +1073,7 @@ class Solution:
         ans = 0
         while virus and blank:
             seen = set()
-            todo = (set(), set(), 0)
+            plan = (set(), set(), 0)
             area = []
             for i, j in virus:
                 if (i, j) in seen:
@@ -1083,12 +1083,12 @@ class Solution:
                 walls = dfs(i, j)
                 seen.update(neib)
                 area.append((infect, neib, walls))
-                if len(todo[0]) < len(infect):
-                    todo = (infect, neib, walls)
-            ans += todo[2]
-            virus -= todo[1]
+                if len(plan[0]) < len(infect):
+                    plan = (infect, neib, walls)
+            ans += plan[2]
+            virus -= plan[1]
             for infect, neib, walls in area:
-                if len(todo[0]) == len(infect):
+                if len(plan[0]) == len(infect):
                     continue
                 if infect:
                     virus |= infect
@@ -1720,19 +1720,20 @@ class Solution:
         ans = [""]
         for ch in s:
             if ch.isalpha():
-                ans = [i + j for i in ans for j in [ch.upper(), ch.lower()]]
+                ans = [x + y for x in ans for y in [ch.upper(), ch.lower()]]
             else:
-                ans = [i + ch for i in ans]
+                ans = [x + ch for x in ans]
         return ans
 
-        # ans = ['']
-        # for c in s.lower():
-        #     ans = [a + c
-        #            for a in ans] + ([a + c.upper()
-        #                              for a in ans] if c.isalpha() else [])
-        # return ans
+    def letterCasePermutation(self, s: str) -> List[str]:
+        ans = [""]
+        for c in s.lower():
+            ans = [x + c for x in ans] + (
+                [x + c.upper() for x in ans] if c.isalpha() else []
+            )
+        return ans
 
-        ## L = ['a', 'A'], '1', ['b', 'B'], '2']
+        ## L = [['a', 'A'], '1', ['b', 'B'], '2']
         ## itertools.product(L) --> only 1 parameter [['a', 'A'], '1', ['b', 'B'], '2']
         ## itertools.product(*L) --> 4 parameter ['a', 'A'], '1', ['b', 'B'], '2'
         # L = [set([i.lower(), i.upper()]) for i in s]
@@ -1744,7 +1745,7 @@ class Solution:
                 ans.append(sub)
             else:
                 if s[i].isalpha():
-                    # chr(ord(s[i])^(1<<5))
+                    # chr(ord(s[i]) ^ (1 << 5))
                     backtrack(sub + s[i].swapcase(), i + 1)
                     # backtrack(sub + s[i].lower(), i + 1)
                 backtrack(sub + s[i], i + 1)

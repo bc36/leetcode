@@ -380,17 +380,15 @@ class Solution:
         return ans if ans != float("inf") else 0
 
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
-        l = 0
+        l = s = 0
         ans = math.inf
-        summ = 0
         for r, v in enumerate(nums):
-            summ += v
-            while summ - nums[l] >= target:
-                summ -= nums[l]
-                l += 1
-            if summ >= target:
+            s += v
+            while s >= target:
                 ans = min(ans, r - l + 1)
-        return 0 if ans == math.inf else ans
+                s -= nums[l]
+                l += 1
+        return ans if ans < math.inf else 0
 
 
 # 210 - Course Schedule II - MEDIUM
@@ -1157,7 +1155,7 @@ class Solution:
     def lowestCommonAncestor(
         self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
     ) -> "TreeNode":
-        def dfs(root):
+        def dfs(root: TreeNode) -> TreeNode:
             if not root:
                 return None
             if root == q or root == p:
@@ -1178,18 +1176,18 @@ class Solution:
     def lowestCommonAncestor(
         self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
     ) -> "TreeNode":
-        stack = [root]
-        # stack = collections.deque([root])
+        st = [root]
+        # st = collections.deque([root])
         parent = {root: None}  # {child: father}
         while p not in parent or q not in parent:
-            node = stack.pop()
-            # node = stack.popleft()
+            node = st.pop()
+            # node = st.popleft()
             if node.left:
                 parent[node.left] = node
-                stack.append(node.left)
+                st.append(node.left)
             if node.right:
                 parent[node.right] = node
-                stack.append(node.right)
+                st.append(node.right)
         ancestors = set()
         # Backtracking p's all ancestors, until to the root
         while p:
