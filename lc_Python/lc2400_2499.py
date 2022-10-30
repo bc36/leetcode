@@ -1007,3 +1007,163 @@ class Solution:
             - ask(minK, maxK - 1)
             + ask(minK + 1, maxK - 1)
         )
+
+
+# 2451 - Odd String Difference - EASY
+class Solution:
+    # O(mn) / O(m + n)
+    def oddString(self, words: List[str]) -> str:
+        n = len(words[0])
+        d = collections.defaultdict(list)
+        for w in words:
+            diff = [0] * (n - 1)
+            for j in range(n - 1):
+                diff[j] = ord(w[j + 1]) - ord(w[j])
+            d[tuple(diff)].append(w)
+        x, y = d.values()
+        return x[0] if len(x) == 1 else y[0]
+
+    def oddString(self, words: List[str]) -> str:
+        d = collections.defaultdict(list)
+        for w in words:
+            d[tuple(ord(x) - ord(y) for x, y in pairwise(w))].append(w)
+        x, y = d.values()
+        return x[0] if len(x) == 1 else y[0]
+
+
+# 2452 - Words Within Two Edits of Dictionary - MEDIUM
+class Solution:
+    # O(qdn) / O(1), q = len(queries), d = len(dictionary), n = len(queries[i])
+    def twoEditWords(self, queries: List[str], dictionary: List[str]) -> List[str]:
+        ans = []
+        for q in queries:
+            for d in dictionary:
+                diff = 0
+                for x, y in zip(q, d):
+                    if x != y:
+                        diff += 1
+                    if diff > 2:
+                        break
+                if diff <= 2:
+                    ans.append(q)
+                    break
+        return ans
+
+    def twoEditWords(self, queries: List[str], dictionary: List[str]) -> List[str]:
+        ans = []
+        for q in queries:
+            for d in dictionary:
+                if sum(x != y for x, y in zip(q, d)) <= 2:
+                    ans.append(q)
+                    break
+        return ans
+
+    # 每次对 queries[i] 做搜索不如把所有可能转移到 dictionary[i] 的情况找出来
+    # 所以依次遍历可能转移到 dictionary[i] 的情况, 加入 set; 遍历 queries, 看是否在 set 中
+    # 分析时间复杂度:
+    # 最坏情况, dictionary[i] 有两个字符不同的备选
+    # for w in dictionary:                                  O(d) 100
+    #     for i in range(n):                                O(n) 100
+    #         for a in string.ascii_lowercase:              O(26) 26
+    #             new = w[:i] + a + w[i + 1:]               O(n) 100
+    #             for j in range(i + 1, n):                 O(n) 100
+    #                 for b in string.ascii_lowercase:      O(26) 26
+    #                     neww = w[:j] + b + w[j + 1:]      O(n) 100
+    #                     st.add(neww)                      total: 100**5 * 26**2 = 6.76e12
+    # 即便不考虑切片复杂度, 去掉两个 100, 也会达到 6.76e8, 不一定能过
+
+
+# 2453 - Destroy Sequential Targets - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def destroyTargets(self, nums: List[int], space: int) -> int:
+        cnt = collections.defaultdict(list)
+        for v in nums:
+            cnt[v % space].append(v)
+        mx = ans = 0
+        for vals in cnt.values():
+            l = len(vals)
+            v = min(vals)
+            if l > mx or l == mx and v < ans:
+                mx = l
+                ans = v
+        return ans
+
+    def destroyTargets(self, nums: List[int], space: int) -> int:
+        cnt = collections.defaultdict(int)
+        for v in nums:
+            cnt[v % space] += 1
+        ans = nums[0]
+        mx = cnt[nums[0] % space]
+        for v in nums:
+            t = cnt[v % space]
+            if t > mx or t == mx and v < ans:
+                mx = t
+                ans = v
+        return ans
+
+
+# 2454 - Next Greater Element IV - HARD
+class Solution:
+    # s 单调递减栈, 如果 v 比 s 的栈顶大, 说明 v 是下个更大元素
+    # 弹出 s 的栈顶, 加入 t, 如果 v 比 t 的栈顶大, 说明 v 是 t 栈顶的第二大元素
+    # 注意:
+    #     1. 先检查 t
+    #     2. s 的栈顶移动到 t 时, 保持原始顺序 (直接 pop s 的栈顶移入 t 的话, t 就不是单调递减了)
+
+    # O(n) / O(n)
+    def secondGreaterElement(self, nums: List[int]) -> List[int]:
+        s = []
+        t = []
+        ans = [-1] * len(nums)
+        for i, v in enumerate(nums):
+            while t and nums[t[-1]] < v:
+                ans[t.pop()] = v
+            dq = collections.deque()
+            while s and nums[s[-1]] < v:
+                dq.appendleft(s.pop())
+            t.extend(dq)
+            s.append(i)
+        return ans
+
+    def secondGreaterElement(self, nums: List[int]) -> List[int]:
+        s = []
+        t = []
+        ans = [-1] * len(nums)
+        for i, v in enumerate(nums):
+            while t and nums[t[-1]] < v:
+                ans[t.pop()] = v
+            j = len(s) - 1
+            while j >= 0 and nums[s[j]] < v:
+                j -= 1
+            t += s[j + 1 :]
+            del s[j + 1 :]
+            s.append(i)
+        return ans
+
+    # O(nlogK) / O(n)
+    def secondGreaterElement(self, nums: List[int]) -> List[int]:
+        s = []
+        q = []
+        ans = [-1] * len(nums)
+        for i, v in enumerate(nums):
+            while q and q[0][0] < v:
+                ans[heapq.heappop(q)[1]] = v
+            while s and nums[s[-1]] < v:
+                x = s.pop()
+                heapq.heappush(q, (nums[x], x))
+            s.append(i)
+        return ans
+
+    # 名次树, 从上往下遍历, 找右边的第 k 个数 (解决第 k 大问题)
+    def secondGreaterElement(self, nums: List[int]) -> List[int]:
+        ans = [-1] * len(nums)
+        k = 2  # 第 k 大
+        s = sortedcontainers.SortedList()  # O(nlogn)
+        # 先值排序, 保证名次, 再下标排序, 为了值重复时让其他数字先查到左边的值
+        for _, i in sorted((-v, i) for i, v in enumerate(nums)):
+            j = s.bisect_right(i) + k - 1
+            if j < len(s):
+                ans[i] = nums[s[j]]
+            s.add(i)
+        return ans
