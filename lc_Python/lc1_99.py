@@ -257,6 +257,26 @@ class Solution:
             min(int(*re.findall("^[\+\-]?\d+", s.lstrip())), 2**31 - 1), -(2**31)
         )
 
+    def myAtoi(self, s: str) -> int:
+        i = 0
+        while i < len(s) and s[i] == " ":
+            i += 1
+        sign = 1
+        if i < len(s) and s[i] in '+-':
+            sign *= -1 if s[i] == '-' else 1
+            i += 1
+        while i < len(s) and s[i] == "0":
+            i += 1
+        n = 0
+        while i < len(s) and s[i].isdigit():
+            n = n * 10 + int(s[i])
+            if n * sign < -(2**31):
+                return -(2**31)
+            if n * sign > 2**31 - 1:
+                return 2**31 - 1
+            i += 1
+        return n * sign
+
 
 # 9 - Palindrome Number - EASY
 class Solution:

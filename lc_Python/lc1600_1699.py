@@ -299,6 +299,12 @@ class OrderedStream:
         return ans
 
 
+# 1662 - Check If Two String Arrays are Equivalent - EASY
+class Solution:
+    def arrayStringsAreEqual(self, word1: List[str], word2: List[str]) -> bool:
+        return "".join(word1) == "".join(word2)
+
+
 # 1672 - Richest Customer Wealth - EASY
 class Solution:
     def maximumWealth(self, accounts: List[List[int]]) -> int:

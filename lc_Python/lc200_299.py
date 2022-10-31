@@ -1208,15 +1208,27 @@ class Solution:
 
 # 238 - Product of Array Except Self - MEDIUM
 class Solution:
+    # O(n) / O(n)
     def productExceptSelf(self, nums: List[int]) -> List[int]:
-        pro, ans = 1, []
+        pre = [1] * (len(nums) + 1)
         for i in range(len(nums)):
-            ans.append(pro)
-            pro *= nums[i]
-        pro = 1
+            pre[i + 1] = pre[i] * nums[i]
+        suf = [1] * (len(nums) + 1)
+        for i in range(len(nums))[::-1]:
+            suf[i] = suf[i + 1] * nums[i]
+        return [pre[i] * suf[i + 1] for i in range(len(nums))]
+
+    # O(n) / O(1)
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        p = 1
+        ans = []
+        for i, v in enumerate(nums):
+            ans.append(p)
+            p *= v
+        p = 1
         for i in range(len(nums) - 1, -1, -1):
-            ans[i] *= pro
-            pro *= nums[i]
+            ans[i] *= p
+            p *= nums[i]
         return ans
 
 

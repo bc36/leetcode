@@ -892,7 +892,7 @@ class Solution:
 
 # 670 - Maximum Swap - MEDIUM
 class Solution:
-    # O(n), Greedy
+    # O(logn * 10) / O(logn), Greedy
     # find the last occurrence of each number (guarantee that the rightmost number)
     # enumerate each number from left to right,
     # swap the number when a larger number is found
@@ -906,6 +906,7 @@ class Solution:
                     return int("".join(s))
         return num
 
+    # O(logn * log(logn)) / O(logn)
     def maximumSwap(self, num: int) -> int:
         s = list(str(num))
         t = sorted(s, reverse=True)

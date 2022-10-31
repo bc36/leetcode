@@ -1393,10 +1393,30 @@ class MinStack:
 
 
 class MinStack:
+    # O(1) / O(2n)
+    def __init__(self):
+        self.s = [(0, math.inf)]
+
+    def push(self, val: int) -> None:
+        self.s.append((val, min(self.s[-1][1], val)))
+        return
+
+    def pop(self) -> None:
+        self.s.pop()
+        return
+
+    def top(self) -> int:
+        return self.s[-1][0]
+
+    def getMin(self) -> int:
+        return self.s[-1][1]
+
+
+class MinStack:
     # O(1) / O(n), save diff in stack
     def __init__(self):
         self.st = []
-        self.mi = -1
+        self.mi = 0
 
     def push(self, val: int) -> None:
         if not self.st:
@@ -1410,8 +1430,6 @@ class MinStack:
         return
 
     def pop(self) -> None:
-        if not self.st:
-            return
         diff = self.st.pop()
         if diff < 0:
             self.mi -= diff  # 更新最小值
@@ -1636,6 +1654,7 @@ class Solution:
 
 # 172 - Factorial Trailing Zeroes - MEDIUM
 class Solution:
+    # O(n) / O(1)
     def trailingZeroes(self, n: int) -> int:
         ans = 0
         for i in range(5, n + 1, 5):
@@ -1644,6 +1663,7 @@ class Solution:
                 ans += 1
         return ans
 
+    # O(logn) / O(1)
     def trailingZeroes(self, n: int) -> int:
         if n // 5 == 0:
             return 0
@@ -1651,11 +1671,20 @@ class Solution:
 
     def trailingZeroes(self, n: int) -> int:
         ans = 0
-        while n >= 5:
+        while n:
             n //= 5
             ans += n
         return ans
 
+    def trailingZeroes(self, n: int) -> int:
+        ans = 0
+        p = 5
+        while p <= n:
+            ans += n // p
+            p *= 5
+        return ans
+
+    # O(1) / O(1)
     def trailingZeroes(self, n: int) -> int:
         return n // 5 + n // 25 + n // 125 + n // 625 + n // 3125
 
