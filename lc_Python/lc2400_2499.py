@@ -423,12 +423,12 @@ class Solution:
             for p in ors:
                 p[0] |= nums[i]
                 if ors[k][0] == p[0]:
-                    ors[k][1] = p[1]  # 合并相同值，下标取最小的
+                    ors[k][1] = p[1]  # 合并相同值, 下标取最小的
                 else:
                     k += 1
                     ors[k] = p
             del ors[k + 1 :]
-            # 本题只用到了 ors[0]，如果题目改成任意给定数值，可以在 ors 中查找
+            # 本题只用到了 ors[0], 如果题目改成任意给定数值, 可以在 ors 中查找
             ans[i] = ors[0][1] - i + 1
         return ans
 
@@ -1162,8 +1162,285 @@ class Solution:
         s = sortedcontainers.SortedList()  # O(nlogn)
         # 先值排序, 保证名次, 再下标排序, 为了值重复时让其他数字先查到左边的值
         for _, i in sorted((-v, i) for i, v in enumerate(nums)):
-            j = s.bisect_right(i) + k - 1
+            j = s.bisect_right(i) + k - 1  # 更大的元素 -> right / upper_bound
             if j < len(s):
                 ans[i] = nums[s[j]]
             s.add(i)
         return ans
+
+
+# 2455 - Average Value of Even Numbers That Are Divisible by Three - EASY
+class Solution:
+    def averageValue(self, nums: List[int]) -> int:
+        t = s = 0
+        for v in nums:
+            if v % 6 == 0:
+                t += 1
+                s += v
+        return s // t if t else 0
+
+
+# 2456 - Most Popular Video Creator - MEDIUM
+class Solution:
+    def mostPopularCreator(
+        self, creators: List[str], ids: List[str], views: List[int]
+    ) -> List[List[str]]:
+        d = dict()  # key: c, val: [sum, max, id]
+        for c, i, v in zip(creators, ids, views):
+            if c in d:
+                summ, mx, j = d[c]
+                summ += v
+                if v > mx or v == mx and i < j:
+                    mx = v
+                    j = i
+                d[c] = (summ, mx, j)
+            else:
+                d[c] = (v, v, i)
+        ans = []
+        mx = 0
+        for c, (summ, _, i) in d.items():
+            if summ > mx:
+                mx = summ
+                ans = [[c, i]]
+            elif summ == mx:
+                ans.append([c, i])
+        return ans
+
+    def mostPopularCreator(
+        self, creators: List[str], ids: List[str], views: List[int]
+    ) -> List[List[str]]:
+        d = {}  # key: c, val: [sum, max, id]
+        mx = 0
+        for c, i, v in zip(creators, ids, views):
+            if c in d:
+                d[c][0] += v
+                if v > d[c][1] or v == d[c][1] and i < d[c][2]:
+                    d[c][1] = v
+                    d[c][2] = i
+            else:
+                d[c] = [v, v, i]
+            mx = max(mx, d[c][0])
+        return [[c, i] for c, (summ, _, i) in d.items() if summ == mx]
+
+
+# 2457 - Minimum Addition to Make Integer Beautiful - MEDIUM
+class Solution:
+    # 贪心, 从低位到高位, 把每一次逐次置 0 进位, 数位和才会变小, 注意进位后次高位会 +1
+
+    # O(logn) / O(1)
+    def makeIntegerBeautiful(self, n: int, target: int) -> int:
+        arr = list(int(x) for x in str(n))[::-1]
+        s = sum(arr)
+        ans = 0
+        i = 0
+        while s > target:
+            ans += (10 - arr[i]) * (10**i)
+            if i + 1 < len(arr):
+                arr[i + 1] += 1  # 进位, 下一位加 1
+            else:
+                arr.append(1)  # 或者没有下一位了, 补一个 1
+            s = s - arr[i] + 1
+            arr[i] = 0  # 进位, 该位变 0
+            i += 1
+        return ans
+
+    # O((logn)**2) / O(1)
+    def makeIntegerBeautiful(self, n: int, target: int) -> int:
+        p = 1
+        while True:
+            x = y = n + (p - n % p) % p  # 进位后的数字, 再模一次是避免余数为 0 时发生进位
+            s = 0
+            while y:
+                s += y % 10
+                y //= 10
+            if s <= target:
+                return x - n
+            p *= 10
+
+    def makeIntegerBeautiful(self, n: int, target: int) -> int:
+        n0 = n
+        i = 0
+        while sum(map(int, str(n))) > target:
+            n = n // 10 + 1
+            i += 1
+        return n * (10**i) - n0
+
+
+# 2458 - Height of Binary Tree After Subtree Removal Queries - HARD
+class Solution:
+    # 比赛做法:
+    # 1. postorder traversal
+    #    a. 求每个点对应的树高(层数), 从第 0 层开始
+    #    b. 求每个节点下, 最大深度
+    #    c. 求节点对应的父节点
+    # 2. 对于每层节点, 因为同层节点上面高度一定, 所以根据节点下面深度排序
+    # 3. a. 砍掉该节点, 该层还有其他节点, 则贪心地从排序后的同层结果中寻找, 从后往前遍历(有更大深度), 返回 高度 + 深度
+    #    b. 该层只有一个节点, 则从上一层找 / 特殊情况: 上一层最大深度对应的子节点就是该节点 -> 所以需要知道父节点信息
+    # O(nlogn + q) / O(n)
+    def treeQueries(self, root: Optional[TreeNode], queries: List[int]) -> List[int]:
+        level = collections.defaultdict(list)  # key: 树高, val: [(树深, 节点值) ... (树深, 节点值)]
+        node2lv = dict()  # 节点对应树高
+        parent = dict()  # 节点对应父节点
+
+        def dfs(root: TreeNode, cur: int) -> int:
+            if not root:
+                return 0
+            if root.left:
+                parent[root.left.val] = root.val
+            if root.right:
+                parent[root.right.val] = root.val
+            l = dfs(root.left, cur + 1)
+            r = dfs(root.right, cur + 1)
+            node2lv[root.val] = cur
+            mx = max(l, r)
+            level[cur].append((mx, root.val))
+            return mx + 1
+
+        dfs(root, 0)
+        lv = []
+        i = 0
+        while i in level:
+            lv.append(sorted(level[i]))
+            i += 1
+        ans = []
+        for q in queries:
+            l = node2lv[q]
+            if len(lv[l]) == 1:
+                i = len(lv[l - 1]) - 1
+                arr = lv[l - 1]
+                r = 0
+                while i >= 0:
+                    # 如果最大树深的节点正好是该节点的父节点, 则子树被砍掉后, 只有树高的贡献, 没有树深的贡献, 还得比较倒二的大小
+                    if arr[i][1] == parent[q]:
+                        r = l - 1
+                        i -= 1
+                        continue
+                    else:
+                        r = max(r, arr[i][0] + l - 1)
+                        break
+                    i -= 1
+                ans.append(r)
+            else:
+                i = len(lv[l]) - 1
+                arr = lv[l]
+                while i >= 0:
+                    if arr[i][1] != q:
+                        ans.append(arr[i][0] + l)
+                        break
+                    i -= 1
+        return ans
+
+    # O(n + q) / O(n)
+    def treeQueries(self, root: Optional[TreeNode], queries: List[int]) -> List[int]:
+        height = collections.defaultdict(int)  # 每棵子树的高度, 叶子节点树高是 0
+
+        def getHeight(root: TreeNode) -> int:
+            if not root:
+                return 0
+            height[root] = 1 + max(getHeight(root.left), getHeight(root.right))
+            return height[root]
+
+        getHeight(root)
+        ans = [0] * (len(height) + 1)  # 每个节点的答案
+
+        # restH: 删除当前子树后剩余部分的树的高度
+        def dfs(root: TreeNode, depth: int, restH: int) -> None:
+            if not root:
+                return
+            depth += 1
+            ans[root.val] = restH
+            dfs(root.left, depth, max(restH, depth + height[root.right]))
+            dfs(root.right, depth, max(restH, depth + height[root.left]))
+            return
+
+        dfs(root, -1, 0)
+        return [ans[q] for q in queries]
+
+    # 层序遍历, 将每层的节点最长路径(最大树高)的两个存储起来 (a, b), 查询的时候与同层的这两个值进行比较
+    # O(n + q) / O(n)
+    def treeQueries(self, root: Optional[TreeNode], queries: List[int]) -> List[int]:
+        height = collections.defaultdict(int)  # 每棵子树的高度, 叶子节点树高是 0
+
+        def getHeight(root: TreeNode) -> int:
+            if not root:
+                return 0
+            height[root] = 1 + max(getHeight(root.left), getHeight(root.right))
+            return height[root]
+
+        getHeight(root)
+
+        ans = [0] * (len(height) + 1)
+        d = -1
+        q = collections.deque([root])
+        while q:
+            # 求最大的两个树高, a >= b
+            a = b = 0
+            for o in q:
+                if height[o] > a:
+                    b = a
+                    a = height[o]
+                elif height[o] > b:
+                    b = height[o]
+            for _ in range(len(q)):
+                o = q.popleft()
+                if o.left:
+                    q.append(o.left)
+                if o.right:
+                    q.append(o.right)
+                ans[o.val] = d + (a if height[o] != a else b)
+            d += 1
+        return [ans[i] for i in queries]
+
+    # DFS 序 + 前后缀
+    # 树上时间戳, 进入和离开时间
+    # 将树通过 DFS 序转成序列, 子树里的所有点是 DFS 序里的一个连续区间 / 同一棵子树节点所对应的 DFS 序是连续的一段区间
+    # 问题转化为 -> 给定一个序列, 每次删除一个连续区间, 求序列里剩下的数的最大值, 显然删除一个连续区间后, 序列会剩下一个前缀以及一个后缀
+
+    # 首先求 DFS 序, 并求出每个节点所对应的管辖区间(子树区间)
+    # 同时记录 DFS 序为 i 的节点的深度 depth[i], (i 即是时间戳 time), 通过 depth 数组, 继续求出:
+    # DFS 序 <= i 的节点中, 深度最大的节点的深度 goin[i]   (前缀 max 数组)
+    # DFS 序 >= i 的节点中, 深度最大的节点的深度 goout[in] (后缀 max 数组)
+    # O(n + q) / O(n)
+    def treeQueries(self, root: Optional[TreeNode], queries: List[int]) -> List[int]:
+        goin = collections.defaultdict(int)
+        goout = collections.defaultdict(int)
+        depth = collections.defaultdict(int)
+        time = 0
+
+        def dfs(root: TreeNode, d: int) -> None:
+            if not root:
+                return
+            nonlocal time
+            time += 1  # node 是第 clk 个被访问的点
+            depth[time] = d  # 表示第 i 个被访问的点的深度
+            goin[root.val] = time  # goin[i] 表示第 i 个点的子树对应的连续区间的左端点
+            dfs(root.left, d + 1)
+            dfs(root.right, d + 1)
+            goout[root.val] = time  # goout[i] 表示第 i 个点的子树对应的连续区间的右端点
+            return
+
+        dfs(root, 0)  # root 深度为 0
+        n = len(depth)
+        f = [0] * (n + 2)  # f[i] 表示 max(depth[1], depth[2], ..., depth[i])
+        g = [0] * (n + 2)  # g[i] 表示 max(depth[n], depth[n - 1], ..., depth[i])
+        for i in range(1, n + 1):
+            f[i] = max(f[i - 1], depth[i])
+        for i in range(n, 0, -1):
+            g[i] = max(g[i + 1], depth[i])
+        # 树上询问转为区间询问处理
+        return [max(f[goin[q] - 1], g[goout[q] + 1]) for q in queries]
+
+    # TODO: https://leetcode.com/problems/height-of-binary-tree-after-subtree-removal-queries/discuss/2759353/C%2B%2BPython-Preoder-and-Postorder-DFS
+    def treeQueries(self, root: Optional[TreeNode], queries: List[int]) -> List[int]:
+        ans = collections.defaultdict(int)
+
+        def dfs(root: TreeNode, h: int, maxh: int) -> int:
+            if not root:
+                return maxh
+            ans[root.val] = max(ans[root.val], maxh)
+            root.left, root.right = root.right, root.left
+            return dfs(root.right, h + 1, dfs(root.left, h + 1, max(maxh, h)))
+
+        dfs(root, 0, 0)
+        dfs(root, 0, 0)
+        return [ans[q] for q in queries]

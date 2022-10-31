@@ -1079,3 +1079,13 @@ T4: 2378 pass
 # https://leetcode.cn/contest/weekly-contest-315
 # 950 / https://leetcode.cn/contest/weekly-contest-315/problems/count-subarrays-with-fixed-bounds/
 # 双指针
+
+
+"""
+AK, 2022-10-29
+https://leetcode.cn/contest/weekly-contest-317/
+Rank: 437 / 964
+WA: T1(1), T2(2), T4(3)
+FT: 1:58:02
+T4: 465 pass
+"""
