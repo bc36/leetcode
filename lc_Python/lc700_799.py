@@ -354,7 +354,7 @@ class Solution:
 
     def longestWord(self, words: List[str]) -> str:
         # words.sort(key=lambda x: (len(x), -x)) # 字符不好比大小, TypeError: bad operand type for unary -: 'str'
-        words.sort(key=lambda x: (-len(x), x), reverse=True) # 所以用这种方法
+        words.sort(key=lambda x: (-len(x), x), reverse=True)  # 所以用这种方法
         ans = ""
         s = {""}
         for w in words:
@@ -1478,73 +1478,89 @@ def calc(exp: str, start=0):
 # print(calc("1/3*6+2*3"))  # => 8
 
 
+#################
+# 2022.11.01 VO #
+#################
 # 773 - Sliding Puzzle - HARD
 class Solution:
     # O((mn)! * mn * 4) / O((mn)! * mn), factorial complexity
     def slidingPuzzle(self, board: List[List[int]]) -> int:
         adj = {0: [1, 3], 1: [0, 2, 4], 2: [1, 5], 3: [0, 4], 4: [1, 3, 5], 5: [2, 4]}
-        # # 'fn' equal to 'toString'
-        # def toString(a: List[int]) -> str:
-        #     return ''.join([str(x) for x in a])
-        fn = lambda a: "".join([str(x) for x in a])
-        depth = 0
-        init = [n for row in board for n in row]
-        q = collections.deque([init])
-        seen = set([fn(init)])
-        while q:
-            k = len(q)
+
+        # def toString(arr: List[int]) -> str:
+        #     return "".join([str(v) for v in arr])
+
+        toString = lambda arr: "".join([str(v) for v in arr])
+        step = 0
+        init = [v for row in board for v in row]
+        dq = collections.deque([init])
+        seen = set([toString(init)])
+        while dq:
+            k = len(dq)
             for _ in range(k):
-                cur = q.popleft()
-                if fn(cur) == "123450":
-                    return depth
+                cur = dq.popleft()
+                if toString(cur) == "123450":
+                    return step
                 i = cur.index(0)
                 for j in adj[i]:
                     nxt = cur.copy()
                     nxt[i], nxt[j] = nxt[j], nxt[i]
-                    if not fn(nxt) in seen:
-                        q.append(nxt)
-                        seen.add(fn(nxt))
-            depth += 1
+                    if not toString(nxt) in seen:
+                        dq.append(nxt)
+                        seen.add(toString(nxt))
+            step += 1
         return -1
 
     def slidingPuzzle(self, board: List[List[int]]) -> int:
-        d = {0: [1, 3], 1: [0, 2, 4], 2: [1, 5], 3: [0, 4], 4: [1, 3, 5], 5: [2, 4]}
-
-        def neighbors(s: str):
+        def neighbors(s: str) -> List[str]:
+            d = {0: [1, 3], 1: [0, 2, 4], 2: [1, 5], 3: [0, 4], 4: [1, 3, 5], 5: [2, 4]}
             i = s.find("0")
-            res = []
+            nei = []
             for j in d[i]:
                 t = list(s)
                 t[i], t[j] = t[j], t[i]
-                res += ("".join(t),)
-            return res
+                nei.append("".join(t))
+                # nei += ("".join(t),)
+            return nei
 
-        start = "".join([str(n) for row in board for n in row])
-        target = "123450"
+        def neighbors(s: str) -> List[str]:
+            i = s.find("0")
+            nei = []
+            x, y = i // c, i % c
+            for nx, ny in (x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y):
+                if 0 <= nx < r and 0 <= ny < c:
+                    l = list(s)
+                    l[i], l[nx * c + ny] = l[nx * c + ny], "0"
+                    nei.append("".join(l))
+            return nei
+
+        r = len(board)
+        c = len(board[0])
+        start = "".join([str(v) for row in board for v in row])
         dq = collections.deque([(start, 0)])
         seen = {start}
         while dq:
             cur, step = dq.popleft()
-            if cur == target:
+            if cur == "123450":
                 return step
-            for n in neighbors(cur):
-                if n not in seen:
-                    seen.add(n)
-                    dq += ((n, step + 1),)
+            for v in neighbors(cur):
+                if v not in seen:
+                    seen.add(v)
+                    dq += ((v, step + 1),)
         return -1
 
     def slidingPuzzle(self, board: List[List[int]]) -> int:
-        s = "".join(str(n) for row in board for n in row)
+        s = "".join(str(v) for row in board for v in row)
         dq = collections.deque([(s, s.index("0"))])
         seen = {s}
         r = len(board)
         c = len(board[0])
-        steps = 0
+        step = 0
         while dq:
             for _ in range(len(dq)):
                 cur, i = dq.popleft()
                 if cur == "123450":
-                    return steps
+                    return step
                 x, y = i // c, i % c
                 for nx, ny in (x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y):
                     if 0 <= nx < r and 0 <= ny < c:
@@ -1554,7 +1570,7 @@ class Solution:
                         if s not in seen:
                             seen.add(s)
                             dq.append((s, nx * c + ny))
-            steps += 1
+            step += 1
         return -1
 
     # more general way, r rows and c columns
@@ -1572,7 +1588,6 @@ class Solution:
             target[i - 1] = i
 
         step = 0
-        dir = [(-1, 0), (1, 0), (0, 1), (0, -1)]
         q = [arr]
         seen = set()
         while q:
@@ -1582,14 +1597,13 @@ class Solution:
                     return step
                 if tuple(l) not in seen:
                     seen.add(tuple(l))
-                    z = l.index(0)
-                    x, y = divmod(z, c)
-                    for i, j in dir:
-                        nx = x + i
-                        ny = y + j
+                    i = l.index(0)
+                    x, y = divmod(i, c)
+                    # x, y = i // c, i % c
+                    for nx, ny in (x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y):
                         if 0 <= nx < r and 0 <= ny < c:
                             nxt = l.copy()
-                            nxt[nx * c + ny], nxt[z] = nxt[z], nxt[nx * c + ny]
+                            nxt[nx * c + ny], nxt[i] = nxt[i], nxt[nx * c + ny]
                             new.append(nxt)
             step += 1
             q = new

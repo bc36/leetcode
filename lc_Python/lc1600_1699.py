@@ -123,6 +123,26 @@ class Solution:
         return sum(arr[n // 20 : -n // 20]) / (n * 0.9)
 
 
+# 1620 - Coordinate With Maximum Network Quality - MEDIUM
+class Solution:
+    def bestCoordinate(self, towers: List[List[int]], radius: int) -> List[int]:
+        def calc(q: int, x: int, y: int, a: int, b: int) -> int:
+            d = ((x - a) ** 2 + (y - b) ** 2) ** 0.5
+            return q // (1 + d) if d <= radius else 0
+
+        m = max(v[0] for v in towers)
+        n = max(v[1] for v in towers)
+        cx = cy = mx = 0
+        for x in range(m + 1):
+            for y in range(n + 1):
+                s = sum(calc(q, x, y, a, b) for a, b, q in towers)
+                if s > mx:
+                    mx = s
+                    cx = x
+                    cy = y
+        return [cx, cy]
+
+
 # 1624 - Largest Substring Between Two Equal Characters - EASY
 class Solution:
     def maxLengthBetweenEqualCharacters(self, s: str) -> int:

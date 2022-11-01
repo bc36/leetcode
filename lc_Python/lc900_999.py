@@ -102,6 +102,53 @@ class Solution:
         return sorted(nums, key=lambda x: x & 1)
 
 
+# 907 - Sum of Subarray Minimums - MEDIUM
+class Solution:
+    def sumSubarrayMins(self, arr: List[int]) -> int:
+        n = len(arr)
+        st = []
+        left = [-1] * n
+        for i in range(n):
+            while st and arr[st[-1]] >= arr[i]:  # 注意边界
+                st.pop()
+            if st:
+                left[i] = st[-1]
+            st.append(i)
+        st = []
+        right = [n] * n
+        for i in range(n - 1, -1, -1):
+            while st and arr[st[-1]] > arr[i]:  # 有重复元素, 避免重复统计
+                st.pop()
+            if st:
+                right[i] = st[-1]
+            st.append(i)
+        ans = 0
+        for i, (v, l, r) in enumerate(zip(arr, left, right)):
+            ans = (ans + v * (i - l) * (r - i)) % (10**9 + 7)
+        return ans
+
+    def sumSubarrayMins(self, arr: List[int]) -> int:
+        n = len(arr)
+        st = []
+        left = [0] * n
+        for i in range(n):
+            while st and arr[st[-1]] >= arr[i]:
+                st.pop()
+            left[i] = i - (st[-1] if st else -1)
+            st.append(i)
+        st = []
+        right = [0] * n
+        for i in range(n)[::-1]:
+            while st and arr[st[-1]] > arr[i]:
+                st.pop()
+            right[i] = (st[-1] if st else n) - i
+            st.append(i)
+        ans = 0
+        for l, r, v in zip(left, right, arr):
+            ans = (ans + l * r * v) % (10**9 + 7)
+        return ans
+
+
 # 908 - Smallest Range I - EASY
 class Solution:
     def smallestRangeI(self, nums: List[int], k: int) -> int:
@@ -172,12 +219,12 @@ class TopVotedCandidate:
 
 # 913 - Cat and Mouse — HARD
 class Solution:
-    # 思路：
-    # 将该问题视为状态方程，状态公式[mouse,cat,turn]代表老鼠的位置，猫的位置，下一步轮到谁走
-    # 猫胜利的状态为[i,i,1]或[i,i,2]（i!=0），1代表老鼠走，2代表猫走
+    # 思路:
+    # 将该问题视为状态方程, 状态公式[mouse,cat,turn]代表老鼠的位置, 猫的位置, 下一步轮到谁走
+    # 猫胜利的状态为[i,i,1]或[i,i,2]（i!=0）, 1代表老鼠走, 2代表猫走
     # 老鼠胜利的状态为[0,i,1]或[0,i,2]
-    # 用0代表未知状态，1代表老鼠赢，2代表猫赢
-    # 由最终的胜利状态，回推
+    # 用0代表未知状态, 1代表老鼠赢, 2代表猫赢
+    # 由最终的胜利状态, 回推
     # 假如当前父节点轮次是1（父节点轮次是2同样的道理）
     # 父节点=1 if 子节点是1
     # 或者
@@ -233,7 +280,7 @@ class Solution:
 
     def catMouseGame(self, graph: List[List[int]]) -> int:
         n = len(graph)
-        # search(step,cat,mouse) 表示步数=step，猫到达位置cat，鼠到达位置mouse的情况下最终的胜负情况
+        # search(step,cat,mouse) 表示步数=step, 猫到达位置cat, 鼠到达位置mouse的情况下最终的胜负情况
 
         @functools.lru_cache(None)
         def search(mouse, cat, step):
@@ -246,7 +293,7 @@ class Solution:
             # mouse入洞
             if mouse == 0:
                 return 1
-            # 奇数步：mouse走
+            # 奇数步: mouse走
             if step % 2 == 0:
                 # 对mouse最优的策略: 先看是否能mouse赢 再看是否能平 如果都不行则cat赢
                 drawFlag = False
@@ -928,7 +975,7 @@ class Solution:
 # 940 - Distinct Subsequences II - HARD
 class Solution:
     def distinctSubseqII(self, s: str) -> int:
-        # 定义 f[i][j] 表示前 i 个字符中，以字符 j 结尾的不同子序列的个数
+        # 定义 f[i][j] 表示前 i 个字符中, 以字符 j 结尾的不同子序列的个数
         # f[i][s[i]] = 1 + sum(f[i-1][j] for j in range(26))
 
         # f[i] 表示以 s[i] 为最后一个字符的子序列的数目
@@ -1009,6 +1056,33 @@ class Solution:
 class Solution:
     def minDeletionSize(self, m: List[str]) -> int:
         return sum(any(a > b for a, b in zip(col, col[1:])) for col in zip(*m))
+
+
+# 945 - Minimum Increment to Make Array Unique - MEDIUM
+class Solution:
+    def minIncrementForUnique(self, nums: List[int]) -> int:
+        ans = t = 0
+        p = -1
+        for v in sorted(nums):
+            if p == v:
+                t += 1
+            else:
+                t = max(t - (v - 1 - p), 0)  # pre 和 v 之间的可以留出多少空隙
+            ans += t  # 除左端点之外, 值相同连续区间需要统一往右挪一步, 区间长度 t
+            p = v
+        return ans
+
+    def minIncrementForUnique(self, nums: List[int]) -> int:
+        nums.sort()
+        nxt = nums[0]
+        ans = 0
+        for v in nums:
+            if v < nxt:
+                ans += nxt - v
+                nxt += 1
+            else:
+                nxt = v + 1
+        return ans
 
 
 # 946 - Validate Stack Sequences - MEDIUM
@@ -1206,6 +1280,56 @@ class Solution:
             if cnt[x] > cnt[2 * x]:
                 return False
             cnt[2 * x] -= cnt[x]
+        return True
+
+
+# 958 - Check Completeness of a Binary Tree - MEDIUM
+class Solution:
+    # 树的 size 是否等于最后一个节点的 index
+    def isCompleteTree(self, root: Optional[TreeNode]) -> bool:
+        arr = [1]
+        q = [(root, 1)]
+        size = 1
+        while q:
+            nxt = []
+            for r, i in q:
+                if r.left:
+                    nxt.append((r.left, i * 2))
+                    size += 1
+                    arr.append(i * 2)
+                if r.right:
+                    nxt.append((r.right, i * 2 + 1))
+                    size += 1
+                    arr.append(i * 2 + 1)
+            q = nxt
+        return arr[-1] == size
+
+    def isCompleteTree(self, root: Optional[TreeNode]) -> bool:
+        arr = [(root, 1)]
+        i = 0
+        while i < len(arr):
+            r, v = arr[i]
+            i += 1
+            if r:
+                arr.append((r.left, 2 * v))
+                arr.append((r.right, 2 * v + 1))
+        return arr[-1][1] == len(arr)
+
+    def isCompleteTree(self, root: Optional[TreeNode]) -> bool:
+        dq = collections.deque([root])
+        # 在出现一次 empty 后, 后面的必须都是 empty
+        # 注意: 当前层空节点靠右, 但下一层还有节点, 也是非完全的
+        hasEmpty = False
+        while dq:
+            for _ in range(len(dq)):
+                r = dq.popleft()
+                if r == None:
+                    hasEmpty = True
+                else:
+                    if hasEmpty:
+                        return False
+                    dq.append(r.left)
+                    dq.append(r.right)
         return True
 
 

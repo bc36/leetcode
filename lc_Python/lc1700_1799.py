@@ -31,6 +31,24 @@ class Solution:
         return s0 + s1
 
 
+# 1704 - Determine if String Halves Are Alike - EASY
+class Solution:
+    def halvesAreAlike(self, s: str, p: str = "aeiouAEIOU") -> bool:
+        return sum(c in p for c in s[: len(s) // 2]) == sum(
+            c in p for c in s[len(s) // 2 :]
+        )
+
+
+p = set("aeiouAEIOU")
+
+
+class Solution:
+    def halvesAreAlike(self, s: str) -> bool:
+        return sum(c in p for c in s[: len(s) // 2]) == sum(
+            c in p for c in s[len(s) // 2 :]
+        )
+
+
 # 1705 - Maximum Number of Eaten Apples - MEDIUM
 class Solution:
     def eatenApples(self, apples: List[int], days: List[int]) -> int:
@@ -109,6 +127,21 @@ class Solution:
                     break
             else:
                 ans[j] = col
+        return ans
+
+
+# 1710 - Maximum Units on a Truck - EASY
+class Solution:
+    def maximumUnits(self, boxTypes: List[List[int]], truckSize: int) -> int:
+        boxTypes.sort(key=lambda x: x[1], reverse=True)
+        ans = 0
+        for _, (t, v) in enumerate(boxTypes):
+            if t <= truckSize:
+                ans += t * v
+                truckSize -= t
+            else:
+                ans += truckSize * v
+                break
         return ans
 
 

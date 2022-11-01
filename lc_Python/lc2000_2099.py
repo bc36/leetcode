@@ -835,8 +835,10 @@ class Solution:
 
 # 2096 - Step-By-Step Directions From a Binary Tree Node to Another - MEDIUM
 class Solution:
-    def getDirections(self, root: Optional[TreeNode], sv: int, dv: int) -> str:
-        def dfs(root: TreeNode, x: int, arr: List[int]):
+    def getDirections(
+        self, root: Optional[TreeNode], startValue: int, destValue: int
+    ) -> str:
+        def dfs(root: TreeNode, x: int, arr: List[int]) -> bool:
             if not root:
                 return False
             if root.val == x:
@@ -851,20 +853,22 @@ class Solution:
 
         a1 = []
         a2 = []
-        dfs(root, sv, a1)
-        dfs(root, dv, a2)
+        dfs(root, startValue, a1)
+        dfs(root, destValue, a2)
         while a1 and a2 and a1[-1] == a2[-1]:
             a1.pop()
             a2.pop()
         return "U" * len(a1) + "".join(reversed(a2))
 
-    def getDirections(self, root: Optional[TreeNode], sv: int, dv: int) -> str:
+    def getDirections(
+        self, root: Optional[TreeNode], startValue: int, destValue: int
+    ) -> str:
         def dfs(root: TreeNode) -> None:
             """record each father node"""
             nonlocal s, t
-            if root.val == sv:
+            if root.val == startValue:
                 s = root
-            if root.val == dv:
+            if root.val == destValue:
                 t = root
             if root.left:
                 fa[root.left] = root
@@ -889,9 +893,7 @@ class Solution:
         fa = {}
         s = None
         t = None
-
         dfs(root)
-
         p1 = path(s)
         p2 = path(t)
         i = 0
@@ -900,5 +902,38 @@ class Solution:
                 i += 1
             else:
                 break
-        ans = "U" * (len(p1) - i) + "".join(p2[i:])
-        return ans
+        return "U" * (len(p1) - i) + "".join(p2[i:])
+
+    # LCA 的迭代思路
+    def getDirections(
+        self, root: Optional[TreeNode], startValue: int, destValue: int
+    ) -> str:
+        def dfs(root: TreeNode) -> None:
+            if root.left:
+                fa[root.left.val] = (root.val, "L")
+                dfs(root.left)
+            if root.right:
+                fa[root.right.val] = (root.val, "R")
+                dfs(root.right)
+            return
+
+        fa = {}
+        dfs(root)
+        fathers = set()
+        x = startValue
+        while x != root.val:
+            fathers.add(x)
+            x = fa[x][0]
+        fathers.add(root.val)
+        down = collections.deque()
+        x = destValue
+        while x not in fathers:
+            f, p = fa[x]
+            down.appendleft(p)
+            x = f
+        up = 0
+        y = startValue
+        while y != x:
+            up += 1
+            y = fa[y][0]
+        return up * "U" + "".join(down)
