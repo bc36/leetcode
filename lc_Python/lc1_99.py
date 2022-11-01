@@ -262,8 +262,8 @@ class Solution:
         while i < len(s) and s[i] == " ":
             i += 1
         sign = 1
-        if i < len(s) and s[i] in '+-':
-            sign *= -1 if s[i] == '-' else 1
+        if i < len(s) and s[i] in "+-":
+            sign *= -1 if s[i] == "-" else 1
             i += 1
         while i < len(s) and s[i] == "0":
             i += 1
@@ -2641,13 +2641,14 @@ class Solution:
     def numDecodings(self, s: str) -> int:
         if s[0] == "0":
             return 0
-        dp = [1] + [0] * len(s)
+        # 表示字符串 s 的前 i 个字符 s[1 ... i] 的解码方法数
+        f = [1] + [0] * len(s)
         for i in range(1, len(s) + 1):
             if s[i - 1] != "0":
-                dp[i] += dp[i - 1]
+                f[i] += f[i - 1]
             if i > 1 and s[i - 2] != "0" and int(s[i - 2 : i]) < 27:
-                dp[i] += dp[i - 2]
-        return dp[-1]
+                f[i] += f[i - 2]
+        return f[-1]
 
     @functools.lru_cache(None)
     def numDecodings(self, s: str) -> int:
@@ -2655,12 +2656,28 @@ class Solution:
             return int(s[0] != "0")
         if len(s) == 0:
             return 1
-        one = two = 0
+        ans = 0
         if s[-1] != "0":
-            one += self.numDecodings(s[:-1])
+            ans += self.numDecodings(s[:-1])
         if s[-2] != "0" and int(s[-2:]) < 27:
-            two += self.numDecodings(s[:-2])
-        return one + two
+            ans += self.numDecodings(s[:-2])
+        return ans
+
+    def numDecodings(self, s: str) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int) -> int:
+            if i == -1:
+                return 1
+            if i == 0:
+                return int(s[0] != "0")
+            cur = 0
+            if s[i] != "0":
+                cur += dfs(i - 1)
+            if s[i - 1] != "0" and (0 < int(s[i - 1 : i + 1]) < 27):
+                cur += dfs(i - 2)
+            return cur
+
+        return dfs(len(s) - 1)
 
 
 # 93 - Restore IP Addresses - MEDIUM

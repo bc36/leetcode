@@ -606,43 +606,43 @@ class Solution:
 
 # 1048 - Longest String Chain - MEDIUM
 class Solution:
+    # O(n * m * m + n * m * logn + n * m * m + m + n) / O(n * m), m = len(words[i])
     def longestStrChain(self, words: List[str]) -> int:
-        f = collections.defaultdict(list)
-        for w in words:
-            for i in range(len(w)):
-                f[w[:i] + "*" + w[i + 1 :]].append(w)
+        f = collections.defaultdict(list)  # n 个单词, 每个单词 m 个 candidate -> f 最大 n * m
+        for w in words:  # O(n)
+            for i in range(len(w)):  # O(m)
+                f[w[:i] + "*" + w[i + 1 :]].append(w)  # O(m)
 
-        def dfs(w: str) -> int:
+        def dfs(w: str) -> int:  # O(m * m + m + n)
             r = 1
-            for i in range(len(w) + 1):
-                new = w[:i] + "*" + w[i:]
-                for nxt in f[new]:
+            for i in range(len(w) + 1):  # O(m)
+                new = w[:i] + "*" + w[i:]  # O(m)
+                for nxt in f[new]:  # 根据 vis 大小决定, 最多循环 m + n 次
                     if nxt not in vis:
                         vis.add(nxt)
                         x = dfs(nxt) + 1
                         r = x if x > r else r
             return r
 
-        vis = set()
+        vis = set()  # n 个单词, 每个单词 m 个 candidate -> vis 最大 n * m
         ans = 1
-        for w in sorted(words, key=len):
+        # sort -> O(n * m * logn)
+        for w in sorted(words, key=len):  # O(n)
             if w not in vis:
                 vis.add(w)
-                ans = max(ans, dfs(w))
+                ans = max(ans, dfs(w))  # O(m * m)
         return ans
 
-    # dp
+    # # O(n * m * logn + n * m + n) / O(n), m = len(words[i])
     def longestStrChain(self, words: List[str]) -> int:
-        f = {}
-        ans = 1
+        f = {}  # dp
         for w in sorted(words, key=len):
             f[w] = 1
             for i in range(len(w)):
                 tmp = w[:i] + w[i + 1 :]
                 if tmp in f:
                     f[w] = max(f[w], f[tmp] + 1)
-                    ans = max(ans, f[w])
-        return ans
+        return max(f.values())
 
     def longestStrChain(self, words: List[str]) -> int:
         f = {}

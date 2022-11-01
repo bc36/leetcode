@@ -337,14 +337,14 @@ class Solution:
 
 # 720 - Longest Word in Dictionary - EASY
 class Solution:
-    # O(n + n * 30), brute force
+    # O(n + n * m * m), m = len(words[i])
     def longestWord(self, words: List[str]) -> str:
         if not words:
             return ""
         ans = ""
         s = set(words)
         for w in words:
-            if len(w) > len(ans) or (len(w) == len(ans) and w < ans):
+            if len(w) > len(ans) or len(w) == len(ans) and w < ans:
                 for i in range(1, len(w) + 1):
                     if w[:i] not in s:
                         break
@@ -352,11 +352,22 @@ class Solution:
                     ans = w
         return ans
 
-    # O(nlogn + n) / O(n)
+    def longestWord(self, words: List[str]) -> str:
+        # words.sort(key=lambda x: (len(x), -x)) # 字符不好比大小, TypeError: bad operand type for unary -: 'str'
+        words.sort(key=lambda x: (-len(x), x), reverse=True) # 所以用这种方法
+        ans = ""
+        s = {""}
+        for w in words:
+            if w[:-1] in s:
+                ans = w
+                s.add(w)
+        return ans
+
+    # O(n * m * logn + m) / O(n), m = len(words[i])
     def longestWord(self, words: List[str]) -> str:
         # ordered by lexicographical, then ordered by length
         words.sort()
-        s = set([""])
+        s = {""}
         ans = ""
         for w in words:
             if w[:-1] in s:
@@ -365,27 +376,26 @@ class Solution:
                     ans = w
         return ans
 
-    # Trie
+    # O(n * m), m = len(words[i]), Trie
     def longestWord(self, words: List[str]) -> str:
         trie = {}
         for w in words:
             r = trie
-            for ch in w:
-                if ch not in r:
-                    r[ch] = {}
-                r = r[ch]
+            for c in w:
+                if c not in r:
+                    r[c] = {}
+                r = r[c]
             r["end"] = True
         ans = ""
-        words.sort()
         for w in words:
-            r = trie
-            if len(w) > len(ans):
+            if len(w) > len(ans) or len(w) == len(ans) and w < ans:
+                r = trie
                 f = True  # flag, can be replaced by for-else statement
-                for ch in w:
-                    if ch not in r or "end" not in r[ch]:
+                for c in w:
+                    if c not in r or "end" not in r[c]:
                         f = False
                         break
-                    r = r[ch]
+                    r = r[c]
                 if f:
                     ans = w
         return ans
@@ -402,14 +412,15 @@ class Trie:
     def __init__(self):
         self.root = TrieNode()
 
-    def insert(self, word):
+    def insert(self, word: str) -> None:
         r = self.root
-        for ch in word:
-            r = r.children[ch]
+        for c in word:
+            r = r.children[c]
         r.isEnd = True
         r.word = word
+        return
 
-    def bfs(self):
+    def bfs(self) -> str:
         dq = collections.deque([self.root])
         ans = ""
         while dq:

@@ -848,32 +848,34 @@ class MyStack:
 # 226 - Invert Binary Tree - EASY
 class Solution:
     # breadth-first search
-    def invertTree(self, root: TreeNode) -> TreeNode:
-        stack = [root]
-        while stack:
-            node = stack.pop()
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        st = [root]
+        while st:
+            node = st.pop()
             if node:
                 node.left, node.right = node.right, node.left
-                stack += node.left, node.right
+                st += node.left, node.right
         return root
 
-    # depth-first search
-    def invertTree(self, root: TreeNode) -> TreeNode:
-        def dfs(root: TreeNode):
-            if not root:
-                return
-            root.left, root.right = root.right, root.left
-            dfs(root.left)
-            dfs(root.right)
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
             return
-
-        dfs(root)
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+        root.left, root.right = root.right, root.left
         return root
 
-    # recursively
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return
+        root.left, root.right = root.right, root.left
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+        return root
+
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         if root:
-            root.left, root.right = self.invertTree(root.right), self.intertTree(
+            root.left, root.right = self.invertTree(root.right), self.invertTree(
                 root.left
             )
         return root
