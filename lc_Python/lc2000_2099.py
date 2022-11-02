@@ -591,6 +591,14 @@ class Solution:
         return ans
 
 
+# 2085 - Count Common Words With One Occurrence - EASY
+class Solution:
+    def countWords(self, words1: List[str], words2: List[str]) -> int:
+        c1 = collections.Counter(words1)
+        c2 = collections.Counter(words2)
+        return sum(c2[k] == 1 for k, v in c1.items() if v == 1)
+
+
 # 2089 - Find Target Indices After Sorting Array - EASY
 class Solution:
     def targetIndices(self, nums: List[int], target: int) -> List[int]:

@@ -530,6 +530,13 @@ class CustomStack:
             self.add[l] += val
 
 
+# 1385 - Find the Distance Value Between Two Arrays - EASY
+class Solution:
+    def findTheDistanceValue(self, arr1: List[int], arr2: List[int], d: int) -> int:
+        return sum(1 - any(abs(x - y) <= d for y in arr2) for x in arr1)
+        return sum(all(abs(x - y) > d for y in arr2) for x in arr1)
+
+
 # 1396 - Design Underground System - MEDIUM
 class UndergroundSystem:
     def __init__(self):

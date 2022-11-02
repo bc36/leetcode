@@ -1121,7 +1121,7 @@ class ListNode:
     def __init__(self, key=0, value=0):
         self.key = key
         self.value = value
-        self.prev: ListNode = None
+        self.pre: ListNode = None
         self.next: ListNode = None
 
 
@@ -1133,26 +1133,26 @@ class LRUCache:
         self.tail = ListNode()
         # head <-> tail
         self.head.next = self.tail
-        self.tail.prev = self.head
+        self.tail.pre = self.head
 
     def remove(self, node: ListNode) -> None:
         #      hashmap[key]                               hashmap[key]
         #           |                                          |
         #           V              -->                         V
-        # prev <-> node <-> next         pre <-> next   ...   node
-        node.prev.next = node.next
-        node.next.prev = node.prev
+        # pre <-> node <-> next         pre <-> next   ...   node
+        node.pre.next = node.next
+        node.next.pre = node.pre
         return
 
     def add(self, node: ListNode) -> None:
         #                 hashmap[key]                 hashmap[key]
         #                      |                            |
         #                      V        -->                 V
-        # prev <-> tail  ...  node                prev <-> node <-> tail
-        node.prev = self.tail.prev
+        # pre <-> tail  ...  node                pre <-> node <-> tail
+        node.pre = self.tail.pre
         node.next = self.tail
-        self.tail.prev.next = node
-        self.tail.prev = node
+        self.tail.pre.next = node
+        self.tail.pre = node
         return
 
     def move_to_end(self, key: int) -> None:
@@ -1179,6 +1179,65 @@ class LRUCache:
             node = ListNode(key, value)
             self.d[key] = node
             self.add(node)
+        return
+
+
+class Node:
+    def __init__(self, key=-1, val=-1, pre=None, next=None) -> None:
+        self.key = key  # 删除非法的 head.next 时, 需要删除 self.d[key], 所以需要 node 需要保存 key
+        self.val = val
+        self.pre: Node = pre
+        self.next: Node = next
+
+
+class DoubleEndedLinkedList:
+    def __init__(self) -> None:
+        self.head = Node()
+        self.tail = Node()
+        self.head.next = self.tail
+        self.tail.pre = self.head
+
+    def remove(self, node: Node) -> None:
+        node.pre.next = node.next
+        node.next.pre = node.pre
+        return
+
+    def add(self, node: Node) -> None:
+        node.pre = self.tail.pre
+        node.next = self.tail
+        self.tail.pre.next = node
+        self.tail.pre = node
+        return
+
+    def moveToEnd(self, node: Node) -> None:
+        self.remove(node)
+        self.add(node)
+        return
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.l = DoubleEndedLinkedList()
+        self.d = {}
+        self.c = capacity
+
+    def get(self, key: int) -> int:
+        if key not in self.d:
+            return -1
+        self.l.moveToEnd(self.d[key])
+        return self.d[key].val
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.d:
+            self.d[key].val = value
+            self.l.moveToEnd(self.d[key])
+        else:
+            if len(self.d) == self.c:
+                del self.d[self.l.head.next.key]
+                self.l.remove(self.l.head.next)
+            new = Node(key=key, val=value)
+            self.d[key] = new
+            self.l.add(new)
         return
 
 

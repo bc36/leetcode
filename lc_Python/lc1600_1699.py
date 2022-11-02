@@ -325,6 +325,51 @@ class Solution:
         return "".join(word1) == "".join(word2)
 
 
+# 1668 - Maximum Repeating Substring - EASY
+class Solution:
+    # O(n ** 2) / O(n)
+    def maxRepeating(self, sequence: str, word: str) -> int:
+        s = word
+        ans = 0
+        while s in sequence:
+            ans += 1
+            s += word
+        return ans
+
+    # O(n ** 2) / O(1)
+    def maxRepeating(self, sequence: str, word: str) -> int:
+        ans = 0
+        for i in range(len(sequence)):
+            t = k = 0
+            j = i
+            while j < len(sequence):
+                if sequence[j] == word[k]:
+                    j += 1
+                    k += 1
+                else:
+                    break
+                if k == len(word):
+                    t += 1
+                    k = 0
+            ans = max(ans, t)
+        return ans
+
+    # O(n * m) / O(n)
+    def maxRepeating(self, sequence: str, word: str) -> int:
+        n = len(sequence)
+        m = len(word)
+        f = [0] * n
+        for i in range(m - 1, n):
+            valid = True
+            for j in range(m):
+                if sequence[i - m + j + 1] != word[j]:
+                    valid = False
+                    break
+            if valid:
+                f[i] = (0 if i == m - 1 else f[i - m]) + 1
+        return max(f)
+
+
 # 1672 - Richest Customer Wealth - EASY
 class Solution:
     def maximumWealth(self, accounts: List[List[int]]) -> int:
