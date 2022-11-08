@@ -442,6 +442,27 @@ class Solution:
         return ans
 
 
+# 1684 - Count the Number of Consistent Strings - EASY
+class Solution:
+    # O(n + sum(m)) / O(n)
+    def countConsistentStrings(self, allowed: str, words: List[str]) -> int:
+        a = set(allowed)
+        return sum(all(c in a for c in w) for w in words)
+
+    # O(n + sum(m)) / O(1)
+    def countConsistentStrings(self, allowed: str, words: List[str]) -> int:
+        mask = 0
+        for c in allowed:
+            mask |= 1 << (ord(c) - ord("a"))
+        ans = 0
+        for w in words:
+            m = 0
+            for c in w:
+                m |= 1 << (ord(c) - ord("a"))
+            ans += m | mask == mask
+        return ans
+
+
 # 1688 - Count of Matches in Tournament - EASY
 class Solution:
     def numberOfMatches(self, n: int) -> int:
