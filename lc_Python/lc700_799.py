@@ -1248,6 +1248,77 @@ class Solution:
         return partition
 
 
+# 764 - Largest Plus Sign - MEDIUM
+class Solution:
+    # O(n ** 3) / O(n), TLE
+    def orderOfLargestPlusSign(self, n: int, mines: List[List[int]]) -> int:
+        def calc(i: int, j: int) -> int:
+            mx = 1
+            q = ((i + 1, j), (i - 1, j), (i, j - 1), (i, j + 1))
+            while all(0 <= x < n and 0 <= y < n and (x, y) not in s for x, y in q):
+                q = (
+                    (q[0][0] + 1, q[0][1]),
+                    (q[1][0] - 1, q[1][1]),
+                    (q[2][0], q[2][1] - 1),
+                    (q[3][0], q[3][1] + 1),
+                )
+                mx += 1
+            return mx
+
+        s = set((x, y) for x, y in mines)
+        ans = 0
+        for i in range(n):
+            for j in range(n):
+                if (i, j) in s:
+                    continue
+                if min(i + 1, j + 1, n - i, n - j) <= ans:
+                    continue
+                u = d = l = r = 1
+                while i - u >= 0 and (i - u, j) not in s:
+                    u += 1
+                while i + d < n and (i + d, j) not in s:
+                    d += 1
+                while j - l >= 0 and (i, j - l) not in s:
+                    l += 1
+                while j + r < n and (i, j + r) not in s:
+                    r += 1
+                ans = max(ans, min(u, d, l, r))
+        return ans
+
+    # O(n ** 2) / O(n)
+    def orderOfLargestPlusSign(self, n: int, mines: List[List[int]]) -> int:
+        grid = [[1] * n for _ in range(n)]
+        for x, y in mines:
+            grid[x][y] = 0
+        up = [[0] * n for _ in range(n)]
+        down = [[0] * n for _ in range(n)]
+        left = [[0] * n for _ in range(n)]
+        right = [[0] * n for _ in range(n)]
+        for i in range(n):
+            x = 0
+            for j in range(n):
+                x = 0 if grid[i][j] == 0 else x + 1
+                left[i][j] = x
+            x = 0
+            for j in range(n)[::-1]:
+                x = 0 if grid[i][j] == 0 else x + 1
+                right[i][j] = x
+        for j in range(n):
+            x = 0
+            for i in range(n):
+                x = 0 if grid[i][j] == 0 else x + 1
+                up[i][j] = x
+            x = 0
+            for i in range(n)[::-1]:
+                x = 0 if grid[i][j] == 0 else x + 1
+                down[i][j] = x
+        return max(
+            min(left[i][j], right[i][j], up[i][j], down[i][j])
+            for i in range(n)
+            for j in range(n)
+        )
+
+
 # 766 - Toeplitz Matrix - EASY
 class Solution:
     def isToeplitzMatrix(self, matrix: List[List[int]]) -> bool:

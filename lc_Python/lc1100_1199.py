@@ -1,6 +1,37 @@
 import bisect, functools, collections, itertools, math
 from typing import List
 
+
+# 1106 - Parsing A Boolean Expression - HARD
+class Solution:
+    def parseBoolExpr(self, expression: str) -> bool:
+        st = [[0, 0]]
+        for c in expression:
+            if c in "({":
+                st.append([0, 0])
+            elif c in ")}":
+                f, t = st.pop()
+                a = False
+                sign = st.pop()
+                if sign == "|":
+                    a = True if t else False
+                elif sign == "&":
+                    a = False if f else True
+                elif sign == "!":
+                    a = True if f else False
+                if a:
+                    st[-1][1] += 1
+                else:
+                    st[-1][0] += 1
+            elif c == "t":
+                st[-1][1] += 1
+            elif c == "f":
+                st[-1][0] += 1
+            elif c in "&|!":
+                st.append(c)
+        return True if st[0][1] else False
+
+
 # 1108 - Defanging an IP Address - EASY
 class Solution:
     def defangIPaddr(self, address: str) -> str:
@@ -45,7 +76,7 @@ class Solution:
         cnt = [0] * 100
         ans = 0
         for x, y in dominoes:
-            v = (x * 10 + y if x <= y else y * 10 + x)
+            v = x * 10 + y if x <= y else y * 10 + x
             ans += cnt[v]
             cnt[v] += 1
         return ans
@@ -104,6 +135,9 @@ class Solution:
         return dp[-1][-1]
 
 
+#################
+# 2022.10.17 VO #
+#################
 # 1146 - Snapshot Array - MEDIUM
 # only update the change of each element, rather than record the whole arr
 class SnapshotArray:
@@ -125,7 +159,7 @@ class SnapshotArray:
             return d[snap_id]
         k = list(d.keys())
         i = bisect.bisect_left(k, snap_id)
-        return d[k[i - 1]] # [4, 6] 查找 5, 指向下标 1
+        return d[k[i - 1]]  # [4, 6] 查找 5, 指向下标 1
 
 
 # 1154 - Day of the Year - EASY

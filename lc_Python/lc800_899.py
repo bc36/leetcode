@@ -299,6 +299,29 @@ class Solution:
         return root
 
 
+# 816 - Ambiguous Coordinates - MEDIUM
+class Solution:
+    # O(n ** 3) / O(n ** 3)
+    def ambiguousCoordinates(self, s: str) -> List[str]:
+        def calc(i: int, j: int) -> List[str]:
+            res = []
+            for k in range(1, j - i + 1):
+                l = s[i : i + k]
+                r = s[i + k : j]
+                ok = (l == "0" or not l.startswith("0")) and not r.endswith("0")
+                if ok:
+                    res.append(l + ("." if k < j - i else "") + r)
+            return res
+
+        n = len(s)
+        return [
+            f"({x}, {y})"
+            for i in range(2, n - 1)
+            for x in calc(1, i)
+            for y in calc(i, n - 1)
+        ]
+
+
 # 817 - Linked List Components - MEDIUM
 class Solution:
     def numComponents(self, head: Optional[ListNode], nums: List[int]) -> int:
@@ -1076,6 +1099,53 @@ class Solution:
             # seen = set(ans).union(seen) # '.intersection()' <=> '&'
             seen |= set(ans)
         return ans
+
+
+# 864 - Shortest Path to Get All Keys - HARD
+class Solution:
+    # 只有在拿到一个新的钥匙后, 才可以走回头路
+    # BFS 中的每个状态应该是由'坐标'以及'此时所持有的钥匙情况'所决定的
+    # 位运算技巧 -> 状态压缩, 1010 表示找到第 2, 4 把钥匙
+    # O(m * n * 2 ** k) / O(m * n * 2 ** k), k 是钥匙数量
+    def shortestPathAllKeys(self, grid: List[str]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        x = y = cnt = 0  # 先找到起点, 以及钥匙的数量
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == "@":
+                    x = i
+                    y = j
+                elif v.islower():
+                    cnt += 1
+        q = [(x, y, 0)]
+        vis = {(x, y, 0)}
+        getAll = (1 << cnt) - 1  # 所有钥匙都找到的状态
+        step = 0
+        while q:
+            nxt = []
+            for x, y, cur in q:
+                if cur == getAll:
+                    return step
+                for nx, ny in ((x, y + 1), (x + 1, y), (x, y - 1), (x - 1, y)):
+                    if not 0 <= nx < m or not 0 <= ny < n:
+                        continue
+                    v = grid[nx][ny]
+                    key = cur  # 注意四个方向分别更新钥匙状态, 需要一个新变量
+                    if v == "#":
+                        continue
+                    # if v.isupper() and (key >> (ord(v) - ord("A"))) & 1 == 0:
+                    if v.isupper() and key & (1 << (ord(v) - ord("A"))) == 0:
+                        continue
+                    if v.islower():
+                        key |= 1 << (ord(v) - ord("a"))
+                    state = (nx, ny, key)
+                    if state not in vis:
+                        nxt.append(state)
+                        vis.add(state)
+            step += 1
+            q = nxt
+        return -1
 
 
 # 868 - Binary Gap - EASY
