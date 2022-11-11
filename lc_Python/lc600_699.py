@@ -817,23 +817,24 @@ class Solution:
         return ans
 
     def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
-        q = [(root, 0)]
+        q = [(root, 1)]
         ans = 0
         while q:
-            new = []
+            nxt = []
             ans = max(ans, q[-1][1] - q[0][1] + 1)
             for n, p in q:
                 if n.left:
-                    new.append([n.left, 2 * p])
+                    nxt.append([n.left, 2 * p])
                 if n.right:
-                    new.append([n.right, 2 * p + 1])
-            q = new
+                    nxt.append([n.right, 2 * p + 1])
+            q = nxt
         return ans
 
 
 # 667 - Beautiful Arrangement II - MEDIUM
 class Solution:
     def constructArray(self, n: int, k: int) -> List[int]:
+        # TODO
         return
 
 

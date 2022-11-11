@@ -815,16 +815,31 @@ class Solution:
         return l + r
 
     def asteroidCollision(self, asteroids: List[int]) -> List[int]:
-        a = []
+        st = []
         for v in asteroids:
             f = True
-            while f and v < 0 and a and a[-1] > 0:
-                f = a[-1] < -v
-                if a[-1] <= -v:
-                    a.pop()
+            while f and v < 0 and st and st[-1] > 0:
+                f = st[-1] < -v
+                if st[-1] <= -v:
+                    st.pop()
             if f:
-                a.append(v)
-        return a
+                st.append(v)
+        return st
+
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        st = []
+        for v in asteroids:
+            if v > 0:
+                st.append(v)
+            else:
+                while st and st[-1] > 0 and st[-1] < -v:
+                    st.pop()
+                if st and st[-1] > 0:
+                    if st[-1] == -v:
+                        st.pop()
+                else:
+                    st.append(v)
+        return st
 
 
 # 740 - Delete and Earn - MEDIUM

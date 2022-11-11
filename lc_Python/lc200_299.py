@@ -68,7 +68,8 @@ class Solution:
     def numIslands(self, grid: List[List[str]]):
         ans = 0
         dq = collections.deque()
-        m, n = len(grid), len(grid[0])
+        m = len(grid)
+        n = len(grid[0])
         for i in range(m):
             for j in range(n):
                 if grid[i][j] == "1":
@@ -81,6 +82,30 @@ class Solution:
                             if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] == "1":
                                 dq.append((nx, ny))
                                 grid[nx][ny] = "0"
+        return ans
+
+    def numIslands(self, grid: List[List[str]]) -> int:
+        def sink(i: int, j: int) -> None:
+            grid[i][j] = "0"
+            q = [(i, j)]
+            while q:
+                nxt = []
+                for x, y in q:
+                    for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                        if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] == "1":
+                            grid[nx][ny] = "0"
+                            nxt.append((nx, ny))
+                q = nxt
+            return
+
+        ans = 0
+        m = len(grid)
+        n = len(grid[0])
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == "1":
+                    sink(i, j)
+                    ans += 1
         return ans
 
 
@@ -719,30 +744,45 @@ class Solution:
 # 221 - Maximal Square - MEDIUM
 class Solution:
     def maximalSquare(self, matrix: List[List[str]]) -> int:
-        rows, cols = len(matrix), len(matrix[0])
-        dp, maxSide = [[0] * cols for _ in range(rows)], 0
-        for i in range(rows):
-            for j in range(cols):
+        r = len(matrix)
+        c = len(matrix[0])
+        f = [[0] * c for _ in range(r)]
+        mx = 0
+        for i in range(r):
+            for j in range(c):
                 if matrix[i][j] == "1":
                     if i == 0 or j == 0:
-                        dp[i][j] = 1
+                        f[i][j] = 1
                     else:
-                        dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1
-                maxSide = max(maxSide, dp[i][j])
-        return maxSide**2
+                        f[i][j] = min(f[i - 1][j - 1], f[i - 1][j], f[i][j - 1]) + 1
+                mx = max(mx, f[i][j])
+        return mx**2
 
     def maximalSquare(self, matrix: List[List[str]]) -> int:
-        rows, cols = len(matrix), len(matrix[0])
-        dp = [0] * (cols + 1)
-        max_side = 0
-        for r in range(1, rows + 1):
-            nxt_dp = [0] * (cols + 1)
-            for c in range(1, cols + 1):
+        r = len(matrix)
+        c = len(matrix[0])
+        f = [[0] * (c + 1) for _ in range(r + 1)]
+        mx = 0
+        for i in range(1, r + 1):
+            for j in range(1, c + 1):
+                if matrix[i - 1][j - 1] == "1":
+                    f[i][j] = min(f[i - 1][j - 1], f[i - 1][j], f[i][j - 1]) + 1
+                mx = max(mx, f[i][j])
+        return mx**2
+
+    def maximalSquare(self, matrix: List[List[str]]) -> int:
+        r = len(matrix)
+        c = len(matrix[0])
+        f = [0] * (c + 1)
+        mx = 0
+        for r in range(1, r + 1):
+            nxt = [0] * (c + 1)
+            for c in range(1, c + 1):
                 if matrix[r - 1][c - 1] == "1":
-                    nxt_dp[c] = 1 + min(dp[c], dp[c - 1], nxt_dp[c - 1])
-                max_side = max(max_side, nxt_dp[c])
-            dp = nxt_dp
-        return max_side**2
+                    nxt[c] = 1 + min(f[c], f[c - 1], nxt[c - 1])
+                mx = max(mx, nxt[c])
+            f = nxt
+        return mx**2
 
 
 # 224 - Basic Calculator - HARD

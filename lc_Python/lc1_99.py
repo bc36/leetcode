@@ -349,14 +349,15 @@ class Solution:
 
 # 11 - Container With Most Water - MEDIUM
 class Solution:
+    # O(n) / O(1), 每轮向内移动短板, 所有消去的状态都 不会导致面积最大值丢失
     def maxArea(self, height: List[int]) -> int:
-        ans, i, j, ans = 0, 0, len(height) - 1
+        ans = i = 0
+        j = len(height) - 1
         while i < j:
+            ans = max(ans, (j - i) * min(height[i], height[j]))
             if height[i] < height[j]:
-                ans = max(ans, height[i] * (j - i))
                 i += 1
             else:
-                ans = max(ans, height[j] * (j - i))
                 j -= 1
         return ans
 
@@ -390,29 +391,28 @@ class Solution:
 class Solution:
     # narrow down 'left' and 'right' for each 'i'
     def threeSum(self, nums: List[int]) -> List[List[int]]:
-        if not nums or len(nums) < 3:
-            return []
         nums.sort()
         ans = []
         for i in range(len(nums) - 2):
             if nums[i] > 0:
                 break
-            if i > 0 and nums[i] == nums[i - 1]:
+            if i > 0 and nums[i - 1] == nums[i]:
                 continue
-            left, right = i + 1, len(nums) - 1
-            while left < right:
-                if nums[i] + nums[left] + nums[right] == 0:
-                    ans.append([nums[i], nums[left], nums[right]])
-                    left += 1
-                    right -= 1
-                    while left < right and nums[left] == nums[left - 1]:
-                        left += 1
-                    while left < right and nums[right] == nums[right + 1]:
-                        right -= 1
-                elif nums[i] + nums[left] + nums[right] < 0:
-                    left += 1
+            j = i + 1
+            k = len(nums) - 1
+            while j < k:
+                if nums[i] + nums[j] + nums[k] > 0:
+                    k -= 1
+                elif nums[i] + nums[j] + nums[k] < 0:
+                    j += 1
                 else:
-                    right -= 1
+                    ans.append([nums[i], nums[j], nums[k]])
+                    j += 1
+                    k -= 1
+                    while j < k and nums[j - 1] == nums[j]:
+                        j += 1
+                    while j < k and nums[k] == nums[k + 1]:
+                        k -= 1
         return ans
 
 
@@ -2181,7 +2181,7 @@ class Solution:
                 p1 += 1
             elif nums[i] == 0:
                 nums[i], nums[p0] = nums[p0], nums[i]
-                if p0 < p1:
+                if p0 < p1:  # 此时 p0 把 1 换出去了
                     nums[i], nums[p1] = nums[p1], nums[i]
                 p0 += 1
                 p1 += 1
@@ -2200,6 +2200,18 @@ class Solution:
                 nums[o], nums[t] = nums[t], nums[o]
                 t -= 1
         return
+
+    def sortColors(self, nums: List[int]) -> None:
+        p0 = i = 0
+        p2 = len(nums) - 1
+        while i <= p2:
+            while i <= p2 and nums[i] == 2:
+                nums[i], nums[p2] = nums[p2], nums[i]
+                p2 -= 1
+            if nums[i] == 0:
+                nums[i], nums[p0] = nums[p0], nums[i]
+                p0 += 1
+            i += 1
 
     def sortColors(self, nums: List[int]) -> None:
         l = 0

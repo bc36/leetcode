@@ -140,6 +140,28 @@ class Solution:
             q = nxt
         return ans
 
+    def zigzagLevelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+        ans = []
+        q = [root]
+        l2r = 1
+        while q:
+            nxt = []
+            v = [x.val for x in q]
+            if l2r:
+                ans.append(v)
+            else:
+                ans.append(v[::-1])
+            l2r = 1 - l2r
+            for x in q:
+                if x.left:
+                    nxt.append(x.left)
+                if x.right:
+                    nxt.append(x.right)
+            q = nxt
+        return ans
+
 
 # 104 - Maximum Depth of Binary Tree - EASY
 class Solution:
@@ -844,30 +866,40 @@ class Solution:
 # 139 - Word Break - MEDIUM
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        dp = [True] + [False] * len(s)
+        f = [True] + [False] * len(s)
+        mx = max(len(x) for x in wordDict)
+        wd = set(wordDict)
         for i in range(len(s)):
-            for j in range(i + 1, len(s) + 1):
-                if dp[i] and s[i:j] in wordDict:
-                    dp[j] = True
-        return dp[-1]
+            for j in range(i + 1, min(i + 1 + mx, len(s) + 1)):
+                if f[i] and s[i:j] in wd:
+                    f[j] = True
+        return f[-1]
 
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        dp = [True] + [False] * len(s)
-        for j in range(1, len(s) + 1):
-            for word in wordDict:
-                if j >= len(word):
-                    dp[j] = dp[j] or (
-                        dp[j - len(word)] and word == s[j - len(word) : j]
-                    )
-        return dp[-1]
+        f = [True] + [False] * len(s)
+        for i in range(1, len(s) + 1):
+            for w in wordDict:
+                if i >= len(w):
+                    f[i] = f[i] or (f[i - len(w)] and w == s[i - len(w) : i])
+        return f[-1]
 
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        dp = [True] + [False] * len(s)
+        f = [True] + [False] * len(s)
         for i in range(len(s) + 1):
             for w in wordDict:
                 if i + len(w) < len(s) + 1 and s[i : i + len(w)] == w:
-                    dp[i + len(w)] = dp[i] or dp[i + len(w)]
-        return dp[-1]
+                    f[i + len(w)] = f[i] or f[i + len(w)]
+        return f[-1]
+
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        f = [True] + [False] * len(s)
+        for i in range(1, len(s) + 1):
+            for w in wordDict:
+                if i + len(w) - 1 > len(s):
+                    continue
+                if f[i - 1] and s[i - 1 : i - 1 + len(w)] == w:
+                    f[i - 1 + len(w)] = True
+        return f[-1]
 
 
 # 141 - Linked List Cycle - EASY
@@ -1751,43 +1783,45 @@ class Solution:
 # 173 - Binary Search Tree Iterator - MEDIUM
 # save all node.val by inorder traversal
 class BSTIterator:
+    # O(n) / O(n)
     def __init__(self, root: Optional[TreeNode]):
-        self.stack = collections.deque()
+        self.dq = collections.deque()
         self.inorder(root)
 
     def next(self) -> int:
-        return self.stack.popleft()
+        return self.dq.popleft()
 
     def hasNext(self) -> bool:
-        return len(self.stack) > 0
+        return len(self.dq) > 0
 
     def inorder(self, root: TreeNode) -> None:
         if not root:
             return
         self.inorder(root.left)
-        self.stack.append(root.val)
+        self.dq.append(root.val)
         self.inorder(root.right)
         return
 
 
 # iterate. save all left nodes while pop each node
 class BSTIterator:
-    def __init__(self, root: TreeNode):
-        self.stack = []
+    # O(n) / O(h), where h is the height of the tree
+    def __init__(self, root: Optional[TreeNode]):
+        self.st = []
         while root:
-            self.stack.append(root)
+            self.st.append(root)
             root = root.left
 
-    def next(self):
-        cur = self.stack.pop()
+    def next(self) -> int:
+        cur = self.st.pop()
         node = cur.right
         while node:
-            self.stack.append(node)
+            self.st.append(node)
             node = node.left
         return cur.val
 
     def hasNext(self) -> bool:
-        return len(self.stack) > 0
+        return len(self.st) > 0
 
 
 # Abstract the putting into stack operation into a function
