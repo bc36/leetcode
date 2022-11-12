@@ -923,6 +923,80 @@ class Solution:
         return max(dfs(0, 0, 0), 0)
 
 
+# 743 - Network Delay Time - MEDIUM
+class Solution:
+    # dijkstra, 边权为正的图
+    # O(n * (n + m)) / O(n * m), m = len(times) -> Edge
+    def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+        g = [[math.inf] * n for _ in range(n)]
+        for x, y, w in times:
+            g[x - 1][y - 1] = w
+        d = [math.inf] * n
+        d[k - 1] = 0
+        vis = [False] * n
+        for _ in range(n):
+            x = -1
+            for y, v in enumerate(vis):
+                if not v and (x == -1 or d[y] < d[x]):  # 每次选择一个已知到源节点距离最短的未访问节点
+                    x = y
+            vis[x] = True
+            for y, w in enumerate(g[x]):
+                d[y] = min(d[y], d[x] + w)
+        ans = max(d)
+        return ans if ans < math.inf else -1
+
+    # O(n + mlogn) / O(n + m), m = len(times) -> Edge
+    def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+        g = [[] for _ in range(n)]
+        for x, y, w in times:
+            g[x - 1].append((y - 1, w))
+        d = [math.inf] * n
+        d[k - 1] = 0
+        q = [(0, k - 1)]
+        while q:
+            w, x = heapq.heappop(q)  # 每次选择一个已知到源节点距离最短的未访问节点
+            if d[x] < w:
+                continue
+            for y, w in g[x]:
+                v = d[x] + w
+                if v < d[y]:
+                    d[y] = v
+                    heapq.heappush(q, (v, y))
+        ans = max(d)
+        return ans if ans < math.inf else -1
+
+    # 不是 dijkstra
+    def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+        g = collections.defaultdict(list)
+        q = [(0, k)]
+        vis = {}
+        for x, y, w in times:
+            g[x].append((y, w))
+        while q:
+            t, x = heapq.heappop(q)
+            if x not in vis:
+                vis[x] = t
+                for v, w in g[x]:
+                    heapq.heappush(q, (t + w, v))
+        return max(vis.values()) if len(vis) == n else -1
+
+    # SPFA(short path fast algorithm)
+    def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+        d = [0] + [math.inf] * n
+        g = collections.defaultdict(list)
+        q = collections.deque([(0, k)])
+        for x, y, w in times:
+            g[x].append((y, w))
+        while q:
+            t, x = q.popleft()
+            if t < d[x]:
+                d[x] = t
+                for v, w in g[x]:
+                    q.append((t + w, v))
+        mx = max(d)
+        return mx if mx < math.inf else -1
+
+
 # 744 - Find Smallest Letter Greater Than Target - EASY
 class Solution:
     def nextGreatestLetter(self, letters: List[str], target: str) -> str:
@@ -1940,7 +2014,22 @@ class Solution:
 
 # 789
 
-# 790
+# 790 - Domino and Tromino Tiling - MEDIUM
+class Solution:
+    # 需要考虑每列上下两个块分别的状态, f[i][s]: 表示平铺到第 i 列时，各个状态 s 对应的平铺方法数量
+    # f[i][0]: 都不覆盖, f[i][1]: 上块被覆盖, f[i][2]: 下块被覆盖, f[i][3]: 都被覆盖
+    def numTilings(self, n: int) -> int:
+        f = [[0] * 4 for _ in range(n + 1)]
+        f[0][3] = 1
+        mod = 10**9 + 7
+        for i in range(1, n + 1):
+            f[i][0] = f[i - 1][3]  # |
+            f[i][1] = (f[i - 1][0] + f[i - 1][2]) % mod  # L -
+            f[i][2] = (f[i - 1][0] + f[i - 1][1]) % mod  # L -
+            f[i][3] = (
+                f[i - 1][0] + f[i - 1][1] + f[i - 1][2] + f[i - 1][3]
+            ) % mod  # = L L |
+        return f[-1][3]
 
 
 # 791 - Custom Sort String - MEDIUM

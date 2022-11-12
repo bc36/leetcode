@@ -1293,6 +1293,203 @@ class Solution:
         return
 
 
+# 480 - Sliding Window Median - HARD
+class Solution:
+    # O(k + klogk + (n - k) * logk * 2) / O(k)
+    def medianSlidingWindow(self, nums: List[int], k: int) -> List[float]:
+        l = sortedcontainers.SortedList(nums[: k - 1])
+        ans = []
+        for i in range(k - 1, len(nums)):
+            l.add(nums[i])
+            if k & 1:
+                ans.append(l[k // 2])
+            else:
+                ans.append(sum(l[k // 2 - 1 : k // 2 + 1]) / 2)
+            l.remove(nums[i - k + 1])
+        return ans
+
+    # O(nk) / O(k)
+    def medianSlidingWindow(self, nums: List[int], k: int) -> List[float]:
+        l = sorted(nums[:k])
+        ans = []
+        for a, b in zip(nums, nums[k:] + [0]):
+            ans.append((l[k // 2] + l[~(k // 2)]) / 2)
+            l.remove(a)
+            bisect.insort(l, b)
+        return ans
+
+    # O(nlogn) / O(k)
+    def medianSlidingWindow(self, nums: List[int], k: int) -> List[float]:
+        l = []
+        r = []  # equal to or one more element than 'l'
+        ans = []
+        # real size of 'l' and 'r' -> lSize = len(l) - elments that need to be deleted
+        lSize = rSize = 0
+        for i in range(k - 1):
+            heapq.heappush(l, -nums[i])
+        lSize = len(l)
+        while len(l) > len(r):
+            heapq.heappush(r, -heapq.heappop(l))
+            lSize -= 1
+            rSize += 1
+        toRmv = collections.defaultdict(int)
+        for i in range(k - 1, len(nums)):
+            # add
+            if not r or nums[i] >= r[0]:
+                heapq.heappush(r, nums[i])
+                rSize += 1
+            else:
+                heapq.heappush(l, -nums[i])
+                lSize += 1
+            # balance
+            if lSize + 1 < rSize:
+                heapq.heappush(l, -heapq.heappop(r))
+                lSize += 1
+                rSize -= 1
+                # check top of heap
+                while r:
+                    if toRmv[r[0]] > 0:
+                        toRmv[r[0]] -= 1
+                        heapq.heappop(r)
+                    else:
+                        break
+            elif lSize == rSize + 1:
+                heapq.heappush(r, -heapq.heappop(l))
+                lSize -= 1
+                rSize += 1
+                # check top of heap
+                while l:
+                    if toRmv[-l[0]] > 0:
+                        toRmv[-l[0]] -= 1
+                        heapq.heappop(l)
+                    else:
+                        break
+            # calc
+            if k & 1:
+                ans.append(r[0])
+            else:
+                ans.append((-l[0] + r[0]) / 2)
+            # remove
+            toRmv[nums[i - k + 1]] += 1
+            if nums[i - k + 1] >= r[0]:
+                rSize -= 1
+                if nums[i - k + 1] == r[0]:
+                    while r:
+                        if toRmv[r[0]] > 0:
+                            toRmv[r[0]] -= 1
+                            heapq.heappop(r)
+                        else:
+                            break
+            else:
+                lSize -= 1
+                if nums[i - k + 1] == -l[0]:
+                    while l:
+                        if toRmv[-l[0]] > 0:
+                            toRmv[-l[0]] -= 1
+                            heapq.heappop(l)
+                        else:
+                            break
+            # balance
+            if lSize + 1 < rSize:
+                heapq.heappush(l, -heapq.heappop(r))
+                lSize += 1
+                rSize -= 1
+                # check top of heap
+                while r:
+                    if toRmv[r[0]] > 0:
+                        toRmv[r[0]] -= 1
+                        heapq.heappop(r)
+                    else:
+                        break
+            elif lSize == rSize + 1:
+                heapq.heappush(r, -heapq.heappop(l))
+                lSize -= 1
+                rSize += 1
+                # check top of heap
+                while l:
+                    if toRmv[-l[0]] > 0:
+                        toRmv[-l[0]] -= 1
+                        heapq.heappop(l)
+                    else:
+                        break
+        return ans
+
+
+# lc 295 进阶
+class DualHeap:
+    def __init__(self, k: int) -> None:
+        self.l = []
+        self.r = []
+        self.toRmv = collections.defaultdict(int)
+        self.lSize = 0
+        self.rSize = 0
+        self.k = k
+
+    def add(self, num: int) -> None:
+        if not self.r or num >= self.r[0]:
+            heapq.heappush(self.r, num)
+            self.rSize += 1
+        else:
+            heapq.heappush(self.l, -num)
+            self.lSize += 1
+        self.balance()
+        return
+
+    def balance(self) -> None:
+        if self.lSize + 1 < self.rSize:
+            heapq.heappush(self.l, -heapq.heappop(self.r))
+            self.lSize += 1
+            self.rSize -= 1
+            self.prune(self.r, 1)  # check top of heap
+        elif self.lSize > self.rSize:  # 初始化时, 可能差距大于 1
+            heapq.heappush(self.r, -heapq.heappop(self.l))
+            self.lSize -= 1
+            self.rSize += 1
+            self.prune(self.l, -1)  # check top of heap
+        return
+
+    def getMedian(self) -> float:
+        if self.k & 1:
+            return self.r[0]
+        return (-self.l[0] + self.r[0]) / 2
+
+    def remove(self, num: int) -> None:
+        self.toRmv[num] += 1
+        if num >= self.r[0]:
+            self.rSize -= 1
+            if num == self.r[0]:
+                self.prune(self.r, 1)
+        else:
+            self.lSize -= 1
+            if num == -self.l[0]:
+                self.prune(self.l, -1)
+        self.balance()
+        return
+
+    def prune(self, hp: List[int], sign: int) -> None:
+        while hp:
+            if self.toRmv[hp[0] * sign] > 0:
+                self.toRmv[hp[0] * sign] -= 1
+                heapq.heappop(hp)
+            else:
+                break
+        return
+
+
+class Solution:
+    # O(nlogk) / O(k)
+    def medianSlidingWindow(self, nums: List[int], k: int) -> List[float]:
+        dh = DualHeap(k)
+        for i in range(k - 1):
+            dh.add(nums[i])
+        ans = []
+        for i in range(k - 1, len(nums)):
+            dh.add(nums[i])
+            ans.append(dh.getMedian())
+            dh.remove(nums[i - k + 1])
+        return ans
+
+
 # 481 - Magical String - MEDIUM
 class Solution:
     def magicalString(self, n: int) -> int:
