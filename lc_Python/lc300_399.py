@@ -580,20 +580,19 @@ class Solution:
 
 
 # 314 - Binary Tree Vertical Order Traversal - MEDIUM
-# dfs
 class Solution:
+    # dfs
     def verticalOrder(self, root: TreeNode) -> List[List[int]]:
         # Use a dict to store our answers, keys will be column idxs.
         ans = collections.defaultdict(list)
 
-        def dfs(node, row, col) -> None:
-            if not node:
+        def dfs(root: TreeNode, row: int, col: int) -> None:
+            if not root:
                 return
-            # Append node vals to column in our dict.
-            ans[col].append((row, node.val))
-            # Traverse l and r.
-            dfs(node.left, row + 1, col - 1)
-            dfs(node.right, row + 1, col + 1)
+            # Append root vals to column in our dict.
+            ans[col].append((row, root.val))
+            dfs(root.left, row + 1, col - 1)
+            dfs(root.right, row + 1, col + 1)
             return
 
         dfs(root, 0, 0)
@@ -605,19 +604,17 @@ class Solution:
             ret.append([x[1] for x in sorted(v, key=lambda x: x[0])])
         return ret
 
-
-# bfs
-class Solution:
+    # bfs
     def verticalOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
         nodes = collections.defaultdict(list)
-        queue = collections.deque([(root, 0)])
-        while queue:
-            node, pos = queue.popleft()
+        dq = collections.deque([(root, 0)])
+        while dq:
+            node, pos = dq.popleft()
             if node:
                 nodes[pos].append(node.val)
-                queue.append((node.left, pos - 1))
-                queue.append((node.right, pos + 1))
-        # sorted the keys of defaultdict
+                dq.append((node.left, pos - 1))
+                dq.append((node.right, pos + 1))
+        # sorted by keys of defaultdict
         return [nodes[i] for i in sorted(nodes)]
 
 
@@ -819,7 +816,7 @@ class Solution:
     def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
         m = len(matrix)
         n = len(matrix[0])
-        g = [[1 for _ in range(n)] for j in range(m)]
+        g = [[1 for _ in range(n)] for _ in range(m)]
         pair = []
         for i in range(m):
             for j in range(n):
@@ -836,39 +833,39 @@ class Solution:
     def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
         m = len(matrix)
         n = len(matrix[0])
-        dp = [[1 for _ in range(n)] for _ in range(m)]
-        d = [[0 for _ in range(n)] for _ in range(m)]  # in degree
+        f = [[1 for _ in range(n)] for _ in range(m)]
+        ind = [[0 for _ in range(n)] for _ in range(m)]  # in degree
         dq = collections.deque()
         for i in range(m):
             for j in range(n):
                 for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
                     if 0 <= x < m and 0 <= y < n and matrix[x][y] < matrix[i][j]:
-                        d[i][j] += 1
-                if d[i][j] == 0:
+                        ind[i][j] += 1
+                if ind[i][j] == 0:
                     dq.append((i, j))
         while dq:
             for _ in range(len(dq)):
                 i, j = dq.popleft()
                 for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
                     if 0 <= x < m and 0 <= y < n and matrix[x][y] > matrix[i][j]:
-                        dp[x][y] = max(dp[x][y], dp[i][j] + 1)
-                        d[x][y] -= 1
-                        if d[x][y] == 0:
+                        f[x][y] = max(f[x][y], f[i][j] + 1)
+                        ind[x][y] -= 1
+                        if ind[x][y] == 0:
                             dq.append((x, y))
-        return max(max(r) for r in dp)
+        return max(max(r) for r in f)
 
     # optimize 'dp'
     def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
         m = len(matrix)
         n = len(matrix[0])
-        d = [[0 for _ in range(n)] for _ in range(m)]  # in degree
+        ind = [[0 for _ in range(n)] for _ in range(m)]  # in degree
         dq = collections.deque()
         for i in range(m):
             for j in range(n):
                 for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
                     if 0 <= x < m and 0 <= y < n and matrix[x][y] < matrix[i][j]:
-                        d[i][j] += 1
-                if d[i][j] == 0:
+                        ind[i][j] += 1
+                if ind[i][j] == 0:
                     dq.append((i, j))
         ans = 0
         while dq:
@@ -877,8 +874,8 @@ class Solution:
                 i, j = dq.popleft()
                 for x, y in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
                     if 0 <= x < m and 0 <= y < n and matrix[x][y] > matrix[i][j]:
-                        d[x][y] -= 1
-                        if d[x][y] == 0:
+                        ind[x][y] -= 1
+                        if ind[x][y] == 0:
                             dq.append((x, y))
         return ans
 

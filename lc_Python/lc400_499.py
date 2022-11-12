@@ -1,5 +1,6 @@
 import collections, bisect, functools, math, heapq, random, itertools
 from typing import List, Optional, Tuple
+import sortedcontainers
 
 
 class Node:
@@ -1108,6 +1109,35 @@ class Solution:
         return sum(d.values())
 
 
+# 468 - Validate IP Address - MEDIUM
+class Solution:
+    def validIPAddress(self, queryIP: str) -> str:
+        def ipv4(s: str) -> bool:
+            sp = s.split(".")
+            if len(sp) != 4:
+                return False
+            return all(
+                w
+                and w.isdigit()
+                and not (len(w) > 1 and w[0] == "0")
+                and 0 <= int(w) <= 255
+                for w in sp
+            )
+
+        def ipv6(s: str) -> bool:
+            sp = s.split(":")
+            if len(sp) != 8:
+                return False
+            return all(w and len(w) <= 4 and all(c in st for c in w) for w in sp)
+
+        st = set("0123456789ABCDEFabcdef")
+        if "." in queryIP and ipv4(queryIP):
+            return "IPv4"
+        if ":" in queryIP and ipv6(queryIP):
+            return "IPv6"
+        return "Neither"
+
+
 # 473 - Matchsticks to Square - MEDIUM
 class Solution:
     # O(4 ** n) / O(n)
@@ -1320,15 +1350,15 @@ class Solution:
 class Solution:
     def cleanRoom(self, robot):
         dirs = [-1, 0, 1, 0, -1]
-        seen = set()
+        vis = set()
 
-        def dfs(x, y, d):
+        def dfs(x: int, y: int, d: int) -> None:
             robot.clean()
-            seen.add((x, y))
+            vis.add((x, y))
             for i in range(4):
                 cur = (i + d) % 4
                 nx, ny = x + dirs[cur], y + dirs[cur + 1]
-                if (nx, ny) not in seen and robot.move():
+                if (nx, ny) not in vis and robot.move():
                     dfs(nx, ny, cur)
                     robot.turnRight()
                     robot.turnRight()
@@ -1336,8 +1366,9 @@ class Solution:
                     robot.turnLeft()
                     robot.turnLeft()
                 robot.turnRight()
+            return
 
-        dfs(robot.row, robot.col, 0)
+        return dfs(robot.row, robot.col, 0)
 
 
 # 495 - Teemo Attacking - EASY

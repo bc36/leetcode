@@ -1649,20 +1649,21 @@ class Solution:
             ret += prev_good
         return ret
 
+    # 对于任意一个右端点, 能够与其对应的左端点们必然相邻
     def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:
         freq = {}
-        ans = start = left = 0
-        for right in nums:
-            freq[right] = freq.get(right, 0) + 1
+        ans = start = l = 0
+        for v in nums:
+            freq[v] = freq.get(v, 0) + 1
             if len(freq) == k + 1:
-                del freq[nums[left]]
-                left += 1
-                start = left
+                del freq[nums[l]]  # 只剩一个了, 直接删除
+                l += 1
+                start = l
             if len(freq) == k:
-                while freq[nums[left]] > 1:
-                    freq[nums[left]] -= 1
-                    left += 1
-                ans += left - start + 1
+                while freq[nums[l]] > 1:
+                    freq[nums[l]] -= 1
+                    l += 1
+                ans += l - start + 1
         return ans
 
 
