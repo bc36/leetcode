@@ -2037,29 +2037,21 @@ class Solution:
     def customSortString(self, order: str, s: str) -> str:
         cnt = collections.Counter(s)
         ans = ""
-        for ch in order:
-            while cnt.get(ch, 0) and cnt[ch] > 0:
-                ans += ch
-                cnt[ch] -= 1
-        """
-        'ch' will have been assigned value and can be called,
-        even if it in the last for loop and for loop ended
-        print(ch)
-        """
-        for ch in cnt:
-            while cnt[ch] != 0:
-                ans += ch
-                cnt[ch] -= 1
-        return ans
+        for c in order:
+            if c in cnt:
+                ans += c * cnt[c]
+                cnt.pop(c)
+        return ans + "".join(c * cnt[c] for c in cnt)
 
     def customSortString(self, order: str, s: str) -> str:
-        cnt, ans = collections.Counter(s), ""
-        for ch in order:
-            if ch in cnt:
-                ans += ch * cnt[ch]
-                cnt.pop(ch)
-
-        return ans + "".join(ch * cnt[ch] for ch in cnt)
+        cnt = collections.Counter(s)
+        ans = ""
+        for c in order:
+            ans += cnt[c] * c
+            del cnt[c]
+        for k, v in cnt.items():
+            ans += k * v
+        return ans
 
 
 # 793 - Preimage Size of Factorial Zeroes Function - HARD
