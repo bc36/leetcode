@@ -1071,6 +1071,11 @@ T4: 2378 pass
 """
 
 
+# https://leetcode.cn/contest/weekly-contest-312
+# 265 / https://leetcode.cn/contest/weekly-contest-312/problems/number-of-good-paths/
+# 并查集
+
+
 # https://leetcode.cn/contest/weekly-contest-314
 # 929 / https://leetcode.cn/contest/weekly-contest-314/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
 # dp, 折半枚举

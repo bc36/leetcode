@@ -679,6 +679,171 @@ class Node:
         dfs(trie, 0)
         return ans
 
+
+# 2418 - Sort the People - EASY
+class Solution:
+    def sortPeople(self, names: List[str], heights: List[int]) -> List[str]:
+        return [name for _, name in sorted(zip(heights, names), reverse=True)]
+
+
+# 2419 - Longest Subarray With Maximum Bitwise AND - MEDIUM
+class Solution:
+    def longestSubarray(self, nums: List[int]) -> int:
+        mx = max(nums)
+        ans = pre = 0
+        for v in nums:
+            if v == pre == mx:
+                cur += 1
+            elif v == mx:
+                cur = 1
+            else:
+                cur = 0
+            pre = v
+            ans = max(ans, cur)
+        return ans
+
+    def longestSubarray(self, nums: List[int]) -> int:
+        mx = max(nums)
+        ans = cnt = 0
+        for v in nums:
+            if v == mx:
+                cnt += 1
+                ans = max(ans, cnt)
+            else:
+                cnt = 0
+        return ans
+
+
+# 2420 - Find All Good Indices - MEDIUM
+class Solution:
+    # f[i] 表示以第 i 个下标为结尾的非递增连续子数组最长是多少
+    # g[i] 表示以第 i 个下标为开头的非递减连续子数组最长是多少
+    def goodIndices(self, nums: List[int], k: int) -> List[int]:
+        n = len(nums)
+        f = [1] * n
+        g = [1] * n
+        for i in range(1, n):
+            if nums[i - 1] >= nums[i]:
+                f[i] = f[i - 1] + 1
+        for i in range(n - 1)[::-1]:
+            if nums[i] <= nums[i + 1]:
+                g[i] = g[i + 1] + 1
+        ans = []
+        for i in range(k, n - k):
+            if f[i - 1] >= k and g[i + 1] >= k:
+                ans.append(i)
+        return ans
+
+
+# 2421 - Number of Good Paths - HARD
+class Solution:
+    # 暴力, 从大到小考虑, 删除大节点, O(n ** 2)
+    # 倒着考虑, 删除变合并 -> 并查集
+    # 连通块对应最大值个数
+    # O(nlogn) / O(n)
+    def numberOfGoodPaths(self, vals: List[int], edges: List[List[int]]) -> int:
+        n = len(vals)
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        fa = list(range(n))
+        # cnt[x] 表示在 x 所处连通块内, 节点值等于 vals[x] 的节点个数 -> 如果按照节点值从小到大合并, cnt[x] 也是连通块内的等于最大节点值的节点个数
+        cnt = [1] * n
+
+        def find(x: int) -> int:
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+
+        ans = n
+        for v, x in sorted(zip(vals, range(n))):
+            fx = find(x)
+            for y in g[x]:
+                fy = find(y)
+                if fy == fx or vals[fy] > v:  # 后续再合并
+                    continue  # 先只考虑最大节点值比 v 小的连通块
+                if vals[fy] == v:  # 可以构成好路径
+                    ans += cnt[fx] * cnt[fy]  # 乘法原理
+                    cnt[fx] += cnt[fy]  # 统计连通块内节点值等于 v 的节点个数
+                fa[fy] = fx  # 把小的节点值合并到大的节点值上
+        return ans
+
+    # 路径上的所有点权都小等于路径两端的点权 -> 先把点按点权从小到大排序, 然后依次加入树中, 这样加入过程中的所有路径都符合该条件
+    # 考虑两个连通块合并时的情况, 当一条边合并两个连通块 x 和 y 时, x 里点权为 v 的节点都可以从这条边走到 y 里点权为 v 的节点
+    # 因此两个连通块 x 和 y 合并的时候答案会增加 d[x] * d[y], 用并查集维护连通块的合并即可
+    # O(nlogn) / O(n)
+    def numberOfGoodPaths(self, vals: List[int], edges: List[List[int]]) -> int:
+        n = len(vals)
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        fa = list(range(n))
+
+        def find(x: int) -> int:
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+
+        # d[x] 表示连通块 x 中点权等于 v 的点有几个
+        d = collections.defaultdict(int)
+        ans = j = 0
+        arr = sorted(zip(vals, range(n)))
+        vis = [False] * n
+        for i in range(n):
+            if arr[i][0] != arr[j][0]:  # 当前枚举的点权有变, 清空 map
+                d.clear()
+                j = i
+            x = arr[i][1]
+            vis[x] = True  # 将 x 加入树中
+            # 一开始没有边和 x 连接, 它所处的连通块只有一个点(它本身)的点权等于 v
+            d[x] = 1
+            for y in g[x]:
+                if vis[y]:
+                    fx = find(x)
+                    fy = find(y)
+                    if fx == fy:
+                        continue
+                    ans += d[fx] * d[fy]
+                    fa[fx] = fy
+                    d[fy] += d[fx]
+        return ans + n
+
+    def numberOfGoodPaths(self, vals: List[int], edges: List[List[int]]) -> int:
+        n = len(vals)
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            # 保证后续合并时, 权值小的节点的 fa 指向权值大的节点
+            if (vals[x], x) >= (vals[y], y):
+                g[x].append(y)
+            else:
+                g[y].append(x)
+        fa = list(range(n))
+        cnt = [1] * n
+
+        def find(x):
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+
+        ans = 0
+        for v, x in sorted(zip(vals, range(n))):
+            for y in g[x]:
+                fx = find(x)
+                fy = find(y)
+                if vals[fy] == v:
+                    ans += cnt[fx] * cnt[fy]
+                    cnt[fy] += cnt[fx]
+                else:
+                    vals[fy] = v
+                    cnt[fy] = cnt[fx]
+                fa[fx] = fy
+        return ans + n
+
+
 # 2432 - The Employee That Worked on the Longest Task - EASY
 class Solution:
     def hardestWorker(self, n: int, logs: List[List[int]]) -> int:
