@@ -676,9 +676,9 @@ class Solution:
 
     # https://oi-wiki.org/string/z-func/
     def sumScores(self, s: str) -> int:
-        n = len(s)
+        ans = n = len(s)
         z = [0] * n
-        ans, l, r = n, 0, 0
+        l = r = 0
         for i in range(1, n):
             z[i] = max(min(z[i - l], r - i + 1), 0)
             while i + z[i] < n and s[z[i]] == s[i + z[i]]:
@@ -686,6 +686,26 @@ class Solution:
                 z[i] += 1
             ans += z[i]
         return ans
+
+    def sumScores(self, s: str) -> int:
+        # https://oi-wiki.org/string/z-func/
+        def z_function(s):
+            n = len(s)
+            z = [0] * n
+            l = r = 0
+            for i in range(1, n):
+                if i <= r and z[i - l] < r - i + 1:
+                    z[i] = z[i - l]
+                else:
+                    z[i] = max(0, r - i + 1)
+                    while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+                        z[i] += 1
+                if i + z[i] - 1 > r:
+                    l = i
+                    r = i + z[i] - 1
+            return z
+
+        return sum(z_function(s)) + len(s)
 
     def sumScores(self, s: str) -> int:
         a = p = 0

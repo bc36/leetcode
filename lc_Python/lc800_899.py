@@ -201,6 +201,70 @@ class Solution:
         )
 
 
+# 805 - Split Array With Same Average - HARD
+class Solution:
+    # meet in the middle, O(2 ** n) 降至 O(2 ** (n // 2)), 降低搜索空间
+    def splitArraySameAverage(self, nums: List[int]) -> bool:
+        n = len(nums)
+        if n == 1:
+            return False
+        summ = sum(nums)
+        for i in range(n):
+            nums[i] = nums[i] * n - summ
+        m = n // 2
+        left = set()
+        for i in range(1, 1 << m):
+            t = sum(v for j, v in enumerate(nums[:m]) if i >> j & 1)
+            if t == 0:
+                return True
+            left.add(t)
+        rsum = sum(nums[m:])
+        for i in range(1, 1 << (n - m)):
+            t = sum(v for j, v in enumerate(nums[m:]) if i >> j & 1)
+            if t == 0 or rsum != t and -t in left:
+                return True
+        return False
+
+    def splitArraySameAverage(self, nums: List[int]) -> bool:
+        n = len(nums)
+        if n == 1:
+            return False
+        m = n // 2
+        summ = sum(nums)
+        # 把问题转化为在整个和为 0 的数组中, 求一个和为零的子序列(其中子序列不能为空或全部)
+        nums = [n * v - summ for v in nums]
+        left = set()
+        right = set()
+
+        # TODO flag1 flag2 什么意思
+        def dfs1(idx: int, summ: int, flag1: bool, flag2: bool) -> None:
+            if idx == m:
+                if flag1 and flag2:
+                    left.add(summ)
+                return
+            dfs1(idx + 1, summ, flag1, True)
+            dfs1(idx + 1, summ + nums[idx], True, flag2)
+            return
+
+        def dfs2(idx: int, summ: int, flag1: bool, flag2: bool) -> None:
+            if idx == n - m:
+                if flag1 and flag2:
+                    right.add(summ)
+                return
+            dfs2(idx + 1, summ, flag1, True)
+            dfs2(idx + 1, summ + nums[m + idx], True, flag2)
+            return
+
+        dfs1(0, 0, False, False)
+        dfs2(0, 0, False, False)
+        if 0 in left or 0 in right:
+            return True
+        for v in left:
+            if -v in right:
+                return True
+        return sum(nums[:m]) == 0  # nums 已经变了
+
+
 # 806 - Number of Lines To Write String - EASY
 class Solution:
     def numberOfLines(self, widths: List[int], s: str) -> List[int]:

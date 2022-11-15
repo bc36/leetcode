@@ -133,15 +133,13 @@ class Solution:
 # 1710 - Maximum Units on a Truck - EASY
 class Solution:
     def maximumUnits(self, boxTypes: List[List[int]], truckSize: int) -> int:
-        boxTypes.sort(key=lambda x: x[1], reverse=True)
         ans = 0
-        for _, (t, v) in enumerate(boxTypes):
-            if t <= truckSize:
-                ans += t * v
-                truckSize -= t
-            else:
+        for t, v in sorted(boxTypes, key=lambda x: x[1], reverse=True):
+            if t > truckSize:
                 ans += truckSize * v
                 break
+            truckSize -= t
+            ans += t * v
         return ans
 
 
