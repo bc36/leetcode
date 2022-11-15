@@ -907,39 +907,37 @@ class Solution:
 # 288 / 2022.4.9 #
 ##################
 # https://leetcode.cn/contest/weekly-contest-288/
-
 # https://leetcode.cn/contest/weekly-contest-288/problems/maximum-total-beauty-of-the-gardens/
 # 贪心, 枚举后缀
 
-# https://leetcode.cn/contest/weekly-contest-289/
 
+# https://leetcode.cn/contest/weekly-contest-289/
 # 1048 / https://leetcode.cn/contest/weekly-contest-289/problems/maximum-trailing-zeros-in-a-cornered-path/
 # 前缀和
-
 # 739 / https://leetcode.cn/contest/weekly-contest-289/problems/longest-path-with-different-adjacent-characters/
 # 树形DP, 树的直径 lc1245, lc687
 
-# https://leetcode.cn/contest/weekly-contest-290/
 
+# https://leetcode.cn/contest/weekly-contest-290/
 # 1104 / https://leetcode.cn/contest/weekly-contest-290/problems/count-number-of-rectangles-containing-each-point/
 # 树状数组, 二维偏序问题, 有序容器 SortedList, 二分排序
 
-# https://leetcode.cn/contest/weekly-contest-291/
 
+# https://leetcode.cn/contest/weekly-contest-291/
 # 1078 / https://leetcode.cn/contest/weekly-contest-291/problems/total-appeal-of-a-string/
 # 字符串贡献问题, 动态规划
 
+
 # https://leetcode.cn/contest/weekly-contest-292/
-
 # 2057 / https://leetcode.cn/contest/weekly-contest-292/problems/count-number-of-texts/
-# dfs, dp, python大数运算取模TLE / MLE
-
+# dfs, dp, python 大数运算取模TLE / MLE
 # 884 / https://leetcode.cn/contest/weekly-contest-292/problems/check-if-there-is-a-valid-parentheses-string-path/
 # dfs, dp, bfs
 
 
 # https://leetcode.cn/contest/weekly-contest-293/
 # 542 / https://leetcode.cn/contest/weekly-contest-293/problems/count-integers-in-intervals/
+
 
 # https://leetcode.cn/contest/weekly-contest-294/
 # 142 / https://leetcode.cn/contest/weekly-contest-294/problems/sum-of-total-strength-of-wizards/
@@ -948,6 +946,7 @@ class Solution:
 # https://leetcode.cn/contest/weekly-contest-295/
 # 194 / https://leetcode.cn/contest/weekly-contest-295/problems/steps-to-make-array-non-decreasing/
 # 单调栈
+
 
 # 739 / https://leetcode.cn/contest/weekly-contest-295/problems/minimum-obstacle-removal-to-reach-corner/
 # 0-1 BFS / Dijkstra
@@ -963,34 +962,35 @@ T4: 1532 pass
 """
 
 
-# https://leetcode.cn/contest/weekly-contest-297
+# https://leetcode.cn/contest/weekly-contest-297/
 # 1366 / https://leetcode.cn/contest/weekly-contest-297/problems/fair-distribution-of-cookies/
 # backtracking + pruning / 状压DP
 # 410 / https://leetcode.cn/contest/weekly-contest-297/problems/naming-a-company/
 # 分组 + 枚举首字母
 
 
-# https://leetcode.cn/contest/weekly-contest-298
+# https://leetcode.cn/contest/weekly-contest-298/
 # 1826 / https://leetcode.cn/contest/weekly-contest-298/problems/longest-binary-subsequence-less-than-or-equal-to-k/
 # 贪心
 # 395 / https://leetcode.cn/contest/weekly-contest-298/problems/selling-pieces-of-wood/
 # dp
 
 
-# https://leetcode.cn/contest/weekly-contest-299
+# https://leetcode.cn/contest/weekly-contest-299/
 # 1976 / https://leetcode.cn/contest/weekly-contest-299/problems/maximum-score-of-spliced-array/
 # dp
 # 314 / https://leetcode.cn/contest/weekly-contest-299/problems/minimum-score-after-removals-on-a-tree/
 # 树, 枚举, 时间戳, dfs
 
-# https://leetcode.cn/contest/weekly-contest-300
+
+# https://leetcode.cn/contest/weekly-contest-300/
 # 1724 / https://leetcode.cn/contest/weekly-contest-300/problems/number-of-people-aware-of-a-secret/
 # dp
 # 938 / https://leetcode.cn/contest/weekly-contest-300/problems/number-of-increasing-paths-in-a-grid/
 # dp / dfs
 
 
-# https://leetcode.cn/contest/weekly-contest-301
+# https://leetcode.cn/contest/weekly-contest-301/
 # 1995 / https://leetcode.cn/contest/weekly-contest-301/problems/move-pieces-to-obtain-a-string/
 # 双指针
 # 176 / https://leetcode.cn/contest/weekly-contest-301/problems/count-the-number-of-ideal-arrays/
@@ -1007,7 +1007,7 @@ T4: 2583 pass
 """
 
 
-# https://leetcode.cn/contest/weekly-contest-303
+# https://leetcode.cn/contest/weekly-contest-303/
 # 1941 / https://leetcode.cn/contest/weekly-contest-303/problems/design-a-food-rating-system/
 # heapq, sortedcontainers
 # 991 / https://leetcode.cn/contest/weekly-contest-303/problems/number-of-excellent-pairs/
@@ -1034,29 +1034,29 @@ T4: 1899 pass
 """
 
 
-# https://leetcode.cn/contest/weekly-contest-306
+# https://leetcode.cn/contest/weekly-contest-306/
 # 3151 / https://leetcode.cn/contest/weekly-contest-306/problems/construct-smallest-number-from-di-string/
 # 回溯, 爆搜 / 贪心
 # 874 / https://leetcode.cn/contest/weekly-contest-306/problems/count-special-integers/
 # 数位dp
 
 
-# https://leetcode.cn/contest/weekly-contest-307
+# https://leetcode.cn/contest/weekly-contest-307/
 # 134 / https://leetcode.cn/contest/weekly-contest-307/problems/find-the-k-sum-of-an-array/
 # 堆
 
 
-# https://leetcode.cn/contest/weekly-contest-308
+# https://leetcode.cn/contest/weekly-contest-308/
 # 1330 / https://leetcode.cn/contest/weekly-contest-308/problems/build-a-matrix-with-conditions/
 # 拓扑排序
 
 
-# https://leetcode.cn/contest/weekly-contest-309
+# https://leetcode.cn/contest/weekly-contest-309/
 # 1045 / https://leetcode.cn/contest/weekly-contest-309/problems/meeting-rooms-iii/
 # 双堆
 
 
-# https://leetcode.cn/contest/weekly-contest-310
+# https://leetcode.cn/contest/weekly-contest-310/
 # 510 / https://leetcode.cn/contest/weekly-contest-310/problems/longest-increasing-subsequence-ii/
 # 线段树
 
@@ -1071,17 +1071,22 @@ T4: 2378 pass
 """
 
 
-# https://leetcode.cn/contest/weekly-contest-312
+# https://leetcode.cn/contest/weekly-contest-312/
 # 265 / https://leetcode.cn/contest/weekly-contest-312/problems/number-of-good-paths/
 # 并查集
 
 
-# https://leetcode.cn/contest/weekly-contest-314
+# https://leetcode.cn/contest/weekly-contest-313/
+# 839 / https://leetcode.cn/contest/weekly-contest-313/problems/maximum-deletions-on-a-string/
+# dp, lcp(最长公共前缀) / 字符串哈希
+
+
+# https://leetcode.cn/contest/weekly-contest-314/
 # 929 / https://leetcode.cn/contest/weekly-contest-314/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
 # dp, 折半枚举
 
 
-# https://leetcode.cn/contest/weekly-contest-315
+# https://leetcode.cn/contest/weekly-contest-315/
 # 950 / https://leetcode.cn/contest/weekly-contest-315/problems/count-subarrays-with-fixed-bounds/
 # 双指针
 

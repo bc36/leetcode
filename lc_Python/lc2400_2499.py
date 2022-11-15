@@ -844,6 +844,261 @@ class Solution:
         return ans + n
 
 
+# 2427 - Number of Common Factors - EASY
+class Solution:
+    # O(min(a, b)) / O(1)
+    def commonFactors(self, a: int, b: int) -> int:
+        return sum(a % i == b % i == 0 for i in range(1, min(a, b) + 1))
+
+    # O(gcd(a, b)) / O(1)
+    def commonFactors(self, a: int, b: int) -> int:
+        g = math.gcd(a, b)
+        return sum(a % i == b % i == 0 for i in range(1, g + 1))
+
+    # O(sqrt(gcd(a, b))) / O(1), 枚举 a 和 b 的最大公因数 g 的因子
+    def commonFactors(self, a: int, b: int) -> int:
+        g = math.gcd(a, b)
+        ans = 0
+        i = 1
+        while i * i <= g:
+            if g % i == 0:
+                ans += 1
+                if i * i < g:
+                    ans += 1
+            i += 1
+        return ans
+
+    # O(sqrt(min(a, b))) / O(1)
+    def commonFactors(self, a: int, b: int) -> int:
+        g = math.gcd(a, b)
+        # 1 + True = 2, 但是 1 + i * i < g 需要注意运算优先级
+        return sum(1 + (i * i < g) for i in range(1, int(g**0.5) + 1) if g % i == 0)
+
+
+# 2428 - Maximum Sum of an Hourglass - MEDIUM
+class Solution:
+    # O(mn) / O(1)
+    def maxSum(self, grid: List[List[int]]) -> int:
+        return max(
+            grid[i][j]
+            + grid[i - 1][j - 1]
+            + grid[i - 1][j]
+            + grid[i - 1][j + 1]
+            + grid[i + 1][j - 1]
+            + grid[i + 1][j]
+            + grid[i + 1][j + 1]
+            for i in range(1, len(grid) - 1)
+            for j in range(1, len(grid[0]) - 1)
+        )
+
+
+# 2429 - Minimize XOR - MEDIUM
+class Solution:
+    def minimizeXor(self, num1: int, num2: int) -> int:
+        k1 = bin(num1).count("1")
+        k2 = bin(num2).count("1")
+        if k1 > k2:
+            d = k2
+            x = 0
+            for j in range(30, -1, -1):
+                if num1 & 1 << j != 0:
+                    x |= 1 << j
+                    d -= 1
+                if d == 0:
+                    break
+            return x
+        elif k1 < k2:
+            d = k2 - k1
+            x = num1
+            for j in range(0, 31):
+                if num1 & 1 << j == 0:
+                    x |= 1 << j
+                    d -= 1
+                if d == 0:
+                    break
+            return x
+        else:
+            return num1
+
+    def minimizeXor(self, num1: int, num2: int) -> int:
+        k1 = bin(num1).count("1")
+        k2 = bin(num2).count("1")
+        if k1 < k2:
+            for _ in range(k2 - k1):  # 最低的 0 变成 1
+                num1 |= num1 + 1
+        elif k1 > k2:
+            for _ in range(k1 - k2):  # 最低的 1 变成 0, 这里要求的是 x, 不是异或和
+                num1 &= num1 - 1
+        return num1
+
+    def minimizeXor(self, num1: int, num2: int) -> int:
+        k1 = bin(num1).count("1")
+        k2 = bin(num2).count("1")
+        while k1 < k2:
+            num1 |= num1 + 1
+            k2 -= 1
+        while k1 > k2:
+            num1 &= num1 - 1
+            k2 += 1
+        return num1
+
+    # 贪心, 一开始按从最高位到最低位的顺序, 把 num1 所有的 1 都反转, 而 0 不变
+    # 如果还有剩余反转次数, 按从最低位到最高位的顺序, 反转 num1 中未被反转的位(此时把 0 变成 1)
+    def minimizeXor(self, num1: int, num2: int) -> int:
+        a = [False] * 31  # num1 的二进制表示
+        for i in range(30, -1, -1):
+            a[i] = bool(num1 & 1 << i)
+        used = [False] * 31
+        ans = cnt = 0
+        # cnt = bin(num2).count("1")
+        # cnt = sum(num2 & (1 << i) > 0 for i in range(31))
+        while num2:
+            cnt += num2 & 1
+            num2 >>= 1
+        for i in range(30, -1, -1):
+            if cnt == 0:
+                break
+            if a[i]:
+                used[i] = True
+                cnt -= 1
+                ans |= 1 << i
+        for i in range(31):
+            if cnt == 0:
+                break
+            if not used[i]:
+                cnt -= 1
+                ans |= 1 << i
+        return ans
+
+
+# 2430 - Maximum Deletions on a String - HARD
+class Solution:
+    # 每次操作结束, 还剩一个完整字符(子)串 -> 子问题 -> dp
+    # f[i]: 操作 s[i:] 需要的最大操作次数
+    # ans = f[0]
+    # f[i] = f[i + j] + 1 if s[i: i + j] == s[i + j: i + 2 * j]
+    # f[i] = 1
+    # 取 max
+    # 问题转换为如何快速判断两个字串是否相同
+
+    # lcp, 两个后缀的最长公共前缀
+    # lcp[i][j] = s[i:] 和 s[j:] 的最长公共前缀
+    # s[i: i + j] = = s[i + j: i + 2 * j] 等价于 lcp[i][i + j] >= j
+    # lcp[i][j] = lcp[i + 1][j + 1] + 1 if s[i] == s[j] else 0
+
+    # O(n ** 2) / O(n ** 2)
+    def deleteString(self, s: str) -> int:
+        n = len(s)
+        if len(set(s)) == 1:
+            return n
+        # lcp[i][j] 表示 s[i:] 和 s[j:] 的最长公共前缀
+        lcp = [[0] * (n + 1) for _ in range(n + 1)]
+
+        for i in range(n - 1, -1, -1):
+            for j in range(n - 1, i, -1):
+                if s[i] == s[j]:
+                    lcp[i][j] = lcp[i + 1][j + 1] + 1
+
+        # 慢一点
+        # for j in range(n - 1, -1, -1):
+        #     for i in range(j - 1, -1, -1):
+        #         if s[i] == s[j]:
+        #             lcp[i][j] = lcp[i + 1][j + 1] + 1
+
+        f = [0] * n
+        for i in range(n - 1, -1, -1):
+            for j in range(1, (n - i) // 2 + 1):  # i + 2 * j <= n
+                if lcp[i][i + j] >= j:  # 说明 s[i : i + j] == s[i + j : i + 2 * j]
+                    f[i] = max(f[i], f[i + j])
+            f[i] += 1
+
+        # for i in range(n - 1, -1, -1):
+        #     f[i] = 1
+        #     for j in range(1, (n - i) // 2 + 1):
+        #         if lcp[i][i + j] >= j:
+        #             f[i] = max(f[i], f[i + j] + 1)
+
+        # for i in range(n - 1, -1, -1):
+        #     f[i] = 1
+        #     for j in range(i + 1, n):
+        #         if lcp[i][j] >= j - i:
+        #             f[i] = max(f[i], f[j] + 1)
+
+        return f[0]
+
+    def deleteString(self, s: str) -> int:
+        n = len(s)
+        if len(set(s)) == 1:
+            return n
+        lcp = [[0] * (n + 1) for _ in range(n + 1)]
+        f = [1] * n
+        for i in range(n - 1, -1, -1):
+            for j in range(i + 1, n):
+                if s[i] == s[j]:
+                    lcp[i][j] = lcp[i + 1][j + 1] + 1
+                if lcp[i][j] >= j - i:
+                    f[i] = max(f[i], f[j] + 1)
+        return f[0]
+
+    # 字符串哈希, 调用 getHash() py TLE, :(
+    def deleteString(self, s: str) -> int:
+        n = len(s)
+        if len(set(s)) == 1:
+            return n
+        base = 131  # 哈希指数, 是一个经验值, 可以取 1331 等等
+        mod = 998244353
+        p = [0] * 4001
+        h = [0] * 4001
+        p[0] = 1
+        for i in range(1, n + 1):
+            p[i] = (p[i - 1] * base) % mod
+            h[i] = (h[i - 1] * base + ord(s[i - 1])) % mod
+
+        def getHash(l: int, r: int) -> int:
+            return (h[r] - h[l - 1] * p[r - l + 1]) % mod
+
+        f = [0] * (n + 1)
+        for i in range(n, -1, -1):
+            f[i] = 1
+            for j in range(1, (n - i) // 2 + 1):  # j = span = length
+                h1 = (h[i + j] - h[i] * p[j]) % mod
+                h2 = (h[i + j * 2] - h[i + j] * p[j]) % mod
+                if h1 == h2:
+                    f[i] = max(f[i], f[i + j] + 1)
+
+                # TLE
+                # if getHash(i, i + j - 1) == getHash(i + j, i + j * 2 - 1):
+                #     f[i] = max(f[i], f[i + j] + 1)
+
+        return f[0]
+
+    # O(n ** 3) / O(n), 切片比较快
+    def deleteString(self, s: str) -> int:
+        @functools.lru_cache(None)
+        def dfs(s: str, i: int) -> int:
+            if i == len(s):
+                return 0
+            t = span = 1
+            while i + span * 2 <= len(s):
+                if s[i : i + span] == s[i + span : i + span * 2]:
+                    t = max(t, 1 + dfs(s, i + span))
+                span += 1
+            return t
+
+        return dfs(s, 0)
+
+    def deleteString(self, s: str) -> int:
+        @functools.lru_cache(None)
+        def dfs(p: int) -> int:
+            t = 1
+            for i in range(1, (len(s) - p) // 2 + 1):
+                if s[p : p + i] == s[p + i : p + i * 2]:
+                    t = max(t, dfs(p + i) + 1)
+            return t
+
+        return dfs(0)
+
+
 # 2432 - The Employee That Worked on the Longest Task - EASY
 class Solution:
     def hardestWorker(self, n: int, logs: List[List[int]]) -> int:
