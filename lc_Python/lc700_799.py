@@ -2122,6 +2122,69 @@ class Solution:
         return ans
 
 
+# 792 - Number of Matching Subsequences - MEDIUM
+class Solution:
+    # O(n + mw) / O(mw), m = len(words), w = len(words[i])
+    def numMatchingSubseq(self, s: str, words: List[str]) -> int:
+        d = collections.defaultdict(list)
+        for w in words:
+            d[w[0]].append(w)
+        t = len(words)
+        for c in s:
+            q = d[c]
+            d[c] = []
+            for w in q:
+                if len(w) > 1:
+                    d[w[1]].append(w[1:])
+
+            # same = []  # in case repeated pops of the same letter
+            # while d[c]:
+            #     w = d[c].pop()
+            #     if len(w) > 1:
+            #         if w[1] == c:
+            #             same.append(w[1:])
+            #         else:
+            #             d[w[1]].append(w[1:])
+            # d[c] = same
+
+        return t - sum(len(v) for v in d.values())
+
+    # n 指针 / 多指针, 节省空间
+    # O(n + mw) / O(m), m = len(words), w = len(words[i])
+    def numMatchingSubseq(self, s: str, words: List[str]) -> int:
+        d = collections.defaultdict(list)
+        for i, w in enumerate(words):
+            d[w[0]].append((i, 0))
+        ans = 0
+        for c in s:
+            q = d[c]
+            d[c] = []
+            for i, j in q:
+                j += 1
+                if j == len(words[i]):
+                    ans += 1
+                else:
+                    d[words[i][j]].append((i, j))
+        return ans
+
+    # 二分, 不断查找 word[i] 的起始位置
+    # O(mwlogn) / O(n), m = len(words), w = len(words[i])
+    def numMatchingSubseq(self, s: str, words: List[str]) -> int:
+        pos = collections.defaultdict(list)
+        for i, c in enumerate(s):
+            pos[c].append(i)
+        ans = len(words)
+        for w in words:
+            p = -1
+            for c in w:
+                j = bisect.bisect_right(pos[c], p)
+                if j == len(pos[c]):
+                    ans -= 1
+                    break
+                p = pos[c][j]
+        return ans
+
+
 # 793 - Preimage Size of Factorial Zeroes Function - HARD
 class Solution:
     def preimageSizeFZF(self, k: int) -> int:

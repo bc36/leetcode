@@ -3,6 +3,13 @@ from typing import List, Optional, Deque
 import sortedcontainers
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -1548,6 +1555,35 @@ class Solution:
         for v in nums:
             sum += v
         return total - sum
+
+
+# 269 - Alien Dictionary - HARD - PREMIUM
+class Solution:
+    def alienOrder(self, words: List[str]) -> str:
+        graph = collections.defaultdict(list)
+        s = set()
+        for w in words:
+            # s = s.union(set(w))
+            s.update(set(w))
+        d = [0] * 26
+        for a, b in pairwise(words):
+            ok = False
+            for ca, cb in zip(a, b):
+                if ca != cb:
+                    graph[ca].append(cb)
+                    d[ord(cb) - ord("a")] += 1
+                    ok = True
+                    break
+            if not ok and len(a) > len(b):
+                return ""
+        start = [k for k in s if d[ord(k) - ord("a")] == 0]
+        for ch in start:
+            for nxt in graph[ch]:
+                v = ord(nxt) - ord("a")
+                d[v] -= 1
+                if not d[v]:
+                    start.append(nxt)
+        return "".join(start) if len(start) == len(s) else ""
 
 
 # 278 - First Bad Version - EASY

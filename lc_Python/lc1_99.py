@@ -981,26 +981,38 @@ class Solution:
         return max(f, default=0)  # ValueError: max([])
 
 
+#################
+# 2022.11.11 VO #
+#################
 # 33 - Search in Rotated Sorted Array - MEDIUM
 class Solution:
     def search(self, nums: List[int], target: int) -> int:
         l = 0
         r = len(nums) - 1
-        while l <= r:
+        while l < r:
             m = (l + r) // 2
             if nums[m] == target:
                 return m
-            if nums[0] <= nums[m]:  # left half in order
-                if nums[0] <= target < nums[m]:
-                    r = m - 1
+
+            # 都可以, 只需要确定哪一半有序即可
+            # 不需要等号, 因为没有重复值, 同时两个 slope 也没有 overlap
+            # if nums[0] < nums[m]:
+            # if nums[l] < nums[m]:
+            # if nums[m] < nums[-1]:
+            # if nums[m] < nums[r]:
+
+            if nums[l] < nums[m]:  # 左半边有序
+                if nums[l] <= target < nums[m]:
+                    r = m
                 else:
                     l = m + 1
-            else:  # right half in order
-                if nums[m] <= target <= nums[-1]:
+            else:  # 右半边有序
+                if nums[m] < target <= nums[r]:
                     l = m + 1
                 else:
-                    r = m - 1
-        return -1
+                    r = m
+
+        return -1 if nums[l] != target else l
 
 
 # 34 - Find First and Last Position of Element in Sorted Array - MEDIUM
