@@ -842,6 +842,32 @@ class Solution:
         return st
 
 
+# 739 - Daily Temperatures - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        n = len(temperatures)
+        ans = [0] * n
+        st = [n - 1]  # 递减栈, 右边第一个比它大的元素
+        for i in range(n - 2, -1, -1):
+            while st and temperatures[st[-1]] <= temperatures[i]:
+                st.pop()
+            ans[i] = st[-1] - i if st else 0
+            st.append(i)
+        return ans
+
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        n = len(temperatures)
+        ans = [0] * n
+        st = []  # 递减栈, 右边第一个比它大的元素
+        for i, v in enumerate(temperatures):
+            while st and v > temperatures[st[-1]]:
+                pre = st.pop()
+                ans[pre] = i - pre
+            st.append(i)
+        return ans
+
+
 # 740 - Delete and Earn - MEDIUM
 class Solution:
     def deleteAndEarn(self, nums: List[int]) -> int:
@@ -1768,6 +1794,48 @@ class Solution:
             step += 1
             q = new
         return -1
+
+
+# 775 - Global and Local Inversions - MEDIUM
+class Solution:
+    # O(nlogn) / O(n), 暴力
+    def isIdealPermutation(self, nums: List[int]) -> bool:
+        loc = sum(nums[i] > nums[i + 1] for i in range(len(nums) - 1))
+        glo = 0
+        arr = sortedcontainers.SortedList()
+        arr.add(nums[0])
+        for i in range(1, len(nums)):
+            glo += len(arr) - arr.bisect_right(nums[i])
+            arr.add(nums[i])
+        return loc == glo
+
+    def isIdealPermutation(self, nums: List[int]) -> bool:
+        loc = sum(nums[i] > nums[i + 1] for i in range(len(nums) - 1))
+        glo = 0
+        arr = [nums[0]]
+        for i in range(1, len(nums)):
+            glo += len(arr) - bisect.bisect_right(arr, nums[i])
+            bisect.insort_right(arr, nums[i])  # insort, 搜索 O(logn), 插入 O(n), 1e5 还是能过的
+        return loc == glo
+
+    # 局部倒置一定是全局倒置
+    # -> 检查有没有非局部倒置
+    # -> nums[i] > nums[j], i < j - 1
+    # -> 优化: 维护一个最小后缀, 检查间隔 > 1
+    # O(n) / O(1)
+    def isIdealPermutation(self, nums: List[int]) -> bool:
+        minSuf = nums[-1]
+        for i in range(len(nums) - 2, 0, -1):
+            if nums[i - 1] > minSuf:
+                return False
+            minSuf = min(minSuf, nums[i])
+        return True
+
+    # nums 由 0 - n-1 组成, 每个数出现一次, 且下标差不能大于 1
+    # O(n) / O(1)
+    def isIdealPermutation(self, nums: List[int]) -> bool:
+        return not any((abs(v - i) > 1 for i, v in enumerate(nums)))
+        # return all((abs(v - i) <= 1 for i, v in enumerate(nums)))
 
 
 # 777 - Swap Adjacent in LR String - MEDIUM

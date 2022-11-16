@@ -2,25 +2,36 @@ import bisect, collections, copy, functools, heapq, itertools, math, random, str
 from typing import List
 
 MOD = 10**9 + 7
+MOD = 998244353
 
 """
 Trick:
     @functools.lru_cache(None)
-        for some problems that input can be used for other test cases,
-        put the cache outside the class Solution,
-        each instance can reuse cache and speed up
+    def fn():
+        pass
+
+    # fn.cache_info()
+    fn.cache_clear()
+    return
+
+    For some problems that input can be used for other test cases,
+    put the cache outside the class Solution,
+    each instance can reuse cache and speed up
 """
 
 
 """
 Directory: (abcdefghijklmnopqrstuvwxyz)
     binary
-    bit
+    BIT
     dp
+    low bit
     math related
     permutation
     segment tree
     set
+    st, sparse table
+    string hash
     transpose
     trie
     union-find, disjoint set
@@ -37,7 +48,7 @@ def str2binary(s: str):
     return n
 
 
-"""bit"""
+"""BIT"""
 
 
 class BIT:
@@ -106,19 +117,25 @@ def countSpecialNumbers(n: int) -> int:
     return dfs(0, 0, True, False)
 
 
-"""permutation"""
+"""low bit"""
 
 
-def fn() -> None:
-    # 1. itertools.permutations
-    for lst in itertools.permutations(range(1, 4), 3):
-        # do sth
-        pass
+def low_bit(x: int) -> None:
+    """
+    如何求 x 最低位的 1
+    1.
+    x      = 1011000
+    ~x     = 0100111
+    ~x + 1 = 0101000
+    ~x + 1 = -x 补码性质
+    得到 low_bit = x ^ -x
+    去掉 low_bit -> x -= x & (-x)
 
-    # 2. math.perm
-    n = 3
-    k = 2
-    p = math.perm(n, k)
+    2.
+    x     = 1011000
+    x - 1 = 1010111
+    去掉 low_bit -> x &= x - 1
+    """
     return
 
 
@@ -194,6 +211,22 @@ def n2xbase(n: int, b: int) -> str:
         s += str(n % b)
         n //= b
     return s[::-1]
+
+
+"""permutation"""
+
+
+def fn() -> None:
+    # 1. itertools.permutations
+    for lst in itertools.permutations(range(1, 4), 3):
+        # do sth
+        pass
+
+    # 2. math.perm
+    n = 3
+    k = 2
+    p = math.perm(n, k)
+    return
 
 
 """set"""
@@ -326,6 +359,64 @@ class SegmentTree:
         # 里面的小区间变化了, 包裹的大区间也要更新
         self.tree[tree_index] = self._merge(self.tree[left], self.tree[right])
         return
+
+
+"""st, sparse table"""
+
+
+class SparseTable:
+    def __init__(self, data, merge_method):
+        self.note = [0] * len(data)
+        self.merge_method = merge_method
+        l, r, v = 1, 2, 0
+        while True:
+            for i in range(l, r):
+                if i >= len(self.note):
+                    break
+                self.note[i] = v
+            else:
+                l *= 2
+                r *= 2
+                v += 1
+                continue
+            break
+        self.ST = [[0] * len(data) for _ in range(self.note[-1] + 1)]
+        self.ST[0] = data
+        for i in range(1, len(self.ST)):
+            for j in range(len(data) - (1 << i) + 1):
+                self.ST[i][j] = merge_method(
+                    self.ST[i - 1][j], self.ST[i - 1][j + (1 << (i - 1))]
+                )
+
+    def query(self, l, r):
+        pos = self.note[r - l + 1]
+        return self.merge_method(self.ST[pos][l], self.ST[pos][r - (1 << pos) + 1])
+
+
+"""string hash
+字符串哈希, 定义一个把字符串映射到整数的函数 f 这个 f 称为是 Hash 函数, 希望这个函数 f 可以方便地帮我们判断两个字符串是否相等
+Hash 的核心思想在于，将输入映射到一个值域较小、可以方便比较的范围
+通常采用的多项式 Hash 的方法,  MOD需要选择一个素数(至少要比最大的字符要大), base 可以任意选择
+
+py 切片较快, 大部分情况可以直接比较切片
+"""
+
+
+def string_hash(arr: List[int]) -> None:
+    n = len(arr)
+    base = 131  # 哈希指数, 是一个经验值, 可以取 1331 等等
+    mod = 998244353
+    p = [0] * 4001
+    h = [0] * 4001
+    p[0] = 1
+    for i in range(1, n + 1):
+        p[i] = (p[i - 1] * base) % mod
+        h[i] = (h[i - 1] * base + ord(arr[i - 1])) % mod
+
+    def getHash(l: int, r: int) -> int:
+        return (h[r] - h[l - 1] * p[r - l + 1]) % mod
+
+    return
 
 
 """transpose"""
