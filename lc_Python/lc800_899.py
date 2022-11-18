@@ -1584,6 +1584,20 @@ class Solution:
         return True
 
 
+# 891 - Sum of Subsequence Widths - HARD
+class Solution:
+    # 子序列不要求连续 + 最大/最小 -> 顺序无关, 可以排序
+    # 以 v 作为最大值的子序列, v 左侧元素可以选也可以不选 2**i * v
+    # 以 v 作为最小值的子序列, v 右侧元素贡献 - 2**(n-1-i) * v
+    def sumSubseqWidths(self, nums: List[int]) -> int:
+        nums.sort()
+        mod = 10**9 + 7
+        ans = 0
+        for i, v in enumerate(nums):
+            ans = (ans + (pow(2, i, mod) - pow(2, len(nums) - 1 - i, mod)) * v) % mod
+        return ans
+
+
 # 890 - Find and Replace Pattern - MEDIUM
 class Solution:
     def findAndReplacePattern(self, words: List[str], pattern: str) -> List[str]:
