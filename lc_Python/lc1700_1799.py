@@ -178,6 +178,28 @@ class Solution:
         return count
 
 
+# 1732 - Find the Highest Altitude - EASY
+class Solution:
+    # O(n) / O(n)
+    def largestAltitude(self, gain: List[int]) -> int:
+        h = [0]
+        for v in gain:
+            h.append(h[-1] + v)
+        return max(h)
+
+    # O(n) / O(1)
+    def largestAltitude(self, gain: List[int]) -> int:
+        ans = h = 0
+        for v in gain:
+            h += v
+            ans = max(ans, h)
+        return ans
+
+    # O(n) / O(1)
+    def largestAltitude(self, gain: List[int]) -> int:
+        return max(itertools.accumulate(gain, initial=0))
+
+
 # 1748 - Sum of Unique Elements - EASY
 class Solution:
     def sumOfUnique(self, nums: List[int]) -> int:
@@ -191,6 +213,39 @@ class Solution:
 
     def sumOfUnique(self, nums: List[int]) -> int:
         return sum(k for k, v in collections.Counter(nums).items() if v == 1)
+
+
+# 1758 - Minimum Changes To Make Alternating Binary String - EASY
+class Solution:
+    # O(n) / O(n)
+    def minOperations(self, s: str) -> int:
+        n = len(s)
+        a = "01" * ((n + 1) // 2)
+        b = "10" * ((n + 1) // 2)
+        ans = 1e4
+        ans = min(ans, sum(x != y for x, y in zip(a, s)))
+        ans = min(ans, sum(x != y for x, y in zip(b, s)))
+        return ans
+
+    def minOperations(self, s: str) -> int:
+        x = y = 0  # x: 1010... y: 0101...
+        for i, c in enumerate(s):
+            if c != str(i % 2):
+                x += 1
+            else:
+                y += 1
+        return min(x, y)
+
+    # 变成 01010... 的步骤数是 x,
+    # 变成 10101... 的步骤数是 y,
+    # 一定有 x + y = n
+    # 任意计算其中一种, 返回 min(x, n-x) 就行
+    def minOperations(self, s: str) -> int:
+        x = 0
+        for i, c in enumerate(s):
+            if c != str(i % 2):
+                x += 1
+        return min(x, len(s) - x)
 
 
 # 1762 - Buildings With an Ocean View - MEDIUM
@@ -438,3 +493,16 @@ class Solution:
             return edges[0][0]
         else:
             return edges[0][1]
+
+
+# 1796 - Second Largest Digit in a String - EASY
+class Solution:
+    def secondHighest(self, s: str) -> int:
+        a = b = -1
+        for c in s:
+            if c.isdigit():
+                if int(c) > a:
+                    a, b = int(c), a
+                elif a > int(c) > b:
+                    b = int(c)
+        return b
