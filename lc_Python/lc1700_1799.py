@@ -200,6 +200,34 @@ class Solution:
         return max(itertools.accumulate(gain, initial=0))
 
 
+# 1736 - Latest Time by Replacing Hidden Digits - EASY
+class Solution:
+    def maximumTime(self, time: str) -> str:
+        ans = list(time)
+        if time[0] == "?":
+            ans[0] = "2" if time[1] == "?" or int(time[1]) < 4 else "1"
+        if time[1] == "?":
+            ans[1] = "3" if ans[0] == "2" else "9"
+        if time[3] == "?":
+            ans[3] = "5"
+        if time[4] == "?":
+            ans[4] = "9"
+        return "".join(ans)
+
+
+# 1742 - Maximum Number of Balls in a Box - EASY
+class Solution:
+    def countBalls(self, lowLimit: int, highLimit: int) -> int:
+        d = collections.defaultdict(int)
+        for i in range(lowLimit, highLimit + 1):
+            x = 0
+            while i:
+                x += i % 10
+                i //= 10
+            d[x] += 1
+        return max(d.values())
+
+
 # 1748 - Sum of Unique Elements - EASY
 class Solution:
     def sumOfUnique(self, nums: List[int]) -> int:
@@ -213,6 +241,26 @@ class Solution:
 
     def sumOfUnique(self, nums: List[int]) -> int:
         return sum(k for k, v in collections.Counter(nums).items() if v == 1)
+
+
+# 1752 - Check if Array Is Sorted and Rotated - EASY
+class Solution:
+    # O(n**2) / O(n)
+    def check(self, nums: List[int]) -> bool:
+        n = len(nums)
+        a = sorted(nums)
+        return any(all(nums[i] == a[(i + x) % n] for i in range(n)) for x in range(n))
+
+    # O(n) / O(1)
+    def check(self, nums: List[int]) -> bool:
+        cnt = 0
+        n = len(nums)
+        for i in range(n):
+            if nums[i] > nums[(i + 1) % n]:
+                cnt += 1
+            if cnt > 1:
+                return False
+        return True
 
 
 # 1758 - Minimum Changes To Make Alternating Binary String - EASY
