@@ -298,6 +298,31 @@ class Solution:
         return sum(min(i, j) for i in rows for j in cols) - sum(map(sum, grid))
 
 
+# 809 - Expressive Words - MEDIUM
+class Solution:
+    def expressiveWords(self, s: str, words: List[str]) -> int:
+        a = []
+        for c, grp in itertools.groupby(s):
+            a.append((c, len(list(grp))))
+        ans = 0
+        for w in words:
+            i = 0
+            ok = True
+            for c, grp in itertools.groupby(w):
+                l = len(list(grp))
+                if (
+                    i == len(a)
+                    or c != a[i][0]
+                    or (l != a[i][1] and (a[i][1] < l or a[i][1] < 3))
+                ):
+                    ok = False
+                    break
+                i += 1
+            if ok and i == len(a):
+                ans += 1
+        return ans
+
+
 # 811 - Subdomain Visit Count - MEDIUM
 class Solution:
     def subdomainVisits(self, cpdomains: List[str]) -> List[str]:
@@ -335,6 +360,39 @@ class Solution:
             abs(x1 * y2 + x2 * y3 + x3 * y1 - x1 * y3 - x2 * y1 - x3 * y2) / 2
             for (x1, y1), (x2, y2), (x3, y3) in itertools.combinations(points, 3)
         )
+
+
+# 813 - Largest Sum of Averages - MEDIUM
+class Solution:
+    # O(k * n**2) / O(n)
+    def largestSumOfAverages(self, nums: List[int], k: int) -> float:
+        @functools.lru_cache(None)
+        def dfs(i: int, k: int):
+            if i == len(nums):
+                return -math.inf
+            if k == 1:
+                return sum(nums[i:]) / (len(nums) - i)
+            score = summ = 0
+            for j in range(i, len(nums)):
+                summ += nums[j]
+                score = max(score, summ / (j - i + 1) + dfs(j + 1, k - 1))
+            return score
+
+        return dfs(0, k)
+
+    def largestSumOfAverages(self, nums: List[int], k: int) -> float:
+        # f[i][k]: 将前i个元素(包含i)分成k份, 所能得到的最大分数
+        n = len(nums)
+        f = [[0] * (k + 1) for _ in range(n + 1)]
+        p = [0] * (n + 1)
+        for i, v in enumerate(nums):
+            p[i + 1] = p[i] + v
+        for i in range(1, n + 1):
+            f[i][1] = p[i] / i
+            for j in range(2, k + 1):
+                for h in range(i):
+                    f[i][j] = max(f[i][j], f[h][j - 1] + (p[i] - p[h]) / (i - h))
+        return f[-1][-1]
 
 
 # 814 - Binary Tree Pruning - MEDIUM
@@ -491,6 +549,17 @@ class Solution:
     def shortestToChar(self, s: str, c: str) -> List[int]:
         p = [i for i in range(len(s)) if c == s[i]]
         return [min(abs(x - i) for i in p) for x in range(len(s))]
+
+
+# 822 - Card Flipping Game - MEDIUM
+class Solution:
+    def flipgame(self, fronts: List[int], backs: List[int]) -> int:
+        same = {f for f, b in zip(fronts, backs) if f == b}
+        ans = 2001
+        for x in itertools.chain(fronts, backs):
+            if x not in same:
+                ans = min(ans, x)
+        return ans % 2001
 
 
 # 824 - Goat Latin - EASY
@@ -963,7 +1032,7 @@ class ExamRoom:
 
 # 856 - Score of Parentheses - MEDIUM
 class Solution:
-    # O(n ** 2) / O(n ** 2)
+    # O(n**2) / O(n**2)
     def scoreOfParentheses(self, s: str) -> int:
         if len(s) == 2:
             return 1

@@ -327,7 +327,7 @@ class Solution:
 
 # 1668 - Maximum Repeating Substring - EASY
 class Solution:
-    # O(n ** 2) / O(n)
+    # O(n**2) / O(n)
     def maxRepeating(self, sequence: str, word: str) -> int:
         s = word
         ans = 0
@@ -336,7 +336,7 @@ class Solution:
             s += word
         return ans
 
-    # O(n ** 2) / O(1)
+    # O(n**2) / O(1)
     def maxRepeating(self, sequence: str, word: str) -> int:
         ans = 0
         for i in range(len(sequence)):
