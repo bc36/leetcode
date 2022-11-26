@@ -1540,12 +1540,62 @@ class Solution:
         return l % (10**9 + 7)
 
 
+# 882 - Reachable Nodes In Subdivided Graph - HARD
+class Solution:
+    # djikstra
+    def reachableNodes(self, edges: List[List[int]], maxMoves: int, n: int) -> int:
+        g = [[] for _ in range(n)]
+        for x, y, t in edges:
+            g[x].append((y, t))
+            g[y].append((x, t))
+        ans = 0
+        h = [(0, 0)]
+        vis = set()
+        used = {}
+        while h and h[0][0] <= maxMoves:
+            moved, x = heapq.heappop(h)
+            if x in vis:
+                continue
+            vis.add(x)
+            ans += 1
+            for y, t in g[x]:
+                if y not in vis and moved + t + 1 <= maxMoves:
+                    heapq.heappush(h, (moved + t + 1, y))
+                used[(x, y)] = min(t, maxMoves - moved)
+        for x, y, t in edges:
+            ans += min(t, used.get((x, y), 0) + used.get((y, x), 0))
+        return ans
+
+    def reachableNodes(self, edges: List[List[int]], maxMoves: int, n: int) -> int:
+        g = collections.defaultdict(dict)
+        for x, y, t in edges:
+            g[x][y] = g[y][x] = t
+        h = [(0, 0)]
+        d = {0: 0}  # 维护到每个节点的最短距离
+        used = collections.defaultdict(int)  #  记录每条边的使用情况
+        ans = 0
+        while h:
+            moved, x = heapq.heappop(h)
+            if moved > d[x]:
+                continue
+            ans += 1
+            for y in g[x]:
+                used[(x, y)] = min(g[x][y], maxMoves - moved)
+                new = moved + g[x][y] + 1
+                if new < d.get(y, maxMoves + 1):
+                    heapq.heappush(h, (new, y))
+                    d[y] = new
+        for x, y, t in edges:
+            ans += min(t, used[(x, y)] + used[(y, x)])
+        return ans
+
+
 # 883 - Projection Area of 3D Shapes - EASY
 class Solution:
     def projectionArea(self, grid: List[List[int]]) -> int:
         n = len(grid)
-        a = sum(1 if x != 0 else 0 for g in grid for x in g)
-        b = sum(max(g) for g in grid)
+        a = sum(v > 0 for r in grid for v in r)
+        b = sum(max(r) for r in grid)
         c = sum(max(grid[i][j] for i in range(n)) for j in range(n))
         return a + b + c
 
@@ -1651,6 +1701,53 @@ class Solution:
                 if uf.is_connected(x, y):
                     return False
         return True
+
+
+# 888 - Fair Candy Swap - EASY
+class Solution:
+    def fairCandySwap(self, aliceSizes: List[int], bobSizes: List[int]) -> List[int]:
+        aliceSizes.sort()
+        bobSizes.sort()
+        a = sum(aliceSizes)
+        b = sum(bobSizes)
+        # sumA - x + y == sumB + x - y
+        # (sumA - sumB - 2 * x) // 2
+        for x in aliceSizes:
+            yy = b - a + 2 * x
+            if yy & 1 or yy < 0:
+                continue
+            y = yy // 2
+            p = bisect.bisect_left(bobSizes, y)
+            if p < len(bobSizes) and bobSizes[p] == y:
+                return [x, bobSizes[p]]
+        return []
+
+    def fairCandySwap(self, aliceSizes: List[int], bobSizes: List[int]) -> List[int]:
+        d = (sum(aliceSizes) - sum(bobSizes)) // 2
+        a = set(aliceSizes)
+        ans = []
+        for y in bobSizes:
+            x = y + d
+            if x in a:
+                ans = [x, y]
+                break
+        return ans
+
+
+# 889 - Construct Binary Tree from Preorder and Postorder Traversal - MEDIUM
+class Solution:
+    def constructFromPrePost(
+        self, preorder: List[int], postorder: List[int]
+    ) -> Optional[TreeNode]:
+        if len(preorder) == 0:
+            return None
+        if len(preorder) == 1:
+            return TreeNode(preorder[0])
+        root = TreeNode(preorder[0])
+        i = postorder.index(preorder[1])
+        root.left = self.constructFromPrePost(preorder[1 : i + 2], postorder[: i + 1])
+        root.right = self.constructFromPrePost(preorder[i + 2 :], postorder[i + 1 : -1])
+        return root
 
 
 # 891 - Sum of Subsequence Widths - HARD
