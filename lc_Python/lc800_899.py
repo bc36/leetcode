@@ -1,5 +1,5 @@
 import collections, math, itertools, re, bisect, functools, heapq
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import sortedcontainers
 
 
@@ -1587,6 +1587,35 @@ class Solution:
                     d[y] = new
         for x, y, t in edges:
             ans += min(t, used[(x, y)] + used[(y, x)])
+        return ans
+
+    def reachableNodes(self, edges: List[List[int]], maxMoves: int, n: int) -> int:
+        # 返回从 start 到每个点的最短路
+        def dijkstra(g: List[List[Tuple[int]]], start: int) -> List[int]:
+            dist = [math.inf] * len(g)
+            dist[start] = 0
+            h = [(0, start)]
+            while h:
+                d, x = heapq.heappop(h)
+                if d > dist[x]:
+                    continue
+                for y, w in g[x]:
+                    new = dist[x] + w
+                    if new < dist[y]:
+                        dist[y] = new
+                        heapq.heappush(h, (new, y))
+            return dist
+
+        g = [[] for _ in range(n)]
+        for u, v, cnt in edges:
+            g[u].append((v, cnt + 1))
+            g[v].append((u, cnt + 1))
+        dist = dijkstra(g, 0)
+        ans = sum(d <= maxMoves for d in dist)
+        for u, v, cnt in edges:
+            a = max(maxMoves - dist[u], 0)
+            b = max(maxMoves - dist[v], 0)
+            ans += min(a + b, cnt)
         return ans
 
 
