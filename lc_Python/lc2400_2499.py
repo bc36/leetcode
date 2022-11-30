@@ -737,7 +737,7 @@ class Solution:
 
 # 2421 - Number of Good Paths - HARD
 class Solution:
-    # 暴力, 从大到小考虑, 删除大节点, O(n ** 2)
+    # 暴力, 从大到小考虑, 删除大节点, O(n**2)
     # 倒着考虑, 删除变合并 -> 并查集
     # 连通块对应最大值个数
     # O(nlogn) / O(n)
@@ -986,7 +986,7 @@ class Solution:
     # s[i: i + j] = = s[i + j: i + 2 * j] 等价于 lcp[i][i + j] >= j
     # lcp[i][j] = lcp[i + 1][j + 1] + 1 if s[i] == s[j] else 0
 
-    # O(n ** 2) / O(n ** 2)
+    # O(n**2) / O(n**2)
     def deleteString(self, s: str) -> int:
         n = len(s)
         if len(set(s)) == 1:
@@ -1265,6 +1265,175 @@ class Solution:
             return ans
 
         return dfs(m - 1, n - 1)[0]
+
+
+# 2437 - Number of Valid Clock Times - EASY
+class Solution:
+    def countTime(self, time: str) -> int:
+        l = []
+        for i in range(24):
+            for j in range(60):
+                l.append("%02d:%02d" % (i, j))
+                # l.append(f"{i:02d}:{j:02d}")
+                # l.append("{:02d}:{:02d}".format(i, j))
+        ans = 0
+        for s in l:
+            for i in range(5):
+                if time[i] != "?" and time[i] != s[i]:
+                    break
+            else:
+                ans += 1
+        return ans
+
+    def countTime(self, time: str) -> int:
+        def count(time: str, limit: int) -> int:
+            ans = 0
+            for i in range(limit):
+                if all(t == "?" or t == c for t, c in zip(time, f"{i:02d}")):
+                    ans += 1
+            return ans
+
+        return count(time[:2], 24) * count(time[3:], 60)
+
+
+# 2438 - Range Product Queries of Powers - MEDIUM
+class Solution:
+    # O(logn + q) / O(logn)
+    def productQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        a = []
+        while n:
+            # a.append(n & -n)
+            # n &= n - 1
+
+            lb = n & -n
+            a.append(lb)
+            n ^= lb
+
+        # a = []
+        # for i in range(31):
+        #     if n & 1 << i:
+        #         a.append(2**i)
+
+        p = [1]
+        for v in a:
+            p.append(p[-1] * v)
+        mod = 10**9 + 7
+        ans = []
+        for l, r in queries:
+            ans.append((p[r + 1] // p[l]) % mod)
+        return ans
+
+
+# 2439 - Minimize Maximum of Array - MEDIUM
+class Solution:
+    # 贪心 + 单调栈, 操作只会使 左边减小 右边增大, 栈内一定是单调不增的
+    # O(n) / O(n)
+    def minimizeArrayValue(self, nums: List[int]) -> int:
+        st = []  # (val, count)
+        for v in nums:
+            if st:
+                presum = pren = 0
+                # 新加入的值比较大, 可以往左均摊
+                while st and st[-1][0] <= (presum + v) // (pren + 1):
+                    val, n = st.pop()
+                    presum += val * n
+                    pren += n
+                # sum 总可以拆分成 a * n 或者 (a + 1) * x + a * (n - x) 的形式
+                d, m = divmod(presum + v, pren + 1)
+                if m != 0:
+                    st.append((d + 1, m))
+                    st.append((d, pren + 1 - m))
+                else:
+                    st.append((d, pren + 1))
+            else:
+                st.append((v, 1))
+        # 返回栈内最大元素值
+        return st[0][0]
+
+    # 讨论如下:
+    # 从 nums[0] 开始
+    # 如果数组中只有 nums[0], 那么最大值为 nums[0]
+    # nums[1]，如果 nums[1] <= nums[0]，最大值还是 nums[0], 否则可以平均这两个数，平均后的最大值为平均值的向上取整
+    # 再考虑 nums[2], 如果 nums[2] <= 之前计算出的最大值 -> 这三个数的平均值不超过前面算出的最大值, 那么最大值不变, 否则可以平均这三个数, 做法同上,
+    # 以此类推直到最后一个数, 过程中的最大值为答案
+    # O(n) / O(1)
+    def minimizeArrayValue(self, nums: List[int]) -> int:
+        # 不同考虑除 0 的情况了
+        return max(
+            (summ + i) // (i + 1) for i, summ in enumerate(itertools.accumulate(nums))
+        )
+        # return max(
+        #     # (summ + i - 1) // i  # 向上取整
+        #     (summ - 1) // i + 1  # 向上取整
+        #     for i, summ in enumerate(itertools.accumulate(nums), start=1)
+        # )
+
+    # O(logU) / O(1), U = max(nums), 最小化最大值 -> 二分
+    def minimizeArrayValue(self, nums: List[int]) -> int:
+        def check(limit: int) -> bool:
+            extra = 0
+            for i in range(len(nums) - 1, 0, -1):
+                extra = max(nums[i] + extra - limit, 0)
+            return nums[0] + extra <= limit
+
+        def check(x: int) -> bool:
+            # 前方的较小数可以接受后方较大数多余的数字
+            summ = 0
+            for v in nums:
+                if v - x > summ:
+                    return False
+                summ += x - v
+            return True
+
+        # l = 0
+        # r = max(nums)
+        # while l < r:
+        #     m = (l + r) // 2
+        #     if check(m):
+        #         r = m
+        #     else:
+        #         l = m + 1
+        # return l
+
+        return bisect.bisect_left(range(max(nums)), True, key=check)
+
+
+# 2440 - Create Components With Same Value - HARD
+class Solution:
+    # 价值是 sum(nums) 的因子
+    # -> 1e6 有多少因子?
+    # -> 240 (https://oeis.org/A066150), 或者利用 n**(1/3) 估算
+    # -> 枚举因子, dfs
+    # 统计子树大小 / 统计子树点权和
+    # O(n * sqrt(sum(nums))) / O(n)
+    def componentValue(self, nums: List[int], edges: List[List[int]]) -> int:
+        g = [[] for _ in nums]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        def dfs(x: int, fa: int) -> int:
+            s = nums[x]
+            for y in g[x]:
+                if y != fa:
+                    r = dfs(y, x)
+                    if r < 0:
+                        return -1
+                    s += r
+            if s > target:
+                return -1
+            if s == target:
+                return 0
+            return s
+
+        summ = sum(nums)
+        # for i in range(summ, 0, -1): # 优化枚举起点
+        for i in range(summ // max(nums), 0, -1):
+            if summ % i == 0:
+                target = summ // i
+                if dfs(0, -1) == 0:
+                    return i - 1
+        return 0
 
 
 # 2441 - Largest Positive Integer That Exists With Its Negative - EASY

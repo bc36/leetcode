@@ -419,37 +419,39 @@ class Solution:
 # 365 / https://leetcode.cn/contest/biweekly-contest-75/problems/sum-of-scores-of-built-strings/
 # z算法, 扩展kmp
 
+
 # https://leetcode.cn/contest/biweekly-contest-76/
 # 320 / https://leetcode.cn/contest/biweekly-contest-76/problems/maximum-score-of-a-node-sequence/
 
-# https://leetcode.cn/contest/biweekly-contest-77
+
+# https://leetcode.cn/contest/biweekly-contest-77/
 # 250 / https://leetcode.cn/contest/biweekly-contest-77/problems/escape-the-spreading-fire/
 
 
-# https://leetcode.cn/contest/biweekly-contest-78
+# https://leetcode.cn/contest/biweekly-contest-78/
 # 796 / https://leetcode.cn/contest/biweekly-contest-78/problems/maximum-white-tiles-covered-by-a-carpet/
 
 # 144 / https://leetcode.cn/contest/biweekly-contest-78/problems/substring-with-largest-variance/
 
 
-# https://leetcode.cn/contest/biweekly-contest-79
+# https://leetcode.cn/contest/biweekly-contest-79/
 # 244 / https://leetcode.cn/contest/biweekly-contest-79/problems/booking-concert-tickets-in-groups/
 # 线段树, 二分
 
 
-# https://leetcode.cn/contest/biweekly-contest-80
+# https://leetcode.cn/contest/biweekly-contest-80/
 # 1123 / https://leetcode.cn/contest/biweekly-contest-80/problems/match-substring-after-replacement/
 # 模拟, 思路错了
 # 1222 / https://leetcode.cn/contest/biweekly-contest-80/problems/count-subarrays-with-score-less-than-k/
 # 双指针, a[i] - a[j], amount of subarray: j - i + 1
 
 
-# https://leetcode.cn/contest/biweekly-contest-81
+# https://leetcode.cn/contest/biweekly-contest-81/
 # 455 / https://leetcode.cn/contest/biweekly-contest-81/problems/number-of-distinct-roll-sequences/
 # dp
 
 
-# https://leetcode.cn/contest/biweekly-contest-82
+# https://leetcode.cn/contest/biweekly-contest-82/
 # 1093 / https://leetcode.cn/contest/biweekly-contest-82/problems/the-latest-time-to-catch-a-bus/
 # two pointer
 # 719 / https://leetcode.cn/contest/biweekly-contest-82/problems/minimum-sum-of-squared-difference/
@@ -458,7 +460,7 @@ class Solution:
 # 并查集, 单调栈
 
 
-# https://leetcode.cn/contest/biweekly-contest-83
+# https://leetcode.cn/contest/biweekly-contest-83/
 # 763 / https://leetcode.cn/contest/biweekly-contest-83/problems/shortest-impossible-sequence-of-rolls/
 # brain teaser
 
@@ -472,31 +474,36 @@ FT: 1:17:56
 T4: 840 pass
 """
 
-# https://leetcode.cn/contest/biweekly-contest-85
+# https://leetcode.cn/contest/biweekly-contest-85/
 # 1578 / https://leetcode.cn/contest/biweekly-contest-85/problems/shifting-letters-ii/
 # 差分数组 / fenwick tree / 线段树
 # 594 / https://leetcode.cn/contest/biweekly-contest-85/problems/maximum-segment-sum-after-removals/
 # 倒序, 并查集
 
 
-# https://leetcode.cn/contest/biweekly-contest-86
+# https://leetcode.cn/contest/biweekly-contest-86/
 # 1716 / https://leetcode.cn/contest/biweekly-contest-86/problems/maximum-rows-covered-by-columns/
 # 状态压缩 / 枚举 / 位运算
 
 
-# https://leetcode.cn/contest/biweekly-contest-87
+# https://leetcode.cn/contest/biweekly-contest-87/
 # 999 / https://leetcode.cn/contest/biweekly-contest-87/problems/smallest-subarrays-with-maximum-bitwise-or/
 # 位运算 / 集合
 # 529 / https://leetcode.cn/contest/biweekly-contest-87/problems/minimum-money-required-before-transactions/
 # 贪心
 
 
-# https://leetcode.cn/contest/biweekly-contest-88
+# https://leetcode.cn/contest/biweekly-contest-88/
 # 712 / https://leetcode.cn/contest/biweekly-contest-88/problems/number-of-pairs-satisfying-inequality/
 # 树状数组 + 离散化 / 归并排序
 
 
-# https://leetcode.cn/contest/biweekly-contest-90
+# https://leetcode.cn/contest/biweekly-contest-89/
+# 220 / https://leetcode.cn/contest/biweekly-contest-89/problems/create-components-with-same-value/
+# 枚举 + dfs
+
+
+# https://leetcode.cn/contest/biweekly-contest-90/
 # 2238 / https://leetcode.cn/contest/biweekly-contest-90/problems/words-within-two-edits-of-dictionary/
 # 暴力
 # 574 / https://leetcode.cn/contest/biweekly-contest-90/problems/next-greater-element-iv/
