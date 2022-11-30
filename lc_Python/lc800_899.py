@@ -1826,6 +1826,47 @@ class Solution:
         return [w for w in words if match(w, pattern) and match(pattern, w)]
 
 
+# 895 - Maximum Frequency Stack - HARD
+class FreqStack:
+    def __init__(self):
+        self.cnt = collections.defaultdict(int)
+        self.st = []  # 把出现次数不同的元素, 压入不同的栈中
+
+    def push(self, val: int) -> None:
+        if self.cnt[val] == len(self.st):
+            self.st.append([val])
+        else:
+            self.st[self.cnt[val]].append(val)
+        self.cnt[val] += 1
+        return
+
+    def pop(self) -> int:
+        v = self.st[-1].pop()
+        if len(self.st[-1]) == 0:
+            self.st.pop()
+        self.cnt[v] -= 1
+        return v
+
+
+class FreqStack:
+    def __init__(self):
+        self.cnt = collections.defaultdict(int)
+        self.st = collections.defaultdict(list)
+        self.mx = 0
+
+    def push(self, val: int) -> None:
+        self.cnt[val] += 1
+        f = self.cnt[val]
+        self.st[f].append(val)
+        self.mx = max(self.mx, f)
+
+    def pop(self) -> int:
+        v = self.st[self.mx].pop()
+        self.cnt[v] -= 1
+        self.mx -= 1 if len(self.st[self.mx]) == 0 else 0
+        return v
+
+
 # 899 - Orderly Queue - HARD
 class Solution:
     def orderlyQueue(self, s: str, k: int) -> str:
