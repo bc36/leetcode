@@ -2033,3 +2033,224 @@ class Solution:
         dfs(root, 0, 0)
         dfs(root, 0, 0)
         return [ans[q] for q in queries]
+
+
+# 2460 - Apply Operations to an Array - EASY
+class Solution:
+    # O(n) / O(n)
+    def applyOperations(self, nums: List[int]) -> List[int]:
+        for i in range(len(nums) - 1):
+            if nums[i] == nums[i + 1]:
+                nums[i] *= 2
+                nums[i + 1] = 0
+        return [v for v in nums if v] + [0] * sum(v == 0 for v in nums)
+
+    # O(n) / O(1)
+    def applyOperations(self, nums: List[int]) -> List[int]:
+        j = 0
+        for i in range(len(nums) - 1):
+            if nums[i]:
+                if nums[i] == nums[i + 1]:
+                    nums[i] *= 2
+                    nums[i + 1] = 0
+                nums[j] = nums[i]  # 非零数字排在前面
+                j += 1
+        if nums[-1]:
+            nums[j] = nums[-1]
+            j += 1
+        for i in range(j, len(nums)):
+            nums[i] = 0
+        return nums
+
+
+# 2461 - Maximum Sum of Distinct Subarrays With Length K - MEDIUM
+class Solution:
+    # O(n) / O(k)
+    def maximumSubarraySum(self, nums: List[int], k: int) -> int:
+        ans = l = summ = 0
+        s = set()
+        for r, v in enumerate(nums):
+            while v in s or r - l == k:
+                s.remove(nums[l])
+                summ -= nums[l]
+                l += 1
+            s.add(v)
+            summ += v
+            if len(s) == k:
+                ans = max(ans, summ)
+        return ans
+
+    def maximumSubarraySum(self, nums: List[int], k: int) -> int:
+        ans = 0
+        cnt = collections.Counter(nums[: k - 1])
+        summ = sum(nums[: k - 1])
+        for a, b in zip(nums[k - 1 :], nums):
+            cnt[a] += 1
+            summ += a
+            if len(cnt) == k:
+                ans = max(ans, summ)
+
+            cnt[b] -= 1
+            if cnt[b] == 0:
+                del cnt[b]
+            summ -= b
+        return ans
+
+
+# 2462 - Total Cost to Hire K Workers - MEDIUM
+class Solution:
+    def totalCost(self, costs: List[int], k: int, candidates: int) -> int:
+        if len(costs) < 2 * candidates:
+            return sum(sorted(costs)[:k])
+        ans = 0
+        pre = costs[:candidates]
+        heapq.heapify(pre)
+        suf = costs[-candidates:]
+        heapq.heapify(suf)
+        l = candidates
+        r = len(costs) - 1 - candidates
+        while k and l <= r:
+            if pre[0] <= suf[0]:
+                ans += heapq.heapreplace(pre, costs[l])
+                l += 1
+            else:
+                ans += heapq.heapreplace(suf, costs[r])
+                r -= 1
+            k -= 1
+        return sum(sorted(pre + suf)[:k]) + ans
+
+    def totalCost(self, costs: List[int], k: int, candidates: int) -> int:
+        ans = 0
+        if candidates * 2 < len(costs):
+            pre = costs[:candidates]
+            heapq.heapify(pre)
+            suf = costs[-candidates:]
+            heapq.heapify(suf)
+            l = candidates
+            r = len(costs) - 1 - candidates
+            while k and l <= r:
+                if pre[0] <= suf[0]:
+                    ans += heapq.heapreplace(pre, costs[l])
+                    l += 1
+                else:
+                    ans += heapq.heapreplace(suf, costs[r])
+                    r -= 1
+                k -= 1
+            costs = pre + suf
+        costs.sort()
+        return ans + sum(costs[:k])
+
+
+# 2463 - Minimum Total Distance Traveled - HARD
+class Solution:
+    # 时间复杂度 = O(状态个数) * O(单个状态的转移次数) * O(计算转移来源是谁)
+    #          = O(nm) * O(m) * O(1)
+    # O(n * m * m) / O(nm)
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        factory.sort()
+        robot.sort()
+        n = len(factory)
+        m = len(robot)
+        # [j, n - j] 个工厂修理 [i, m - 1] 个机器人
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            if j == m:
+                return 0
+            if i == n - 1:
+                if m - j > factory[i][1]:
+                    return math.inf
+                return sum(abs(x - factory[i][0]) for x in robot[j:])
+            r = dfs(i + 1, j)
+            s = 0
+            k = 1
+            while k <= factory[i][1] and j + k - 1 < m:
+                s += abs(robot[j + k - 1] - factory[i][0])
+                r = min(r, s + dfs(i + 1, j + k))
+                k += 1
+            return r
+
+        return dfs(0, 0)
+
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        robot.sort()
+        factory.sort()
+
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            if i == len(robot):
+                return 0
+            if j == len(factory):
+                return math.inf
+            r = 0
+            ans = dfs(i, j + 1)
+            for k in range(factory[j][1]):
+                if i + k == len(robot):
+                    break
+                r += abs(robot[i + k] - factory[j][0])
+                ans = min(ans, r + dfs(i + k + 1, j + 1))
+            return ans
+
+        ans = dfs(0, 0)
+        dfs.cache_clear()
+        return ans
+
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        robot = sorted(robot)
+        factory = sorted(factory)
+
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int, k: int) -> int:
+            if i == len(robot):
+                return 0
+            if j == len(factory):
+                return math.inf
+            if k == factory[j][1]:
+                return dfs(i, j + 1, 0)
+            r = abs(robot[i] - factory[j][0]) + dfs(i + 1, j, k + 1)
+            r = min(r, dfs(i, j + 1, 0))
+            return r
+
+        return dfs(0, 0, 0)
+
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        factory.sort()
+        robot.sort()
+        m = len(robot)
+        # 前 i 个工厂, 修理前 j 个机器人
+        # f[i][j] = f[i - 1][j]
+        #         = f[i - 1][j - k] + cost(i, j, k)
+        #         的最小值
+        # cost(i, j, k) 表示第 i 个工厂, 修理从 j 往前的 k 个机器人, 移动距离之和,
+        # 枚举 k, 取 min(), 0 <= k <= min(j, limit[i])
+        f = [0] + [math.inf] * m
+        for p, limit in factory:
+            for j in range(m, 0, -1):
+                cost = 0
+                for k in range(1, min(j, limit) + 1):
+                    cost += abs(robot[j - k] - p)
+                    f[j] = min(f[j], f[j - k] + cost)
+        return f[m]
+
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        robot.sort()
+        factory.sort()
+        n = len(robot)
+        m = len(factory)
+        # f[i][j] 表示已经送走了前 i 个机器人，且第 i 个机器人送去工厂 j 的最小总距离
+        # g[i][j] 是 f[i][j] 的最小前缀, g[i][j] = min(f[i][k] for k in range(j + 1))
+        f = [[math.inf] * (m + 1) for _ in range(n + 1)]
+        g = [[math.inf] * (m + 1) for _ in range(n + 1)]
+        f[0][0] = 0
+        for j in range(m + 1):
+            g[0][j] = 0
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                d = 0
+                k = i - 1
+                while 0 <= k and i - k <= factory[j - 1][1]:
+                    d += abs(robot[k] - factory[j - 1][0])
+                    f[i][j] = min(f[i][j], g[k][j - 1] + d)
+                    k -= 1
+            for j in range(1, m + 1):
+                g[i][j] = min(g[i][j - 1], f[i][j])
+        return g[n][m]
