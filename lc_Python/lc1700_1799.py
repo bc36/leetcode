@@ -31,6 +31,50 @@ class Solution:
         return s0 + s1
 
 
+# 1701 - Average Waiting Time - MEDIUM
+class Solution:
+    def averageWaitingTime(self, customers: List[List[int]]) -> float:
+        finish = wait = 0
+        for a, t in customers:
+            wait += max(0, finish - a) + t
+            finish = max(finish, a) + t
+        return wait / len(customers)
+
+    def averageWaitingTime(self, customers: List[List[int]]) -> float:
+        wait = cur = 0
+        for a, t in customers:
+            cur = max(cur, a) + t
+            wait += cur - a
+        return wait / len(customers)
+
+
+# 1702 - Maximum Binary String After Change - MEDIUM
+class Solution:
+    # 1. 开头的 1 不动, 找到第一个开头为 0 的子串
+    # 2. 子串含至少两个 0 时, 可以把子串的 1 都挪到右边, 用左边的 0 生成 1, 直到耗尽 00
+    # O(n) / O(1)
+    def maximumBinaryString(self, binary: str) -> str:
+        i = 0
+        while i < len(binary) and binary[i] == "1":
+            i += 1
+
+        # 68 ms
+        zero = binary[i:].count("0")
+        one = len(binary) - i - zero
+
+        # 352 ms
+        # one = sum(map(int, binary[i:]))
+        # zero = len(binary) - i - one
+
+        # 660 ms
+        # zero = sum(1 - int(binary[j]) for j in range(i, len(binary)))
+        # one = len(binary) - i - zero
+
+        if zero < 2:
+            return binary
+        return binary[:i] + "1" * (zero - 1) + "0" + "1" * one
+
+
 # 1704 - Determine if String Halves Are Alike - EASY
 class Solution:
     def halvesAreAlike(self, s: str, p: str = "aeiouAEIOU") -> bool:
@@ -349,6 +393,57 @@ class Solution:
         )
 
 
+# 1769 - Minimum Number of Operations to Move All Balls to Each Box - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def minOperations(self, boxes: str) -> List[int]:
+        n = len(boxes)
+        l = [0] * n
+        step = 0
+        for i in range(1, len(boxes)):
+            if boxes[i - 1] == "1":
+                step += 1
+            l[i] += l[i - 1] + step
+        r = [0] * n
+        step = 0
+        for i in range(len(boxes) - 2, -1, -1):
+            if boxes[i + 1] == "1":
+                step += 1
+            r[i] += r[i + 1] + step
+        return [a + b for a, b in zip(l, r)]
+
+    # O(n) / O(1)
+    def minOperations(self, boxes: str) -> List[int]:
+        l = int(boxes[0])
+        r = operations = 0
+        for i in range(1, len(boxes)):
+            if boxes[i] == "1":
+                r += 1
+                operations += i
+        ans = [operations]
+        for i in range(1, len(boxes)):
+            operations += l - r
+            if boxes[i] == "1":
+                l += 1
+                r -= 1
+            ans.append(operations)
+        return ans
+
+    def minOperations(self, boxes: str) -> List[int]:
+        n = len(boxes)
+        l = r = cost = 0
+        for i, v in enumerate(map(int, boxes)):
+            r += v
+            cost += v * (i + 1)
+        ans = [-1] * n
+        for i, v in enumerate(map(int, boxes)):
+            cost += l - r
+            l += v
+            r -= v
+            ans[i] = cost
+        return ans
+
+
 # 1770 - Maximum Score from Performing Multiplication Operations - MEDIUM
 class Solution:
     def maximumScore(self, nums: List[int], multipliers: List[int]) -> int:
@@ -442,13 +537,13 @@ class Solution:
 class Solution:
     def nearestValidPoint(self, x: int, y: int, points: List[List[int]]) -> int:
         ans = -1
-        mi = float("inf")
-        for i, (xx, yy) in enumerate(points):
-            if xx == x or yy == y:
-                d = abs(xx - x) + abs(yy - y)
+        mi = math.inf
+        for i, (a, b) in enumerate(points):
+            if a == x or b == y:
+                d = abs(a - x) + abs(b - y)
                 if d < mi:
-                    ans = i
                     mi = d
+                    ans = i
         return ans
 
 
