@@ -1828,6 +1828,7 @@ class Solution:
 
 # 895 - Maximum Frequency Stack - HARD
 class FreqStack:
+    # O(1) / O(n)
     def __init__(self):
         self.cnt = collections.defaultdict(int)
         self.st = []  # 把出现次数不同的元素, 压入不同的栈中
@@ -1849,6 +1850,7 @@ class FreqStack:
 
 
 class FreqStack:
+    # O(1) / O(n)
     def __init__(self):
         self.cnt = collections.defaultdict(int)
         self.st = collections.defaultdict(list)
@@ -1864,6 +1866,24 @@ class FreqStack:
         v = self.st[self.mx].pop()
         self.cnt[v] -= 1
         self.mx -= 1 if len(self.st[self.mx]) == 0 else 0
+        return v
+
+
+class FreqStack:
+    # O(logn) / O(n)
+    def __init__(self):
+        self.cnt = collections.defaultdict(int)
+        self.q = []
+        self.ts = 0  # time stamp
+
+    def push(self, val: int) -> None:
+        self.ts += 1
+        self.cnt[val] += 1
+        heapq.heappush(self.q, (-self.cnt[val], -self.ts, val))
+
+    def pop(self) -> int:
+        v = heapq.heappop(self.q)[2]
+        self.cnt[v] -= 1
         return v
 
 
