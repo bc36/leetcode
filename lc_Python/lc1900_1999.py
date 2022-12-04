@@ -1,6 +1,51 @@
 import collections, bisect, itertools, functools, math, heapq
 from typing import List
 
+# 1903 - Largest Odd Number in String - EASY
+class Solution:
+    # 170 ms, map 有点慢
+    def largestOddNumber(self, num: str) -> str:
+        a = list(map(int, num))
+        while a:
+            if a[-1] & 1:
+                return "".join(map(str, a))
+            a.pop()
+        return ""
+
+    # 50 ms
+    def largestOddNumber(self, num: str) -> str:
+        for i in range(len(num) - 1, -1, -1):
+            if int(num[i]) % 2 == 1:
+                return num[: i + 1]
+        return ""
+
+
+# 1904 - The Number of Full Rounds You Have Played - MEDIUM
+class Solution:
+    def numberOfRounds(self, loginTime: str, logoutTime: str) -> int:
+        t0 = 60 * int(loginTime[:2]) + int(loginTime[3:])
+        t1 = 60 * int(logoutTime[:2]) + int(logoutTime[3:])
+        if t0 > t1:
+            t1 += 60 * 24
+        t1 = t1 // 15 * 15
+        return max(0, (t1 - t0)) // 15
+
+    def numberOfRounds(self, loginTime: str, logoutTime: str) -> int:
+        h1, m1 = map(int, loginTime.split(":"))
+        h2, m2 = map(int, logoutTime.split(":"))
+        a = h1 * 60 + m1
+        b = h2 * 60 + m2
+        if a > b:
+            b += 24 * 60
+        a = math.ceil(a / 15)
+        b = math.floor(b / 15)
+
+        # a = (a + 14) // 15
+        # a = (a - 1) // 15 + 1
+        # b //= 15
+        return max(0, b - a)
+
+
 # 1920 - Build Array from Permutation - EASY
 class Solution:
     def buildArray(self, nums: List[int]) -> List[int]:

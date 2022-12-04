@@ -1,5 +1,5 @@
 import bisect, collections, copy, functools, heapq, itertools, math, random, string
-from typing import List
+from typing import List, Tuple, Optional, cast
 
 MOD = 10**9 + 7
 MOD = 998244353
@@ -24,9 +24,12 @@ Trick:
 Directory: (abcdefghijklmnopqrstuvwxyz)
     binary
     BIT
+    dfs
+    dijkstra
     dp
     low bit
     math related
+    minimum cost flow
     permutation
     segment tree
     set
@@ -93,6 +96,43 @@ class BIT:
         while x <= self.n:
             self.a[x] += dt
             x += BIT.lowbit(x)
+
+
+"""dfs"""
+
+
+def example():
+    g = []
+
+    # 统计子树大小 / 统计子树点权和, 无向图
+    def dfs(x: int, fa: int) -> int:
+        sz = 1
+        for y in g[x]:
+            if y != fa:
+                sz += dfs(y, x)
+        return sz
+
+    dfs(0, -1)
+
+    return
+
+
+"""dijkstra"""
+# 返回从 start 到每个点的最短路
+def dijkstra(g: List[List[Tuple[int]]], start: int) -> List[int]:
+    dist = [math.inf] * len(g)
+    dist[start] = 0
+    h = [(0, start)]
+    while h:
+        d, x = heapq.heappop(h)
+        if d > dist[x]:
+            continue
+        for y, w in g[x]:
+            new = dist[x] + w
+            if new < dist[y]:
+                dist[y] = new
+                heapq.heappush(h, (new, y))
+    return dist
 
 
 """dp - digit DP"""
@@ -211,6 +251,377 @@ def n2xbase(n: int, b: int) -> str:
         s += str(n % b)
         n //= b
     return s[::-1]
+
+
+"""minimum cost flow"""
+
+
+class Edge:
+    __slots__ = ("fromV", "toV", "cap", "cost", "flow")
+
+    def __init__(self, fromV: int, toV: int, cap: int, cost: int, flow: int) -> None:
+        self.fromV = fromV
+        self.toV = toV
+        self.cap = cap
+        self.cost = cost
+        self.flow = flow
+
+
+class MinCostMaxFlow:
+    """最小费用流的连续最短路算法复杂度为流量*最短路算法复杂度"""
+
+    __slots__ = (
+        "_n",
+        "_start",
+        "_end",
+        "_edges",
+        "_reGraph",
+        "_dist",
+        "_visited",
+        "_curEdges",
+    )
+
+    def __init__(self, n: int, start: int, end: int):
+        """
+        Args:
+            n (int): 包含虚拟点在内的总点数
+            start (int): (虚拟)源点
+            end (int): (虚拟)汇点
+        """
+        assert 0 <= start < n and 0 <= end < n
+        self._n = n
+        self._start = start
+        self._end = end
+        self._edges: List["Edge"] = []
+        self._reGraph: List[List[int]] = [[] for _ in range(n + 10)]  # 残量图存储的是边的下标
+
+        self._dist = [math.inf] * (n + 10)
+        self._visited = [False] * (n + 10)
+        self._curEdges = [0] * (n + 10)
+
+    def addEdge(self, fromV: int, toV: int, cap: int, cost: int) -> None:
+        """原边索引为i 反向边索引为i^1"""
+        self._edges.append(Edge(fromV, toV, cap, cost, 0))
+        self._edges.append(Edge(toV, fromV, 0, -cost, 0))
+        len_ = len(self._edges)
+        self._reGraph[fromV].append(len_ - 2)
+        self._reGraph[toV].append(len_ - 1)
+
+    def work(self) -> Tuple[int, int]:
+        """
+        Returns:
+            Tuple[int, int]: [最大流,最小费用]
+        """
+        maxFlow, minCost = 0, 0
+        while self._spfa():
+            # !如果流量限定为1，那么一次dfs只会找到一条费用最小的增广流
+            # !如果流量限定为INF，那么一次dfs不只会找到一条费用最小的增广流
+            flow = self._dfs(self._start, self._end, math.inf)
+            maxFlow += flow
+            minCost += flow * self._dist[self._end]
+        return maxFlow, minCost
+
+    def slope(self) -> List[Tuple[int, int]]:
+        """
+        Returns:
+            List[Tuple[int, int]]: 流量为a时,最小费用是b
+        """
+        res = [(0, 0)]
+        flow, cost = 0, 0
+        while self._spfa():
+            deltaFlow = self._dfs(self._start, self._end, math.inf)
+            flow += deltaFlow
+            cost += deltaFlow * self._dist[self._end]
+            res.append((flow, cost))  # type: ignore
+        return res
+
+    def _spfa(self) -> bool:
+        """spfa沿着最短路寻找增广路径 有负cost的边不能用dijkstra"""
+        n, start, end, edges, reGraph, visited = (
+            self._n,
+            self._start,
+            self._end,
+            self._edges,
+            self._reGraph,
+            self._visited,
+        )
+
+        self._curEdges = [0] * n
+        self._dist = dist = [math.inf] * n
+        dist[start] = 0
+        q = collections.deque([start])
+
+        while q:
+            cur = q.popleft()
+            visited[cur] = False
+            for edgeIndex in reGraph[cur]:
+                edge = edges[edgeIndex]
+                cost, remain, next = edge.cost, edge.cap - edge.flow, edge.toV
+                if remain > 0 and dist[cur] + cost < dist[next]:
+                    dist[next] = dist[cur] + cost
+                    if not visited[next]:
+                        visited[next] = True
+                        if q and dist[q[0]] > dist[next]:
+                            q.appendleft(next)
+                        else:
+                            q.append(next)
+
+        return dist[end] != math.inf
+
+    def _dfs(self, cur: int, end: int, flow: int) -> int:
+        if cur == end:
+            return flow
+
+        visited, reGraph, curEdges, edges, dist = (
+            self._visited,
+            self._reGraph,
+            self._curEdges,
+            self._edges,
+            self._dist,
+        )
+
+        visited[cur] = True
+        res = flow
+        index = curEdges[cur]
+        while res and index < len(reGraph[cur]):
+            edgeIndex = reGraph[cur][index]
+            next, remain = (
+                edges[edgeIndex].toV,
+                edges[edgeIndex].cap - edges[edgeIndex].flow,
+            )
+            if (
+                remain > 0
+                and not visited[next]
+                and dist[next] == dist[cur] + edges[edgeIndex].cost
+            ):
+                delta = self._dfs(next, end, remain if remain < res else res)
+                res -= delta
+                edges[edgeIndex].flow += delta
+                edges[edgeIndex ^ 1].flow -= delta
+            curEdges[cur] += 1
+            index = curEdges[cur]
+
+        visited[cur] = False
+        return flow - res
+
+
+class MincostFlow:
+    class Edge:
+        def __init__(self, u, v, cap, cost, rev=None):
+            self.u = u
+            self.v = v
+            self.cap = cap
+            self.cost = cost
+            self.rev = rev
+
+    def __init__(self, n):
+        self.__n = n
+        self.__edges = []
+
+    def add_edge(self, u, v, cap, cost):
+        e1 = self.Edge(u, v, cap, cost)
+        e2 = self.Edge(v, u, 0, -cost)
+        e1.rev = e2
+        e2.rev = e1
+        self.__edges.append(e1)
+        self.__edges.append(e2)
+
+    def build_graph(self):
+        self.__graph = [[] for i in range(self.__n + 1)]
+        for e in self.__edges:
+            self.__graph[e.u].append(e)
+
+    def slope(self, s, t):
+        res = [[0, 0]]
+        h = self.__build_height(s, t)
+        while True:
+            path = self.__shortest_path(s, t, h)
+            if path is None:
+                break
+            flow = float("inf")
+            cost = 0
+            for e in path:
+                flow = min(flow, e.cap)
+            for e in path:
+                cost += flow * e.cost
+                e.cap -= flow
+                e.rev.cap += flow
+
+            flow += res[-1][0]
+            cost += res[-1][1]
+            res.append([flow, cost])
+        return res
+
+    def max_flow(self, s, t):
+        # [cap: max_flow, cost: min_cost]
+        return (self.slope(s, t))[-1]
+
+    def __build_height(self, s, t):
+        d = [math.inf for _ in range(self.__n + 1)]
+        d[s] = 0
+        q = collections.deque([s])
+        vis = {s}
+        while len(q) != 0:
+            u = q.popleft()
+            vis.remove(u)
+            for e in self.__graph[u]:
+                if e.cap > 0 and d[u] + e.cost < d[e.v]:
+                    d[e.v] = d[u] + e.cost
+                    if e.v not in vis:
+                        vis.add(e.v)
+                        q.append(e.v)
+        return d
+
+    def __shortest_path(self, s, t, h):
+        d = [math.inf for _ in range(self.__n + 1)]
+        back = [None for _ in range(self.__n + 1)]
+        d[s] = 0
+        pq = [(d[i], i) for i in range(self.__n + 1)]
+        heapq.heapify(pq)
+        vis = set()
+        while len(pq) != 0:
+            _, u = heapq.heappop(pq)
+            if u in vis:
+                continue
+            if d[u] == math.inf:
+                break
+            vis.add(u)
+            for e in self.__graph[u]:
+                if e.cap > 0 and d[u] + (e.cost + h[u] - h[e.v]) < d[e.v]:
+                    d[e.v] = d[u] + (e.cost + h[u] - h[e.v])
+                    back[e.v] = e
+                    heapq.heappush(pq, (d[e.v], e.v))
+        if d[t] == math.inf:
+            return None
+        else:
+            for i in range(self.__n + 1):
+                h[i] += d[i]
+            res = []
+            v = t
+            while back[v] is not None:
+                res.append(back[v])
+                v = back[v].u
+            return res[::-1]
+
+
+class MCFGraph:
+    class Edge(collections.NamedTuple):
+        src: int
+        dst: int
+        cap: int
+        flow: int
+        cost: int
+
+    class _Edge:
+        def __init__(self, dst: int, cap: int, cost: int) -> None:
+            self.dst = dst
+            self.cap = cap
+            self.cost = cost
+            self.rev: Optional[MCFGraph._Edge] = None
+
+    def __init__(self, n: int) -> None:
+        self._n = n
+        self._g: List[List[MCFGraph._Edge]] = [[] for _ in range(n)]
+        self._edges: List[MCFGraph._Edge] = []
+
+    def add_edge(self, src: int, dst: int, cap: int, cost: int) -> int:
+        assert 0 <= src < self._n
+        assert 0 <= dst < self._n
+        assert 0 <= cap
+        m = len(self._edges)
+        e = MCFGraph._Edge(dst, cap, cost)
+        re = MCFGraph._Edge(src, 0, -cost)
+        e.rev = re
+        re.rev = e
+        self._g[src].append(e)
+        self._g[dst].append(re)
+        self._edges.append(e)
+        return m
+
+    def get_edge(self, i: int) -> Edge:
+        assert 0 <= i < len(self._edges)
+        e = self._edges[i]
+        re = cast(MCFGraph._Edge, e.rev)
+        return MCFGraph.Edge(re.dst, e.dst, e.cap + re.cap, re.cap, e.cost)
+
+    def edges(self) -> List[Edge]:
+        return [self.get_edge(i) for i in range(len(self._edges))]
+
+    def flow(self, s: int, t: int, flow_limit: Optional[int] = None) -> Tuple[int, int]:
+        return self.slope(s, t, flow_limit)[-1]
+
+    def slope(
+        self, s: int, t: int, flow_limit: Optional[int] = None
+    ) -> List[Tuple[int, int]]:
+        assert 0 <= s < self._n
+        assert 0 <= t < self._n
+        assert s != t
+        if flow_limit is None:
+            flow_limit = cast(int, sum(e.cap for e in self._g[s]))
+
+        dual = [0] * self._n
+        prev: List[Optional[Tuple[int, MCFGraph._Edge]]] = [None] * self._n
+
+        def refine_dual() -> bool:
+            pq = [(0, s)]
+            visited = [False] * self._n
+            dist: List[Optional[int]] = [None] * self._n
+            dist[s] = 0
+            while pq:
+                dist_v, v = heapq.heappop(pq)
+                if visited[v]:
+                    continue
+                visited[v] = True
+                if v == t:
+                    break
+                dual_v = dual[v]
+                for e in self._g[v]:
+                    w = e.dst
+                    if visited[w] or e.cap == 0:
+                        continue
+                    reduced_cost = e.cost - dual[w] + dual_v
+                    new_dist = dist_v + reduced_cost
+                    dist_w = dist[w]
+                    if dist_w is None or new_dist < dist_w:
+                        dist[w] = new_dist
+                        prev[w] = v, e
+                        heapq.heappush(pq, (new_dist, w))
+            else:
+                return False
+            dist_t = dist[t]
+            for v in range(self._n):
+                if visited[v]:
+                    dual[v] -= cast(int, dist_t) - cast(int, dist[v])
+            return True
+
+        flow = 0
+        cost = 0
+        prev_cost_per_flow: Optional[int] = None
+        result = [(flow, cost)]
+        while flow < flow_limit:
+            if not refine_dual():
+                break
+            f = flow_limit - flow
+            v = t
+            while prev[v] is not None:
+                u, e = cast(Tuple[int, MCFGraph._Edge], prev[v])
+                f = min(f, e.cap)
+                v = u
+            v = t
+            while prev[v] is not None:
+                u, e = cast(Tuple[int, MCFGraph._Edge], prev[v])
+                e.cap -= f
+                assert e.rev is not None
+                e.rev.cap += f
+                v = u
+            c = -dual[s]
+            flow += f
+            cost += f * c
+            if c == prev_cost_per_flow:
+                result.pop()
+            result.append((flow, cost))
+            prev_cost_per_flow = c
+        return result
 
 
 """permutation"""
@@ -426,7 +837,7 @@ def transpose(matrix: List[List[int]]) -> List[List[int]]:
     def loop(grid: List[List[int]]) -> None:
         for r in grid:
             print(r)
-        for c in zip(*grid):
+        for c in zip(*grid):  # unpack
             print(c)
         return
 
@@ -618,4 +1029,8 @@ segment tree:     query: O(logn), update: O(logn)
 
 求区间最大值:
 线段树 / ST表 / 单调队列
+
+
+0 - 1 背包倒序转移原因:
+    空间优化时, 防止覆盖掉前面已经计算过的值
 """
