@@ -508,6 +508,58 @@ class Solution:
         return sum(v[idx] == ruleValue for v in items)
 
 
+# 1774 - Closest Dessert Cost - MEDIUM
+class Solution:
+    # O(n * 3**m) / O(m)
+    def closestCost(
+        self, baseCosts: List[int], toppingCosts: List[int], target: int
+    ) -> int:
+        def dfs(i: int, cur: int) -> None:
+            nonlocal ans
+            if i == len(toppingCosts):
+                # 放外面也可以, 表示后面的都不选
+                if abs(ans - target) > abs(cur - target):
+                    ans = cur
+                elif abs(ans - target) == abs(cur - target):
+                    ans = min(ans, cur)
+                return
+            dfs(i + 1, cur)
+            if cur <= target:
+                dfs(i + 1, cur + toppingCosts[i])
+                dfs(i + 1, cur + 2 * toppingCosts[i])
+            return
+
+        ans = math.inf
+        for v in baseCosts:
+            dfs(0, v)
+        return ans
+
+    def closestCost(
+        self, baseCosts: List[int], toppingCosts: List[int], target: int
+    ) -> int:
+        def dfs(i: int, cur: int) -> None:
+            nonlocal ans
+            a = abs(ans - target)
+            b = abs(cur - target)
+            if cur > target and a < b:
+                return
+            if a > b:
+                ans = cur
+            if a == b:
+                ans = min(ans, cur)
+            if i == len(toppingCosts):
+                return
+            dfs(i + 1, cur + toppingCosts[i] * 2)
+            dfs(i + 1, cur + toppingCosts[i])
+            dfs(i + 1, cur)
+            return
+
+        ans = math.inf
+        for v in baseCosts:
+            dfs(0, v)
+        return ans
+
+
 # 1775 - Equal Sum Arrays With Minimum Number of Operations - MEDIUM
 class Solution:
     def minOperations(self, nums1: List[int], nums2: List[int]) -> int:
