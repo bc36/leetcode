@@ -582,6 +582,16 @@ class Solution:
                 ans += (diff + k - 1) // k
                 diff = 0
                 break
+
+        # for i in range(5, 0, -1):
+        #     if diff <= 0:
+        #         break
+        #     for _ in range(cnt[i]):
+        #         if diff <= 0:
+        #             break
+        #         ans += 1
+        #         diff -= i
+
         return ans if diff == 0 else -1
 
 
