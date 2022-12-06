@@ -18,16 +18,15 @@ class Solution:
 # 1805 - Number of Different Integers in a String - EASY
 class Solution:
     def numDifferentIntegers(self, word: str) -> int:
-        word = word + "a"
         s = set()
-        num = ""
-        for c in word:
+        x = ""
+        for c in word + "#":
             if c.isdigit():
-                num += c
+                x += c
             else:
-                if num != "":
-                    s.add(int(num))
-                num = ""
+                if x:
+                    s.add(int(x))
+                x = ""
         return len(s)
 
     def numDifferentIntegers(self, word: str) -> int:
