@@ -33,6 +33,65 @@ class Solution:
         return len(set(map(int, re.findall("\d+", word))))
 
 
+# 1812 - Determine Color of a Chessboard Square - EASY
+class Solution:
+    def squareIsWhite(self, coordinates: str) -> bool:
+        return (ord(coordinates[0]) - 97 + int(coordinates[1])) % 2 == 0
+
+
+# 1813 - Sentence Similarity III - MEDIUM
+class Solution:
+    def areSentencesSimilar(self, sentence1: str, sentence2: str) -> bool:
+        d1 = collections.deque(sentence1.split())
+        d2 = collections.deque(sentence2.split())
+        if len(d1) < len(d2):
+            return self.areSentencesSimilar(sentence2, sentence1)
+        while d2 and d1[0] == d2[0]:
+            d1.popleft()
+            d2.popleft()
+        while d2 and d1[-1] == d2[-1]:
+            d1.pop()
+            d2.pop()
+        return len(d2) == 0
+
+    def areSentencesSimilar(self, sentence1: str, sentence2: str) -> bool:
+        sentence1 = sentence1.split()
+        sentence2 = sentence2.split()
+        m = len(sentence1)
+        n = len(sentence2)
+        i = j = 0
+        while i < m and i < n and sentence1[i] == sentence2[i]:
+            i += 1
+        while (
+            m - 1 - j > -1
+            and n - 1 - j > -1
+            and sentence1[m - 1 - j] == sentence2[n - 1 - j]
+        ):
+            j += 1
+        return i + j >= min(m, n)
+
+
+# 1814 - Count Nice Pairs in an Array - MEDIUM
+class Solution:
+    def countNicePairs(self, nums: List[int]) -> int:
+        mod = 10**9 + 7
+        cnt = collections.defaultdict(int)
+        ans = 0
+        for v in nums:
+            rev = int(str(v)[::-1])
+            ans = (ans + cnt[v - rev]) % mod
+            cnt[v - rev] += 1
+        return ans
+
+    def countNicePairs(self, nums: List[int]) -> int:
+        return sum(
+            map(
+                lambda x: x * (x - 1) // 2,
+                collections.Counter([v - int(str(v)[::-1]) for v in nums]).values(),
+            )
+        ) % (10**9 + 7)
+
+
 # 1816 - Truncate Sentence - EASY
 class Solution:
     def truncateSentence(self, s: str, k: int) -> str:
