@@ -609,6 +609,38 @@ class Solution:
         return ans
 
 
+# 1780 - Check if Number is a Sum of Powers of Three - MEDIUM
+class Solution:
+    def checkPowersOfThree(self, n: int) -> bool:
+        p3 = [3**i for i in reversed(range(15))]
+        for p in p3:
+            if n >= 2 * p:
+                return False
+            elif n >= p:
+                n -= p
+        return True
+
+    def checkPowersOfThree(self, n: int) -> bool:
+        while n > 0:
+            if n % 3 == 2:
+                return False
+            n //= 3
+        return True
+
+
+# 1781 - Sum of Beauty of All Substrings - MEDIUM
+class Solution:
+    # O(n * n * C) / O(C)
+    def beautySum(self, s: str) -> int:
+        ans = 0
+        for i in range(len(s)):
+            d = collections.defaultdict(int)
+            for j in range(i, len(s)):
+                d[s[j]] += 1
+                ans += max(v for v in d.values()) - min(v for v in d.values() if v)
+        return ans
+
+
 # 1784 - Check if Binary String Has at Most One Segment of Ones - EASY
 class Solution:
     def checkOnesSegment(self, s: str) -> bool:
