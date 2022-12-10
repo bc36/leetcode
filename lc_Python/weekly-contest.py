@@ -1104,3 +1104,8 @@ T4: 465 pass
 # https://leetcode.cn/contest/weekly-contest-318/
 # 271 / https://leetcode.cn/contest/weekly-contest-318/problems/minimum-total-distance-traveled/
 # dp / 最小费用最大流
+
+
+# https://leetcode.cn/contest/weekly-contest-322/
+# 292 / https://leetcode.cn/contest/weekly-contest-322/problems/divide-nodes-into-the-maximum-number-of-groups/
+# 二分图 + 枚举 + BFS

@@ -1353,7 +1353,7 @@ class Solution:
     # 讨论如下:
     # 从 nums[0] 开始
     # 如果数组中只有 nums[0], 那么最大值为 nums[0]
-    # nums[1]，如果 nums[1] <= nums[0]，最大值还是 nums[0], 否则可以平均这两个数，平均后的最大值为平均值的向上取整
+    # nums[1], 如果 nums[1] <= nums[0], 最大值还是 nums[0], 否则可以平均这两个数, 平均后的最大值为平均值的向上取整
     # 再考虑 nums[2], 如果 nums[2] <= 之前计算出的最大值 -> 这三个数的平均值不超过前面算出的最大值, 那么最大值不变, 否则可以平均这三个数, 做法同上,
     # 以此类推直到最后一个数, 过程中的最大值为答案
     # O(n) / O(1)
@@ -2213,6 +2213,26 @@ class Solution:
         return dfs(0, 0, 0)
 
     def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        robot.sort()
+        factory.sort()
+        # to fix robot[i] and its following roberts with factory[j] already fix k robert
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int, k: int) -> int:
+            if i == len(robot):
+                return 0
+            if j == len(factory):
+                return math.inf
+            res1 = dfs(i, j + 1, 0)
+            res2 = (
+                dfs(i + 1, j, k + 1) + abs(robot[i] - factory[j][0])
+                if factory[j][1] > k
+                else math.inf
+            )
+            return min(res1, res2)
+
+        return dfs(0, 0, 0)
+
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
         factory.sort()
         robot.sort()
         m = len(robot)
@@ -2236,8 +2256,8 @@ class Solution:
         factory.sort()
         n = len(robot)
         m = len(factory)
-        # f[i][j] 表示已经送走了前 i 个机器人，且第 i 个机器人送去工厂 j 的最小总距离
-        # g[i][j] 是 f[i][j] 的最小前缀, g[i][j] = min(f[i][k] for k in range(j + 1))
+        # f[i][j] 表示已经送走了前 i 个机器人, 且第 i 个机器人送去工厂 j 的最小总距离
+        # g[i][j] 是 f[i][j] 的前缀 min, 辅助计算 f[i][j], g[i][j] = min(f[i][k] for k in range(j + 1))
         f = [[math.inf] * (m + 1) for _ in range(n + 1)]
         g = [[math.inf] * (m + 1) for _ in range(n + 1)]
         f[0][0] = 0
@@ -2254,3 +2274,223 @@ class Solution:
             for j in range(1, m + 1):
                 g[i][j] = min(g[i][j - 1], f[i][j])
         return g[n][m]
+
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        robot.sort()
+        factory.sort()
+        n = len(robot)
+        m = len(factory)
+        f = [math.inf] * (n + 1)
+        f[n] = 0
+        for j in range(m - 1, -1, -1):
+            for i in range(n):
+                cur = 0
+                for k in range(1, min(factory[j][1], n - i) + 1):
+                    cur += abs(robot[i + k - 1] - factory[j][0])
+                    f[i] = min(f[i], f[i + k] + cur)
+        return f[0]
+
+
+# 2490 - Circular Sentence - EASY
+class Solution:
+    def isCircularSentence(self, sentence: str) -> bool:
+        if sentence[-1] != sentence[0]:
+            return False
+        s = sentence.split()
+        for i in range(len(s) - 1):
+            if s[i][-1] != s[i + 1][0]:
+                return False
+        return True
+
+    def isCircularSentence(self, sentence: str) -> bool:
+        return sentence[0] == sentence[-1] and all(
+            sentence[i - 1] == sentence[i + 1]
+            for i, c in enumerate(sentence)
+            if c == " "
+        )
+
+
+# 2491 - Divide Players Into Teams of Equal Skill - MEDIUM
+class Solution:
+    # O(nlogn) / O(1)
+    def dividePlayers(self, skill: List[int]) -> int:
+        skill.sort()
+        ans = 0
+        s = skill[0] + skill[-1]
+        for i in range(len(skill) // 2):
+            x = skill[i]
+            y = skill[-1 - i]
+            if x + y != s:
+                return -1
+            ans += x * y
+        return ans
+
+    # O(n) / O(n)
+    def dividePlayers(self, skill: List[int]) -> int:
+        n = len(skill)
+        summ = sum(skill)
+        if summ % (n // 2) != 0:
+            return -1
+        t = summ // (n // 2)
+        ans = 0
+        cnt = collections.Counter(skill)
+        for k, v in cnt.items():
+            if v != cnt[t - k]:
+                return -1
+            ans += v * k * (t - k)
+        return ans // 2
+
+
+# 2492 - Minimum Score of a Path Between Two Cities - MEDIUM
+class Solution:
+    # O(m + n) / O(m + n)
+    def minScore(self, n: int, roads: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y, d in roads:
+            g[x - 1].append((y - 1, d))
+            g[y - 1].append((x - 1, d))
+        ans = math.inf
+        vis = [False] * n
+
+        def dfs(x: int) -> None:
+            nonlocal ans
+            vis[x] = True
+            for y, d in g[x]:
+                ans = min(ans, d)
+                if not vis[y]:
+                    dfs(y)
+            return
+
+        dfs(0)
+        return ans
+
+    def minScore(self, n: int, roads: List[List[int]]) -> int:
+        g = collections.defaultdict(list)
+        for x, y, _ in roads:
+            g[x].append(y)
+            g[y].append(x)
+        vis = set()
+        q = [1]
+        while q:
+            new = []
+            for x in q:
+                for y in g[x]:
+                    if y not in vis:
+                        new.append(y)
+                        vis.add(y)
+            q = new
+        ans = math.inf
+        for x, y, w in roads:
+            if x in vis and y in vis:
+                ans = min(ans, w)
+        return ans
+
+
+# 2493 - Divide Nodes Into the Maximum Number of Groups - HARD
+class Solution:
+    # | y - x | = 1
+    # 数据范围比较小, 枚举每个点作为起点, BFS, 求出最大编号(最大深度)
+    # 每个连通块的最大深度相加, 即为答案
+    # O(mn) / O(m + n), m = len(edges)
+    def magnificentSets(self, n: int, edges: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x - 1].append(y - 1)
+            g[y - 1].append(x - 1)
+        time = [0] * n
+        clock = 0
+
+        def bfs(start: int) -> int:
+            depth = 0
+            nonlocal clock
+            clock += 1
+            time[start] = clock
+            q = [start]
+            while q:
+                tmp = q
+                q = []
+                for x in tmp:
+                    for y in g[x]:
+                        if time[y] != clock:
+                            time[y] = clock
+                            q.append(y)
+                depth += 1
+            return depth
+
+        color = [0] * n
+
+        def is_bipartite(x: int, c: int) -> bool:
+            nodes.append(x)
+            color[x] = c
+            for y in g[x]:
+                if color[y] == c or color[y] == 0 and not is_bipartite(y, -c):
+                    return False
+            return True
+
+        ans = 0
+        for i, c in enumerate(color):
+            if c:
+                continue
+            nodes = []
+            if not is_bipartite(i, 1):
+                return -1  # 不是二分图(有奇环)
+            ans += max(bfs(x) for x in nodes)  # 枚举连通块的每个点, 作为起点 BFS, 求最大深度
+        return ans
+
+    def magnificentSets(self, n: int, edges: List[List[int]]) -> int:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+
+            def find(self, x: int) -> int:
+                """path compression"""
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                """x's root -> y"""
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                return
+
+        g = collections.defaultdict(list)
+        uf = UnionFind(n + 1)
+        for x, y in edges:
+            uf.union(x, y)
+            g[x].append(y)
+            g[y].append(x)
+
+        # 二分图判断
+        note = [-1] * (n + 1)
+        for i in range(1, n + 1):
+            if note[i] == -1:
+                note[i] = 0
+                q = collections.deque([i])
+                while q:
+                    x = q.popleft()
+                    for y in g[x]:
+                        if note[y] == -1:
+                            note[y] = 1 - note[x]
+                            q.append(y)
+                        elif note[y] == note[x]:
+                            return -1  # 不满足二分图条件
+
+        largest_diameter = collections.defaultdict(int)
+        for i in range(1, n + 1):
+            q = collections.deque([i])
+            vis = {i}
+            cnt = 0
+            while q:
+                cnt += 1
+                for _ in range(len(q)):
+                    x = q.popleft()
+                    for y in g[x]:
+                        if y not in vis:
+                            vis.add(y)
+                            q.append(y)
+            largest_diameter[uf.find(i)] = max(largest_diameter[uf.find(i)], cnt)
+        return sum(largest_diameter.values())
