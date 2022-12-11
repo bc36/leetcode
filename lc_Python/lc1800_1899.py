@@ -147,3 +147,21 @@ class Solution:
         for i in range(2, n + 1):
             dp = (dp + k - 1) % i + 1
         return dp
+
+
+# 1827 - Minimum Operations to Make the Array Increasing - EASY
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        ans = 0
+        for i in range(1, len(nums)):
+            if nums[i - 1] >= nums[i]:
+                ans += nums[i - 1] - nums[i] + 1
+                nums[i] = nums[i - 1] + 1
+        return ans
+
+    def minOperations(self, nums: List[int]) -> int:
+        ans = mx = 0
+        for v in nums:
+            ans += max(0, mx - v + 1)
+            mx = max(mx + 1, v)
+        return ans

@@ -648,6 +648,13 @@ class Solution:
         return "01" not in s
 
 
+# 1785 - Minimum Elements to Add to Form a Given Sum - MEDIUM
+class Solution:
+    def minElements(self, nums: List[int], limit: int, goal: int) -> int:
+        return math.ceil(abs(goal - sum(nums)) / limit)
+        return (abs(goal - sum(nums)) - 1) // limit + 1
+
+
 # 1790 - Check if One String Swap Can Make Strings Equal - EASY
 class Solution:
     def areAlmostEqual(self, s1: str, s2: str) -> bool:
