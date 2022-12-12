@@ -52,6 +52,8 @@ isbn: 978-7-83009-313-6
 
 * `collections.Counter(a) > collections.Counter(b)`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), All of those tests treat missing elements as having zero counts so that Counter(a=1) == Counter(a=1, b=0) returns true.
 
+* `x != y != z` 表现为 `x != y and y != z`, 而不是 `x != b and x != z and b != z`, 所以 `x < y > z` 是有可能的, [6.10. Comparisons](https://docs.python.org/3/reference/expressions.html#comparisons)
+
 * [Glossary](https://docs.python.org/3/glossary.html)
 
 

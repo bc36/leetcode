@@ -508,3 +508,8 @@ T4: 840 pass
 # 暴力
 # 574 / https://leetcode.cn/contest/biweekly-contest-90/problems/next-greater-element-iv/
 # 单调栈
+
+
+# https://leetcode.cn/contest/biweekly-contest-93/
+# 194 / https://leetcode.cn/contest/biweekly-contest-93/problems/minimum-total-cost-to-make-arrays-unequal/
+# 分类讨论

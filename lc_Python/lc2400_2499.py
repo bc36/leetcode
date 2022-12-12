@@ -2385,6 +2385,23 @@ class Solution:
                 ans = min(ans, w)
         return ans
 
+    def minScore(self, n: int, roads: List[List[int]]) -> int:
+        p = list(range(n + 1))
+        w = [math.inf] * (n + 1)  # 集合对应最小元素
+
+        def find(x: int) -> int:
+            """path compression"""
+            if p[x] != x:
+                p[x] = find(p[x])
+            return p[x]
+
+        for x, y, v in roads:
+            a = find(x)
+            b = find(y)
+            w[a] = min(w[a], w[b], v)
+            p[b] = a
+        return w[find(1)]
+
 
 # 2493 - Divide Nodes Into the Maximum Number of Groups - HARD
 class Solution:
@@ -2494,3 +2511,146 @@ class Solution:
                             q.append(y)
             largest_diameter[uf.find(i)] = max(largest_diameter[uf.find(i)], cnt)
         return sum(largest_diameter.values())
+
+
+# 2496 - Maximum Value of a String in an Array - EASY
+class Solution:
+    def maximumValue(self, strs: List[str]) -> int:
+        ans = 0
+        for w in strs:
+            try:
+                ans = max(ans, int(w))
+            except:
+                ans = max(ans, len(w))
+        return ans
+
+    def maximumValue(self, strs: List[str]) -> int:
+        ans = 0
+        for w in strs:
+            if any(c.isalpha() for c in w):
+                ans = max(ans, len(w))
+            else:
+                ans = max(ans, int(w))
+        return ans
+
+
+# 2497 - Maximum Star Sum of a Graph - MEDIUM
+class Solution:
+    def maxStarSum(self, vals: List[int], edges: List[List[int]], k: int) -> int:
+        g = [[] for _ in range(len(vals))]
+        # 如果直接连边, 不考虑值的情况, 后续就会变得复杂
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        ans = -math.inf
+        for x, arr in enumerate(g):
+            arr.sort(key=lambda x: vals[x])
+            t = vals[x]
+            t += sum(vals[y] for y in arr[-k:] if vals[y] > 0)
+            ans = max(ans, t)
+        return ans
+
+    def maxStarSum(self, vals: List[int], edges: List[List[int]], k: int) -> int:
+        g = [[] for _ in range(len(vals))]
+        for x, y in edges:
+            if vals[y] > 0:
+                g[x].append(vals[y])
+            if vals[x] > 0:
+                g[y].append(vals[x])
+        return max(sum(heapq.nlargest(k, g[i])) + v for i, v in enumerate(vals))
+        return max(v + sum(heapq.nlargest(k, arr)) for v, arr in zip(vals, g))
+
+
+# 2498 - Frog Jump II - MEDIUM
+class Solution:
+    # 二分
+    def maxJump(self, stones: List[int]) -> int:
+        def check(m: int) -> bool:
+            can = [False] * (n + 1)
+            can[0] = True
+            for i in range(1, n + 1):
+                if stones[i] <= m:
+                    can[i] = True
+                else:
+                    break
+            for i in range(1, n + 1):
+                for j in range(i - 1, 0, -1):
+                    if can[i]:
+                        break
+                    if stones[i - 1] - stones[j - 1] > m:
+                        break
+                    if i - j >= 2:
+                        can[i] = can[i] or can[j]
+                if not can[i]:
+                    break
+            return can[-1]
+
+        def check(m: int) -> bool:
+            used = set()
+            j = 0
+            for i in range(1, n):
+                if stones[i] - stones[j] > m:
+                    if i - 1 == j:
+                        return False
+                    used.add(i - 1)
+                    j = i - 1
+            j = 0
+            for i in range(1, n):
+                if i in used:
+                    continue
+                if stones[i] - stones[j] > m:
+                    return False
+                j = i
+            return True
+
+        l = 0
+        r = stones[-1]
+        n = len(stones)
+        while l < r:
+            m = (l + r) // 2
+            if check(m):
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    # 1. 转换成两个青蛙不相交跳到终点
+    # 2. 如果有空的石头, 则跳到空石头不会使答案更差 -> 所有石头会被使用
+    # 3. 全部使用的话, 交替跳是最好的
+    # 对于 A B C D ... 中, A B 是两个起点, C D 是两个落点, A -> C, B -> D 比 A -> D, B -> C 更优
+    def maxJump(self, stones: List[int]) -> int:
+        ans = stones[1] - stones[0]
+        for i in range(2, len(stones)):
+            ans = max(ans, stones[i] - stones[i - 2])
+        return ans
+
+
+# 2499 - Minimum Total Cost to Make Arrays Unequal - HARD
+class Solution:
+    # 统计 same = nums1[i] == nums2[i] 个数, 以及 same 的众数 mode, same 是必要交换的
+    # 1. 众数 mode 没有超过 same 的一半
+    #   a. same 是偶数, 两两交换
+    #   b. same 是奇数, mode 最大是 same // 2, 所以 same 至少会有三类, 多出来的数可以和 nums[0] 交换
+    #      比如 11223 或者 31122, 众数交换之后, 多出来的和 0 位置的数字换一下
+    # 2. mode 超过 same 的一半
+    #    需要外部数字, 满足 x != y and x != mode and y != mode 的数字来消化多余的众数
+    #    未消化完则 return -1
+
+    # same 是奇数, 和 nums[0] 交换比较难想
+    # O(n) / O(n)
+    def minimumTotalCost(self, nums1: List[int], nums2: List[int]) -> int:
+        ans = same = modeCnt = mode = 0
+        d = collections.defaultdict(int)
+        for i, (x, y) in enumerate(zip(nums1, nums2)):
+            if x == y:
+                ans += i
+                same += 1
+                d[x] += 1
+                if d[x] > modeCnt:
+                    modeCnt = d[x]
+                    mode = x
+        for i, (x, y) in enumerate(zip(nums1, nums2)):
+            if modeCnt * 2 > same and x != y and x != mode and y != mode:
+                ans += i
+                same += 1
+        return ans if modeCnt * 2 <= same else -1
