@@ -637,7 +637,7 @@ class Solution:
             d = collections.defaultdict(int)
             for j in range(i, len(s)):
                 d[s[j]] += 1
-                ans += max(v for v in d.values()) - min(v for v in d.values() if v)
+                ans += max(d.values()) - min(d.values())
         return ans
 
 

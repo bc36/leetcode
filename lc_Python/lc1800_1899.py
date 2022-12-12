@@ -1,5 +1,6 @@
-import collections, itertools, functools, math, re
-from typing import List
+import bisect, collections, functools, math, itertools, heapq, string, operator
+from typing import List, Optional
+import sortedcontainers
 
 # 1800 - Maximum Ascending Subarray Sum - EASY
 class Solution:
@@ -165,3 +166,18 @@ class Solution:
             ans += max(0, mx - v + 1)
             mx = max(mx + 1, v)
         return ans
+
+
+# 1832 - Check if the Sentence Is Pangram - EASY
+class Solution:
+    def checkIfPangram(self, sentence: str) -> bool:
+        return set(string.ascii_lowercase) == set(sentence)
+
+    def checkIfPangram(self, sentence: str) -> bool:
+        return len(set(sentence)) == 26
+
+    def checkIfPangram(self, sentence: str) -> bool:
+        m = 0
+        for c in sentence:
+            m |= 1 << (ord(c) - ord("a"))
+        return m == (1 << 26) - 1
