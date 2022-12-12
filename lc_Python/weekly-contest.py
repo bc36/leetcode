@@ -1109,3 +1109,13 @@ T4: 465 pass
 # https://leetcode.cn/contest/weekly-contest-322/
 # 292 / https://leetcode.cn/contest/weekly-contest-322/problems/divide-nodes-into-the-maximum-number-of-groups/
 # 二分图 + 枚举 + BFS
+
+
+"""
+AK, 2022-12-10
+https://leetcode.cn/contest/weekly-contest-323/
+Rank: 329 / 788
+WA: T3(1), T4(1)
+FT: 1:15:00
+T4: 547 pass
+"""
