@@ -515,3 +515,95 @@ class Solution:
         else:
             ans.append(number)
         return "-".join(ans)
+
+
+# 1695 - Maximum Erasure Value - MEDIUM
+class Solution:
+    def maximumUniqueSubarray(self, nums: List[int]) -> int:
+        cnt = collections.defaultdict(int)
+        ans = s = l = 0
+        for r in range(len(nums)):
+            cnt[nums[r]] += 1
+            s += nums[r]
+            while cnt[nums[r]] > 1:
+                cnt[nums[l]] -= 1
+                s -= nums[l]
+                l += 1
+            ans = max(ans, s)
+        return ans
+
+
+# 1696 - Jump Game VI - MEDIUM
+class Solution:
+    # f[i] 表示从下标 0 跳到下标 i 的最大得分, nk 会 TLE
+    # 使用优先队列维护所有 (f[j], j) 二元组, 堆顶元素就是最优转移
+    # 对于当前的 i, 优先队列中的最大值的 j 可能已经不满足 max(0, i - k) <= j < i 的限制
+    # 并且随着 i 的增加, 原本不满足限制的 j 仍然是不满足限制的
+    # 每次在满足条件的, 最优的结果(堆顶)继续累加
+    # O(nlogn) / O(n)
+    def maxResult(self, nums: List[int], k: int) -> int:
+        q = [(-nums[0], 0)]
+        ans = nums[0]
+        for i in range(1, len(nums)):
+            while i - q[0][1] > k:
+                heapq.heappop(q)
+            ans = -q[0][0] + nums[i]
+            heapq.heappush(q, (-ans, i))
+        return ans
+
+    # 单调队列优化, 从队首到队尾的所有 j 值, 它们的下标严格单调递增, 而对应的 f[j] 值严格单调递减
+    # O(n) / O(k)
+    def maxResult(self, nums: List[int], k: int) -> int:
+        q = collections.deque([(nums[0], 0)])
+        ans = nums[0]
+        for i in range(1, len(nums)):
+            # 队首的 j 不满足限制
+            while i - q[0][1] > k:
+                q.popleft()
+            ans = q[0][0] + nums[i]
+            # 队尾的 j 不满足单调性
+            while q and ans >= q[-1][0]:
+                q.pop()
+            q.append((ans, i))
+        return ans
+
+
+# 1697 - Checking Existence of Edge Length Limited Paths - HARD
+class Solution:
+    # 离线的意思是, 对于一道题目会给出若干询问, 而这些询问是全部提前给出的
+    # 即不必按照询问的顺序依次对它们进行处理
+    # 而是可以按照某种顺序(例如全序、偏序(拓扑序), 树的 DFS 序等)
+    # 或者把所有询问看成一个整体(例如整体二分, 莫队算法等)进行处理
+    # O(mlogm + qlogq + (m + q)logn) / O(m + q), m = len(edge)
+    def distanceLimitedPathsExist(
+        self, n: int, edgeList: List[List[int]], queries: List[List[int]]
+    ) -> List[bool]:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+
+            def find(self, x: int) -> int:
+                """path compression"""
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                """x's root = y"""
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                return
+
+        uf = UnionFind(n)
+        edgeList.sort(key=lambda x: x[2])
+        j = 0
+        ans = [False] * len(queries)
+        for i, (x, y, q) in sorted(enumerate(queries), key=lambda x: x[1][2]):
+            while j < len(edgeList) and edgeList[j][2] < q:
+                uf.union(edgeList[j][0], edgeList[j][1])
+                j += 1
+            ans[i] = uf.find(x) == uf.find(y)
+        return ans
