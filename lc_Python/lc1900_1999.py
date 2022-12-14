@@ -60,6 +60,39 @@ class Solution:
         return nums
 
 
+# 1935 - Maximum Number of Words You Can Type - EASY
+class Solution:
+    def canBeTypedWords(self, text: str, brokenLetters: str) -> int:
+        b = set(brokenLetters)
+        return sum(1 - any(c in b for c in w) for w in text.split())
+
+
+# 1945 - Sum of Digits of String After Convert - EASY
+class Solution:
+    def getLucky(self, s: str, k: int) -> int:
+        num = "".join(str(ord(c) - ord("a") + 1) for c in s)
+        while k:
+            new = 0
+            for c in num:
+                new += int(c)
+            num = str(new)
+            k -= 1
+        return int(num)
+
+
+# 1946 - Largest Number After Mutating Substring - MEDIUM
+class Solution:
+    def maximumNumber(self, num: str, change: List[int]) -> str:
+        num = list(map(int, num))
+        for i in range(len(num)):
+            if change[num[i]] > num[i]:
+                while i < len(num) and change[num[i]] >= num[i]:
+                    num[i] = change[num[i]]
+                    i += 1
+                break
+        return "".join(str(v) for v in num)
+
+
 # 1979 - Find Greatest Common Divisor of Array - EASY
 class Solution:
     def findGCD(self, nums: List[int]) -> int:
