@@ -591,6 +591,79 @@ class Solution:
         return ans
 
 
+# 2078 - Two Furthest Houses With Different Colors - EASY
+class Solution:
+    # O(n**2) / O(n)
+    def maxDistance(self, colors: List[int]) -> int:
+        ans = 0
+        d = {}
+        for i, v in enumerate(colors):
+            if v not in d:
+                d[v] = [i, i]
+            else:
+                d[v][1] = i
+        for c1, v1 in d.items():
+            for c2, v2 in d.items():
+                if c1 == c2:
+                    continue
+                ans = max(
+                    ans,
+                    abs(v1[0] - v2[1]),
+                    abs(v1[1] - v2[0]),
+                )
+        return ans
+
+    # O(n**2) / O(1)
+    def maxDistance(self, c: List[int]) -> int:
+        ans = 0
+        for i in range(len(c) - 1):
+            for j in range(i + 1, len(c)):
+                if c[i] != c[j] and j - i > ans:
+                    ans = j - i
+        return ans
+
+    # O(n) / O(1)
+    def maxDistance(self, colors: List[int]) -> int:
+        n = len(colors)
+        if colors[0] != colors[-1]:
+            return n - 1
+        l = 1
+        r = n - 1
+        while colors[l] == colors[0]:
+            l += 1
+        while colors[r] == colors[-1]:
+            r -= 1
+        return max(n - 1 - l, r)
+
+
+# 2079 - Watering Plants - MEDIUM
+class Solution:
+    def wateringPlants(self, plants: List[int], capacity: int) -> int:
+        c = capacity
+        ans = 0
+        for i, p in enumerate(plants):
+            if c < p:
+                c = capacity
+                ans += i * 2
+            ans += 1
+            c -= p
+        return ans
+
+
+# 2080 - Range Frequency Queries - MEDIUM
+class RangeFreqQuery:
+    # O(n + qlogn) / O(n)
+    def __init__(self, arr: List[int]):
+        self.d = collections.defaultdict(list)
+        for i, v in enumerate(arr):
+            self.d[v].append(i)
+
+    def query(self, left: int, right: int, value: int) -> int:
+        l = bisect.bisect_left(self.d[value], left)
+        r = bisect.bisect_right(self.d[value], right)
+        return r - l
+
+
 # 2085 - Count Common Words With One Occurrence - EASY
 class Solution:
     def countWords(self, words1: List[str], words2: List[str]) -> int:
