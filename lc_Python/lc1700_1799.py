@@ -307,6 +307,73 @@ class Solution:
         return True
 
 
+# 1753 - Maximum Score From Removing Stones - MEDIUM
+class Solution:
+    # O(nlogn) / O(1)
+    def maximumScore(self, a: int, b: int, c: int) -> int:
+        h = sorted([-a, -b, -c])
+        ans = 0
+        while len(h) > 1:
+            x = -heapq.heappop(h) - 1
+            y = -heapq.heappop(h) - 1
+            ans += 1
+            if x:
+                heapq.heappush(h, -x)
+            if y:
+                heapq.heappush(h, -y)
+        return ans
+
+    # O(1) / O(1)
+    def maximumScore(self, a: int, b: int, c: int) -> int:
+        arr = sorted([a, b, c])
+        if arr[0] + arr[1] <= arr[2]:
+            return arr[0] + arr[1]
+        return sum(arr) // 2
+
+
+# 1754 - Largest Merge Of Two Strings - MEDIUM
+class Solution:
+    # O(m**2 + n**2) / O(m**2 + n**2)
+    def largestMerge(self, word1: str, word2: str) -> str:
+        if word1 >= word2 and word2 > "":
+            return word1[0] + self.largestMerge(word1[1:], word2)
+        if word2 >= word1 and word1 > "":
+            return word2[0] + self.largestMerge(word1, word2[1:])
+        return word1 + word2
+
+    # O(m**2 + n**2) / O(1)
+    def largestMerge(self, word1: str, word2: str) -> str:
+        ans = ""
+        i = j = 0
+        m = len(word1)
+        n = len(word2)
+        while i < m and j < n:
+            # k = 0
+            # while i + k < m and j + k < n and word1[i + k] == word2[j + k]:
+            #     k += 1
+            # if j + k == n or i + k < m and word1[i + k] > word2[j + k]:
+            #     ans += word1[i]
+            #     i += 1
+            # else:
+            #     ans += word2[j]
+            #     j += 1
+
+            if word1[i:] > word2[j:]:
+                ans += word1[i]
+                i += 1
+            else:
+                ans += word2[j]
+                j += 1
+
+        while i < m:
+            ans += word1[i]
+            i += 1
+        while j < n:
+            ans += word2[j]
+            j += 1
+        return ans
+
+
 # 1758 - Minimum Changes To Make Alternating Binary String - EASY
 class Solution:
     # O(n) / O(n)
@@ -364,6 +431,21 @@ class Solution:
                 s1 = self.longestNiceSubstring(s[i + 1 :])
                 return max(s0, s1, key=len)
         return s
+
+
+# 1764 - Form Array by Concatenating Subarrays of Another Array - MEDIUM
+class Solution:
+    # O(nm) / O(1)
+    def canChoose(self, groups: List[List[int]], nums: List[int]) -> bool:
+        i = j = 0
+        while i < len(groups) and j < len(nums):
+            g = groups[i]
+            if g == nums[j : j + len(g)]:
+                i += 1
+                j += len(g)
+            else:
+                j += 1
+        return i == len(groups)
 
 
 # 1765 - Map of Highest Peak - MEDIUM
