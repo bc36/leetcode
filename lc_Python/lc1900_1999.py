@@ -93,6 +93,75 @@ class Solution:
         return "".join(str(v) for v in num)
 
 
+# 1957 - Delete Characters to Make Fancy String - EASY
+class Solution:
+    def makeFancyString(self, s: str) -> str:
+        ans = ""
+        for c, it in itertools.groupby(s):
+            l = list(it)
+            if len(l) > 2:
+                ans += c * 2
+            else:
+                ans += c * len(l)
+        return ans
+
+
+# 1961 - Check If String Is a Prefix of Array - EASY
+class Solution:
+    def isPrefixString(self, s: str, words: List[str]) -> bool:
+        ans = ""
+        i = 0
+        while i < len(words) and len(ans) < len(s):
+            ans += words[i]
+            i += 1
+        return ans == s
+
+
+# 1971 - Find if Path Exists in Graph - EASY
+class Solution:
+    def validPath(
+        self, n: int, edges: List[List[int]], source: int, destination: int
+    ) -> bool:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        q = [source]
+        vis = [False] * n
+        vis[source] = True
+        while q:
+            new = []
+            for x in q:
+                for y in g[x]:
+                    if y == destination:
+                        return True
+                    if not vis[y]:
+                        new.append(y)
+                        vis[y] = True
+            q = new
+        return vis[destination]
+
+    def validPath(
+        self, n: int, edges: List[List[int]], source: int, destination: int
+    ) -> bool:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        vis = [False] * n
+
+        def dfs(x: int):
+            if x == destination:
+                return True
+            vis[x] = True
+            for y in g[x]:
+                if not vis[y] and dfs(y):
+                    return True
+            return False
+
+        return dfs(source)
+
+
 # 1979 - Find Greatest Common Divisor of Array - EASY
 class Solution:
     def findGCD(self, nums: List[int]) -> int:
