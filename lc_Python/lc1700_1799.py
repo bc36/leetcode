@@ -1,5 +1,6 @@
-from typing import List
-import heapq, collections, itertools, functools, math
+import bisect, collections, functools, math, itertools, heapq, string, operator
+from typing import List, Optional
+import sortedcontainers
 
 
 # 1700 - Number of Students Unable to Eat Lunch - EASY
@@ -405,6 +406,36 @@ class Solution:
             if c != str(i % 2):
                 x += 1
         return min(x, len(s) - x)
+
+
+# 1760 - Minimum Limit of Balls in a Bag - MEDIUM
+class Solution:
+    def minimumSize(self, nums: List[int], maxOperations: int) -> int:
+        def check(x: int) -> int:
+            t = 0
+            for v in nums:
+                t += (v - 1) // x
+            return t <= maxOperations
+
+        l = 1
+        r = max(nums)
+        while l < r:
+            m = (l + r) // 2
+            if check(m):
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    def minimumSize(self, nums: List[int], maxOperations: int) -> int:
+        return (
+            bisect.bisect_left(
+                range(1, max(nums) + 1),
+                x=True,
+                key=lambda m: sum((v - 1) // m for v in nums) <= maxOperations,
+            )
+            + 1
+        )
 
 
 # 1762 - Buildings With an Ocean View - MEDIUM
