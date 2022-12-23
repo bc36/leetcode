@@ -1119,3 +1119,8 @@ WA: T3(1), T4(1)
 FT: 1:15:00
 T4: 547 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-324/
+# 768 / https://leetcode.cn/contest/weekly-contest-324/problems/add-edges-to-make-degrees-of-all-nodes-even/
+# 分类讨论 + 枚举

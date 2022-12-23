@@ -1,5 +1,5 @@
 import bisect, collections, functools, math, itertools, heapq, string, operator
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import sortedcontainers
 
 
@@ -164,3 +164,166 @@ class Solution:
                         grid[nx][ny] = 0
             ans[i] = cnt
         return ans
+
+
+# 2506 - Count Pairs Of Similar Strings - EASY
+class Solution:
+    def similarPairs(self, words: List[str]) -> int:
+        d = collections.defaultdict(int)
+        ans = 0
+        for w in words:
+            m = 0
+            for c in w:
+                m |= 1 << (ord(c) - ord("a"))
+            ans += d[m]
+            d[m] += 1
+        return ans
+
+    def similarPairs(self, words: List[str]) -> int:
+        d = collections.defaultdict(int)
+        ans = 0
+        for w in words:
+            s = "".join(sorted(list(set(w))))
+            ans += d[s]
+            d[s] += 1
+        return ans
+
+
+# 2507 - Smallest Value After Replacing With Sum of Prime Factors - MEDIUM
+class Solution:
+    # O(n**0.5) / O(1)
+    def smallestValue(self, n: int) -> int:
+        while True:
+            ori = n
+            s = 0
+            i = 2
+            while i * i <= n:
+                while n % i == 0:
+                    s += i
+                    n //= i
+                i += 1
+            if n > 1:
+                s += n
+            if ori == s:
+                return ori
+            n = s
+
+
+# TODO 线性欧拉筛
+n = 100000
+min_prime, primes = [*range(n + 1)], []
+for x in range(2, n):
+    if min_prime[x] == x:
+        primes.append(x)
+    for p in primes:
+        if p > min_prime[x] or x * p > n:
+            break
+        min_prime[x * p] = p
+
+
+def calc(n: int, res=0) -> int:
+    while n > 1:
+        res += min_prime[n]
+        n //= min_prime[n]
+    return res
+
+
+def gen(x):
+    while True:
+        yield x
+        x = calc(x)
+
+
+class Solution:
+    def smallestValue(self, n: int) -> int:
+        return next(a for a, b in pairwise(gen(n)) if a == b)
+
+
+# 2508 - Add Edges to Make Degrees of All Nodes Even - HARD
+class Solution:
+    def isPossible(self, n: int, edges: List[List[int]]) -> bool:
+        g = collections.defaultdict(set)
+        for x, y in edges:
+            g[x].add(y)
+            g[y].add(x)
+        arr = list(k for k, v in g.items() if len(v) & 1)
+        if len(arr) == 0:
+            return True
+        elif len(arr) == 2:
+            a, b = arr
+            if b not in g[a]:
+                return True
+            for i in range(1, n + 1):
+                if i != a and i != b and a not in g[i] and b not in g[i]:
+                    return True
+        elif len(arr) == 4:
+            a, b, c, d = arr
+            if a not in g[b] and c not in g[d]:
+                return True
+            if a not in g[c] and b not in g[d]:
+                return True
+            if a not in g[d] and b not in g[c]:
+                return True
+        return False
+
+    # require Python >= 3.10
+    # def isPossible(self, n: int, edges: List[List[int]]) -> bool:
+    #     g = [set() for _ in range(n + 1)]
+    #     for x, y in edges:
+    #         g[x].add(y)
+    #         g[y].add(x)
+    #     arr = [v for v in range(1, n + 1) if len(g[v]) & 1]
+    #     match len(arr):
+    #         case 0:
+    #             return True
+    #         case 2:
+    #             if arr[0] not in g[arr[1]]:
+    #                 return True
+    #             else:
+    #                 cannot = g[arr[0]] | g[arr[1]] | {*arr}
+    #                 return any(v not in cannot for v in range(1, n + 1))
+    #         case 4: return any(a not in g[b] and c not in g[d] for a, b, c, d in itertools.permutations(arr))
+    #         case _: return False
+
+
+# 2509 - Cycle Length Queries in a Tree - HARD
+class Solution:
+    # O(qn) / O(q)
+    def cycleLengthQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        def lca(x: int, y: int):
+            t = 0
+            while x != y:
+                if x > y:
+                    x //= 2
+                else:
+                    y //= 2
+                t += 1
+            return t + 1
+
+        return [lca(x, y) for x, y in queries]
+
+    # 去除节点编号的二进制表示相同的部分
+    def cycleLengthQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        def calc(q: Tuple[int, int]):
+            a, b = map(lambda x: [x >> i for i in range(x.biq_length())], q)
+            while a and b and a[-1] == b[-1]:
+                a.pop()
+                b.pop()
+            return len(a) + len(b) + 1
+
+        return list(map(calc, queries))
+
+    # O(q) / O(1), 节点编号的二进制的长度恰好等于节点深度
+    def cycleLengthQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        # x <= y, d = x y深度之差
+        # y 上跳之后 -> x y 在同一层了
+        #   x == y: d + 1
+        #   x != y: d + 2 * 深度 L (即二进制长度) + 1
+        def calc(q: Tuple[int, int]):
+            x, y = q
+            if x > y:
+                x, y = y, x
+            d = y.bit_length() - x.bit_length()
+            return d + (x ^ (y >> d)).bit_length() * 2 + 1
+
+        return list(map(calc, queries))
