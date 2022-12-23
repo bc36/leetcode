@@ -54,6 +54,8 @@ isbn: 978-7-83009-313-6
 
 * `x != y != z` 表现为 `x != y and y != z`, 而不是 `x != b and x != z and b != z`, 所以 `x < y > z` 是有可能的, [6.10. Comparisons](https://docs.python.org/3/reference/expressions.html#comparisons)
 
+* quotes in type hint, `def lca(root: 'TreeNode')`, [PEP 484](https://peps.python.org/pep-0484/#forward-references)
+
 * [Glossary](https://docs.python.org/3/glossary.html)
 
 

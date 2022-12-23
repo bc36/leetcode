@@ -50,6 +50,12 @@ class Solution:
         return ans
 
 
+# 2011 - Final Value of Variable After Performing Operations - EASY
+class Solution:
+    def finalValueAfterOperations(self, operations: List[str]) -> int:
+        return sum(1 if "+" in v else -1 for v in operations)
+
+
 # 2013 - Detect Squares - MEDIUM
 class DetectSquares:
     def __init__(self):

@@ -863,3 +863,112 @@ class Solution:
                 elif a > int(c) > b:
                     b = int(c)
         return b
+
+
+# 1799 - Maximize Score After N Operations - HARD
+class Solution:
+    # 2400 ms
+    def maxScore(self, nums: List[int]) -> int:
+        def gcd(x: int, y: int) -> int:
+            while y:
+                x, y = y, x % y
+            return x
+
+        # 1600 ms
+        # d = collections.defaultdict(dict)
+        # for i in range(len(nums)):
+        #     for j in range(i + 1, len(nums)):
+        #         g = gcd(nums[i], nums[j])
+        #         d[nums[i]][nums[j]] = g
+        #         d[nums[j]][nums[i]] = g
+
+        @functools.lru_cache(None)
+        def dfs(t: tuple) -> int:
+            m = 0
+            l = list(t)
+            for i in range(len(l)):
+                for j in range(i + 1, len(l)):
+                    new = l[:]
+                    new.pop(j)
+                    new.pop(i)
+                    m = max(m, len(l) // 2 * gcd(l[i], l[j]) + dfs(tuple(new)))
+                    # m = max(m, len(l) // 2 * d[l[i]][l[j]] + dfs(tuple(new)))
+            return m
+
+        return dfs(tuple(nums))
+
+    # O(2**n * n**2 + logU * n**2) / O(2**n + n**2), 1500 ms, U = max(nums)
+    def maxScore(self, nums: List[int]) -> int:
+        def gcd(x: int, y: int) -> int:
+            while y:
+                x, y = y, x % y
+            return x
+
+        n = len(nums)
+        g = [[0] * n for _ in range(n)]
+        for i in range(n):
+            for j in range(i + 1, n):
+                g[i][j] = gcd(nums[i], nums[j])
+        f = [0] * (1 << n)
+        for k in range(1 << n):
+            cnt = bin(k).count("1")
+            if cnt % 2 == 0:
+                for i in range(n):
+                    if (k >> i) & 1:
+                        for j in range(i + 1, n):
+                            if (k >> j) & 1:
+                                f[k] = max(
+                                    f[k],
+                                    f[k ^ (1 << i) ^ (1 << j)] + cnt // 2 * g[i][j],
+                                )
+        return f[(1 << n) - 1]
+
+    def maxScore(self, nums: List[int]) -> int:
+        def gcd(x: int, y: int) -> int:
+            while y:
+                x, y = y, x % y
+            return x
+
+        @functools.lru_cache(None)
+        def dfs(mask: int, k: int) -> int:
+            if k == len(nums) // 2 + 1:
+                return 0
+            r = 0
+            for i in range(len(nums)):
+                if mask & 1 << i:
+                    continue
+                for j in range(i + 1, len(nums)):
+                    if mask & 1 << j:
+                        continue
+                    r = max(
+                        r,
+                        k * gcd(nums[i], nums[j]) + dfs(mask | 1 << i | 1 << j, k + 1),
+                    )
+            return r
+
+        return dfs(0, 1)
+
+    def maxScore(self, nums: List[int]) -> int:
+        def gcd(x: int, y: int) -> int:
+            while y:
+                x, y = y, x % y
+            return x
+
+        @functools.lru_cache(None)
+        def dfs(mask: int, k: int) -> int:
+            if k == len(nums) // 2 + 1:
+                return 0
+            r = 0
+            for i in range(len(nums)):
+                if mask & 1 << i:
+                    continue
+                for j in range(i + 1, len(nums)):
+                    if mask & 1 << j:
+                        continue
+                    r = max(
+                        r,
+                        k * gcd(nums[i], nums[j]) + dfs(mask ^ 1 << i ^ 1 << j, k + 1),
+                    )
+            return r
+
+        return dfs(0, 1)
