@@ -18,7 +18,6 @@ func max(a, b int) int {
 	}
 	return b
 }
-
 func min(a, b int) int {
 	if a < b {
 		return a
@@ -30,11 +29,13 @@ type ListNode struct {
 	Val  int
 	Next *ListNode
 }
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
 	Right *TreeNode
 }
+
 type Node struct {
 	Val   int
 	Prev  *Node
@@ -42,72 +43,65 @@ type Node struct {
 	Child *Node
 }
 
+// 1 - Two Sum - EASY
+func twoSum(nums []int, target int) []int {
+	m := map[int]int{}
+	for i, v := range nums {
+		if j, ok := m[target-v]; ok {
+			return []int{i, j}
+		}
+		m[v] = i
+	}
+	return nil
+}
+
 // 3 - Longest Substring Without Repeating Characters - MEDIUM
-// sliding window + hashmap
 func lengthOfLongestSubstring(s string) int {
-	// to memory whether the char has been shown. key:char, value:index of char
-	existCh := make(map[byte]int)
-	ans, length := 0, 0
-	for i, j := 0, 0; j < len(s); j++ {
-		// no repeated char
-		if _, ok := existCh[s[j]]; !ok {
-			length++
-			existCh[s[j]] = j
-			if length > ans {
-				ans = length
-			}
+	var exist [256]int // 0: not repeated / 1: repeated
+	ans, l, r := 0, 0, 0
+	for r < len(s) {
+		if exist[s[r]-'a'] == 0 {
+			exist[s[r]-'a']++
+			r++
 		} else {
-			// find repeated char, remove elements in hashmap
-			// until the index of repeated char(included)
-			// i = (index of repeated char + 1)
-			for i <= existCh[s[j]] {
-				delete(existCh, s[i])
-				i++
-			}
-			length = j - i + 1
-			// the new position of the repeated char
-			existCh[s[j]] = j
+			exist[s[l]-'a']--
+			l++
+		}
+		if r-l > ans {
+			ans = r - l
 		}
 	}
 	return ans
 }
 
-// byte - 'a' = position -> index
-func lengthOfLongestSubstring1(s string) int {
-	if len(s) == 0 {
-		return 0
-	}
-	// 0: not repeated / 1: repeated
-	var exist [256]int
-	result, left, right := 0, 0, 0
-	for right < len(s) {
-		if exist[s[right]-'a'] == 0 {
-			exist[s[right]-'a']++
-			right++
-		} else {
-			exist[s[left]-'a']--
-			left++
+func _(s string) int {
+	l, r, ans := 0, 0, 0
+	pre := make(map[byte]int, len(s))
+	for r < len(s) {
+		if p, ok := pre[s[r]]; ok && p >= l {
+			l = p + 1
 		}
-		if right-left > result {
-			result = right - left
-		}
+		pre[s[r]] = r
+		ans = max(ans, r-l+1)
+		r++
 	}
-	return result
+	return ans
 }
 
-// sliding window + hashmap
-func lengthOfLongestSubstring2(s string) int {
-	left, right, ret := 0, 0, 0
-	indexes := make(map[byte]int, len(s))
-	for right < len(s) {
-		if idx, ok := indexes[s[right]]; ok && idx >= left {
-			left = idx + 1
+func _(s string) int {
+	m := map[byte]int{}
+	ans, l, n := 0, 0, len(s)
+	for r := 0; r < n; r++ {
+		for m[s[r]] > 0 {
+			m[s[l]]--
+			l++
 		}
-		indexes[s[right]] = right
-		right++
-		ret = max(ret, right-left)
+		m[s[r]]++
+		if r-l+1 > ans {
+			ans = r - l + 1
+		}
 	}
-	return ret
+	return ans
 }
 
 // 50 - Pow(x, n) - MEDIUM
