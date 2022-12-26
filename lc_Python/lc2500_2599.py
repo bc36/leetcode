@@ -327,3 +327,196 @@ class Solution:
             return d + (x ^ (y >> d)).bit_length() * 2 + 1
 
         return list(map(calc, queries))
+
+
+# 2511 - Maximum Enemy Forts That Can Be Captured - EASY
+class Solution:
+    def captureForts(self, forts: List[int]) -> int:
+        p = ans = t = 0
+        for v in forts:
+            if v == 0:
+                t += 1
+            elif v == 1:
+                if p < 0:
+                    ans = max(ans, t)
+                p = 1
+                t = 0
+            else:
+                if p > 0:
+                    ans = max(ans, t)
+                p = -1
+                t = 0
+        return ans
+
+
+# 2512 - Reward Top K Students - MEDIUM
+class Solution:
+    def topStudents(
+        self,
+        positive_feedback: List[str],
+        negative_feedback: List[str],
+        report: List[str],
+        student_id: List[int],
+        k: int,
+    ) -> List[int]:
+        p = set(positive_feedback)
+        n = set(negative_feedback)
+        arr = []
+        for i, r in enumerate(report):
+            s = 0
+            for w in r.split():
+                if w in p:
+                    s += 3
+                if w in n:
+                    s -= 1
+            arr.append((s, -student_id[i]))
+        return [-i for _, i in sorted(arr, reverse=True)[:k]]
+
+    def topStudents(
+        self,
+        positive_feedback: List[str],
+        negative_feedback: List[str],
+        report: List[str],
+        student_id: List[int],
+        k: int,
+    ) -> List[int]:
+        p = set(positive_feedback)
+        n = set(negative_feedback)
+        s = collections.defaultdict(int)
+        for i, r in zip(student_id, report):
+            for w in r.split():
+                if w in p:
+                    s[i] += 3
+                if w in n:
+                    s[i] -= 1
+        return sorted(s.keys(), key=lambda x: (-s[x], x))[:k]
+
+
+# 2513 - Minimize the Maximum of Two Arrays - MEDIUM
+class Solution:
+    def minimizeSet(
+        self, divisor1: int, divisor2: int, uniqueCnt1: int, uniqueCnt2: int
+    ) -> int:
+        def check(m: int):
+            u1 = uniqueCnt1
+            u2 = uniqueCnt2
+            x = m // divisor1
+            y = m // divisor2
+            z = m // lcm
+            arr2 = x - z  # 只有 1 不可用, 加入 arr2
+            arr1 = y - z  # 只有 2 不可用, 加入 arr1
+            can = m - x - y + z  # 都可用
+            u1 = max(u1 - arr1, 0)
+            u2 = max(u2 - arr2, 0)
+            return u1 + u2 <= can
+
+        l = 1
+        r = 2 * 10**9
+        lcm = divisor1 * divisor2 // math.gcd(divisor1, divisor2)
+        while l < r:
+            m = (l + r) // 2
+            if check(m):
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    def minimizeSet(
+        self, divisor1: int, divisor2: int, uniqueCnt1: int, uniqueCnt2: int
+    ) -> int:
+        lcm = math.lcm(divisor1, divisor2)
+
+        def check(m: int) -> bool:
+            arr1 = max(uniqueCnt1 - m // divisor2 + m // lcm, 0)
+            arr2 = max(uniqueCnt2 - m // divisor1 + m // lcm, 0)
+            common = m - m // divisor1 - m // divisor2 + m // lcm
+            return common >= arr1 + arr2
+
+        return bisect.bisect_left(range((uniqueCnt1 + uniqueCnt2) * 2), True, key=check)
+
+    def minimizeSet(
+        self, divisor1: int, divisor2: int, uniqueCnt1: int, uniqueCnt2: int
+    ) -> int:
+        arr = []
+        p = uniqueCnt1 // (divisor1 - 1)
+        if uniqueCnt1 % (divisor1 - 1) == 0:
+            v = divisor1 * p - 1
+        else:
+            v = divisor1 * p + uniqueCnt1 % (divisor1 - 1)
+        arr.append(v)
+
+        p = uniqueCnt2 // (divisor2 - 1)
+        if uniqueCnt2 % (divisor2 - 1) == 0:
+            v = divisor2 * p - 1
+        else:
+            v = divisor2 * p + uniqueCnt2 % (divisor2 - 1)
+        arr.append(v)
+
+        div = math.lcm(divisor1, divisor2)
+        cnt = uniqueCnt1 + uniqueCnt2
+        p = cnt // (div - 1)
+        if cnt % (div - 1) == 0:
+            v = div * p - 1
+        else:
+            v = div * p + cnt % (div - 1)
+        arr.append(v)
+
+        return max(arr)
+
+    def minimizeSet(
+        self, divisor1: int, divisor2: int, uniqueCnt1: int, uniqueCnt2: int
+    ) -> int:
+        a = (uniqueCnt1 - 1) * divisor1 // (divisor1 - 1) + 1
+        b = (uniqueCnt2 - 1) * divisor2 // (divisor2 - 1) + 1
+        lcm = math.lcm(divisor1, divisor2)
+        c = lcm * (uniqueCnt1 + uniqueCnt2 - 1) // (lcm - 1) + 1
+        return max(a, b, c)
+
+
+# 2514 - Count Anagrams - HARD
+class Solution:
+    def countAnagrams(self, s: str) -> int:
+        def perm_count_with_duplicate(s: str) -> int:
+            """
+            return 含重复元素的列表 s, 全排列的种类
+            假设长度 n, 含 x 种元素, 分别计数为[c1, c2, c3 ... cx]
+            则答案是C(n, c1) * C(n-c1, c2) * C(n-c1-c2, c3) * ... * C(cx, cx)
+            """
+            n = len(s)
+            ans = 1
+            for v in collections.Counter(s).values():
+                ans = ans * math.comb(n, v) % mod
+                n -= v
+            return ans
+
+        mod = 10**9 + 7
+        ans = 1
+        for w in s.split():
+            ans = (ans * perm_count_with_duplicate(w)) % mod
+        return ans
+
+
+mod = 10**9 + 7
+fac = [1]
+for i in range(1, 10**5 + 1):
+    fac.append(fac[-1] * i % mod)
+
+
+class Solution:
+    # 我们只需要考虑一个最终可行的方案会重复计数多少次即可
+    # 对有相同字母的位置进行排序, 不改变单词本身
+    # 因此实际上每一个最终可行的方案会被重复计数 cnta! * cntb! * ... * cntz! 次 (考虑每种字母的不改变单词本身的排列)
+    # 总方案数为 len(s)! // (cnta! * cntb! * ... * cntz!)
+
+    # 如果有 cntC 个位置同时变成了某一未出现过的字符 C, 那么这些位置在排列中的顺序就无法区分了
+    # 答案会变成原先的 1 // cntC!, 故答案为 n! // (cntA! * cntB! * ...)
+    def countAnagrams(self, s: str) -> int:
+        ans = 1
+        for w in s.split():
+            cnt = collections.Counter(w)
+            ans *= fac[len(w)]
+            ans %= mod
+            for v in cnt.values():
+                ans *= pow(fac[v], -1, mod)
+                ans %= mod
+        return ans

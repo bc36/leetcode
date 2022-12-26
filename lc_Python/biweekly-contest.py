@@ -513,3 +513,10 @@ T4: 840 pass
 # https://leetcode.cn/contest/biweekly-contest-93/
 # 194 / https://leetcode.cn/contest/biweekly-contest-93/problems/minimum-total-cost-to-make-arrays-unequal/
 # 分类讨论
+
+
+# https://leetcode.cn/contest/biweekly-contest-94/
+# 339 / https://leetcode.cn/contest/biweekly-contest-94/problems/minimize-the-maximum-of-two-arrays/
+# 二分 + 容斥原理 + lcm
+# 436 / https://leetcode.cn/contest/biweekly-contest-94/problems/count-anagrams/
+# 组合计数 / 逆元
