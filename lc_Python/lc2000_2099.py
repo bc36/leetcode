@@ -146,6 +146,31 @@ class Solution:
         return ans
 
 
+# 2027 - Minimum Moves to Convert String - EASY
+class Solution:
+    def minimumMoves(self, s: str) -> int:
+        ans = t = 0
+        for c in s:
+            if c == "X":
+                t += 1
+            else:
+                if t > 0:
+                    t += 1
+            if t == 3:
+                t = 0
+                ans += 1
+        return ans + int(t > 0)
+
+    def minimumMoves(self, s: str) -> int:
+        covered = -1
+        ans = 0
+        for i, c in enumerate(s):
+            if c == "X" and i > covered:
+                ans += 1
+                covered = i + 2
+        return ans
+
+
 # 2028 - Find Missing Observations - MEDIUM
 class Solution:
     def missingRolls(self, rolls: List[int], mean: int, n: int) -> List[int]:

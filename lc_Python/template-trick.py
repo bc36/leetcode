@@ -27,6 +27,7 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     dfs
     dijkstra
     dp
+    inv - Modular Multiplicative Inverse
     low bit
     math related
     minimum cost flow
@@ -155,6 +156,49 @@ def countSpecialNumbers(n: int) -> int:
         return ans
 
     return dfs(0, 0, True, False)
+
+
+"""
+inv
+
+逆元: 
+在数论中, 如果 ab === 1 (mod p), 我们就说 a 和 b 在模 p 意义下互为乘法逆元, 记作 a = inv(b)
+inv(a) 其实可以看做模 p 意义下的 1 / a, 那么在模 p 意义下, a / b 就可以变形为 a * inv(b) (mod p)
+
+三种方法计算逆元: 拓展欧几里得(线性同余方程), 费马小定理, 线性递推
+"""
+
+
+def inv(a: int, p: int) -> int:
+    def exgcd(a: int, b: int, x: int, y: int) -> int:
+        # 扩展欧几里得算法只要求 gcd(a, p) = 1
+        if b == 0:
+            x = 1
+            y = 0
+            return a
+        d = exgcd(b, a % b, y, x)
+        y -= (a // b) * x
+        return d
+
+    x = y = 0
+    if exgcd(a, p, x, y) != -1:  # 无解的情形
+        return -1
+    return (x % p + p) % p
+
+
+def inv(a: int, p: int) -> int:
+    # 使用 费马小定理 需要限制 p 是一个素数
+    # inv(a) = a**(p-2) mod p
+    def qpow(a: int, n: int, p: int) -> int:
+        ans = 1
+        while n:
+            if n & 1:
+                ans = (ans * a) % p
+            a = (a * a) % p
+            n >>= 1
+        return ans
+
+    return qpow(a, p - 2, p)
 
 
 """low bit"""

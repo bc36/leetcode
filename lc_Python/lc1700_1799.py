@@ -260,6 +260,25 @@ class Solution:
         return "".join(ans)
 
 
+# 1739 - Building Boxes - HARD
+class Solution:
+    def minimumBoxes(self, n: int) -> int:
+        s = 0
+        k = 1
+        # 放满, 1, 1 + 2, 1 + 2 + 3, 1 + 2 + ... + k
+        while s + k * (k + 1) // 2 <= n:
+            s += k * (k + 1) // 2
+            k += 1
+        # 还有剩余, 从最低一层继续摆放, 假设摆放 m 个, 那么累计可摆放的盒子个数为 1 + 2 + 3 + ... + i >= m
+        ans = k * (k - 1) // 2
+        k = 1
+        while s < n:
+            ans += 1
+            s += k
+            k += 1
+        return ans
+
+
 # 1742 - Maximum Number of Balls in a Box - EASY
 class Solution:
     def countBalls(self, lowLimit: int, highLimit: int) -> int:
@@ -406,6 +425,26 @@ class Solution:
             if c != str(i % 2):
                 x += 1
         return min(x, len(s) - x)
+
+
+# 1759 - Count Number of Homogenous Substrings - MEDIUM
+class Solution:
+    def countHomogenous(self, s: str) -> int:
+        ans = 0
+        for _, g in itertools.groupby(s):
+            l = len(list(g))
+            ans += (l + 1) * l // 2
+        return ans % (10**9 + 7)
+
+    def countHomogenous(self, s: str) -> int:
+        ans = t = 1
+        for i in range(1, len(s)):
+            if s[i - 1] == s[i]:
+                t += 1
+            else:
+                t = 1
+            ans += t
+        return ans % (10**9 + 7)
 
 
 # 1760 - Minimum Limit of Balls in a Bag - MEDIUM
