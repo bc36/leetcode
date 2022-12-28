@@ -307,6 +307,47 @@ class Solution:
         return sum(k for k, v in collections.Counter(nums).items() if v == 1)
 
 
+# 1750 - Minimum Length of String After Deleting Similar Ends - MEDIUM
+class Solution:
+    def minimumLength(self, s: str) -> int:
+        dq = collections.deque()
+        for c, g in itertools.groupby(s):
+            dq.append((c, len(tuple(g))))
+        while dq:
+            if dq[0][0] == dq[-1][0]:
+                if len(dq) == 1:
+                    return 1 if dq.pop()[1] == 1 else 0
+                else:
+                    dq.pop()
+                    dq.popleft()
+            else:
+                break
+        return sum(v[1] for v in dq)
+
+    def minimumLength(self, s: str) -> int:
+        l = 0
+        r = len(s) - 1
+        while l < r and s[l] == s[r]:
+            while l + 1 < r and s[l] == s[l + 1]:
+                l += 1
+            while l < r - 1 and s[r - 1] == s[r]:
+                r -= 1
+            l += 1
+            r -= 1
+        return max(0, r - l + 1)
+
+    def minimumLength(self, s: str) -> int:
+        l = 0
+        r = len(s) - 1
+        while l < r and s[l] == s[r]:
+            c = s[l]
+            while l <= r and s[l] == c:
+                l += 1
+            while l <= r and s[r] == c:
+                r -= 1
+        return r - l + 1
+
+
 # 1752 - Check if Array Is Sorted and Rotated - EASY
 class Solution:
     # O(n**2) / O(n)
