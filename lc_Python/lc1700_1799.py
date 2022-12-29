@@ -188,6 +188,66 @@ class Solution:
         return ans
 
 
+# 1711 - Count Good Meals - MEDIUM
+class Solution:
+    global arr
+    arr = [2**i for i in range(22)]
+
+    # O(nlogC) / O(n), 21n
+    def countPairs(self, deliciousness: List[int]) -> int:
+        mod = 10**9 + 7
+        cnt = collections.defaultdict(int)
+        ans = 0
+        for v in deliciousness:
+            for t in arr:
+                ans += cnt[t - v]
+            ans %= mod
+            cnt[v] += 1
+        return ans
+
+    def countPairs(self, deliciousness: List[int]) -> int:
+        mod = 10**9 + 7
+        ans = 0
+        cnt = collections.Counter(deliciousness)
+        p = 1
+        for k in sorted(cnt):
+            if k == 0:
+                continue
+            while p < k:
+                p *= 2
+            ans += cnt[k] * cnt[p - k]
+            if k == p:  # 自身是一个 2 的幂次
+                ans += cnt[k] * (cnt[k] - 1) // 2
+            ans %= mod
+        return ans
+
+    def countPairs(self, deliciousness: List[int]) -> int:
+        def nextPower(x: int):
+            x -= 1
+            x |= x >> 1
+            x |= x >> 2
+            x |= x >> 4
+            x |= x >> 8
+            x |= x >> 16
+            return x + 1
+
+        mod = 10**9 + 7
+        cnt = collections.Counter(deliciousness)
+        ans = 0
+        # 由于每个数只遍历了最接近自己的 2 的次幂的组合, 所以不可能重复
+        # 比如说 1 + 3 = 4，只在 3 的时候计算, 3 + 5 = 8 只在 5 的时候计算
+        for k in cnt:
+            if k == 0:
+                continue
+            # k 的下一个 2 的幂次
+            p = nextPower(k)
+            ans += cnt[k] * cnt[p - k]
+            # 自身是一个 2 的幂次
+            if k == p:
+                ans += cnt[k] * (cnt[k] - 1) // 2
+        return ans % mod
+
+
 # 1716 - Calculate Money in Leetcode Bank - EASY
 class Solution:
     def totalMoney(self, n: int) -> int:
@@ -305,6 +365,51 @@ class Solution:
 
     def sumOfUnique(self, nums: List[int]) -> int:
         return sum(k for k, v in collections.Counter(nums).items() if v == 1)
+
+
+# 1749 - Maximum Absolute Sum of Any Subarray - MEDIUM
+class Solution:
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        ans = p = n = 0
+        for v in nums:
+            if v >= 0:
+                p += v
+                ans = max(ans, p)
+                n = min(0, n + v)
+            if v <= 0:
+                n += v
+                ans = max(ans, -n)
+                p = max(0, p + v)
+        return ans
+
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        ans = p = n = 0
+        for v in nums:
+            p = max(0, p + v)
+            n = min(0, n + v)
+            ans = max(ans, p, -n)
+        return ans
+
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        ans = p = n = 0
+        for v in nums:
+            p = p + v if p > 0 else v
+            n = n + v if n < 0 else v
+            ans = max(ans, abs(p), abs(n))
+        return ans
+
+    # 子数组和最大 -> 某两个位置(i, j)的前缀和的差值 最大 (i <= j)
+    # 子数组和最小 -> 某两个位置(i, j)的前缀和的差值 最小 (i <= j)
+    # 子数组和的 abs 最大 -> 某两个位置(i, j)的前缀和的差距 最大, i 和 j 相对位置随意
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        mx = mi = p = 0
+        for i in range(1, len(nums) + 1):
+            p += nums[i - 1]
+            if mx < p:
+                mx = p
+            if mi > p:
+                mi = p
+        return mx - mi
 
 
 # 1750 - Minimum Length of String After Deleting Similar Ends - MEDIUM

@@ -209,6 +209,43 @@ class Solution:
         return d[2] > d[1] + 2 or d[1] > d[2] + 2
 
 
+# 2032 - Two Out of Three - EASY
+class Solution:
+    def twoOutOfThree(
+        self, nums1: List[int], nums2: List[int], nums3: List[int]
+    ) -> List[int]:
+        a = set(nums1)
+        b = set(nums2)
+        c = set(nums3)
+        d = a.intersection(b)
+        e = a.intersection(c)
+        f = b.intersection(c)
+        return list(d.union(e).union(f))
+
+    def twoOutOfThree(
+        self, nums1: List[int], nums2: List[int], nums3: List[int]
+    ) -> List[int]:
+        return list(
+            (set(nums1) & set(nums2))
+            | (set(nums1) & set(nums3))
+            | (set(nums2) & set(nums3))
+        )
+
+    def twoOutOfThree(
+        self, nums1: List[int], nums2: List[int], nums3: List[int]
+    ) -> List[int]:
+        a = [False] * 101
+        b = [False] * 101
+        c = [False] * 101
+        for v in nums1:
+            a[v] = True
+        for v in nums2:
+            b[v] = True
+        for v in nums3:
+            c[v] = True
+        return list(i for i in range(101) if a[i] + b[i] + c[i] >= 2)
+
+
 # 2034 - Stock Price Fluctuation - MEDIUM
 class StockPrice:
     def __init__(self):
