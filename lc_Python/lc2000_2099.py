@@ -278,6 +278,12 @@ class StockPrice:
             heapq.heappop(self.minPrice)
 
 
+# 2037 - Minimum Number of Moves to Seat Everyone - EASY
+class Solution:
+    def minMovesToSeat(self, seats: List[int], students: List[int]) -> int:
+        return sum(abs(x - y) for x, y in zip(sorted(seats), sorted(students)))
+
+
 # 2038 - Remove Colored Pieces if Both Neighbors are the Same Color - MEDIUM
 class Solution:
     def winnerOfGame(self, c: str) -> bool:
@@ -344,6 +350,19 @@ class Solution:
                 s = d + d - (d - 1) % p[i]
             ans = max(ans, s)
         return ans
+
+
+# 2042 - Check if Numbers Are Ascending in a Sentence - EASY
+class Solution:
+    def areNumbersAscending(self, s: str) -> bool:
+        pre = -1
+        for w in s.split(" "):
+            if w[0].isdigit():
+                x = int(w)
+                if x <= pre:
+                    return False
+                pre = x
+        return True
 
 
 # 2043 - Simple Bank System - MEDIUM
