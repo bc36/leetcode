@@ -16,6 +16,34 @@ class Solution:
         return ans
 
 
+# 1801 - Number of Orders in the Backlog - MEDIUM
+class Solution:
+    def getNumberOfBacklogOrders(self, orders: List[List[int]]) -> int:
+        sell = []
+        buy = []
+        for v in orders:
+            if v[2] == 0:
+                while sell and v[1] and v[0] >= sell[0][0]:
+                    if sell[0][1] > v[1]:
+                        sell[0][1] -= v[1]
+                        v[1] = 0
+                    else:
+                        v[1] -= heapq.heappop(sell)[1]
+                if v[1] > 0:
+                    v[0] *= -1
+                    heapq.heappush(buy, v)
+            else:
+                while buy and v[1] and v[0] <= -buy[0][0]:
+                    if buy[0][1] > v[1]:
+                        buy[0][1] -= v[1]
+                        v[1] = 0
+                    else:
+                        v[1] -= heapq.heappop(buy)[1]
+                if v[1] > 0:
+                    heapq.heappush(sell, v)
+        return sum(v for _, v, _ in sell + buy) % 1000000007
+
+
 # 1805 - Number of Different Integers in a String - EASY
 class Solution:
     def numDifferentIntegers(self, word: str) -> int:
@@ -181,3 +209,27 @@ class Solution:
         for c in sentence:
             m |= 1 << (ord(c) - ord("a"))
         return m == (1 << 26) - 1
+
+
+# 1837 - Sum of Digits in Base K - EASY
+class Solution:
+    def sumBase(self, n: int, k: int) -> int:
+        x = 0
+        while n:
+            x += n % k
+            n //= k
+        return x
+
+
+# 1844 - Replace All Digits with Characters - EASY
+class Solution:
+    def replaceDigits(self, s: str) -> str:
+        return "".join(
+            chr(ord(s[i - 1]) + int(c)) if i & 1 else c for i, c in enumerate(s)
+        )
+
+    def replaceDigits(self, s: str) -> str:
+        arr = list(s)
+        for i in range(1, len(arr), 2):
+            arr[i] = chr(ord(arr[i - 1]) + int(arr[i]))
+        return "".join(arr)
