@@ -1,4 +1,4 @@
-import bisect, collections, functools, math, itertools, heapq, string, operator
+import bisect, collections, functools, math, itertools, heapq, string, operator, re
 from typing import List, Optional
 import sortedcontainers
 
@@ -44,6 +44,49 @@ class Solution:
         return sum(v for _, v, _ in sell + buy) % 1000000007
 
 
+# 1802 - Maximum Value at a Given Index in a Bounded Array - MEDIUM
+class Solution:
+    def maxValue(self, n: int, index: int, maxSum: int) -> int:
+        def calc(m: int) -> int:
+            s = 0
+            if index + 1 < m:  # index = m - 1
+                s += (m + m - index) * (index + 1) // 2
+            else:
+                s += (m + 1) * m // 2 + index - m + 1
+            if n - index < m:  # index = n - m
+                s += (m + m - (n - 1 - index)) * (n - index) // 2
+            else:
+                s += (m + 1) * m // 2 + n - index - m
+            return s - m
+
+        l = 0
+        r = maxSum
+        while l < r:
+            m = (l + r + 1) // 2
+            if calc(m) <= maxSum:
+                l = m
+            else:
+                r = m - 1
+
+            # 思考: 有什么区别?
+            # m = (l + r) // 2
+            # if calc(m) <= maxSum:
+            #     l = m + 1
+            # else:
+            #     r = m
+
+        return l
+
+        # 可以通过的代码
+        while l < r:
+            m = (l + r) // 2
+            if calc(m) <= maxSum:
+                l = m + 1
+            else:
+                r = m
+        return l + 1 if calc(l + 1) <= maxSum else l if calc(l) <= maxSum else l - 1
+
+
 # 1805 - Number of Different Integers in a String - EASY
 class Solution:
     def numDifferentIntegers(self, word: str) -> int:
@@ -60,6 +103,47 @@ class Solution:
 
     def numDifferentIntegers(self, word: str) -> int:
         return len(set(map(int, re.findall("\d+", word))))
+
+
+# 1806 - Minimum Number of Operations to Reinitialize a Permutation - MEDIUM
+class Solution:
+    def reinitializePermutation(self, n: int) -> int:
+        p = list(range(n))
+        a = [p[n // 2 + (i - 1) // 2] if i % 2 else p[i // 2] for i in range(n)]
+        t = 1
+        while a != p:
+            a = [a[n // 2 + (i - 1) // 2] if i % 2 else a[i // 2] for i in range(n)]
+            t += 1
+        return t
+
+
+# 1807 - Evaluate the Bracket Pairs of a String - MEDIUM
+class Solution:
+    def evaluate(self, s: str, knowledge: List[List[str]]) -> str:
+        d = dict(knowledge)
+        ans = ""
+        i = 0
+        while i < len(s):
+            if s[i] == "(":
+                k = ""
+                i += 1
+                while i < len(s) and s[i] != ")":
+                    k += s[i]
+                    i += 1
+                ans += d.get(k, "?")
+            else:
+                ans += s[i]
+            i += 1
+        return ans
+
+    def evaluate(self, s: str, knowledge: List[List[str]]) -> str:
+        d = dict(knowledge)
+        s = s.split("(")
+        for i in range(len(s)):
+            p = s[i].split(")")
+            if len(p) == 2:
+                s[i] = d.get(p[0], "?") + p[1]
+        return "".join(s)
 
 
 # 1812 - Determine Color of a Chessboard Square - EASY
