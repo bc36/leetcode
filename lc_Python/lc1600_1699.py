@@ -463,6 +463,38 @@ class Solution:
         return ans
 
 
+# 1658 - Minimum Operations to Reduce X to Zero - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def minOperations(self, nums: List[int], x: int) -> int:
+        t = sum(nums) - x
+        vis = {0: -1}  # vis[s] 表示前缀和为 s 的最小下标
+        ans = math.inf
+        s = 0
+        for r, v in enumerate(nums):
+            s += v
+            if s not in vis:
+                vis[s] = r
+            if s - t in vis:
+                l = vis[s - t]
+                ans = min(ans, len(nums) - (r - l))
+        return -1 if ans == math.inf else ans
+
+    # O(n) / O(1)
+    def minOperations(self, nums: List[int], x: int) -> int:
+        s = sum(nums)
+        l = 0
+        ans = math.inf
+        for r, v in enumerate(nums):
+            s -= v
+            while l <= r and s < x:
+                s += nums[l]
+                l += 1
+            if s == x:
+                ans = min(ans, len(nums) - (r - l + 1))
+        return -1 if ans == math.inf else ans
+
+
 # 1688 - Count of Matches in Tournament - EASY
 class Solution:
     def numberOfMatches(self, n: int) -> int:
