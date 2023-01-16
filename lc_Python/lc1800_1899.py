@@ -87,6 +87,117 @@ class Solution:
         return l + 1 if calc(l + 1) <= maxSum else l if calc(l) <= maxSum else l - 1
 
 
+# 1803 - Count Pairs With XOR in a Range - HARD
+class Solution:
+    # O(nlogU) / O(nlogU), U = max(nums) < 2**15, 5700 ms
+    def countPairs(self, nums: List[int], low: int, high: int) -> int:
+        class TrieNode:
+            def __init__(self) -> None:
+                self.ch = [None, None]
+                self.sum = 0
+
+        class Trie:
+            def __init__(self) -> None:
+                self.r = TrieNode()
+
+            def add(self, x: int) -> None:
+                root = self.r
+                for k in range(14, -1, -1):  # max_bit_length = 14
+                    b = x >> k & 1
+                    if not root.ch[b]:
+                        root.ch[b] = TrieNode()
+                    root = root.ch[b]
+                    root.sum += 1
+                return
+
+            # 表示有多少对数字的异或运算结果小于等于 lmt
+            def count(self, x: int, lmt: int) -> int:
+                res = 0
+                root = self.r
+                for k in range(14, -1, -1):
+                    b = x >> k & 1
+                    if lmt >> k & 1:
+                        if root.ch[b]:  # 因为题目是小于号, 所以只有 lmt 对应位为 1 才能计数
+                            res += root.ch[b].sum
+                        root = root.ch[b ^ 1]
+                    else:
+                        root = root.ch[b]
+                    if root is None:
+                        return res
+                res += root.sum  # 计算小于等于 lmt 和 小于 lmt 的区别, 上面已经避免了 root 为 None 的情况
+                return res
+
+        def f(lmt: int) -> int:
+            ans = 0
+            tree = Trie()
+            for i in range(1, len(nums)):
+                tree.add(nums[i - 1])
+                ans += tree.count(nums[i], lmt)
+            return ans
+
+        return f(high) - f(low - 1)
+
+    # O(nlogU) / O(nlogU), U = max(nums) < 2**15, 3600 ms
+    def countPairs(self, nums: List[int], low: int, high: int) -> int:
+        class Trie:
+            def __init__(self):
+                self.ch = [None, None]
+                self.cnt = 0
+
+            def add(self, x: int) -> None:
+                root = self
+                for k in range(14, -1, -1):
+                    b = x >> k & 1
+                    if root.ch[b] is None:
+                        root.ch[b] = Trie()
+                    root = root.ch[b]
+                    root.cnt += 1
+                return
+
+            # 统计有多少数对的异或值小于 lmt
+            def count(self, x: int, lmt: int) -> int:
+                root = self
+                ans = 0
+                for k in range(14, -1, -1):
+                    if root is None:
+                        return ans
+                    b = x >> k & 1
+                    if lmt >> k & 1:
+                        if root.ch[b]:
+                            ans += root.ch[b].cnt
+                        root = root.ch[b ^ 1]
+                    else:
+                        root = root.ch[b]
+                return ans
+
+        ans = 0
+        tree = Trie()
+        for x in nums:
+            ans += tree.count(x, high + 1) - tree.count(x, low)
+            tree.add(x)
+        return ans
+
+    # O(n + nlog(U/n)) / O(log(U/n)), U = max(nums), 350 ms
+    def countPairs(self, nums: List[int], low: int, high: int) -> int:
+        ans = 0
+        cnt = collections.Counter(nums)
+        high += 1
+        while high:
+            nxt = collections.Counter()
+            for k, v in cnt.items():
+                # high % 2 * cnt[(high - 1) ^ k] 相当于 cnt[(high - 1) ^ k] if high % 2 else 0
+                # ans += v * (high % 2 * cnt[(high - 1) ^ k] - low % 2 * cnt[(low - 1) ^ k])
+                if high & 1:
+                    ans += v * cnt[k ^ (high - 1)]
+                if low & 1:
+                    ans -= v * cnt[k ^ (low - 1)]
+                nxt[k >> 1] += v
+            cnt = nxt
+            low >>= 1
+            high >>= 1
+        return ans // 2
+
+
 # 1805 - Number of Different Integers in a String - EASY
 class Solution:
     def numDifferentIntegers(self, word: str) -> int:
@@ -209,6 +320,27 @@ class Solution:
 class Solution:
     def truncateSentence(self, s: str, k: int) -> str:
         return " ".join(s.split()[:k])
+
+
+# 1819 - Number of Different Subsequences GCDs - HARD
+class Solution:
+    # 对于数组 nums 的所有子序列, 其最大公约数一定不超过数组中的最大值 -> 考虑值域
+    # O(n + UlogU) / O(U)
+    def countDifferentSubsequenceGCDs(self, nums: List[int]) -> int:
+        ans = 0
+        mx = max(nums)
+        has = [False] * (mx + 1)
+        for v in nums:
+            has[v] = True
+        for i in range(1, mx + 1):
+            g = 0  # 0 和任何数 x 的最大公约数都是 x
+            for j in range(i, mx + 1, i):  # 枚举 i 的倍数
+                if has[j]:
+                    g = math.gcd(g, j)  # 更新最大公约数
+                    if g == i:  # 找到一个合法答案, g 无法继续减小
+                        ans += 1
+                        break
+        return ans
 
 
 # 1822 - Sign of the Product of an Array - EASY

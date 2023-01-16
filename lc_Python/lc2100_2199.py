@@ -1001,6 +1001,19 @@ class Solution:
         return sum(beans) - ans
 
 
+# 2180 - Count Integers With Even Digit Sum - EASY
+class Solution:
+    def countEven(self, num: int) -> int:
+        ans = 0
+        for x in range(1, num + 1):
+            s = 0
+            while x:
+                s += x % 10
+                x //= 10
+            ans += s % 2 == 0
+        return ans
+
+
 # 2185 - Counting Words With a Given Prefix - EASY
 class Solution:
     def prefixCount(self, words: List[str], pref: str) -> int:
