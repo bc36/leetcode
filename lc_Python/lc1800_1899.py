@@ -394,6 +394,109 @@ class Solution:
         return dp
 
 
+# 1825 - Finding MK Average - HARD
+class MKAverage:
+    def __init__(self, m: int, k: int):
+        self.m = m
+        self.k = k
+        self.s = 0
+        # 维护三个有序集合, 保存末尾最小/大的 k 个数, 以及中间剩余的数
+        self.low = sortedcontainers.SortedList()
+        self.middle = sortedcontainers.SortedList()
+        self.high = sortedcontainers.SortedList()
+        self.arr = (
+            collections.deque()
+        )  # len(arr) = len(low) + len(middle) + len(high), 保持插入顺序
+
+    def addElement(self, num: int) -> None:
+        self.arr.append(num)
+        # 按大小插入到对应集合
+        if self.low and self.low[-1] >= num:
+            self.low.add(num)
+        elif self.high and self.high[0] <= num:
+            self.high.add(num)
+        else:
+            self.middle.add(num)
+            self.s += num
+        # low / high 平衡到 middle, 每次插入一个数, 所以可以不用 while
+        if len(self.low) > self.k:
+            self.s += self.low[-1]
+            self.middle.add(self.low.pop())
+        if len(self.high) > self.k:
+            self.s += self.high[0]
+            self.middle.add(self.high.pop(0))
+        # 末尾序列总数超过 m, 依次查询应移除的数字在哪个集合中
+        if len(self.arr) > self.m:
+            x = self.arr.popleft()
+            if self.low.bisect_left(x) < self.k:
+                self.low.remove(x)
+            elif self.middle.bisect_left(x) < len(self.middle):
+                self.middle.remove(x)
+                self.s -= x
+            else:
+                self.high.remove(x)
+        # 删除最旧的数字后, 重新平衡三个集合, 这里因为在 arr 不足 m 时, 会有累积的不平衡, 所以需要使用 while
+        if len(self.arr) == self.m:
+            while len(self.low) < self.k:
+                self.s -= self.middle[0]
+                self.low.add(self.middle.pop(0))
+            while len(self.high) < self.k:
+                self.s -= self.middle[-1]
+                self.high.add(self.middle.pop())
+        return
+
+    def calculateMKAverage(self) -> int:
+        if len(self.arr) < self.m:
+            return -1
+        return self.s // (self.m - self.k * 2)
+
+
+class MKAverage:
+    def __init__(self, m: int, k: int):
+        self.m = m
+        self.k = k
+        self.s = 0
+        self.sl = None
+        self.arr = collections.deque()
+
+    def addElement(self, num: int) -> None:
+        self.arr.append(num)
+        if len(self.arr) == self.m:
+            # 初始化 sl
+            self.sl = sortedcontainers.SortedList(self.arr)
+            self.s = sum(self.sl[self.k : -self.k])
+
+        if len(self.arr) > self.m:
+            # 加入后对区间和的影响, num 会把 sortedList 里的元素挤到左边或者右边
+            pos = self.sl.bisect_left(num)
+            if pos < self.k:
+                # 挤到中间
+                self.s += self.sl[self.k - 1]
+            elif self.k <= pos <= self.m - self.k:
+                self.s += num
+            else:
+                # 挤到中间
+                self.s += self.sl[self.m - self.k]
+            self.sl.add(num)
+
+            x = self.arr.popleft()
+            pos = self.sl.bisect_left(x)
+            if pos < self.k:
+                # 左移
+                self.s -= self.sl[self.k]
+            elif self.k <= pos <= self.m - self.k:
+                self.s -= x
+            else:
+                # 右移
+                self.s -= self.sl[self.m - self.k]
+            self.sl.remove(x)
+
+    def calculateMKAverage(self) -> int:
+        if len(self.arr) < self.m:
+            return -1
+        return self.s // (self.m - 2 * self.k)
+
+
 # 1827 - Minimum Operations to Make the Array Increasing - EASY
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
