@@ -1124,3 +1124,13 @@ T4: 547 pass
 # https://leetcode.cn/contest/weekly-contest-324/
 # 768 / https://leetcode.cn/contest/weekly-contest-324/problems/add-edges-to-make-degrees-of-all-nodes-even/
 # 分类讨论 + 枚举
+
+
+"""
+AK, 2022-12-31
+https://leetcode.cn/contest/weekly-contest-326/
+Rank: 351 / 757
+WA: T4(1)
+FT: 0:32:52
+T4: 1807
+"""

@@ -520,3 +520,138 @@ class Solution:
                 ans *= pow(fac[v], -1, mod)
                 ans %= mod
         return ans
+
+
+# 2520 - Count the Digits That Divide a Number - EASY
+class Solution:
+    def countDigits(self, num: int) -> int:
+        ans = 0
+        x = num
+        while x:
+            if num % (x % 10) == 0:
+                ans += 1
+            x //= 10
+        return ans
+
+
+# 2521 - Distinct Prime Factors of Product of Array - MEDIUM
+class Solution:
+    # O(nU) / O(U/logU), 空间复杂度: 素数分布, 1200 ms
+    def distinctPrimeFactors(self, nums: List[int]) -> int:
+        s = set()
+        for v in nums:
+            i = 2
+            while i <= v:
+                while v % i == 0:
+                    v //= i
+                    s.add(i)
+                i += 1
+        return len(s)
+
+    # O(n * sqrt(U)) / O(U/logU), 130 ms
+    def distinctPrimeFactors(self, nums: List[int]) -> int:
+        s = set()
+        for v in nums:
+            i = 2
+            while i * i <= v:
+                if v % i == 0:
+                    s.add(i)
+                    while v % i == 0:
+                        v //= i
+                i += 1
+            if v > 1:
+                s.add(v)
+        return len(s)
+
+
+# 2522 - Partition String Into Substrings With Values at Most K - MEDIUM
+class Solution:
+    def minimumPartition(self, s: str, k: int) -> int:
+        ans = 0
+        p = ""
+        for c in s:
+            if int(c) > k:
+                return -1
+            if int(p + c) <= k:
+                p += c
+            else:
+                ans += 1
+                p = c
+        return ans + 1
+
+    def minimumPartition(self, s: str, k: int) -> int:
+        ans = 1
+        x = 0
+        for v in map(int, s):
+            if v > k:
+                return -1
+            x = x * 10 + v
+            if x > k:
+                ans += 1
+                x = v
+        return ans
+
+
+# 2523 - Closest Prime Numbers in Range - MEDIUM
+# O(n * loglogn) / O(n / logn), [2, n] 范围内素数个数
+def eratosthenes(n: int) -> List[int]:
+    primes = []
+    is_prime = [True] * (n + 1)
+    for i in range(2, n + 1):
+        if is_prime[i]:
+            primes.append(i)
+            for j in range(i * i, n + 1, i):
+                is_prime[j] = False
+    return primes
+
+
+primes = eratosthenes(10**6 + 1)
+
+
+class Solution:
+    def closestPrimes(self, left: int, right: int) -> List[int]:
+        # O(log(n / logn)) / O(n / logn)
+        i = bisect.bisect_left(primes, left)
+        if i == len(primes):
+            return [-1, -1]
+        x = y = -1
+        # O(r / logr - l / logl) / O(1)
+        while i + 1 < len(primes) and primes[i + 1] <= right:
+            if x < 0 or primes[i + 1] - primes[i] < y - x:
+                x = primes[i]
+                y = primes[i + 1]
+            i += 1
+        return [x, y]
+
+
+# O(n) / O(n / logn)
+def euler(n: int) -> List[int]:
+    primes = []
+    is_prime = [True] * (n + 1)
+    for i in range(2, n + 1):
+        if is_prime[i]:
+            primes.append(i)
+        for p in primes:
+            if i * p >= n:
+                break
+            is_prime[i * p] = False
+            if i % p == 0:
+                break
+    return primes
+
+
+primes = euler(10**6 + 1)
+
+
+class Solution:
+    def closestPrimes(self, left: int, right: int) -> List[int]:
+        i = bisect.bisect_left(primes, left)
+        if i == len(primes):
+            return [-1, -1]
+        x = y = -1
+        while i + 1 < len(primes) and primes[i + 1] <= right:
+            if x < 0 or primes[i + 1] - primes[i] < y - x:
+                x = primes[i]
+                y = primes[i + 1]
+            i += 1
+        return [x, y]

@@ -22,13 +22,14 @@ Trick:
 
 """
 Directory: (abcdefghijklmnopqrstuvwxyz)
-    binary
     binar search
     BIT
     dfs
     dijkstra
     dp
-    inv - Modular Multiplicative Inverse
+    euler - sieve of Euler - 欧拉筛/线性筛
+    eratosthenes - sieve of Eratosthenes - 埃式筛
+    inv - Modular Multiplicative Inverse - 逆元
     low bit
     math related
     minimum cost flow
@@ -37,20 +38,11 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     set
     st, sparse table
     string hash
+    str2binary
     transpose
     trie
     union-find, disjoint set
 """
-
-
-"""binary"""
-
-# be careful of Operation Priority: Addition(+), Subtraction(-) higher than Bitwise shift operator(<<, >>)
-def str2binary(s: str):
-    n = 0
-    for c in s:
-        n |= 1 << ord(c) - ord("a")
-    return n
 
 
 """binary search
@@ -207,6 +199,66 @@ def countSpecialNumbers(n: int) -> int:
         return ans
 
     return dfs(0, 0, True, False)
+
+
+"""euler
+
+欧拉筛 / 线性筛
+
+埃氏筛法仍有优化空间, 它会将一个合数重复多次标记, 比如 12 被 2, 3 同时划掉
+
+每一个合数都是被最小的质因子筛掉 -> 时间复杂度 O(n)
+
+2 划掉 4(乘2)
+3 划掉 6(乘2), 9(乘3)
+4 划掉 8(乘2), 不能划掉 12, 因为 3 已经超过了 4 的最小质因子(2)
+5 划掉 10(乘2), 15(乘3), 25(乘5)
+
+每个数 x, 乘以 <= lpf[x] 的质数, lpf[x] 为 x 的最小的质因子
+
+因为取模操作是算术操作中最慢的, 数据范围小时, 不如埃氏筛快
+"""
+
+
+def euler(n: int) -> List[int]:
+    primes = []
+    is_prime = [True] * (n + 1)
+    for i in range(2, n + 1):
+        if is_prime[i]:
+            primes.append(i)
+        for p in primes:
+            if i * p >= n:
+                break
+            is_prime[i * p] = False
+            if i % p == 0:  # p 是 lpf[i]
+                break
+    return primes
+
+
+primes = euler(10**6 + 1)
+
+
+"""eratosthenes
+
+枚举质数, 划掉质数的倍数
+
+时间复杂度: O(n * loglogn), n * (1/2 + 1/3 + 1/5 + ...) -> n * 素数倒数之和 -> n * O(loglogn)
+空间复杂度: O(n / logn), [2, n] 范围内素数个数 
+"""
+
+
+def eratosthenes(n: int) -> List[int]:
+    primes = []
+    is_prime = [True] * (n + 1)
+    for i in range(2, n + 1):
+        if is_prime[i]:
+            primes.append(i)
+            for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+                is_prime[j] = False
+    return primes
+
+
+primes = eratosthenes(10**6 + 1)
 
 
 """
@@ -924,6 +976,16 @@ def string_hash(arr: List[int]) -> None:
         return (h[r] - h[l - 1] * p[r - l + 1]) % mod
 
     return
+
+
+"""str2binary"""
+
+# be careful of Operation Priority: Addition(+), Subtraction(-) higher than Bitwise shift operator(<<, >>)
+def str2binary(s: str):
+    n = 0
+    for c in s:
+        n |= 1 << ord(c) - ord("a")
+    return n
 
 
 """transpose"""
