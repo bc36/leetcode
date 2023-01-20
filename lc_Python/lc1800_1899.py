@@ -322,6 +322,18 @@ class Solution:
         return " ".join(s.split()[:k])
 
 
+# 1817 - Finding the Users Active Minutes - MEDIUM
+class Solution:
+    def findingUsersActiveMinutes(self, logs: List[List[int]], k: int) -> List[int]:
+        d = collections.defaultdict(set)
+        for i, t in logs:
+            d[i].add(t)
+        ans = [0] * k
+        for v in d.values():
+            ans[len(v) - 1] += 1
+        return ans
+
+
 # 1819 - Number of Different Subsequences GCDs - HARD
 class Solution:
     # 对于数组 nums 的所有子序列, 其最大公约数一定不超过数组中的最大值 -> 考虑值域

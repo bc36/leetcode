@@ -197,6 +197,20 @@ class Solution:
         return head
 
 
+# 204 - Count Primes - MEDIUM
+n = 5 * 10**6
+p = [True] * (n + 1)
+for i in range(2, n):
+    if p[i]:
+        for j in range(i * i, n, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+            p[j] = False
+
+
+class Solution:
+    def countPrimes(self, n: int) -> int:
+        return sum(p[2:n])
+
+
 # 205 - Isomorphic Strings - EASY
 class Solution:
     def isIsomorphic(self, s: str, t: str) -> bool:

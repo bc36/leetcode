@@ -1,4 +1,4 @@
-import bisect, collections, functools, math, itertools, heapq
+import bisect, collections, functools, math, itertools, heapq, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -2833,3 +2833,21 @@ class Solution:
                 f = False
             pre = ch
         return a == b == c == d == e == f == True
+
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        if len(password) < 8:
+            return False
+        a = b = c = d = e = False
+        for v in password:
+            if v in string.ascii_lowercase:
+                a = True
+            elif v in string.ascii_uppercase:
+                b = True
+            elif v in string.digits:
+                c = True
+            elif v in "!@#$%^&*()-+":
+                d = True
+        for x, y in zip(password, password[1:]):
+            if x == y:
+                e = True
+        return a and b and c and d and not e
