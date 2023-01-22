@@ -655,3 +655,248 @@ class Solution:
                 y = primes[i + 1]
             i += 1
         return [x, y]
+
+
+# 2525 - Categorize Box According to Criteria - EASY
+class Solution:
+    def categorizeBox(self, length: int, width: int, height: int, mass: int) -> str:
+        b = (
+            length >= 1e4
+            or width >= 1e4
+            or height >= 1e4
+            or mass >= 1e4
+            or length * width * height >= 1e9
+        )
+        h = mass >= 100
+        if b and h:
+            return "Both"
+        if b:
+            return "Bulky"
+        if h:
+            return "Heavy"
+        return "Neither"
+
+
+# 2526 - Find Consecutive Integers from a Data Stream - MEDIUM
+class DataStream:
+    def __init__(self, value: int, k: int):
+        self.cnt = 0
+        self.v = value
+        self.k = k
+
+    def consec(self, num: int) -> bool:
+        if num != self.v:
+            self.cnt = -1
+        self.cnt += 1
+        return self.cnt >= self.k
+
+
+# 2527 - Find Xor-Beauty of Array - MEDIUM
+class Solution:
+    # 方法一:
+    # 因为不同二进制位之间互不影响, 单独考虑每个比特
+    # 看有多少个 1 -> (a | b) & c = 1 -> 需要 a | b = 1 (a b 不能都是 0) 并且 c = 1
+    # 设这个比特有 x 个 0, y 个 1, 则 x + y = n
+    # 有多少个 1: ones = (n * n - x * x) * y
+    # 因为问题是 ones 的异或结果, 所以只需要考虑 ones 的奇偶性
+    # ones = (n^2 - x^2) * y
+    #      = (n^2 - (n - y)^2) * y
+    #      = (2n - y) * y * y
+    #      = 2ny^2 - y^3
+    # 进而考察 y 的奇偶性, 可以看成是 这个比特位 0 和 1 异或的结果
+    # 进而转换为 nums 中每个 num 的每个 bit 的异或结果
+
+    # 方法二:
+    # 三元组 (a, b, c), (b, a, c) 异或和为 0
+    # 在剩余的形式为 (a, a, b) 的三元组中, 可以化为 a & b, 又 (a, a, b) ^ (b, b, a) 异或和为 0
+    # 所以此时只剩余 (a, a, a) 形式的三元组, 即为 nums[i] 的异或结果
+    # O(n) / O(1)
+    def xorBeauty(self, nums: List[int]) -> int:
+        return functools.reduce(operator.xor, nums)
+
+    # 常用位运算技巧: 不同二进制位之间互不影响, 单独考虑每个二进制位的答案
+    # nums[i], nums[j] 其中一个是 1, nums[k] 是 1 时, 三元组值才为 1
+    # cnt[0] 表示 nums[i] == 0 的 i 有几个
+    # cnt[1] 表示 nums[i] == 1 的 i 有几个
+    # 有效值是 1 的三元组的数量即为 (n * n - cnt[0] * cnt[0]) * cnt[1]
+    #                          前两个数至少一个 1 的选法 * 第三个数是 1 的选法
+    # O(nlogU) / O(1)
+    def xorBeauty(self, nums: List[int]) -> int:
+        ans = 0
+        n = len(nums)
+        for k in range(31):
+            cnt = [0, 0]
+            for v in nums:
+                cnt[v >> k & 1] += 1
+            f = (n * n - cnt[0] * cnt[0]) * cnt[1]
+            if f & 1:
+                ans |= 1 << k
+        return ans
+
+
+# 2528 - Maximize the Minimum Powered City - HARD
+class Solution:
+    # 从左到右维护每个城市 i 的当前电量, [i - r, i + r] 区间和
+    # 尽可能靠右新建变电站
+    # O(nlog(nU + k)) / O(n), U = max(stations)
+    def maxPower(self, stations: List[int], r: int, k: int) -> int:
+        def check(mid: int) -> bool:
+            p = stations.copy()
+            cur = need = j = 0
+            for i in range(len(p)):
+                # 移动窗口右端点
+                while j < len(p) and j <= i + r:
+                    cur += p[j]
+                    j += 1
+                # 移动窗口左端点
+                if i - r - 1 >= 0:
+                    cur -= p[i - r - 1]
+                if cur < mid:
+                    p[j - 1] += mid - cur
+                    need += mid - cur
+                    cur = mid  # 即 cur += mid - cur
+                    if need > k:
+                        return False
+            return True
+
+        low = 0
+        high = 10**15
+        while low < high:
+            # 左侧最后一个满足条件的值 的模版
+            mid = low + high + 1 >> 1
+            if check(mid):
+                low = mid
+            else:
+                high = mid - 1
+        return low
+
+        # or
+        # while low < high:
+        #     # 左侧最后一个满足条件的值 的模版
+        #     mid = low + high >> 1
+        #     if check(mid):
+        #         low = mid + 1
+        #     else:
+        #         high = mid
+        # return high - 1
+
+    # O(nlog(nU + k)) / O(n), U = max(stations)
+    def maxPower(self, stations: List[int], r: int, k: int) -> int:
+        def check(mid: int) -> bool:
+            p = stations[::]
+            cur = sum(p[: min(r + 1, n)])  # 初始的滑动窗口和
+            left = need = 0
+            right = r  # 维护窗口 [left, right]
+            for i in range(n):
+                if cur < mid:
+                    d = mid - cur
+                    need += d
+                    if need > k:
+                        return False
+                    # 新建在窗口最右边
+                    p[right] += d
+                    cur += d  # 即 cur = mid
+                # 窗口向前移动一个城市
+                if i >= r:
+                    cur -= p[left]
+                    left += 1
+                if right != n - 1:
+                    cur += p[right + 1]
+                    right += 1
+            return True
+
+        n = len(stations)
+        low = 0
+        high = 10**15
+        while low < high:
+            mid = low + high + 1 >> 1
+            if check(mid):
+                low = mid
+            else:
+                high = mid - 1
+        return low
+
+    # 用 前缀和 + 差分数组 更新
+    # O(nlogk) / O(n)
+    def maxPower(self, stations: List[int], r: int, k: int) -> int:
+        def check(mid: int) -> bool:
+            diff = [0] * n
+            sumd = need = 0
+            for i, v in enumerate(has):
+                sumd += diff[i]  # 累加差分值
+                d = mid - v - sumd
+                if d > 0:  # 需要 d 个供电站
+                    need += d
+                    if need > k:
+                        return False
+                    sumd += d  # 差分更新
+                    if i + r * 2 + 1 < n:
+                        diff[i + r * 2 + 1] -= d  # 差分更新
+            return True
+
+        n = len(stations)
+        p = list(itertools.accumulate(stations, initial=0))  # len(p) = n + 1
+        has = [p[min(i + r + 1, n)] - p[max(i - r, 0)] for i in range(n)]
+        left = min(has)
+        right = left + k + 1
+        while left < right:
+            mid = left + right + 1 >> 1
+            if check(mid):
+                left = mid
+            else:
+                right = mid - 1
+        return left
+
+    # 直接调 bisect 库, 遇到找 左侧的最后一个满足条件值 时, 需要特殊更改, 总体来说使用感觉一般
+    # 1. 改 check 中的 mid, 反转 check 中的 True False
+    # 2. 改 range 区间, 反转 check 中的 True False
+
+    # 原因:
+    # 现正常思路为 TTTTT FFFF, 想找最后一个 T 的下标
+    #                ^
+    # 但是标准库提供的二分只支持左边 F 找右边第一个 T (即左侧 < x or <= x, 右侧 >= x or > x, 以保证序列有序)
+    # 所以把 check 反过来, 反转 True False
+    # 类似 FFFFF TTTT
+    #           ^
+    def maxPower(self, stations: List[int], r: int, k: int) -> int:
+        def check(mid: int) -> bool:
+            mid += 1
+            diff = [0] * n
+            sumd = need = 0
+            for i, v in enumerate(has):
+                sumd += diff[i]
+                d = mid - v - sumd
+                if d > 0:
+                    need += d
+                    if need > k:
+                        return True
+                    sumd += d
+                    if i + r * 2 + 1 < n:
+                        diff[i + r * 2 + 1] -= d
+            return False
+
+        n = len(stations)
+        p = list(itertools.accumulate(stations, initial=0))  # len(p) = n + 1
+        has = [p[min(i + r + 1, n)] - p[max(i - r, 0)] for i in range(n)]
+        return bisect.bisect_left(range(p[n] + k), x=True, key=check)
+
+    def maxPower(self, stations: List[int], r: int, k: int) -> int:
+        def check(mid: int) -> bool:
+            diff = [0] * n
+            sumd = need = 0
+            for i, v in enumerate(has):
+                sumd += diff[i]
+                d = mid - v - sumd
+                if d > 0:
+                    need += d
+                    if need > k:
+                        return True
+                    sumd += d
+                    if i + r * 2 + 1 < n:
+                        diff[i + r * 2 + 1] -= d
+            return False
+
+        n = len(stations)
+        p = list(itertools.accumulate(stations, initial=0))  # len(p) = n + 1
+        has = [p[min(i + r + 1, n)] - p[max(i - r, 0)] for i in range(n)]
+        return bisect.bisect_left(range(p[n] + k + 1), x=True, key=check) - 1

@@ -520,3 +520,8 @@ T4: 840 pass
 # 二分 + 容斥原理 + lcm
 # 436 / https://leetcode.cn/contest/biweekly-contest-94/problems/count-anagrams/
 # 组合计数 / 逆元
+
+
+# https://leetcode.cn/contest/biweekly-contest-95/
+# 407 / https://leetcode.cn/contest/biweekly-contest-95/problems/maximize-the-minimum-powered-city/
+# 二分 / 前缀和 + 差分
