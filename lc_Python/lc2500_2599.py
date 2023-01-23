@@ -900,3 +900,226 @@ class Solution:
         p = list(itertools.accumulate(stations, initial=0))  # len(p) = n + 1
         has = [p[min(i + r + 1, n)] - p[max(i - r, 0)] for i in range(n)]
         return bisect.bisect_left(range(p[n] + k + 1), x=True, key=check) - 1
+
+
+# 2544 - Alternating Digit Sum - EASY
+class Solution:
+    # O(logn) / O(n)
+    def alternateDigitSum(self, n: int) -> int:
+        ans = 0
+        f = 1
+        for c in str(n):
+            ans += f * int(c)
+            f *= -1
+        return ans
+
+    # O(logn) / O(1)
+    def alternateDigitSum(self, n: int) -> int:
+        ans = 0
+        f = 1
+        while n:
+            ans += n % 10 * f
+            n //= 10
+            f *= -1
+        return ans * -f
+
+
+# 2545 - Sort the Students by Their Kth Score - MEDIUM
+class Solution:
+    def sortTheStudents(self, score: List[List[int]], k: int) -> List[List[int]]:
+        # sorted 会复制一份, return a new sorted list
+        return sorted(score, key=lambda x: x[k], reverse=True)
+
+    def sortTheStudents(self, score: List[List[int]], k: int) -> List[List[int]]:
+        score.sort(key=lambda x: -x[k])
+        return score
+
+
+# 2546 - Apply Bitwise Operations to Make Strings Equal - MEDIUM
+class Solution:
+    # 0 0 -> 0 0
+    # 0 1 -> 1 1
+    # 1 0 -> 1 1
+    # 1 1 -> 1 0
+    # 观察, 只要有一个 1, 即可随意变换到 (最少一个 1 + 任意组合), 即只有全 0 是一个在有 1 的情况下达不到的变换
+    def makeStringsEqual(self, s: str, target: str) -> bool:
+        a = collections.Counter(s)
+        b = collections.Counter(target)
+        if b["0"] == 0:  # 全是 1
+            return a["1"] > 0
+        if b["1"] == 0:  # 全是 0
+            return a["1"] == 0
+        return a["1"] > 0
+
+    # 观察变换
+    # 当有 1 时, 可以把 1 边 0, 0 变 1
+    # 都有 1 -> True
+    # 都没有 1 / 全 0 -> True
+    # 一个有 1, 同时另一个没有 1 -> False
+    def makeStringsEqual(self, s: str, target: str) -> bool:
+        return ("1" in s) == ("1" in target)
+
+
+# 2547 - Minimum Cost to Split an Array - HARD
+class Solution:
+    # f[i + 1] = min(k + cost(j, i) + f[j] for j in range(i))
+    def minCost(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        f = [0] * (n + 1)
+        for i in range(n):
+            cnt = [0] * n
+            t = 0
+            mi = math.inf
+            for j in range(i, -1, -1):
+                x = nums[j]
+                cnt[x] += 1
+                if cnt[x] == 2:
+                    t += 2
+                elif cnt[x] > 2:
+                    t += 1
+                mi = min(mi, f[j] + t)
+            f[i + 1] = k + mi
+        return f[n]
+
+    # f[i + 1] = min(k + i - j + 1 - unique_j + f[j])
+    #          = i + 1 + k + min(f[j] - j - unique_j)
+    def minCost(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        f = [0] * (n + 1)
+        for i in range(n):
+            # 子数组长度(i - j + 1) - unique
+            cnt = [0] * n
+            u = 0  # unique
+            mi = math.inf
+            for j in range(i, -1, -1):
+                x = nums[j]
+                cnt[x] += 1
+                if cnt[x] == 1:
+                    u += 1
+                elif cnt[x] == 2:
+                    u -= 1
+                mi = min(mi, f[j] - j - u)  # 美服 TLE, 得拆开 min
+            f[i + 1] = i + 1 + k + mi
+        return f[n]
+
+    # 转移方程如上
+    # f[i + 1] = i + 1 + k + min(f[j] - j - unique_j)
+    # f[i + 1] - (i + 1) = k + min(f[j] - j - unique_j)
+    # 令 g[i] = f[i] - i
+    # g[i + 1] = k + min(g[j] - unique_j)
+    # g[n] = f[n] + n
+    def minCost(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        f = [0] * (n + 1)
+        for i in range(n):
+            cnt = [0] * n
+            u = 0  # unique
+            mi = math.inf
+            for j in range(i, -1, -1):
+                x = nums[j]
+                cnt[x] += 1
+                if cnt[x] == 1:
+                    u += 1
+                elif cnt[x] == 2:
+                    u -= 1
+                mi = min(mi, f[j] - u)
+            f[i + 1] = k + mi
+        return f[n] + n
+
+    def minCost(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        f = [0] * (n + 1)
+        f[n] = 0
+        for i in range(n - 1, -1, -1):
+            cnt = collections.Counter()
+            v = 0
+            cur = math.inf
+            for j in range(i, n):
+                if nums[j] not in cnt:
+                    v += 1
+                elif cnt[nums[j]] == 1:
+                    v -= 1
+                cnt[nums[j]] += 1
+                tmp = (j - i + 1 - v) + k + f[j + 1]
+                if tmp < cur:
+                    cur = tmp
+            f[i] = cur
+        return f[0]
+
+    def minCost(self, nums: List[int], k: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int) -> int:
+            if i == len(nums):
+                return 0
+            ans = math.inf
+            once = set()
+            many = set()
+            for j, v in enumerate(nums[i:], start=i):
+                if v not in many:
+                    if v in once:
+                        once.remove(v)
+                        many.add(v)
+                    else:
+                        once.add(v)
+                ans = min(ans, k + j - i + 1 - len(once) + dfs(j + 1))
+            return ans
+
+        return dfs(0)
+
+
+# TODO
+class Solution:
+    def minCost(self, nums: List[int], k: int) -> int:
+        # Lazy 线段树模板（区间加，查询区间最小）
+        n = len(nums)
+        mn = [0] * (4 * n)
+        todo = [0] * (4 * n)
+
+        def do(o: int, v: int) -> None:
+            mn[o] += v
+            todo[o] += v
+
+        def spread(o: int) -> None:
+            v = todo[o]
+            if v:
+                do(o * 2, v)
+                do(o * 2 + 1, v)
+                todo[o] = 0
+
+        # 区间 [L,R] 内的数都加上 v   o,l,r=1,1,n
+        def update(o: int, l: int, r: int, L: int, R: int, v: int) -> None:
+            if L <= l and r <= R:
+                do(o, v)
+                return
+            spread(o)
+            m = (l + r) // 2
+            if m >= L:
+                update(o * 2, l, m, L, R, v)
+            if m < R:
+                update(o * 2 + 1, m + 1, r, L, R, v)
+            mn[o] = min(mn[o * 2], mn[o * 2 + 1])
+
+        # 查询区间 [L,R] 的最小值   o,l,r=1,1,n
+        def query(o: int, l: int, r: int, L: int, R: int) -> int:
+            if L <= l and r <= R:
+                return mn[o]
+            spread(o)
+            m = (l + r) // 2
+            if m >= R:
+                return query(o * 2, l, m, L, R)
+            if m < L:
+                return query(o * 2 + 1, m + 1, r, L, R)
+            return min(query(o * 2, l, m, L, R), query(o * 2 + 1, m + 1, r, L, R))
+
+        ans = 0
+        last = [0] * n
+        last2 = [0] * n
+        for i, x in enumerate(nums, 1):
+            update(1, 1, n, i, i, ans)  # 相当于设置 f[i+1] 的值
+            update(1, 1, n, last[x] + 1, i, -1)
+            if last[x]:
+                update(1, 1, n, last2[x] + 1, last[x], 1)
+            ans = k + query(1, 1, n, 1, i)
+            last2[x] = last[x]
+            last[x] = i
+        return ans + n
