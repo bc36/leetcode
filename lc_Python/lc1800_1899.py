@@ -527,6 +527,36 @@ class Solution:
         return ans
 
 
+# 1828 - Queries on Number of Points Inside a Circle - MEDIUM
+class Solution:
+    # 650 ms
+    def countPoints(
+        self, points: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        return [
+            sum((a - x) * (a - x) + (b - y) * (b - y) <= r * r for a, b in points)
+            for x, y, r in queries
+        ]
+
+    # 900 ms
+    def countPoints(
+        self, points: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        return [
+            sum(abs((a + b * 1j) - (x + y * 1j)) <= r for a, b in points)
+            for x, y, r in queries
+        ]
+
+    # 1900 ms
+    def countPoints(
+        self, points: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        return [
+            sum((a - x) ** 2 + (b - y) ** 2 <= r**2 for a, b in points)
+            for x, y, r in queries
+        ]
+
+
 # 1832 - Check if the Sentence Is Pangram - EASY
 class Solution:
     def checkIfPangram(self, sentence: str) -> bool:

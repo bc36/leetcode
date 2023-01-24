@@ -1210,3 +1210,12 @@ segment tree:     query: O(logn), update: O(logn)
 0 - 1 背包倒序转移原因:
     空间优化时, 防止覆盖掉前面已经计算过的值
 """
+
+
+# PEP 350 Codetags
+# https://peps.python.org/pep-0350/
+# TODO To do: Informal tasks/features that are pending completion.
+# FIXME (XXX) Fix me: Areas of problematic or ugly code needing refactoring or cleanup.
+# BUG Bugs: Reported defects tracked in bug database.
+# HACK Hacks: Temporary code to force inflexible functionality, or simply a test change, or workaround a known problem.
+# NOTE Notes: Sections where a code reviewer found something that needs discussion or further investigation.
