@@ -325,6 +325,30 @@ class Solution:
         return "".join(word1) == "".join(word2)
 
 
+# 1663 - Smallest String With A Given Numeric Value - MEDIUM
+class Solution:
+    def getSmallestString(self, n: int, k: int) -> str:
+        ans = ""
+        while k > n + 25:
+            k -= 26
+            n -= 1
+            ans += "z"
+        ans += chr(97 + k - n)
+        ans += "a" * (n - 1)
+        return ans[::-1]
+
+    def getSmallestString(self, n: int, k: int) -> str:
+        ans = ["a"] * n
+        d = k - n
+        for i in range(n - 1, -1, -1):
+            if d <= 25:
+                break
+            ans[i] = "z"
+            d -= 25
+        ans[i] = chr(ord(ans[i]) + d)
+        return "".join(ans)
+
+
 # 1668 - Maximum Repeating Substring - EASY
 class Solution:
     # O(n**2) / O(n)
