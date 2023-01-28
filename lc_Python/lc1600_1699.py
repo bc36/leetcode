@@ -349,6 +349,24 @@ class Solution:
         return "".join(ans)
 
 
+# 1664 - Ways to Make a Fair Array - MEDIUM
+class Solution:
+    def waysToMakeFair(self, nums: List[int]) -> int:
+        odd = sum(nums[1::2])
+        even = sum(nums[::2])
+        ans = o = e = 0
+        for i, v in enumerate(nums):
+            if i & 1:
+                odd -= v
+                ans += o + even == e + odd
+                o += v
+            else:
+                even -= v
+                ans += e + odd == o + even
+                e += v
+        return ans
+
+
 # 1668 - Maximum Repeating Substring - EASY
 class Solution:
     # O(n**2) / O(n)
