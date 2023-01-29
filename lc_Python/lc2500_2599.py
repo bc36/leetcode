@@ -1070,7 +1070,7 @@ class Solution:
 # TODO
 class Solution:
     def minCost(self, nums: List[int], k: int) -> int:
-        # Lazy 线段树模板（区间加，查询区间最小）
+        # Lazy 线段树模板(区间加, 查询区间最小)
         n = len(nums)
         mn = [0] * (4 * n)
         todo = [0] * (4 * n)
@@ -1123,3 +1123,139 @@ class Solution:
             last2[x] = last[x]
             last[x] = i
         return ans + n
+
+
+# 2540 - Minimum Common Value - EASY
+class Solution:
+    # O(m + n) / O(m + n)
+    def getCommon(self, nums1: List[int], nums2: List[int]) -> int:
+        return min(set(nums1) & set(nums2), default=-1)
+
+    # O(m + n) / O(n)
+    def getCommon(self, nums1: List[int], nums2: List[int]) -> int:
+        s = set(nums2)
+        for v in nums1:
+            if v in s:
+                return v
+        return -1
+
+    # O(m + n) / O(1)
+    def getCommon(self, nums1: List[int], nums2: List[int]) -> int:
+        i = 0
+        for v in nums2:
+            while i < len(nums1) and nums1[i] < v:
+                i += 1
+            if i < len(nums1) and nums1[i] == v:
+                return v
+        return -1
+
+
+# 2541 - Minimum Operations to Make Array Equal II - MEDIUM
+class Solution:
+    def minOperations(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        if k == 0:
+            return 0 if nums1 == nums2 else -1
+        p = n = 0
+        for x, y in zip(nums1, nums2):
+            d = x - y
+            if abs(d) % k != 0:
+                return -1
+            if d > 0:
+                p += d // k
+            if d < 0:
+                n += -d // k
+        return p if n == p else -1
+
+    def minOperations(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        ans = summ = 0
+        for x, y in zip(nums1, nums2):
+            d = x - y
+            if k:
+                if d % k:
+                    return -1
+                summ += d // k
+                if d > 0:
+                    ans += d // k
+            elif d:
+                return -1
+        return -1 if summ else ans
+
+
+# 2542 - Maximum Subsequence Score - MEDIUM
+class Solution:
+    # 子序列 -> 排序?
+    # min   -> 枚举最小值
+    # 如何排序 -> 每次枚举的 nums2[i] 都是最小值 -> 从大到小排序 nums2 (nums1 顺序无所谓)
+    # 选择 nums1[0...j] 个中最大的 k 个 -> 小根堆维护当前最大的 k 个数
+    # O(nlogn) / O(n)
+    def maxScore(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        arr = sorted(zip(nums1, nums2), key=lambda x: -x[1])
+        h = [x for x, _ in arr[:k]]
+        heapq.heapify(h)
+        summ = sum(h)
+        ans = summ * arr[k - 1][1]
+        for x, y in arr[k:]:
+            # 不用 if 也可以通过, 在 x 小于 h[0] 时, summ 变小
+            # 但是这个换进来的'小'值仍然在堆顶, 会被后续插入的'大'值弹出
+            # 所以不影响正确答案
+            # summ += x - heapq.heapreplace(h, x)
+            # ans = max(ans, summ * y)
+
+            # 这个更容易理解, x 小于 h[0] 时, summ 不变
+            summ += x - heapq.heappushpop(h, x)
+            ans = max(ans, summ * y)
+
+            # 或者加入判断
+            if x > h[0]:
+                summ += x - heapq.heapreplace(h, x)
+                ans = max(ans, summ * y)
+        return ans
+
+
+# 2543 - Check if Point Is Reachable - HARD
+class Solution:
+    # (x, y - x)
+    # (x - y, y)
+    # -> 更相减损术 / 辗转相除法
+    # -> 不会更改 gcd
+    #
+    # (2 * x, y)
+    # (x, 2 * y)
+    # -> gcd * 2^k, gcd 乘 2 的幂次
+    def isReachable(self, targetX: int, targetY: int) -> bool:
+        g = math.gcd(targetX, targetY)
+        return (g & (g - 1)) == 0  # 位运算, 判断是否为 2 的幂次
+        return math.gcd(targetX, targetY).bit_count() == 1
+
+    # 反过来思考 (x, y) 到 (1, 1)
+    # 若 x 和 y 都是偶数, 则将它们同时除以 2, 这不改变它们的 gcd 是 2 的若干次方的性质
+    # 若 x 和 y 其中之一是偶数, 则将偶数除以 2, 因为另一个数是奇数, 肯定不能被 2 整除, 这不改变它们的 gcd
+    # 若 x 和 y 都是奇数
+    #   x != y 时, x + y 是偶数, 设 x > y, 可以通过 +y, /2 操作 变为 (x + y) / 2,
+    #       根据性质 gcd(x + y) = gcd(x + y, y), 以及 y 是奇数, 不改变 gcd, 还能让坐标变小
+    #   x = y 时, 任何操作都不能让坐标变小, break, 验证 x = y = 1
+    def isReachable(self, targetX: int, targetY: int) -> bool:
+        while targetX % 2 == 0:
+            targetX //= 2
+        while targetY % 2 == 0:
+            targetY //= 2
+        return math.gcd(targetX, targetY) == 1
+
+    # 反过来思考 (x, y) 到 (1, 1)
+    # 如果两个数中有偶数, 将偶数除以 2
+    # 如果两个数都是奇数, 保留较小的数, 较大的数加上较小的数
+    def isReachable(self, targetX: int, targetY: int) -> bool:
+        while (targetX, targetY) != (1, 1):
+            if targetX % 2 == 0:
+                targetX //= 2
+                continue
+            if targetY % 2 == 0:
+                targetY //= 2
+                continue
+            if targetX > targetY:
+                targetX += targetY
+            elif targetX < targetY:
+                targetY += targetX
+            else:
+                break
+        return targetX == targetY == 1

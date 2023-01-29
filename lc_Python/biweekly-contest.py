@@ -525,3 +525,10 @@ T4: 840 pass
 # https://leetcode.cn/contest/biweekly-contest-95/
 # 407 / https://leetcode.cn/contest/biweekly-contest-95/problems/maximize-the-minimum-powered-city/
 # 二分 / 前缀和 + 差分
+
+
+# https://leetcode.cn/contest/biweekly-contest-96/
+# 396 / https://leetcode.cn/contest/biweekly-contest-96/problems/maximum-subsequence-score/
+# 排序 + 枚举 + 最小堆
+# 308 / https://leetcode.cn/contest/biweekly-contest-96/problems/check-if-point-is-reachable/
+# gcd, 数学
