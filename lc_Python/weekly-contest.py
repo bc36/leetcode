@@ -1135,6 +1135,12 @@ FT: 0:32:52
 T4: 1807
 """
 
+
+# https://leetcode.cn/contest/weekly-contest-325/
+# 288 / https://leetcode.cn/contest/weekly-contest-325/problems/number-of-great-partitions/
+# dp + 01背包
+
+
 # https://leetcode.cn/contest/weekly-contest-329/
 # 407 / https://leetcode.cn/contest/weekly-contest-329/problems/minimum-cost-to-split-an-array/
 # dp + 分类

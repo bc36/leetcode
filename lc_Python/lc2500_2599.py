@@ -522,6 +522,123 @@ class Solution:
         return ans
 
 
+# 2515 - Shortest Distance to Target String in a Circular Array - EASY
+class Solution:
+    def closetTarget(self, words: List[str], target: str, startIndex: int) -> int:
+        ans = n = len(words)
+        for i, w in enumerate(words):
+            if w == target:
+                ans = min(ans, abs(i - startIndex), n - abs(i - startIndex))
+        return ans if ans < n else -1
+
+
+# 2516 - Take K of Each Character From Left and Right - MEDIUM
+class Solution:
+    # O(nlogn) / O(1)
+    def takeCharacters(self, s: str, k: int) -> int:
+        if k == 0:
+            return 0
+        cnt = collections.Counter(s)
+        if cnt["a"] < k or cnt["b"] < k or cnt["c"] < k:
+            return -1
+
+        def pick(m: int) -> bool:
+            d = collections.defaultdict(int)
+            for i in range(m):
+                d[s[i]] += 1
+            if all(d[c] >= k for c in "abc"):
+                return True
+            for i in range(m):
+                d[s[-1 - i]] += 1
+                d[s[m - i - 1]] -= 1
+                if all(d[c] >= k for c in "abc"):
+                    return True
+            return False
+
+        l = 1
+        r = len(s)
+        while l < r:
+            m = (l + r) // 2
+            if pick(m):
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    # O(n) / O(1), 每当 l 增加, 即从左边多取一个, 尽量减少从右边取走的
+    def takeCharacters(self, s: str, k: int) -> int:
+        r = n = len(s)
+        cnt = collections.Counter()
+        # while any(v < k for v in cnt.values()):
+        # 注意这种情况下, cnt 内若没有元素, 则会返回 False 退出 while 循环
+        # any(): If the iterable is empty, return False
+        while cnt["a"] < k or cnt["b"] < k or cnt["c"] < k:
+            if r == 0:
+                return -1
+            r -= 1
+            cnt[s[r]] += 1
+        ans = n - r
+        for l, ch in enumerate(s):
+            cnt[ch] += 1
+            while r < n and cnt[s[r]] > k:
+                cnt[s[r]] -= 1
+                r += 1
+            ans = min(ans, l + 1 + n - r)
+            if r == n:
+                break
+        return ans
+
+    # O(n) / O(1), 每当 r 增加, 即从右边少取一个, 移动 l 直至满足条件
+    def takeCharacters(self, s: str, k: int) -> int:
+        cnt = collections.Counter(s)
+        if any(cnt[v] < k for v in "abc"):
+            return -1
+        ans = n = len(s)
+        l = 0
+        for r, ch in enumerate(s):
+            cnt[ch] -= 1
+            while cnt[ch] < k:
+                cnt[s[l]] += 1
+                l += 1
+            ans = min(ans, n - (r - l + 1))
+        return ans
+
+
+# 2517 - Maximum Tastiness of Candy Basket - MEDIUM
+class Solution:
+    # O(nlogn + nlogU) / O(1), U = max(price)
+    def maximumTastiness(self, price: List[int], k: int) -> int:
+        price.sort()
+        l = 0
+        r = max(price)
+        while l < r:
+            m = l + r + 1 >> 1
+            t = 1
+            p = price[0]
+            for i in range(1, len(price)):
+                if price[i] - p >= m:
+                    p = price[i]
+                    t += 1
+            if t >= k:
+                l = m
+            else:
+                r = m - 1
+        return l
+
+# 2518 - Number of Great Partitions - HARD
+    # O(nk) / O(k)
+    def countPartitions(self, nums: List[int], k: int) -> int:
+        if sum(nums) < k * 2:
+            return 0
+        mod = 10**9 + 7
+        f = [0] * k
+        f[0] = 1
+        for x in nums:
+            for j in range(k - 1, x - 1, -1):
+                f[j] = (f[j] + f[j - x]) % mod
+        return (pow(2, len(nums), mod) - sum(f) * 2) % mod
+
+
 # 2520 - Count the Digits That Divide a Number - EASY
 class Solution:
     def countDigits(self, num: int) -> int:
