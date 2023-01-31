@@ -222,6 +222,7 @@ class Solution:
         return ans
 
     def countPairs(self, deliciousness: List[int]) -> int:
+        # TODO
         def nextPower(x: int):
             x -= 1
             x |= x >> 1
@@ -241,10 +242,10 @@ class Solution:
                 continue
             # k 的下一个 2 的幂次
             p = nextPower(k)
-            ans += cnt[k] * cnt[p - k]
             # 自身是一个 2 的幂次
             if k == p:
                 ans += cnt[k] * (cnt[k] - 1) // 2
+            ans += cnt[k] * cnt[p - k]
         return ans % mod
 
 
