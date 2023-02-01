@@ -1,21 +1,7 @@
 package src;
 
-//List / Array
-import java.util.Arrays;
-import java.util.ArrayList;
-//import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-//Queue
-//import java.util.Stack;
-//import java.util.Deque;
-//import java.util.Queue;
-//import java.util.ArrayDeque;
-//import java.util.PriorityQueue;
-//Map / Set
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.Map;
 public class Lc1400_1499 {
 	// 1414. Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - M
 	public int findMinFibonacciNumbers(int k) {

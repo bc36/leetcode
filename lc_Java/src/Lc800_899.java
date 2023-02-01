@@ -1,9 +1,6 @@
 package src;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-
+import java.util.*;
 
 public class Lc800_899 {
 	// 884. Uncommon Words from Two Sentences - E
@@ -24,5 +21,5 @@ public class Lc800_899 {
 			}
 		}
 		return ans.toArray(new String[0]);
-    }
+	}
 }

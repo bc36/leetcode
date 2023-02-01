@@ -1,20 +1,6 @@
 package src;
 
-// List / Array
-import java.util.Arrays;
-import java.util.ArrayList;
-//import java.util.LinkedList;
-import java.util.List;
-// Queue
-//import java.util.Stack;
-//import java.util.Deque;
-//import java.util.Queue;
-//import java.util.ArrayDeque;
-//import java.util.PriorityQueue;
-// Map / Set
-import java.util.HashMap;
-//import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class Lc100_199 {
 	// 119. Pascal's Triangle II - E
@@ -59,11 +45,11 @@ public class Lc100_199 {
 			if (cnt == 0) {
 				ans = n;
 			}
-//			if (ans == n) {
-//				cnt++;
-//			} else {
-//				cnt--;
-//			}
+			// if (ans == n) {
+			// cnt++;
+			// } else {
+			// cnt--;
+			// }
 			cnt = ans == n ? cnt + 1 : cnt - 1;
 		}
 		return ans;
@@ -78,14 +64,14 @@ public class Lc100_199 {
 				cnt.put(n, cnt.get(n) + 1);
 			}
 		}
-//		int ans = 0;
-//		int c = 0;
-//		for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
-//			if (e.getValue() > c) {
-//				ans = e.getKey();
-//				c = e.getValue();
-//			}
-//		}
+		// int ans = 0;
+		// int c = 0;
+		// for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
+		// if (e.getValue() > c) {
+		// ans = e.getKey();
+		// c = e.getValue();
+		// }
+		// }
 		for (int n : nums) {
 			if (cnt.get(n) > nums.length / 2)
 				return n;

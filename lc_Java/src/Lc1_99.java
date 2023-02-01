@@ -1,24 +1,80 @@
 package src;
 
-//List / Array
-import java.util.Arrays;
-import java.util.ArrayList;
-//import java.util.LinkedList;
-import java.util.List;
-//Queue
-//import java.util.Stack;
-//import java.util.Deque;
-//import java.util.Queue;
-//import java.util.ArrayDeque;
-//import java.util.PriorityQueue;
-//Map / Set
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.TreeMap;
-//import java.util.LinkedHashMap;
-//import java.util.Map;
+import java.util.*;
+// List / Array
+// import java.util.Arrays;
+// import java.util.ArrayList;
+// import java.util.LinkedList;
+// import java.util.List;
+// // Queue
+// import java.util.Stack;
+// import java.util.Deque;
+// import java.util.Queue;
+// import java.util.ArrayDeque;
+// import java.util.PriorityQueue;
+// // Map / Set
+// import java.util.HashMap;
+// import java.util.HashSet;
+// import java.util.TreeMap;
+// import java.util.LinkedHashMap;
+// import java.util.Map;
 
 public class Lc1_99 {
+	// 1. Two Sum - E
+	public int[] twoSum(int[] nums, int target) {
+		Map<Integer, Integer> m = new HashMap<Integer, Integer>();
+		for (int i = 0; i < nums.length; i++) {
+			if (m.containsKey(target - nums[i])) {
+				return new int[] { m.get(target - nums[i]), i };
+			}
+			m.put(nums[i], i);
+		}
+		return new int[0];
+	}
+
+	// 9. Palindrome Number - E
+	public boolean isPalindrome(int x) {
+		String s = String.valueOf(x);
+		int n = s.length();
+		for (int i = 0; i < n / 2; i++) {
+			if (s.charAt(i) != s.charAt(n - 1 - i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean isPalindrome2(int x) {
+		if (x < 0) {
+			return false;
+		}
+		int ori = x;
+		int cur = 0;
+		while (x != 0) {
+			cur = cur * 10 + x % 10;
+			x /= 10;
+		}
+		return cur == ori;
+	}
+
+	// 14. Longest Common Prefix - E
+	public String longestCommonPrefix(String[] strs) {
+		if (strs.length == 0) { // strs == null
+			return null;
+		}
+		int row = strs.length;
+		int col = strs[0].length();
+		for (int j = 0; j < col; j++) {
+			char c = strs[0].charAt(j);
+			for (int i = 1; i < row; i++) {
+				if (j == strs[i].length() || strs[i].charAt(j) != c) {
+					return strs[0].substring(0, j);
+				}
+			}
+		}
+		return strs[0];
+	}
+
 	// 15. 3Sum - M
 	public List<List<Integer>> threeSum(int[] nums) {
 		List<List<Integer>> ans = new ArrayList<>();

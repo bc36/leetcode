@@ -1,17 +1,6 @@
 package src;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-import java.util.Deque;
-import java.util.Queue;
-import java.util.ArrayDeque;
-import java.util.PriorityQueue;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class Lc400_499 {
     // 409. Longest Palindrome - E
