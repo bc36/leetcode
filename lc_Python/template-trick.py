@@ -138,25 +138,44 @@ class BIT:
 
 
 class BIT:
-    def __init__(self, n):
+    def __init__(self, n: int):
+        self.tree = [0] * n
+
+    def add(self, x: int) -> None:
+        while x < len(self.tree):
+            self.tree[x] += 1
+            x += x & -x
+        return
+
+    def query(self, x: int) -> int:
+        res = 0
+        while x > 0:
+            res += self.tree[x]
+            x &= x - 1
+        return res
+
+
+class BIT:
+    def __init__(self, n: int):
         self.n = n
         self.a = [0] * (n + 1)
 
     @staticmethod
-    def lowbit(x):
+    def lowbit(x: int) -> int:
         return x & (-x)
 
-    def query(self, x):
+    def query(self, x: int) -> int:
         ret = 0
         while x > 0:
             ret += self.a[x]
             x -= BIT.lowbit(x)
         return ret
 
-    def update(self, x, dt):
+    def update(self, x: int, dt: int) -> None:
         while x <= self.n:
             self.a[x] += dt
             x += BIT.lowbit(x)
+        return
 
 
 """dfs"""

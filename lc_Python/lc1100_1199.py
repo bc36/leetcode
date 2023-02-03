@@ -1,5 +1,55 @@
-import bisect, functools, collections, itertools, math
-from typing import List
+import bisect, collections, functools, heapq, math
+from typing import List, Optional
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# 1103 - Distribute Candies to People - EASY
+class Solution:
+    def distributeCandies(self, candies: int, num_people: int) -> List[int]:
+        ans = [0] * num_people
+        i = 0
+        x = 1
+        while candies > x:
+            ans[i] += x
+            candies -= x
+            x += 1
+            i = (i + 1) % num_people
+        ans[i] += candies
+        return ans
+
+
+# 1104 - Path In Zigzag Labelled Binary Tree - MEDIUM
+class Solution:
+    # 翻转前后的标号之和 = 2^(i-1) + 2^i - 1
+    def pathInZigZagTree(self, label: int) -> List[int]:
+        d = 1
+        first = 1
+        while first * 2 <= label:
+            first *= 2
+            d += 1
+        ans = []
+        if not d & 1:
+            label = (1 << d - 1) + (1 << d) - 1 - label
+        while d:
+            if d & 1:
+                ans.append(label)
+            else:
+                ans.append((1 << d - 1) + (1 << d) - 1 - label)
+            d -= 1
+            label >>= 1
+        return ans[::-1]
 
 
 # 1106 - Parsing A Boolean Expression - HARD
@@ -82,6 +132,62 @@ class Solution:
         return ans
 
 
+# 1129 - Shortest Path with Alternating Colors - MEDIUM
+class Solution:
+    # O(n + m) / O(n + m), n 节点数, m 边数
+    def shortestAlternatingPaths(
+        self, n: int, redEdges: List[List[int]], blueEdges: List[List[int]]
+    ) -> List[int]:
+        g = [collections.defaultdict(list), collections.defaultdict(list)]
+        for x, y in redEdges:
+            g[0][x].append(y)
+        for x, y in blueEdges:
+            g[1][x].append(y)
+        ans = [-1] * n
+        vis = set()
+        q = [(0, 0), (0, 1)]
+        d = 0
+        while q:
+            new = []
+            for i, c in q:  # c -> color
+                if ans[i] == -1:
+                    ans[i] = d
+                vis.add((i, c))
+                c = 1 - c
+                for j in g[c][i]:
+                    if (j, c) not in vis:
+                        new.append((j, c))
+            d += 1
+            q = new
+        return ans
+
+    def shortestAlternatingPaths(
+        self, n: int, redEdges: List[List[int]], blueEdges: List[List[int]]
+    ) -> List[int]:
+        g = [[] for _ in range(n)]
+        for x, y in redEdges:
+            g[x].append((y, 0))
+        for x, y in blueEdges:
+            g[x].append((y, 1))
+
+        ans = [-1] * n
+        vis = {(0, 0), (0, 1)}
+        q = [(0, 0), (0, 1)]
+        d = 0
+        while q:
+            new = []
+            for x, color in q:
+                if ans[x] == -1:
+                    ans[x] = d
+                for y in g[x]:
+                    if y[1] != color and y not in vis:
+                        vis.add(y)
+                        new.append(y)
+            q = new
+            d += 1
+        return ans
+
+
 # 1137 - N-th Tribonacci Number - EASY
 class Solution:
     @functools.lru_cache(None)
@@ -133,6 +239,30 @@ class Solution:
                 else:
                     dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
         return dp[-1][-1]
+
+
+# 1145 - Binary Tree Coloring Game - MEDIUM
+class Solution:
+    # 整颗树被分成三块: 父, 左, 右 -> 是否有一块大于总数的一半
+    def btreeGameWinningMove(self, root: Optional[TreeNode], n: int, x: int) -> bool:
+        def find(root: TreeNode) -> TreeNode:
+            if not root:
+                return None
+            if root.val == x:
+                return root
+            return find(root.left) or find(root.right)
+
+        p = find(root)
+
+        def count(root: TreeNode) -> int:
+            if not root:
+                return 0
+            return 1 + count(root.left) + count(root.right)
+
+        l = count(p.left)
+        r = count(p.right)
+        choose = max(l, r, n - 1 - l - r)
+        return choose > n - choose
 
 
 #################

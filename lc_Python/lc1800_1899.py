@@ -94,7 +94,7 @@ class Solution:
         class TrieNode:
             def __init__(self) -> None:
                 self.ch = [None, None]
-                self.sum = 0
+                self.summ = 0
 
         class Trie:
             def __init__(self) -> None:
@@ -107,24 +107,26 @@ class Solution:
                     if not root.ch[b]:
                         root.ch[b] = TrieNode()
                     root = root.ch[b]
-                    root.sum += 1
+                    root.summ += 1
                 return
 
-            # 表示有多少对数字的异或运算结果小于等于 lmt
+            # 统计有多少数对的异或值小于等于 lmt
             def count(self, x: int, lmt: int) -> int:
                 res = 0
                 root = self.r
                 for k in range(14, -1, -1):
                     b = x >> k & 1
                     if lmt >> k & 1:
-                        if root.ch[b]:  # 因为题目是小于号, 所以只有 lmt 对应位为 1 才能计数
-                            res += root.ch[b].sum
+                        # lmt 这一位为 1, b 和之前所有数字的这一位异或结果为 0, 后面的不用走了, 所以只有 lmt 对应位为 1 才计数
+                        if root.ch[b]:
+                            res += root.ch[b].summ
                         root = root.ch[b ^ 1]
                     else:
+                        # 走到最后才对等于 lmt 的结果计数
                         root = root.ch[b]
                     if root is None:
                         return res
-                res += root.sum  # 计算小于等于 lmt 和 小于 lmt 的区别, 上面已经避免了 root 为 None 的情况
+                res += root.summ  # 计算小于等于 lmt 和 小于 lmt 的区别, 上面已经避免了 root 为 None 的情况
                 return res
 
         def f(lmt: int) -> int:
@@ -177,7 +179,7 @@ class Solution:
             tree.add(x)
         return ans
 
-    # O(n + nlog(U/n)) / O(log(U/n)), U = max(nums), 350 ms
+    # O(n + nlog(U/n)) / O(log(U/n)), U = max(nums), 350 ms, TODO
     def countPairs(self, nums: List[int], low: int, high: int) -> int:
         ans = 0
         cnt = collections.Counter(nums)
@@ -187,6 +189,7 @@ class Solution:
             for k, v in cnt.items():
                 # high % 2 * cnt[(high - 1) ^ k] 相当于 cnt[(high - 1) ^ k] if high % 2 else 0
                 # ans += v * (high % 2 * cnt[(high - 1) ^ k] - low % 2 * cnt[(low - 1) ^ k])
+                
                 if high & 1:
                     ans += v * cnt[k ^ (high - 1)]
                 if low & 1:
