@@ -1051,6 +1051,18 @@ class Solution:
         return b
 
 
+# 1798 - Maximum Number of Consecutive Values You Can Make - MEDIUM
+class Solution:
+    def getMaximumConsecutive(self, coins: List[int]) -> int:
+        coins.sort()
+        ans = 0
+        for c in coins:
+            if c > ans + 1:
+                break
+            ans += c
+        return ans + 1
+
+
 # 1799 - Maximize Score After N Operations - HARD
 class Solution:
     # 2400 ms
