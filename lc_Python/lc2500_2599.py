@@ -1019,6 +1019,131 @@ class Solution:
         return bisect.bisect_left(range(p[n] + k + 1), x=True, key=check) - 1
 
 
+# 2529 - Maximum Count of Positive Integer and Negative Integer - EASY
+class Solution:
+    # O(n) / O(1)
+    def maximumCount(self, nums: List[int]) -> int:
+        return max(sum(v > 0 for v in nums), sum(v < 0 for v in nums))
+
+    # O(logn) / O(1)
+    def maximumCount(self, nums: List[int]) -> int:
+        a = bisect.bisect_left(nums, 0)
+        b = bisect.bisect_right(nums, 0)
+        return max(a, len(nums) - b)
+
+
+# 2530 - Maximal Score After Applying K Operations - MEDIUM
+class Solution:
+    # O(klogn) / O(1)
+    def maxKelements(self, nums: List[int], k: int) -> int:
+        nums = [-v for v in nums]
+        heapq.heapify(nums)
+        ans = 0
+        for _ in range(k):
+            ans -= heapq.heapreplace(nums, nums[0] // 3)  # nums[0] is negetive
+        return ans
+
+
+# 2531 - Make Number of Distinct Characters Equal - MEDIUM
+class Solution:
+    # O(n + m + 26**3) / O(26)
+    def isItPossible(self, word1: str, word2: str) -> bool:
+        c1 = [0] * 26
+        c2 = [0] * 26
+        for c in word1:
+            c1[ord(c) - 97] += 1
+        for c in word2:
+            c2[ord(c) - 97] += 1
+        for i in range(26):
+            if c1[i]:
+                for j in range(26):
+                    if c2[j]:
+                        # change
+                        c1[i] -= 1
+                        c1[j] += 1
+                        c2[i] += 1
+                        c2[j] -= 1
+                        # count
+                        n = m = 0
+                        for k in range(26):
+                            n += c1[k] > 0
+                            m += c2[k] > 0
+                        if n == m:
+                            return True
+                        # undo
+                        c1[i] += 1
+                        c1[j] -= 1
+                        c2[i] -= 1
+                        c2[j] += 1
+        return False
+
+    # O(n + m + 26**2) / O(26)
+    def isItPossible(self, word1: str, word2: str) -> bool:
+        c1 = collections.Counter(word1)
+        c2 = collections.Counter(word2)
+        for x, n in c1.items():
+            for y, m in c2.items():
+                if y == x:
+                    if len(c1) == len(c2):
+                        return True
+                elif len(c1) - (n == 1) + (y not in c1) == len(c2) - (m == 1) + (
+                    x not in c2
+                ):
+                    return True
+        return False
+
+
+# 2532 - Time to Cross a Bridge - HARD
+class Solution:
+    # while loop:
+    #   pop worker from workL to waitL
+    #   pop worker from workR to waitR
+    #   if waitR:
+    #       pop worker from waitR, go through the bridge, then put it into workL(record finishing time)
+    #   elif waitL:
+    #       pop worker from waitL, go through the bridge, then put it into workR(record finishing time), n--
+    #   else:
+    #       can do nothing, waiting for workers to finish, update time
+    # the last one go through is the answer
+
+    # O(nlogk) / O(k)
+    def findCrossingTime(self, n: int, k: int, time: List[List[int]]) -> int:
+        time.sort(key=lambda t: t[0] + t[2])
+        cur = 0
+        workL = []
+        waitL = [-i for i in range(k)[::-1]]
+        workR = []  # (finishing time, -index)
+        waitR = []  # (-index, finishing time)
+        while n:
+            while workL and workL[0][0] <= cur:
+                _, i = heapq.heappop(workL)
+                heapq.heappush(waitL, i)  # put boxes on the left
+            while workR and workR[0][0] <= cur:
+                _, i = heapq.heappop(workR)
+                heapq.heappush(waitR, i)  # pick up boxes on the right
+            if waitR:
+                i = heapq.heappop(waitR)
+                cur += time[-i][2]
+                heapq.heappush(workL, (cur + time[-i][3], i))  # put
+            elif waitL:
+                i = heapq.heappop(waitL)
+                cur += time[-i][0]
+                heapq.heappush(workR, (cur + time[-i][1], i))  # pick up
+                n -= 1
+            # find the earliest time a worker has finished
+            elif len(workL) == 0:  # all workers on the right
+                cur = workR[0][0]
+            elif len(workR) == 0:  # all workers on the left
+                cur = workL[0][0]
+            else:
+                cur = min(workL[0][0], workR[0][0])
+        while workR:
+            # wait until all workers on the right move to the left
+            t, i = heapq.heappop(workR)
+            cur = max(t, cur) + time[-i][2]
+        return cur
+
+
 # 2544 - Alternating Digit Sum - EASY
 class Solution:
     # O(logn) / O(n)

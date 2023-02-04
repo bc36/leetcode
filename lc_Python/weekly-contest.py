@@ -1126,6 +1126,11 @@ T4: 547 pass
 # 分类讨论 + 枚举
 
 
+# https://leetcode.cn/contest/weekly-contest-325/
+# 288 / https://leetcode.cn/contest/weekly-contest-325/problems/number-of-great-partitions/
+# dp + 01背包
+
+
 """
 AK, 2022-12-31
 https://leetcode.cn/contest/weekly-contest-326/
@@ -1136,9 +1141,11 @@ T4: 1807
 """
 
 
-# https://leetcode.cn/contest/weekly-contest-325/
-# 288 / https://leetcode.cn/contest/weekly-contest-325/problems/number-of-great-partitions/
-# dp + 01背包
+# https://leetcode.cn/contest/weekly-contest-327/
+# 1671 / https://leetcode.cn/contest/weekly-contest-327/problems/make-number-of-distinct-characters-equal/
+# 枚举
+# 151 / https://leetcode.cn/contest/weekly-contest-327/problems/time-to-cross-a-bridge/
+# 堆 + 模拟
 
 
 # https://leetcode.cn/contest/weekly-contest-329/
