@@ -96,6 +96,15 @@ lc 1552 https://leetcode.cn/problems/magnetic-force-between-two-balls/
 lc 1802 https://leetcode.cn/problems/maximum-value-at-a-given-index-in-a-bounded-array/
 lc 2517 https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/
 
+another type:
+lc 2560 https://leetcode.cn/problems/house-robber-iv/
+
+which type?
+lc 875  https://leetcode.cn/problems/koko-eating-bananas/
+lc 1870 https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/
+lc 2187 https://leetcode.cn/problems/minimum-time-to-complete-trips/
+lc 2226 https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/
+
 最小值最大化 / 左侧最后一个满足条件的值
 while l < r:
     m = l + r + 1 >> 1

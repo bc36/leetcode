@@ -1137,7 +1137,7 @@ https://leetcode.cn/contest/weekly-contest-326/
 Rank: 351 / 757
 WA: T4(1)
 FT: 0:32:52
-T4: 1807
+T4: 1807 pass
 """
 
 
@@ -1151,3 +1151,13 @@ T4: 1807
 # https://leetcode.cn/contest/weekly-contest-329/
 # 407 / https://leetcode.cn/contest/weekly-contest-329/problems/minimum-cost-to-split-an-array/
 # dp + 分类
+
+
+"""
+AK, 2023-02-04
+https://leetcode.cn/contest/weekly-contest-331/
+Rank: 334 / 745
+WA: T4(3)
+FT: 1:23:41
+T4: 528 pass
+"""

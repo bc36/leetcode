@@ -1,11 +1,12 @@
 # Leetcode diary 📅
 ![Go version](https://img.shields.io/badge/Go-1.18-white?labelColor=deepskyblue&color=white)
 ![Py version](https://img.shields.io/badge/Python-3.8-white?labelColor=blue&color=white)
+![Java version](https://img.shields.io/badge/Java-17.0.6-white?labelColor=red&color=white)
 * Forgetting Go 😕
 * Training Python 🥱
-* ~~Java 🙅~~
-* When can I be a JavaScript master 🤔
-
+* Picking up Java 🥹
+* Drown by C++ 🫠
+* Is JavaScript the best programming language to become a full-stack developer 🤔
 
 <br><br>
 
@@ -52,11 +53,13 @@ isbn: 978-7-83009-313-6
 
 * `collections.Counter(a) > collections.Counter(b)`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), All of those tests treat missing elements as having zero counts so that Counter(a=1) == Counter(a=1, b=0) returns true.
 
-* `x != y != z` 表现为 `x != y and y != z`, 而不是 `x != b and x != z and b != z`, 所以 `x < y > z` 是有可能的, [6.10. Comparisons](https://docs.python.org/3/reference/expressions.html#comparisons)
+* `c = Counter(a=3, b=1); d = Counter(a=1, b=2); # c - d -> Counter({'a': 2})`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), Counter() subtract **ONLY** keep positive counts. if we want to include negative values, use `obj1.subtract(obj2)` 
+
+* `x != y != z` behaves as `x != y and y != z`, instead of `x != b and x != z and b != z`, so `x < y > z` is possible, [6.10. Comparisons](https://docs.python.org/3/reference/expressions.html#comparisons)
 
 * quotes in type hint, `def lca(root: 'TreeNode')`, [PEP 484](https://peps.python.org/pep-0484/#forward-references)
 
-* [Glossary](https://docs.python.org/3/glossary.html)
+* [Py Glossary](https://docs.python.org/3/glossary.html)
 
 
 <br><br>
@@ -96,7 +99,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 <br><br>
 
 
-# DP
+# Dynamic Programming
 
 * **Memoization** and **Tabulation**
   - Tabulation(Bottom Up)(刷表)
@@ -132,7 +135,6 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 <br><br>
 
 # :seven::seven::eight::eight:
-* C++: 一年精通, 三年熟悉, 五年了解, 十年用过
 * MOD:
   * **不取余python超时**
   * dp中有减法, 负数 x 取余, 防止变一个大数: `(x + MOD) % MOD`
@@ -142,7 +144,11 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
     * 取模和求余应该是同一种运算, 只是在被除数和除数符号不同时, 余数的符号是有歧义的, 可为正也可为负
       * C, Go, JavaScript, Rust, Java, Swift, PHP中结果与被除数同符号
       * Python 中结果与除数同符号
-  
+
+* 精度:
+  * 32 位整数开方的整数部分是准确的
+  * 64 位开方可能得到类似 xxx.9999999 的结果
+
 * 回溯:
   * 两重for循环, 内层for break之后, 回溯"路径"被打断了, 不能复原到初始状态
 
@@ -179,7 +185,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
         lower, upper to upper: asc &= -33
         ```
 
-* Trick
+* Py Fast Reader
   ```py
   # cf 快读
   fn = sys.stdin.readline

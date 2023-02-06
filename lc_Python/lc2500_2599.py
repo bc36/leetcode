@@ -1501,3 +1501,120 @@ class Solution:
             else:
                 break
         return targetX == targetY == 1
+
+
+# 2558 - Take Gifts From the Richest Pile - EASY
+class Solution:
+    # O(klogn) / O(n)
+    def pickGifts(self, gifts: List[int], k: int) -> int:
+        h = [-v for v in gifts]
+        heapq.heapify(h)
+        for _ in range(k):
+            heapq.heapreplace(h, -int((-h[0]) ** 0.5))  # truncates towards zero
+        return -sum(h)
+
+
+# 2559 - Count Vowel Strings in Ranges - MEDIUM
+class Solution:
+    def vowelStrings(self, words: List[str], queries: List[List[int]]) -> List[int]:
+        s = set("aeiou")
+        p = [0]
+        for w in words:
+            p.append(p[-1] + (1 if w[0] in s and w[-1] in s else 0))
+        return [p[r + 1] - p[l] for l, r in queries]
+
+
+# 2560 - House Robber IV - MEDIUM
+class Solution:
+    # O(nlogU) / O(1), U = max(nums)
+    def minCapability(self, nums: List[int], k: int) -> int:
+        l = min(nums)
+        r = max(nums)
+        while l < r:
+            m = l + r >> 1
+            t = 0
+            p = -2  # an index not adjacent to index zero
+            for i, v in enumerate(nums):
+                if v <= m and p != i - 1:
+                    t += 1
+                    p = i
+            if t >= k:
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    def minCapability(self, nums: List[int], k: int) -> int:
+        def check(m: int) -> bool:
+            t = 0
+            p = -2
+            for i, v in enumerate(nums):
+                if v <= m and p != i - 1:
+                    t += 1
+                    p = i
+            return t >= k
+
+        return bisect.bisect_left(
+            range(0, max(nums) + 1), True, min(nums), max(nums) + 1, key=check
+        )
+
+    def minCapability(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+
+        def check(m: int) -> int:
+            # f[i] 表示偷前 i 个房子, 最多可以偷多少个房子(房子金额不大于 m)
+            # f[i] = max(f[i-1], f[i-2] + 1)
+            # f[0] = max(f[-1], f[-2] + 1)
+            # 防止越界, 下标加 2
+            # f[i+2] = max(f[i+1], f[i] + 1)
+            f = [0] * (n + 2)
+            for i, v in enumerate(nums):
+                f[i + 2] = f[i + 1]
+                if v <= m:
+                    f[i + 2] = max(f[i + 2], f[i] + 1)
+            return f[n + 1]
+
+            # 滚动数组优化空间, f2 = max(f0, f1 + 1)
+            f0 = f1 = 0
+            for v in nums:
+                if v > m:
+                    f0 = f1
+                else:
+                    f0, f1 = f1, max(f1, f0 + 1)
+            return f1
+
+        return bisect.bisect_left(range(max(nums) + 1), k, key=check)
+
+
+# 2561 - Rearranging Fruits - HARD
+class Solution:
+    # 1. not exchange two big values directly, use another small value as a "tool" to exchange two big values
+    # 2. the small value is exactly the minimum value in the basket and does not need to care where it is
+    # 3. (optimal) one list is enough
+
+    # O(nlogn) / O(n)
+    def minCost(self, basket1: List[int], basket2: List[int]) -> int:
+        c1 = collections.Counter(basket1)
+        c2 = collections.Counter(basket2)
+        cnt = c1 + c2
+        if any(v & 1 for v in cnt.values()):
+            return -1
+        target = collections.Counter({k: v // 2 for k, v in cnt.items()})
+        d1 = sorted((target - c1).elements())  # will omit negative values
+        d2 = sorted((c1 - target).elements(), reverse=True)
+        mi = min(cnt)
+        return sum(min(a, b, mi * 2) for a, b in zip(d1, d2))
+
+    def minCost(self, basket1: List[int], basket2: List[int]) -> int:
+        cnt = collections.Counter()
+        for x, y in zip(basket1, basket2):
+            cnt[x] += 1
+            cnt[y] -= 1
+        mi = min(cnt)
+        arr = []
+        for k, v in cnt.items():
+            if v % 2:
+                return -1
+            arr.extend([k] * (abs(v) // 2))
+        arr.sort()
+        return sum(min(v, mi * 2) for v in arr[: len(arr) // 2])
