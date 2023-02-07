@@ -23,6 +23,21 @@ class TreeNode:
         self.right = None
 
 
+# 1604 - Alert Using Same Key-Card Three or More Times in a One Hour Period - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def alertNames(self, keyName: List[str], keyTime: List[str]) -> List[str]:
+        d = collections.defaultdict(list)
+        for n, t in zip(keyName, keyTime):
+            d[n].append(int(t[:2]) * 60 + int(t[3:]))
+        ans = []
+        for k, v in d.items():
+            v.sort()
+            if any(t2 - t1 <= 60 for t1, t2 in zip(v, v[2:])):
+                ans.append(k)
+        return sorted(ans)
+
+
 # 1606 - Find Servers That Handled Most Number of Requests - HARD
 class Solution:
     # O(nlogk + k)

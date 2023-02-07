@@ -261,6 +261,13 @@ class Skiplist:
         return True
 
 
+# 1207 - Unique Number of Occurrences - EASY
+class Solution:
+    def uniqueOccurrences(self, arr: List[int]) -> bool:
+        cnt = collections.Counter(arr)
+        return len(set(cnt)) == len(set(cnt.values()))
+
+
 # 1209 - Remove All Adjacent Duplicates in String II - MEDIUM
 class Solution:
     def removeDuplicates(self, s: str, k: int) -> str:
@@ -285,6 +292,95 @@ class Solution:
             else:
                 st.append([c, 1])
         return "".join(c * t for c, t in st)
+
+
+# 1210 - Minimum Moves to Reach Target with Rotations - HARD
+class Solution:
+    # O(n^2) / O(n^2)
+    def minimumMoves(self, grid: List[List[int]]) -> int:
+        vis = {(0, 0, 0)}
+        q = [(0, 0, 0)]  # 0: horizontal / 1: vertical
+        n = len(grid)
+        step = 0
+        while q:
+            new = []
+            for x, y, f in q:
+                if f:
+                    if x + 2 < n and not grid[x + 2][y] and (x + 1, y, f) not in vis:
+                        new.append((x + 1, y, f))
+                        vis.add((x + 1, y, f))
+                    if (
+                        x + 1 < n
+                        and y + 1 < n
+                        and not grid[x][y + 1]
+                        and not grid[x + 1][y + 1]
+                        and (x, y + 1, f) not in vis
+                    ):
+                        new.append((x, y + 1, f))
+                        vis.add((x, y + 1, f))
+                    if (
+                        x + 1 < n
+                        and y + 1 < n
+                        and not grid[x][y + 1]
+                        and not grid[x + 1][y + 1]
+                        and (x, y, 1 - f) not in vis
+                    ):
+                        new.append((x, y, 1 - f))
+                        vis.add((x, y, 1 - f))
+                else:
+                    if x == n - 1 and y == n - 2:
+                        return step
+                    if y + 2 < n and not grid[x][y + 2] and (x, y + 1, f) not in vis:
+                        new.append((x, y + 1, f))
+                        vis.add((x, y + 1, f))
+                    if (
+                        x + 1 < n
+                        and y + 1 < n
+                        and not grid[x + 1][y]
+                        and not grid[x + 1][y + 1]
+                        and (x + 1, y, f) not in vis
+                    ):
+                        new.append((x + 1, y, f))
+                        vis.add((x + 1, y, f))
+                    if (
+                        x + 1 < n
+                        and y + 1 < n
+                        and not grid[x + 1][y]
+                        and not grid[x + 1][y + 1]
+                        and (x, y, 1 - f) not in vis
+                    ):
+                        new.append((x, y, 1 - f))
+                        vis.add((x, y, 1 - f))
+            q = new
+            step += 1
+        return -1
+
+    def minimumMoves(self, g: List[List[int]]) -> int:
+        step = 0
+        n = len(g)
+        vis = {(0, 0, 0)}
+        q = [(0, 0, 0)]  # 0: horizontal / 1: vertical
+        while q:
+            new = []
+            for x, y, f in q:
+                for nx, ny, nf in (x + 1, y, f), (x, y + 1, f), (x, y, f ^ 1):
+                    a = nx + nf  # head's position
+                    b = ny + (nf ^ 1)
+                    if (
+                        a < n
+                        and b < n
+                        and not g[nx][ny]
+                        and not g[a][b]
+                        and (nx, ny, nf) not in vis
+                        and (nf == f or g[nx + 1][ny + 1] == 0)
+                    ):
+                        if nx == n - 1 and ny == n - 2:  # 此时蛇头一定在 (n-1,n-1)
+                            return step + 1
+                        vis.add((nx, ny, nf))
+                        new.append((nx, ny, nf))
+            q = new
+            step += 1
+        return -1
 
 
 # 1217 - Minimum Cost to Move Chips to The Same Position - EASY
