@@ -546,6 +546,91 @@ class Solution:
         )
 
 
+# 1233 - Remove Sub-Folders from the Filesystem - MEDIUM
+class Solution:
+    # O(nmlogn) / O(nl), n = len(folder), m = element_average_length(folder)
+    def removeSubfolders(self, folder: List[str]) -> List[str]:
+        def build() -> dict:
+            folder.sort(reverse=True)  # make '/a/b/c' before to '/a/b'
+            trie = {}
+            for x in folder:
+                r = trie
+                for y in x.split("/")[1:]:
+                    if y not in r:
+                        r[y] = {}
+                    r = r[y]
+                r.clear()
+
+                # ERROR, It won't clear the dict() it points to, instead it points to a new dict().
+                # r = {}
+
+            return trie
+
+        def calc(r: dict, prefix: str) -> None:
+            for x in r:
+                pwd = prefix + "/" + x
+                if len(r[x]) == 0:
+                    ans.append(pwd)
+                else:
+                    calc(r[x], pwd)
+            return
+
+        ans = []
+        calc(build(), "")
+        return ans
+
+    # O(nm) / O(nm)
+    def removeSubfolders(self, folder: List[str]) -> List[str]:
+        def build() -> dict:
+            trie = {}
+            for i, x in enumerate(folder):
+                r = trie
+                for y in x.split("/")[1:]:
+                    if y not in r:
+                        r[y] = {}
+                    r = r[y]
+                r["#"] = 1
+            return trie
+
+        def calc(r: dict, prefix: str) -> None:
+            for x in r:
+                pwd = prefix + "/" + x
+                if "#" in r[x]:
+                    ans.append(pwd)
+                else:
+                    calc(r[x], pwd)
+            return
+
+        ans = []
+        calc(build(), "")
+        return ans
+
+    def removeSubfolders(self, folder: List[str]) -> List[str]:
+        def build() -> dict:
+            trie = {}
+            for i, x in enumerate(folder):
+                r = trie
+                for y in x.split("/")[1:]:
+                    if y not in r:
+                        r[y] = {}
+                    r = r[y]
+                r["#"] = i
+            return trie
+
+        def dfs(r: dict) -> None:
+            for x in r:
+                if "#" in r:
+                    ans.append(folder[r["#"]])
+                    return
+                else:
+                    dfs(r[x])
+            return
+
+        ans = []
+        dfs(build())
+        return ans
+
+
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
