@@ -625,7 +625,54 @@ class Solution:
                 r = m - 1
         return l
 
+
 # 2518 - Number of Great Partitions - HARD
+class Solution:
+    # O(nk) / O(nk)
+    def countPartitions(self, nums: List[int], k: int) -> int:
+        if sum(nums) < k * 2:
+            return 0
+        mod = 10**9 + 7
+        n = len(nums)
+        # f[i][j]: 表示从前 i 个数中选择若干元素, 和为 j 的方案数
+        f = [[0] * k for _ in range(n + 1)]
+        f[0][0] = 1
+        for i in range(1, n + 1):
+            for j in range(k):
+                f[i][j] = f[i - 1][j]
+                if j >= nums[i - 1]:
+                    f[i][j] = (f[i][j] + f[i - 1][j - nums[i - 1]]) % mod
+
+        return (pow(2, n, mod) - sum(f[-1]) * 2) % mod
+
+    # https://leetcode.cn/problems/number-of-great-partitions/solution/by-tsreaper-69ff/
+    def countPartitions(self, nums: List[int], k: int) -> int:
+        mod = 10**9 + 7
+        n = len(nums)
+        f = [[0] * k for _ in range(n + 1)]
+        f[0][0] = 1
+        for i in range(1, n + 1):
+            for j in range(k):
+                f[i][j] = f[i - 1][j]
+                if j >= nums[i - 1]:
+                    f[i][j] = (f[i][j] + f[i - 1][j - nums[i - 1]]) % mod
+
+        summ = sum(nums)
+        # total amount of cases
+        ans = 1
+        for _ in range(n):
+            ans = ans * 2 % mod
+        # subtract the number of bad cases
+        for j in range(k):
+            d = summ - j
+            if d >= k:
+                # only one group which sum is less than K
+                ans = (ans - f[n][j] * 2 % mod) % mod
+            else:
+                # both groups have a sum less than K
+                ans = (ans - f[n][j]) % mod
+        return ans
+
     # O(nk) / O(k)
     def countPartitions(self, nums: List[int], k: int) -> int:
         if sum(nums) < k * 2:
@@ -633,9 +680,9 @@ class Solution:
         mod = 10**9 + 7
         f = [0] * k
         f[0] = 1
-        for x in nums:
-            for j in range(k - 1, x - 1, -1):
-                f[j] = (f[j] + f[j - x]) % mod
+        for v in nums:
+            for j in range(k - 1, v - 1, -1):
+                f[j] = (f[j] + f[j - v]) % mod
         return (pow(2, len(nums), mod) - sum(f) * 2) % mod
 
 

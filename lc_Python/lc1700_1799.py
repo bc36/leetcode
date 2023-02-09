@@ -1051,6 +1051,87 @@ class Solution:
         return b
 
 
+# 1797 - Design Authentication Manager - MEDIUM
+class AuthenticationManager:
+    def __init__(self, timeToLive: int):
+        self.t = timeToLive
+        self.d = {}
+
+    # O(1)
+    def generate(self, tokenId: str, currentTime: int) -> None:
+        self.d[tokenId] = currentTime + self.t
+        return
+
+    # O(1)
+    def renew(self, tokenId: str, currentTime: int) -> None:
+        if self.d.get(tokenId, 0) > currentTime:
+            self.d[tokenId] = currentTime + self.t
+        return
+
+    # O(n)
+    def countUnexpiredTokens(self, currentTime: int) -> int:
+        return sum(v > currentTime for v in self.d.values())
+
+
+class AuthenticationManager:
+    def __init__(self, timeToLive: int):
+        self.t = timeToLive
+        self.d = collections.OrderedDict()
+
+    # O(1)
+    def generate(self, tokenId: str, currentTime: int) -> None:
+        self.d[tokenId] = currentTime + self.t
+        return
+
+    # O(1)
+    def renew(self, tokenId: str, currentTime: int) -> None:
+        while self.d and next(iter(self.d.values())) <= currentTime:
+            self.d.popitem(last=False)
+        if tokenId in self.d:
+            self.d[tokenId] = currentTime + self.t
+            self.d.move_to_end(tokenId)
+        return
+
+    # O(1), Average-case time complexity
+    def countUnexpiredTokens(self, currentTime: int) -> int:
+        while self.d and next(iter(self.d.values())) <= currentTime:
+            self.d.popitem(last=False)
+        return len(self.d)
+
+
+class AuthenticationManager:
+    def __init__(self, timeToLive: int):
+        """
+        lazy update (extra element in heap and deleted in counting)
+        is possible because the currentTime is strictly increasing
+        which implies that if the renewal before counting is conducted,
+        the old record will be automatically deleted before counting.
+        """
+        self.t = timeToLive
+        self.d = {}
+        self.q = []
+
+    def generate(self, tokenId: str, currentTime: int) -> None:
+        heapq.heappush(self.q, (currentTime + self.t, tokenId))
+        self.d[tokenId] = currentTime + self.t
+        return
+
+    def renew(self, tokenId: str, currentTime: int) -> None:
+        if tokenId in self.d and self.d[tokenId] > currentTime:
+            self.d[tokenId] = currentTime + self.t  # add another record (new_time, id)
+            heapq.heappush(self.q, (currentTime + self.t, tokenId))
+        return
+
+    def countUnexpiredTokens(self, currentTime: int) -> int:
+        while self.q and self.q[0][0] <= currentTime:
+            # decide whether this record is the most up-to-date one for the given token
+            # only one record in dict()
+            if self.q[0][0] == self.d[self.q[0][1]]:
+                self.d.pop(self.q[0][1])
+            heapq.heappop(self.q)
+        return len(self.d)
+
+
 # 1798 - Maximum Number of Consecutive Values You Can Make - MEDIUM
 class Solution:
     def getMaximumConsecutive(self, coins: List[int]) -> int:
