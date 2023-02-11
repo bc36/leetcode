@@ -1191,6 +1191,77 @@ class Solution:
         return cur
 
 
+# 2535 - Difference Between Element Sum and Digit Sum of an Array - EASY
+class Solution:
+    # O(nlogU) / O(1)
+    def differenceOfSum(self, nums: List[int]) -> int:
+        ans = 0
+        for v in nums:
+            ans += v
+            while v:
+                ans -= v % 10
+                v //= 10
+        return ans  # actually element sum is always larger than digit sum
+
+    def differenceOfSum(self, nums: List[int]) -> int:
+        return sum(nums) - sum(map(int, "".join(str(v) for v in nums)))
+
+
+# 2536 - Increment Submatrices by One - MEDIUM
+class Solution:
+    # O(n^2 + q) / O(n^2)
+    def rangeAddQueries(self, n: int, queries: List[List[int]]) -> List[List[int]]:
+        d = [[0] * (n + 2) for _ in range(n + 2)]
+        for r1, c1, r2, c2 in queries:
+            d[r1 + 1][c1 + 1] += 1
+            d[r1 + 1][c2 + 2] -= 1
+            d[r2 + 2][c1 + 1] -= 1
+            d[r2 + 2][c2 + 2] += 1
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                d[i][j] += d[i][j - 1] + d[i - 1][j] - d[i - 1][j - 1]
+        d = d[1:-1]
+        for i, r in enumerate(d):
+            d[i] = r[1:-1]
+        return d
+
+    def rangeAddQueries(self, n: int, queries: List[List[int]]) -> List[List[int]]:
+        d = [[0] * (n + 1) for _ in range(n + 1)]
+        for r1, c1, r2, c2 in queries:
+            d[r1][c1] += 1
+            d[r1][c2 + 1] -= 1
+            d[r2 + 1][c1] -= 1
+            d[r2 + 1][c2 + 1] += 1
+        for i in range(n):
+            for j in range(1, n):
+                d[i][j] += d[i][j - 1]
+        for i in range(1, n):
+            for j in range(n):
+                d[i][j] += d[i - 1][j]
+        return [[d[i][j] for j in range(n)] for i in range(n)]
+
+    def rangeAddQueries(self, n: int, queries: List[List[int]]) -> List[List[int]]:
+        d = [[0] * (n + 1) for _ in range(n + 1)]
+        ans = []
+        cur = [0] * n
+        for r1, c1, r2, c2 in queries:
+            d[r1][c1] += 1
+            d[r1][c2 + 1] -= 1
+            d[r2 + 1][c1] -= 1
+            d[r2 + 1][c2 + 1] += 1
+        for i in range(n):
+            for j in range(n):
+                cur[j] += d[i][j]
+            ans.append(list(itertools.accumulate(cur)))
+        return ans
+
+
+# 2537 - Count the Number of Good Subarrays - MEDIUM
+
+
+# 2538 - Difference Between Maximum and Minimum Price Sum - HARD
+
+
 # 2544 - Alternating Digit Sum - EASY
 class Solution:
     # O(logn) / O(n)
@@ -1548,6 +1619,40 @@ class Solution:
             else:
                 break
         return targetX == targetY == 1
+
+
+# 2553 - Separate the Digits in an Array - EASY
+class Solution:
+    def separateDigits(self, nums: List[int]) -> List[int]:
+        ans = []
+        for v in nums:
+            new = []
+            while v:
+                new.append(v % 10)
+                v //= 10
+            ans.extend(new[::-1])
+        return ans
+
+    def separateDigits(self, nums: List[int]) -> List[int]:
+        return list(map(int, "".join(str(v) for v in nums)))
+
+    def separateDigits(self, nums: List[int]) -> List[int]:
+        return list(y for x in nums for y in map(int, str(x)))
+
+
+# 2554 - Maximum Number of Integers to Choose From a Range I - MEDIUM
+class Solution:
+    def maxCount(self, banned: List[int], n: int, maxSum: int) -> int:
+        ans = 0
+        banned = set(banned)
+        for i in range(1, n + 1):
+            if i in banned:
+                continue
+            if maxSum < i:
+                break
+            maxSum -= i
+            ans += 1
+        return ans
 
 
 # 2558 - Take Gifts From the Richest Pile - EASY
