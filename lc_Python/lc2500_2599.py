@@ -1209,6 +1209,7 @@ class Solution:
 
 # 2536 - Increment Submatrices by One - MEDIUM
 class Solution:
+    # 注意对比下面这三种二维前缀和的写法
     # O(n^2 + q) / O(n^2)
     def rangeAddQueries(self, n: int, queries: List[List[int]]) -> List[List[int]]:
         d = [[0] * (n + 2) for _ in range(n + 2)]
@@ -1770,3 +1771,324 @@ class Solution:
             arr.extend([k] * (abs(v) // 2))
         arr.sort()
         return sum(min(v, mi * 2) for v in arr[: len(arr) // 2])
+
+
+# 2562 - Find the Array Concatenation Value - EASY
+class Solution:
+    # O(nlogU) / O(n), U = max(nums)
+    def findTheArrayConcVal(self, nums: List[int]) -> int:
+        ans = 0
+        q = collections.deque(nums)
+        while q:
+            if len(q) == 1:
+                ans += q.pop()
+            else:
+                a = q.popleft()
+                b = q.pop()
+                ans += int(str(a) + str(b))
+        return ans
+
+    # O(nlogU) / O(1)
+    def findTheArrayConcVal(self, nums: List[int]) -> int:
+        ans = i = 0
+        j = len(nums) - 1
+        while i < j:
+            x = nums[i]
+            y = nums[j]
+            while y:
+                x *= 10
+                y //= 10
+            ans += x + nums[j]
+            i += 1
+            j -= 1
+        if i == j:
+            ans += nums[i]
+        return ans
+
+
+# 2563 - Count the Number of Fair Pairs - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        ans = 0
+        sl = sortedcontainers.SortedList()
+        for v in nums:
+            ans += sl.bisect_left(upper + 1 - v) - sl.bisect_left(lower - v)
+            sl.add(v)
+        return ans
+
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        ans = 0
+        sl = sortedcontainers.SortedList()
+        for v in nums:
+            ans += sl.bisect_right(upper - v) - sl.bisect_right(lower - v - 1)
+            sl.add(v)
+        return ans
+
+    # 由于题目只关心数对的和, 排序不会影响数对的个数以及和, 为了能够二分, 可以先排序
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        nums.sort()
+        ans = 0
+        arr = []
+        for v in nums:
+            l = bisect.bisect_left(arr, lower - v)
+            r = bisect.bisect_right(arr, upper - v)
+            ans += r - l
+            arr.append(v)
+        return ans
+
+    # O(nlogn) / O(logn)
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        nums.sort()
+        ans = 0
+        for i, v in enumerate(nums):
+            l = bisect.bisect_left(nums, lower - v, hi=i)
+            r = bisect.bisect_right(nums, upper - v, hi=i)
+            ans += r - l
+        return ans
+
+    # TODO
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        nums.sort()
+        ans = 0
+        for v in nums:
+            l = bisect.bisect_left(nums, lower - v)
+            r = bisect.bisect_right(nums, upper - v)
+            ans += r - l
+            if lower <= v * 2 <= upper:
+                ans -= 1
+        return ans // 2
+
+    # O(nlogn) / O(1), TODO
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        nums.sort()
+        ans = l = 0
+        r = len(nums) - 1
+        while l < r:
+            if nums[l] + nums[r] > upper:
+                r -= 1
+            else:
+                ans += r - l
+                l += 1
+        l = 0
+        r = len(nums) - 1
+        while l < r:
+            if nums[l] + nums[r] > lower - 1:
+                r -= 1
+            else:
+                ans -= r - l
+                l += 1
+        return ans
+
+
+# 2564 - Substring XOR Queries - MEDIUM
+class Solution:
+    def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
+        ans = []
+        for a, b in queries:
+            t = a ^ b
+            bt = bin(t)[2:]
+            p = s.find(bt)
+            ans.append((-1, -1) if p == -1 else (p, p + len(bt) - 1))
+        return ans
+
+    def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
+        ans = []
+        for a, b in queries:
+            t = a ^ b
+            bt = bin(t)[2:]
+            try:
+                p = s.index(bt)
+                ans.append((p, p + len(bt) - 1))
+            except:
+                ans.append((-1, -1))
+        return ans
+
+    # 1e9 < 2**30, 预处理所有长度不超过 30 的数及其对应的  left 和 right
+    # O(30n + q) / O(30n)
+    def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
+        n = len(s)
+        d = {}
+        for l in range(n):
+            x = 0
+            for r in range(l, min(l + 30, n)):
+                x = (x << 1) | (s[r] == "1")
+                if x not in d or r - l < d[x][1] - d[x][0]:
+                    d[x] = (l, r)
+
+        NOT_FOUND = (-1, -1)
+        return [d.get(a ^ b, NOT_FOUND) for a, b in queries]
+
+    def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
+        d = {}
+        for i in range(len(s)):
+            cur = 0
+            if s[i] != "0":
+                for j in range(31):
+                    if i + j < len(s):
+                        cur = (cur << 1) + int(s[i + j])
+                        if cur not in d:
+                            d[cur] = (i, i + j)
+            else:
+                if 0 not in d:
+                    d[0] = (i, i)
+        NOT_FOUND = (-1, -1)
+        return [d.get(a ^ b, NOT_FOUND) for a, b in queries]
+
+    def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
+        d = {}
+        for i in range(len(s)):
+            for j in range(i + 1, i + 32):
+                if s[i] == "0" and j > i + 1:
+                    continue
+                w = s[i:j]
+                if w not in d:
+                    d[w] = i
+        ans = []
+        for a, b in queries:
+            t = a ^ b
+            bt = bin(t)[2:]
+            if bt not in d:
+                ans.append((-1, -1))
+            else:
+                ans.append((d[bt], d[bt] + len(bt) - 1))
+        return ans
+
+    def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
+        d = collections.defaultdict(lambda: (-1, -1))
+        for l in range(1, 31):
+            for i in range(len(s)):
+                if l > 1 and s[i] == "0":
+                    continue
+                if i + l > len(s):
+                    break
+                w = s[i : i + l]
+                if w not in d:
+                    d[w] = (i, i + l - 1)
+        return [d[bin(x ^ y)[2:]] for x, y in queries]
+
+
+# 2565 - Subsequence With the Minimum Score - HARD
+class Solution:
+    # 1. 删除 [left, right] 的一部分, 和删除 [left, right] 所有字符, 得分一样
+    # -> 删除子串而不是删除子序列
+    # -> 从 t 中删除最短的子串, 使得剩余部分是 s 的子序列
+
+    # 2. 删除子串后, 剩余部分是 t 的一个前缀(匹配 s[:i]), 和 t 的一个后缀(匹配 s[i:]), 前后缀不能有重叠
+    # -> 枚举 i, 分别计算能够与 s[:i] 和 s[i:] 匹配的 t 的最长前缀和最长后缀
+    # -> "从中间删除", 容易想到前后缀分解
+
+    # pre[i] 为 s[:i] 对应的 t 的最长前缀的结束下标
+    # suf[i] 为 s[i:] 对应的 t 的最长后缀的开始下标
+    # 答案就是 suf[i] - pre[i] - 1 的最小值
+
+    # 经验: 对于子序列问题, 枚举大的, 去匹配小的, 写起来代码量要少一些
+
+    # O(n) / O(n)
+    def minimumScore(self, s: str, t: str) -> int:
+        n = len(s)
+        m = len(t)
+        pre = [0 for _ in range(n + 1)]  # prefix of s to match t
+        suf = [0 for _ in range(n + 1)]  # suffix of s to match t
+
+        pre[0] = -1
+        p = 0
+        for i in range(n):
+            if p < m and s[i] == t[p]:
+                p += 1
+            pre[i + 1] = p - 1
+
+        suf[n] = m
+        p = m - 1
+        for i in range(n - 1, -1, -1):
+            if 0 <= p and s[i] == t[p]:
+                p -= 1
+            suf[i] = p + 1
+
+        ans = m
+        for i in range(n + 1):
+            cur = suf[i] - pre[i] - 1
+            cur = max(0, cur)
+            ans = min(ans, cur)
+        return ans
+
+    def minimumScore(self, s: str, t: str) -> int:
+        n = len(s)
+        m = len(t)
+        pre_cnt = [0 for _ in range(n + 1)]  # prefix of s to match t
+        suf_cnt = [0 for _ in range(n + 1)]  # suffix of s to match t
+
+        pre_cnt[0] = 0
+        p = 0
+        cnt = 0
+        for i in range(n):
+            if p < m and s[i] == t[p]:
+                p += 1
+                cnt += 1
+            pre_cnt[i + 1] = cnt
+
+        suf_cnt[n] = 0
+        p = m - 1
+        cnt = 0
+        for i in range(n - 1, -1, -1):
+            if 0 <= p and s[i] == t[p]:
+                p -= 1
+                cnt += 1
+            suf_cnt[i] = cnt
+
+        ans = m
+        for i in range(n + 1):
+            cur = m - (pre_cnt[i] + suf_cnt[i])
+            ans = min(ans, cur)
+        return max(ans, 0)
+
+    def minimumScore(self, s: str, t: str) -> int:
+        # l[i]: s 前面 i+1 个数字匹配 t 的最长前缀
+        # r[i]: s 后面 n-i 个数字匹配 t 的最长后缀
+        n = len(s)
+        m = len(t)
+        l = [0] * n
+        r = [0] * n
+
+        p = 0
+        for i in range(n):
+            if p < m and s[i] == t[p]:
+                p += 1
+            l[i] = p
+
+        p = m - 1
+        for i in range(n - 1, -1, -1):
+            if p > -1 and s[i] == t[p]:
+                p -= 1
+            r[i] = m - 1 - p
+
+        ans = m
+        for i in range(n - 1):
+            a = l[i]
+            b = r[i + 1]
+            if a + b > m:
+                return 0
+            ans = min(ans, m - a - b)
+        ans = min(ans, m - r[0], m - l[n - 1])
+        return ans
+
+    def minimumScore(self, s: str, t: str) -> int:
+        n = len(s)
+        m = len(t)
+        s = " " + s
+        t = " " + t
+        pre = [0] * (n + 2)
+        suf = [0] * (n + 2)
+        for i in range(1, n + 1):
+            pre[i] = pre[i - 1]
+            if pre[i] < m and s[i] == t[pre[i] + 1]:
+                pre[i] += 1
+        suf[n + 1] = m + 1
+        for i in range(n, 0, -1):
+            suf[i] = suf[i + 1]
+            if suf[i] > 1 and s[i] == t[suf[i] - 1]:
+                suf[i] -= 1
+        ans = m
+        for i in range(n + 1):
+            ans = min(ans, suf[i + 1] - pre[i] - 1)
+        return max(ans, 0)

@@ -1161,3 +1161,8 @@ WA: T4(3)
 FT: 1:23:41
 T4: 528 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-332/
+# 308 / https://leetcode.cn/contest/weekly-contest-332/problems/subsequence-with-the-minimum-score/
+# 枚举 + 前后缀分解
