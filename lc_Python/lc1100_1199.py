@@ -227,6 +227,44 @@ class Solution:
         return ans
 
 
+# 1138 - Alphabet Board Path - MEDIUM
+class Solution:
+    def alphabetBoardPath(self, target: str) -> str:
+        board = ["abcde", "fghij", "klmno", "pqrst", "uvwxy", "z"]
+        d = {}
+        for i, r in enumerate(board):
+            for j, c in enumerate(r):
+                d[c] = (i, j)
+        ans = ""
+        p = (0, 0)
+        for c in target:
+            dx = d[c][0] - p[0]
+            dy = d[c][1] - p[1]
+            # due of the position of 'z', we should move to 'U' and 'L' first to prevent crossing the boundary
+            if dx < 0:
+                ans += "U" * (-dx)
+            if dy < 0:
+                ans += "L" * (-dy)
+            if dx > 0:
+                ans += "D" * dx
+            if dy > 0:
+                ans += "R" * dy
+            ans += "!"
+            p = d[c]
+        return ans
+
+    def alphabetBoardPath(self, target: str) -> str:
+        ans = ""
+        x = y = 0
+        for c in target:
+            nx, ny = divmod(ord(c) - ord("a"), 5)
+            v = "UD"[nx > x] * abs(nx - x)
+            h = "LR"[ny > y] * abs(ny - y)
+            ans += (v + h if c != "z" else h + v) + "!"
+            x, y = nx, ny
+        return ans
+
+
 # 1143 - Longest Common Subsequence - MEDIUM
 class Solution:
     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
