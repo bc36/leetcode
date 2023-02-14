@@ -583,7 +583,7 @@ class Solution:
     def removeSubfolders(self, folder: List[str]) -> List[str]:
         def build() -> dict:
             trie = {}
-            for i, x in enumerate(folder):
+            for x in folder:
                 r = trie
                 for y in x.split("/")[1:]:
                     if y not in r:
@@ -628,6 +628,27 @@ class Solution:
 
         ans = []
         dfs(build())
+        return ans
+
+
+# 1234 - Replace the Substring for Balanced String - MEDIUM
+class Solution:
+    # 如果子串之外的任意字符的出现次数都超过 t, 无论怎么换, 都无法使这些字符的出现次数等于 t
+    # 如果子串之外的任意字符的出现次数都不超过 t, 才可以通过替换子串, 使得每个字符出现次数为 t
+    # O(n) / O(1)
+    def balancedString(self, s: str) -> int:
+        cnt = collections.Counter(s)
+        t = len(s) // 4
+        if all(v == t for v in cnt.values()):
+            return 0
+        l = 0
+        ans = 1e5
+        for r, c in enumerate(s):
+            cnt[c] -= 1
+            while all(v <= t for v in cnt.values()):
+                ans = min(ans, r - l + 1)
+                cnt[s[l]] += 1
+                l += 1
         return ans
 
 
@@ -849,3 +870,9 @@ class Solution:
                 nxt += 1
                 num = num * 10 + nxt
         return sorted(ans)
+
+
+# 1295 - Find Numbers with Even Number of Digits - EASY
+class Solution:
+    def findNumbers(self, nums: List[int]) -> int:
+        return sum(len(str(v)) % 2 == 0 for v in nums)

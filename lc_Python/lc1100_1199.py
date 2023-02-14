@@ -116,6 +116,61 @@ class Solution:
         return ans
 
 
+# 1124 - Longest Well-Performing Interval - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def longestWPI(self, hours: List[int]) -> int:
+        ans = s = 0
+        before = {}
+        for i, v in enumerate(hours):
+            s += 1 if v > 8 else -1
+            if s > 0:
+                ans = i + 1
+            # 为什么是 s - 1? 可以从以下几个方面理解:
+            # 此时 s <= 0, 想象一个 v 型图案
+            # 题目要求差值大于 0 而不是等于 0, 说明 [j+1,i] 这一段表现良好, 才能使得 s 从 s-1 变成 s
+            # 因为 s <= 0, 所以 s-1 比 s-2, s-3 更早出现, 所以考察 s-1 的位置
+            elif s - 1 in before:
+                ans = max(ans, i - before[i - 1])
+            if s not in before:
+                before[s] = i
+        return ans
+
+    # 问题转换
+    # 1. 劳累天数大于不劳累天数
+    # -> 劳累天数减去不劳累天数大于 0
+    # 2. 令劳累的一天视作 nums[i] = 1, 不劳累的一天 nums[i] = 1
+    # -> 计算 nums 的最长子数组, 其元素和大于 0
+
+    # 单调递减栈, 栈中保存可能的左端点
+    # 倒序遍历, 考察左右最长距离
+    def longestWPI(self, hours: List[int]) -> int:
+        p = [0] * (len(hours) + 1)
+        st = [0]
+        for i, v in enumerate(hours, start=1):
+            p[i] = p[i - 1] + (1 if v > 8 else -1)
+            if p[i] < p[st[-1]]:
+                st.append(i)
+        ans = 0
+        for i in range(len(hours), 0, -1):
+            while st and p[st[-1]] < p[i]:
+                ans = max(ans, i - st.pop())  # [st[-1],i) 可能是最长子数组
+        return ans
+
+    def longestWPI(self, hours: List[int]) -> int:
+        p = [0] * (len(hours) + 1)
+        st = [-1]
+        for i, v in enumerate(hours):
+            p[i + 1] = p[i] + (1 if v > 8 else -1)
+            if p[i + 1] < p[st[-1]]:
+                st.append(i)
+        ans = 0
+        for i in range(len(hours), -1, -1):
+            while st and p[st[-1] + 1] < p[i]:
+                ans = max(ans, i - (st.pop() + 1))
+        return ans
+
+
 # 1128 - Number of Equivalent Domino Pairs - EASY
 class Solution:
     def numEquivDominoPairs(self, dominoes: List[List[int]]) -> int:
