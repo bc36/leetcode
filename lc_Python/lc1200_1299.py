@@ -725,6 +725,17 @@ class Solution:
         return "".join(arr)
 
 
+# 1250 - Check If It Is a Good Array - HARD
+class Solution:
+    # 裴蜀定理
+    def isGoodArray(self, nums: List[int]) -> bool:
+        return functools.reduce(math.gcd, nums) == 1
+
+    # >= 3.9, 支持使用 *args 解包多个数求最大公约数的情况
+    def isGoodArray(self, nums: List[int]) -> bool:
+        return math.gcd(*nums) == 1
+
+
 # 1252 - Cells with Odd Values in a Matrix - EASY
 class Solution:
     def oddCells(self, m: int, n: int, indices: List[List[int]]) -> int:
@@ -815,6 +826,29 @@ class CombinationIterator:
         return len(self.dq) > 0
 
 
+# 1287 - Element Appearing More Than 25% In Sorted Array - EASY
+class Solution:
+    def findSpecialInteger(self, arr: List[int]) -> int:
+        t = 0
+        most = arr[0]
+        for v in arr:
+            if v == most:
+                t += 1
+            else:
+                t = 1
+            most = v
+            if t * 4 > len(arr):
+                return most
+        return -1
+
+    def findSpecialInteger(self, arr: List[int]) -> int:
+        cnt = len(arr) // 4
+        for i in range(len(arr) - cnt):
+            if arr[i] == arr[i + cnt]:
+                return arr[i]
+        return -1
+
+
 # 1290 - Convert Binary Number in a Linked List to Integer - EASY
 class Solution:
     def getDecimalValue(self, head: ListNode) -> int:
@@ -876,3 +910,12 @@ class Solution:
 class Solution:
     def findNumbers(self, nums: List[int]) -> int:
         return sum(len(str(v)) % 2 == 0 for v in nums)
+
+
+# 1299 - Replace Elements with Greatest Element on Right Side - EASY
+class Solution:
+    def replaceElements(self, arr: List[int]) -> List[int]:
+        ans = [0] * (len(arr) - 1) + [-1]
+        for i in range(len(arr) - 2, -1, -1):
+            ans[i] = max(ans[i + 1], arr[i + 1])
+        return ans
