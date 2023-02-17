@@ -1,4 +1,4 @@
-import collections, bisect, functools, math, heapq, random, itertools
+import bisect, collections, functools, heapq, itertools, math, string, operator
 from typing import List, Optional, Tuple
 import sortedcontainers
 

@@ -1,5 +1,5 @@
-import collections, heapq, functools, itertools, math
-from typing import List, Union, Optional
+import bisect, collections, functools, heapq, itertools, math, string, operator
+from typing import List, Optional, Tuple, Union
 import sortedcontainers
 
 

@@ -1,5 +1,5 @@
-import bisect, collections, functools, math, itertools, heapq, string, operator, re
-from typing import List, Optional
+import bisect, collections, functools, heapq, itertools, math, string, operator, re
+from typing import List, Optional, Tuple
 import sortedcontainers
 
 # 1800 - Maximum Ascending Subarray Sum - EASY
@@ -189,7 +189,7 @@ class Solution:
             for k, v in cnt.items():
                 # high % 2 * cnt[(high - 1) ^ k] 相当于 cnt[(high - 1) ^ k] if high % 2 else 0
                 # ans += v * (high % 2 * cnt[(high - 1) ^ k] - low % 2 * cnt[(low - 1) ^ k])
-                
+
                 if high & 1:
                     ans += v * cnt[k ^ (high - 1)]
                 if low & 1:
