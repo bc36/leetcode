@@ -1,5 +1,6 @@
-import bisect, collections, functools, heapq, math
-from typing import List, Optional
+import bisect, collections, functools, heapq, itertools, math, string, operator
+from typing import List, Optional, Tuple
+import sortedcontainers
 
 
 class ListNode:
@@ -318,6 +319,28 @@ class Solution:
             ans += (v + h if c != "z" else h + v) + "!"
             x, y = nx, ny
         return ans
+
+
+# 1139 - Largest 1-Bordered Square - MEDIUM
+class Solution:
+    # O(mn * min(m, n)) / O(mn)
+    def largest1BorderedSquare(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        m = len(grid[0])
+        pr = [list(itertools.accumulate(row, initial=0)) for row in grid]
+        pc = [list(itertools.accumulate(col, initial=0)) for col in zip(*grid)]
+        for d in range(min(n, m), 0, -1):  # 枚举边长 d
+            for i in range(n - d + 1):
+                for j in range(m - d + 1):  # 枚举左上角坐标 (i, j)
+                    # 四条边 1 的个数均为 d
+                    if (
+                        pr[i][j + d] - pr[i][j] == d  # 上
+                        and pc[j][i + d] - pc[j][i] == d  # 左
+                        and pr[i + d - 1][j + d] - pr[i + d - 1][j] == d  # 下
+                        and pc[j + d - 1][i + d] - pc[j + d - 1][i] == d  # 右
+                    ):
+                        return d * d
+        return 0
 
 
 # 1143 - Longest Common Subsequence - MEDIUM
