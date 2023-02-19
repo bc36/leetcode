@@ -1038,6 +1038,20 @@ class Solution:
             return edges[0][1]
 
 
+# 1792 - Maximum Average Pass Ratio - MEDIUM
+class Solution:
+    # O((n + e) * logn) / O(n)
+    def maxAverageRatio(self, classes: List[List[int]], extraStudents: int) -> float:
+        h = list((p / t - (p + 1) / (t + 1), p, t) for p, t in classes)
+        heapq.heapify(h)
+        for _ in range(extraStudents):
+            _, p, t = heapq.heappop(h)
+            p += 1
+            t += 1
+            heapq.heappush(h, (p / t - (p + 1) / (t + 1), p, t))
+        return sum(p / t for _, p, t in h) / len(classes)
+
+
 # 1796 - Second Largest Digit in a String - EASY
 class Solution:
     def secondHighest(self, s: str) -> int:
