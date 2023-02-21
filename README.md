@@ -22,6 +22,8 @@
 
 [GeeksforGeeks](https://www.geeksforgeeks.org/)
 
+[Contest rating predictor](https://lccn.lbao.site/)
+
 [力扣竞赛 - 勋章及成就规则](https://leetcode.cn/circle/discuss/0fKGDu/) 
 
 [周赛评分算法](https://leetcode.cn/circle/article/neTUV4/) 
@@ -29,6 +31,17 @@
 [排名分数计算脚本](https://leetcode.cn/circle/discuss/6gnvEj/view/WbN5TH/) 
 
 [Guardian / Knight 历史门槛](https://leetcode.cn/circle/discuss/SKzRis/) 
+
+
+<br><br>
+
+# 💡
+* [Python3 template and tricks](./lc_Python/template_trick.py)
+* [Try it at here](https://leetcode.com/problems/find-positive-integer-solution-for-a-given-equation/): `print(inspect.getsource(customfunction.__class__))`
+* Typically:
+  * Java is most likely to AC a problem with brute force 🙃.
+  * Python can AC many string-related problems with time complexity that cannot be passed 😅.
+  * You can import any Go library, the download time won't be counted in the testing time 😈.
 
 
 <br><br>
@@ -59,19 +72,8 @@ isbn: 978-7-83009-313-6
 
 * quotes in type hint, `def lca(root: 'TreeNode')`, [PEP 484](https://peps.python.org/pep-0484/#forward-references)
 
-* [Py Glossary](https://docs.python.org/3/glossary.html)
+* [Python Glossary](https://docs.python.org/3/glossary.html)
 
-
-<br><br>
-
-
-# JavaScript
-```js
-// for loop:
-for ... in // 循环出 key, 并且还会遍历到属性, 实际上遍历的是对象的属性名称, ❎
-for ... of // 循环出 value, 不能遍历普通对象(ES6)
-arr.forEach(function (v, i, array) {});
-```
 
 <br><br>
 
@@ -112,7 +114,7 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 
 
 # 🆚
-[大佬 0x3f 的b站](https://space.bilibili.com/206214)
+[推荐观看 0x3f 的b站](https://space.bilibili.com/206214)
 
 
 <br><br>
@@ -124,12 +126,6 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 [🍭可乐可乐吗QAQ](https://leetcode.cn/circle/discuss/PDJMWs/)
 
 [mumuxinfie](https://leetcode.cn/circle/discuss/nv1nBg/)
-
-
-<br><br>
-
-# 💡
-[python3 模版 / 技巧](./lc_Python/template-trick.py)
 
 
 <br><br>

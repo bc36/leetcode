@@ -653,6 +653,65 @@ class Solution:
         return ans
 
 
+# 1237 - Find Positive Integer Solution for a Given Equation - MEDIUM
+# print(inspect.getsource(customfunction.__class__))
+class CustomFunction:
+    def __init__(self, x):
+        self.num = x
+
+    def f(self, x, y):
+        if self.num == 1:
+            return x + y
+        elif self.num == 2:
+            return x * y
+        elif self.num == 3:
+            return x * x + y
+        elif self.num == 4:
+            return x + y * y
+        elif self.num == 5:
+            return x * x + y * y
+        elif self.num == 6:
+            return (x + y) * (x + y)
+        elif self.num == 7:
+            return x * x * x + y * y * y
+        elif self.num == 8:
+            return x * x * y
+        elif self.num == 9:
+            return x * y * y
+        else:
+            return 0
+
+
+class Solution:
+    def findSolution(self, customfunction: "CustomFunction", z: int) -> List[List[int]]:
+        ans = []
+        x = 1
+        y = 1000
+        while x <= 1000 and y:
+            r = customfunction.f(x, y)
+            if r < z:
+                x += 1
+            elif r > z:
+                y -= 1
+            else:
+                ans.append([x, y])
+                x += 1
+                y -= 1
+        return ans
+
+    def findSolution(self, customfunction: "CustomFunction", z: int) -> List[List[int]]:
+        ans = []
+        y = 1000
+        for x in range(1, 1001):
+            while y and customfunction.f(x, y) > z:
+                y -= 1
+            if y == 0:
+                break
+            if customfunction.f(x, y) == z:
+                ans.append((x, y))
+        return ans
+
+
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
