@@ -621,7 +621,7 @@ class Solution:
 
 # 1464 - Maximum Product of Two Elements in an Array - EASY
 class Solution:
-    # O(n**2) / O(1)
+    # O(n^2) / O(1)
     def maxProduct(self, nums: List[int]) -> int:
         return max(
             (v - 1) * (u - 1)
@@ -661,7 +661,7 @@ class Solution:
 
 # 1475 - Final Prices With a Special Discount in a Shop - EASY
 class Solution:
-    # O(n**2) / O(1)
+    # O(n^2) / O(1)
     def finalPrices(self, prices: List[int]) -> List[int]:
         for i, p in enumerate(prices):
             for j in range(i + 1, len(prices)):

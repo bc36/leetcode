@@ -737,7 +737,7 @@ class Solution:
 
 # 2421 - Number of Good Paths - HARD
 class Solution:
-    # 暴力, 从大到小考虑, 删除大节点, O(n**2)
+    # 暴力, 从大到小考虑, 删除大节点, O(n^2)
     # 倒着考虑, 删除变合并 -> 并查集
     # 连通块对应最大值个数
     # O(nlogn) / O(n)
@@ -986,7 +986,7 @@ class Solution:
     # s[i: i + j] = = s[i + j: i + 2 * j] 等价于 lcp[i][i + j] >= j
     # lcp[i][j] = lcp[i + 1][j + 1] + 1 if s[i] == s[j] else 0
 
-    # O(n**2) / O(n**2)
+    # O(n^2) / O(n^2)
     def deleteString(self, s: str) -> int:
         n = len(s)
         if len(set(s)) == 1:

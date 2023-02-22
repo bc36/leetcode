@@ -57,7 +57,7 @@ class Solution:
 
 # 611 - Valid Triangle Number - MEDIUM
 class Solution:
-    # O(n**2) / O(logn)
+    # O(n^2) / O(logn)
     def triangleNumber(self, nums: List[int]) -> int:
         nums.sort()
         ans = 0
@@ -460,7 +460,7 @@ class Solution:
 
 # 646 - Maximum Length of Pair Chain - MEDIUM
 class Solution:
-    # O(n**2) / O(n)
+    # O(n^2) / O(n)
     def findLongestChain(self, pairs: List[List[int]]) -> int:
         pairs.sort()
         f = [1] * len(pairs)
@@ -470,7 +470,7 @@ class Solution:
                     f[i] = f[j] + 1
         return f[-1]
 
-    # O(n**2) / O(n)
+    # O(n^2) / O(n)
     def findLongestChain(self, pairs: List[List[int]]) -> int:
         pairs.sort()
         f = [1] * len(pairs)
@@ -541,7 +541,7 @@ class Solution:
 
 # 652 - Find Duplicate Subtrees - MEDIUM
 class Solution:
-    # O(n**2) / O(n**2), 字符串 O(n), 分割不同节点的值, 并且保留空节点
+    # O(n^2) / O(n^2), 字符串 O(n), 分割不同节点的值, 并且保留空节点
     def findDuplicateSubtrees(self, root: TreeNode) -> List[TreeNode]:
         cnt = collections.Counter()
         ans = []
@@ -1515,7 +1515,7 @@ class Solution:
 
 # 699 - Falling Squares - HARD
 class Solution:
-    # O(n**2) / O(1)
+    # O(n^2) / O(1)
     def fallingSquares(self, positions: List[List[int]]) -> List[int]:
         n = len(positions)
         heights = [0] * n

@@ -800,7 +800,7 @@ class Solution:
 
 # 2322 - Minimum Score After Removals on a Tree - HARD
 class Solution:
-    # O(n**2) / O(n)
+    # O(n^2) / O(n)
 
     # 固定树根, 枚举删除的边, 两个边的关系有两种情况
     # 1. 互为祖先 / 2. 并列不相交

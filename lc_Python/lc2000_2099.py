@@ -681,7 +681,7 @@ class Solution:
 
 # 2078 - Two Furthest Houses With Different Colors - EASY
 class Solution:
-    # O(n**2) / O(n)
+    # O(n^2) / O(n)
     def maxDistance(self, colors: List[int]) -> int:
         ans = 0
         d = {}
@@ -701,7 +701,7 @@ class Solution:
                 )
         return ans
 
-    # O(n**2) / O(1)
+    # O(n^2) / O(1)
     def maxDistance(self, c: List[int]) -> int:
         ans = 0
         for i in range(len(c) - 1):

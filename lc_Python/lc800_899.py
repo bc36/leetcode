@@ -364,7 +364,7 @@ class Solution:
 
 # 813 - Largest Sum of Averages - MEDIUM
 class Solution:
-    # O(k * n**2) / O(n)
+    # O(k * n^2) / O(n)
     def largestSumOfAverages(self, nums: List[int], k: int) -> float:
         @functools.lru_cache(None)
         def dfs(i: int, k: int):
@@ -1032,7 +1032,7 @@ class ExamRoom:
 
 # 856 - Score of Parentheses - MEDIUM
 class Solution:
-    # O(n**2) / O(n**2)
+    # O(n^2) / O(n^2)
     def scoreOfParentheses(self, s: str) -> int:
         if len(s) == 2:
             return 1

@@ -1400,7 +1400,7 @@ class Solution:
                 ans = max(ans, min(u, d, l, r))
         return ans
 
-    # O(n ** 2) / O(n)
+    # O(n^2) / O(n)
     def orderOfLargestPlusSign(self, n: int, mines: List[List[int]]) -> int:
         grid = [[1] * n for _ in range(n)]
         for x, y in mines:

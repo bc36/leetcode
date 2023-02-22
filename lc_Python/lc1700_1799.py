@@ -456,7 +456,7 @@ class Solution:
 
 # 1752 - Check if Array Is Sorted and Rotated - EASY
 class Solution:
-    # O(n**2) / O(n)
+    # O(n^2) / O(n)
     def check(self, nums: List[int]) -> bool:
         n = len(nums)
         a = sorted(nums)
@@ -500,7 +500,7 @@ class Solution:
 
 # 1754 - Largest Merge Of Two Strings - MEDIUM
 class Solution:
-    # O(m**2 + n**2) / O(m**2 + n**2)
+    # O(m^2 + n^2) / O(m^2 + n^2)
     def largestMerge(self, word1: str, word2: str) -> str:
         if word1 >= word2 and word2 > "":
             return word1[0] + self.largestMerge(word1[1:], word2)
@@ -508,7 +508,7 @@ class Solution:
             return word2[0] + self.largestMerge(word1, word2[1:])
         return word1 + word2
 
-    # O(m**2 + n**2) / O(1)
+    # O(m^2 + n^2) / O(1)
     def largestMerge(self, word1: str, word2: str) -> str:
         ans = ""
         i = j = 0
@@ -1190,7 +1190,7 @@ class Solution:
 
         return dfs(tuple(nums))
 
-    # O(2**n * n**2 + logU * n**2) / O(2**n + n**2), 1500 ms, U = max(nums)
+    # O(2**n * n^2 + logU * n^2) / O(2**n + n^2), 1500 ms, U = max(nums)
     def maxScore(self, nums: List[int]) -> int:
         def gcd(x: int, y: int) -> int:
             while y:
