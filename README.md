@@ -64,6 +64,8 @@ isbn: 978-7-83009-313-6
 
 * `itertools.pairwise(iterable)`, [New in version 3.10](https://docs.python.org/3/library/itertools.html#itertools.pairwise), list(pairwise('a')) -> [], list(pairwise('abc')) -> [('ab', 'bc')].
 
+* `itertools.accumulate(iterable[, func, *, initial=None])`, [Changed in version 3.8](https://docs.python.org/3/library/itertools.html#itertools.accumulate), if the keyword argument `initial` is provided, the output has one more element than the input iterable. See [`functools.reduce()`](https://docs.python.org/3/library/functools.html#functools.reduce) for a similar function that returns only the FINAL accumulated value.
+
 * `collections.Counter(a) > collections.Counter(b)`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), All of those tests treat missing elements as having zero counts so that Counter(a=1) == Counter(a=1, b=0) returns true.
 
 * `c = Counter(a=3, b=1); d = Counter(a=1, b=2); # c - d -> Counter({'a': 2})`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), Counter() subtract **ONLY** keep positive counts. if we want to include negative values, use `obj1.subtract(obj2)` 

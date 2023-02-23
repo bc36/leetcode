@@ -712,6 +712,26 @@ class Solution:
         return ans
 
 
+# 1238 - Circular Permutation in Binary Representation - MEDIUM
+class Solution:
+    def circularPermutation(self, n: int, start: int) -> List[int]:
+        grayCode = lambda x: x ^ (x >> 1)
+        p = [grayCode(i) for i in range(1 << n)]
+        i = p.index(start)
+        return p[i:] + p[:i]
+
+    def circularPermutation(self, n: int, start: int) -> List[int]:
+        return (
+            [start, start ^ 1]
+            if n == 1
+            else self.circularPermutation(n - 1, start)
+            + self.circularPermutation(n - 1, start ^ 1 << (n - 1))[::-1]
+        )
+
+    def circularPermutation(self, n: int, start: int) -> List[int]:
+        return [i ^ (i >> 1) ^ start for i in range(1 << n)]
+
+
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
@@ -823,6 +843,17 @@ class Solution:
         k %= len(arr)
         arr = arr[-k:] + arr[:-k]
         return [arr[i : i + len(grid[0])] for i in range(0, len(arr), len(grid[0]))]
+
+
+# 1266 - Minimum Time Visiting All Points - EASY
+class Solution:
+    def minTimeToVisitAllPoints(self, points: List[List[int]]) -> int:
+        ans = 0
+        px, py = points[0]
+        for x, y in points[1:]:
+            ans += max(abs(x - px), abs(y - py))
+            px, py = x, y
+        return ans
 
 
 # 1281 - Subtract the Product and Sum of Digits of an Integer - EASY

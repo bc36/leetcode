@@ -2620,6 +2620,34 @@ class Solution:
         return
 
 
+# 89 - Gray Code - MEDIUM
+g = [i ^ (i >> 1) for i in range(1 << 16)]
+
+
+class Solution:
+    def grayCode(self, n: int) -> List[int]:
+        return g[: (1 << n)]
+
+    def grayCode(self, n: int) -> List[int]:
+        return [i ^ (i >> 1) for i in range(1 << n)]
+
+    def grayCode(self, n: int) -> List[int]:
+        ans = [0]
+        head = 1
+        for _ in range(n):
+            for j in range(len(ans) - 1, -1, -1):
+                ans.append(head + ans[j])
+            head <<= 1
+        return ans
+
+    def grayCode(self, n: int) -> List[int]:
+        ans = [0]
+        for i in range(1, n + 1):
+            for j in range(len(ans) - 1, -1, -1):
+                ans.append(ans[j] | (1 << (i - 1)))
+        return ans
+
+
 # 90 - Subsets II - MEDIUM
 class Solution:
     def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:

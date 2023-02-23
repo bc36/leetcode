@@ -343,6 +343,33 @@ class Solution:
         return 0
 
 
+# 1140 - Stone Game II - MEDIUM
+class Solution:
+    # O(n^3) / O(n^2)
+    # dfs(i, M) indicates given M, the maximum number of stones that can be obtained by taking stones from piles[i]
+    def stoneGameII(self, piles: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, m: int) -> int:
+            if n - i <= 2 * m:
+                return p[n] - p[i]
+            return max(p[n] - p[i] - dfs(i + x, max(x, m)) for x in range(1, 2 * m + 1))
+
+        n = len(piles)
+        p = list(itertools.accumulate(piles, initial=0))
+        return dfs(0, 1)
+
+    def stoneGameII(self, piles: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, m: int) -> int:
+            if i + m * 2 >= n:
+                return p[n] - p[i]
+            return p[n] - p[i] - min(dfs(i + x, max(m, x)) for x in range(1, 2 * m + 1))
+
+        n = len(piles)
+        p = list(itertools.accumulate(piles, initial=0))
+        return dfs(0, 1)
+
+
 # 1143 - Longest Common Subsequence - MEDIUM
 class Solution:
     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
