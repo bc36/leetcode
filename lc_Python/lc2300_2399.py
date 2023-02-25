@@ -1963,6 +1963,9 @@ class Solution:
         return len(set(n for n in nums if n > 0))
 
     def minimumOperations(self, nums: List[int]) -> int:
+        return len(set(nums) - {0})
+
+    def minimumOperations(self, nums: List[int]) -> int:
         s = set(nums)
         if 0 in s:
             s.remove(0)
