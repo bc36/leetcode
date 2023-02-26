@@ -836,6 +836,31 @@ class Solution:
         return sum((r + c) % 2 for r in rows for c in cols)
 
 
+# 1255 - Maximum Score Words Formed by Letters - HARD
+class Solution:
+    def maxScoreWords(
+        self, words: List[str], letters: List[str], score: List[int]
+    ) -> int:
+        cnt = collections.Counter(letters)
+        n = len(words)
+        sc = [0] * n
+        wcnt = [None] * n
+        for i, w in enumerate(words):
+            wcnt[i] = collections.Counter(w)
+            for c in w:
+                sc[i] += score[ord(c) - 97]
+
+        def dfs(i: int, cnt: collections.Counter) -> int:
+            if i == n:
+                return 0
+            if not wcnt[i] - cnt:
+                # if all(wcnt[i][k] <= cnt[k] for k in wcnt[i]):
+                return max(dfs(i + 1, cnt), dfs(i + 1, cnt - wcnt[i]) + sc[i])
+            return dfs(i + 1, cnt)
+
+        return dfs(0, cnt)
+
+
 # 1260 - Shift 2D Grid - EASY
 class Solution:
     def shiftGrid(self, grid: List[List[int]], k: int) -> List[List[int]]:
