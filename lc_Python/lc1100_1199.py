@@ -1,5 +1,5 @@
-import bisect, collections, functools, heapq, itertools, math, string, operator
-from typing import List, Optional, Tuple
+import bisect, collections, functools, heapq, itertools, math, queue, string, operator, threading
+from typing import Callable, List, Optional, Tuple
 import sortedcontainers
 
 
@@ -87,6 +87,153 @@ class Solution:
 class Solution:
     def defangIPaddr(self, address: str) -> str:
         return address.replace(".", "[.]")
+
+
+# 1114 - Print in Order - EASY
+class Foo:
+    def __init__(self):
+        self.f = 0
+        pass
+
+    def first(self, printFirst: "Callable[[], None]") -> None:
+        # printFirst() outputs "first". Do not change or remove this line.
+        printFirst()
+        self.f = 1
+
+    def second(self, printSecond: "Callable[[], None]") -> None:
+        while self.f != 1:
+            continue
+        # printSecond() outputs "second". Do not change or remove this line.
+        printSecond()
+        self.f = 2
+
+    def third(self, printThird: "Callable[[], None]") -> None:
+        while self.f != 2:
+            continue
+        # printThird() outputs "third". Do not change or remove this line.
+        printThird()
+
+
+class Foo:
+    def __init__(self):
+        self.c = threading.Condition()
+        self.f = 0
+
+    def first(self, printFirst: "Callable[[], None]") -> None:
+        self.wrap(0, printFirst)
+
+    def second(self, printSecond: "Callable[[], None]") -> None:
+        self.wrap(1, printSecond)
+
+    def third(self, printThird: "Callable[[], None]") -> None:
+        self.wrap(2, printThird)
+
+    def wrap(self, val: int, func: "Callable[[], None]") -> None:
+        with self.c:
+            self.c.wait_for(lambda: val == self.f)
+            func()
+            self.f += 1
+            self.c.notify_all()
+        return
+
+
+class Foo:
+    def __init__(self):
+        self.l1 = threading.Lock()
+        self.l1.acquire()
+        self.l2 = threading.Lock()
+        self.l2.acquire()
+
+    def first(self, printFirst: "Callable[[], None]") -> None:
+        printFirst()
+        self.l1.release()
+
+    def second(self, printSecond: "Callable[[], None]") -> None:
+        self.l1.acquire()
+        printSecond()
+        self.l2.release()
+
+    def third(self, printThird: "Callable[[], None]") -> None:
+        self.l2.acquire()
+        printThird()
+
+
+class Foo:
+    def __init__(self):
+        self.s1 = threading.Semaphore(0)
+        self.s2 = threading.Semaphore(0)
+
+    def first(self, printFirst: "Callable[[], None]") -> None:
+        printFirst()
+        self.s1.release()
+
+    def second(self, printSecond: "Callable[[], None]") -> None:
+        self.s1.acquire()
+        printSecond()
+        self.s2.release()
+
+    def third(self, printThird: "Callable[[], None]") -> None:
+        self.s2.acquire()
+        printThird()
+
+
+class Foo:
+    def __init__(self):
+        self.e1 = threading.Event()
+        self.e2 = threading.Event()
+
+    def first(self, printFirst: "Callable[[], None]") -> None:
+        printFirst()
+        self.e1.set()
+
+    def second(self, printSecond: "Callable[[], None]") -> None:
+        self.e1.wait()
+        printSecond()
+        self.e2.set()
+
+    def third(self, printThird: "Callable[[], None]") -> None:
+        self.e2.wait()
+        printThird()
+
+
+class Foo:
+    def __init__(self):
+        self.q1 = queue.Queue()
+        self.q2 = queue.Queue()
+
+    def first(self, printFirst: "Callable[[], None]") -> None:
+        printFirst()
+        self.q1.put(0)
+
+    def second(self, printSecond: "Callable[[], None]") -> None:
+        self.q1.get()
+        printSecond()
+        self.q2.put(0)
+
+    def third(self, printThird: "Callable[[], None]") -> None:
+        self.q2.get()
+        printThird()
+
+
+class Foo:
+    def __init__(self):
+        self.q1 = queue.Queue(maxsize=1)
+        self.q1.put(0)
+        self.q2 = queue.Queue(maxsize=1)
+        self.q2.put(0)
+
+    def first(self, printFirst: "Callable[[], None]") -> None:
+        printFirst()
+        self.q1.get()
+
+    def second(self, printSecond: "Callable[[], None]") -> None:
+        self.q1.put(0)
+        printSecond()
+        self.q2.get()
+
+    def third(self, printThird: "Callable[[], None]") -> None:
+        self.q2.put(0)
+        printThird()
 
 
 # 1122 - Relative Sort Array - EASY
@@ -384,6 +531,30 @@ class Solution:
         return dp[-1][-1]
 
 
+# 1144 - Decrease Elements To Make Array Zigzag - MEDIUM
+class Solution:
+    def movesToMakeZigzag(self, nums: List[int]) -> int:
+        o = e = 0
+        for i, v in enumerate(nums):
+            if i % 2 == 0:
+                l = v - nums[i - 1] + 1 if i > 0 and v >= nums[i - 1] else 0
+                r = v - nums[i + 1] + 1 if i < len(nums) - 1 and v >= nums[i + 1] else 0
+                o += max(l, r)
+            else:
+                l = v - nums[i - 1] + 1 if v >= nums[i - 1] else 0
+                r = v - nums[i + 1] + 1 if i < len(nums) - 1 and v >= nums[i + 1] else 0
+                e += max(l, r)
+        return min(o, e)
+
+    def movesToMakeZigzag(self, nums):
+        s = [0] * 2
+        for i, v in enumerate(nums):
+            l = nums[i - 1] if i > 0 else math.inf
+            r = nums[i + 1] if i < len(nums) - 1 else math.inf
+            s[i % 2] += max(v - min(l, r) + 1, 0)
+        return min(s)
+
+
 # 1145 - Binary Tree Coloring Game - MEDIUM
 class Solution:
     # 整颗树被分成三块: 父, 左, 右 -> 是否有一块大于总数的一半
@@ -443,6 +614,23 @@ class Solution:
         if year % 400 == 0 or (year % 4 == 0 and year % 100 != 0):
             m[1] += 1
         return sum(m[: month - 1]) + day
+
+
+# 1155 - Number of Dice Rolls With Target Sum - MEDIUM
+class Solution:
+    def numRollsToTarget(self, n: int, k: int, target: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(n: int, target: int) -> int:
+            if n == 1:
+                return int(target <= k)
+            cur = 0
+            for i in range(1, k + 1):
+                if target > i:
+                    cur = (cur + dfs(n - 1, target - i)) % mod
+            return cur % mod
+
+        mod = 1000000007
+        return dfs(n, target) % mod
 
 
 # 1175 - Prime Arrangements - EASY

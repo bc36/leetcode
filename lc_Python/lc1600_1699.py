@@ -614,6 +614,22 @@ class Solution:
         return n - 1
 
 
+# 1691 - Maximum Height by Stacking Cuboids - HARD
+class Solution:
+    # O(n**2) / O(n)
+    def maxHeight(self, cuboids: List[List[int]]) -> int:
+        for c in cuboids:
+            c.sort()
+        cuboids.sort()
+        f = [0] * len(cuboids)
+        for i in range(len(cuboids)):
+            for j in range(i):
+                if cuboids[j][1] <= cuboids[i][1] and cuboids[j][2] <= cuboids[i][2]:
+                    f[i] = max(f[i], f[j])
+            f[i] += cuboids[i][2]
+        return max(f)
+
+
 # 1694 - Reformat Phone Number - EASY
 class Solution:
     def reformatNumber(self, number: str) -> str:
