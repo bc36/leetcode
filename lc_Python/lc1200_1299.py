@@ -497,6 +497,37 @@ class Solution:
         return (a + e + i + o + u) % mod
 
 
+# 1223 - Dice Roll Simulation - HARD
+class Solution:
+    def dieSimulator(self, n: int, rollMax: List[int]) -> int:
+        mod = 1000000007
+        f = [[0] * 6 for _ in range(n)]
+        f[0] = [1] * 6
+        for i in range(1, n):
+            for j, cap in enumerate(rollMax):
+                cur = sum(f[i - 1])
+                if i > cap:
+                    cur -= sum(f[i - cap - 1]) - f[i - cap - 1][j]
+                elif i == cap:
+                    cur -= 1
+                f[i][j] = cur % mod
+        return sum(f[n - 1]) % mod
+
+    def dieSimulator(self, n: int, rollMax: List[int]) -> int:
+        mod = 1000000007
+        f = [[0] * 6 for _ in range(n + 1)]
+        summ = [1] + [0] * n
+        for i in range(1, n + 1):
+            for j, cap in enumerate(rollMax):
+                p = max(i - cap - 1, 0)
+                sub = (summ[p] - f[p][j]) % mod
+                f[i][j] = (summ[i - 1] - sub) % mod
+                if i <= cap:
+                    f[i][j] = (f[i][j] + 1) % mod
+                summ[i] = (summ[i] + f[i][j]) % mod
+        return summ[n]
+
+
 # 1224 - Maximum Equal Frequency - HARD
 class Solution:
     def maxEqualFreq(self, nums: List[int]) -> int:
@@ -732,6 +763,44 @@ class Solution:
         return [i ^ (i >> 1) ^ start for i in range(1 << n)]
 
 
+# 1247 - Minimum Swaps to Make Strings Equal - MEDIUM
+class Solution:
+    # skip if s1[i] == s2[i]
+    # if xx, yy -> 1
+    # if xy, yx -> 2
+    # consider the number of (s1[i] == 'x' and s2[i] == 'y'), (s1[i] == 'y' and s2[i] == 'x')
+    # O(n) / O(1)
+    def minimumSwap(self, s1: str, s2: str) -> int:
+        # if (s1.count("x") + s2.count("x")) % 2:
+        #     return -1
+
+        xy = yx = 0
+        for a, b in zip(s1, s2):
+            if a == "x" and b == "y":
+                xy += 1
+            if a == "y" and b == "x":
+                yx += 1
+
+            # xy += a == "x" and b == "y"
+            # yx += a == "y" and b == "x"
+
+            # xy += a < b
+            # yx += a > b
+
+        if (xy + yx) % 2:
+            return -1
+
+        # xy % 2 equals to yx % 2
+        # may be one pair and at most one pair of 'xy', 'yx'
+
+        return xy // 2 + yx // 2 + (xy % 2) * 2
+
+    def minimumSwap(self, s1: str, s2: str) -> int:
+        cnt = collections.Counter(a for a, b in zip(s1, s2) if a != b)
+        d = cnt["x"] + cnt["y"]
+        return -1 if d % 2 else d // 2 + cnt["x"] % 2
+
+
 # 1249 - Minimum Remove to Make Valid Parentheses - MEDIUM
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
@@ -859,6 +928,51 @@ class Solution:
             return dfs(i + 1, cnt)
 
         return dfs(0, cnt)
+
+    def maxScoreWords(
+        self, words: List[str], letters: List[str], score: List[int]
+    ) -> int:
+        n = len(words)
+        words = list(collections.Counter(w) for w in words)
+        letters = collections.Counter(letters)
+
+        @functools.lru_cache(None)
+        def dfs(state: int) -> int:
+            d = {}
+            for i in range(n):
+                if state >> i & 1 == 1:
+                    for k, v in words[i].items():
+                        d[k] = d.get(k, 0) + v
+                        if d[k] > letters[k]:
+                            return 0
+            cur = sum(score[ord(k) - 97] * d[k] for k in d)
+            for i in range(n):
+                if state >> i & 1 == 0:
+                    cur = max(cur, dfs(state | 1 << i))
+            return cur
+
+        return dfs(0)
+
+    def maxScoreWords(
+        self, words: List[str], letters: List[str], score: List[int]
+    ) -> int:
+        letters = collections.Counter(letters)
+        n = len(words)
+        ans = 0
+        # words = list(collections.Counter(w) for w in words)
+        for state in range(1 << n):
+            # cnt = collections.Counter()
+            # for i in range(n):
+            #     if state >> i & 1:
+            #         cnt += words[i]
+
+            cnt = collections.Counter(
+                "".join(words[i] for i in range(n) if state >> i & 1)
+            )
+
+            if all(v <= letters[c] for c, v in cnt.items()):
+                ans = max(ans, sum(v * score[ord(k) - 97] for k, v in cnt.items()))
+        return ans
 
 
 # 1260 - Shift 2D Grid - EASY
