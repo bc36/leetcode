@@ -1258,9 +1258,111 @@ class Solution:
 
 
 # 2537 - Count the Number of Good Subarrays - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def countGood(self, nums: List[int], k: int) -> int:
+        ans = l = pairs = 0
+        d = collections.defaultdict(int)
+        for r, v in enumerate(nums):
+            pairs += d[v]
+            d[v] += 1
+            while pairs >= k:
+                ans += len(nums) - r
+                d[nums[l]] -= 1
+                pairs -= d[nums[l]]
+                l += 1
+        return ans
+
+    def countGood(self, nums: List[int], k: int) -> int:
+        ans = l = pairs = 0
+        d = collections.defaultdict(int)
+        for v in nums:
+            pairs += d[v]
+            d[v] += 1
+            while pairs - d[nums[l]] + 1 >= k:
+                d[nums[l]] -= 1
+                pairs -= d[nums[l]]
+                l += 1
+            if pairs >= k:
+                ans += l + 1
+        return ans
+
+    def countGood(self, nums: List[int], k: int) -> int:
+        ans = l = pairs = 0
+        d = collections.defaultdict(int)
+        for v in nums:
+            pairs += d[v]
+            d[v] += 1
+            ans += l
+            while pairs >= k:
+                ans += 1
+                d[nums[l]] -= 1
+                pairs -= d[nums[l]]
+                l += 1
+        return ans
 
 
 # 2538 - Difference Between Maximum and Minimum Price Sum - HARD
+class Solution:
+    # 最小开销 -> 路径只有一个节点 -> 开销: 一条路径去掉一个端点
+    # 最大开销 -> 两端是入度为 1 的路径
+    # lc 2538 = lc 1245(树的直径) + 去掉一个端点(分情况讨论)
+    # O(n) / O(n)
+    def maxOutput(self, n: int, edges: List[List[int]], price: List[int]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        ans = 0
+
+        def dfs(x: int, fa: int) -> Tuple[int, int]:  # 返回带叶子的最大路径和, 不带叶子的最大路径和
+            nonlocal ans
+            mx_s1 = p = price[x]
+            mx_s2 = 0
+            for y in g[x]:
+                if y == fa:
+                    continue
+                s1, s2 = dfs(y, x)
+                # 已遍历过的最大带叶子的路径和(s1) + 当前不带叶子的路径和
+                # 已遍历过的最大不带叶子的路径和(s2) + 当前带叶子的路径和
+                ans = max(ans, mx_s1 + s2, mx_s2 + s1)
+                mx_s1 = max(mx_s1, s1 + p)
+                mx_s2 = max(mx_s2, s2 + p)  # 这里加上 p 是因为 x 必然不是叶子
+            return mx_s1, mx_s2
+
+        dfs(0, -1)
+        return ans
+
+    # 问题转化: 求一条路径, 使得路径的权值之和减去其中一个端点的权值最大
+    # 求解树的直径维护的是 f[u] 表示在所有枚举过的 u 的子树中, 以 u 为端点且只往子树里走的最长路径是多少
+    # 而本题还要额外维护一个 g[u] 表示在所有枚举过的 u 的子树中, 以 u 为端点且只往子树里走的, 且长度扣掉一个端点的最长路径
+    def maxOutput(self, n: int, edges: List[List[int]], price: List[int]) -> int:
+        e = [[] for _ in range(n)]
+        for x, y in edges:
+            e[x].append(y)
+            e[y].append(x)
+        ans = 0
+
+        def dp(sn: int, fa: int) -> Tuple[int, int]:
+            # f: 以 sn 为端点, 且只往子树里走的最长路径
+            #    一开始没有枚举任何子树, 因此初值就是 sn 本身
+            # g: 以 sn 为端点, 且只往子树里走, 且长度扣掉一个端点的最长路径
+            #    一开始没有枚举任何子树, 因此初值就是 sn 本身再扣掉自己, 就是 0
+            nonlocal ans
+            f = price[sn]
+            g = 0
+            for fn in e[sn]:
+                if fn != fa:
+                    ff, gg = dp(fn, sn)
+                    # 路径的长度要扣掉一个端点, 只能是 f + gg 或 ff + g, 不能是 f + ff
+                    # 由于权值都是正的, g + gg 肯定不优, 也可以不考虑
+                    ans = max(ans, f + gg, ff + g)
+                    f = max(f, ff + price[sn])
+                    g = max(g, gg + price[sn])
+            return f, g
+
+        dp(0, -1)
+        return ans
 
 
 # 2544 - Alternating Digit Sum - EASY
@@ -2092,3 +2194,72 @@ class Solution:
         for i in range(n + 1):
             ans = min(ans, suf[i + 1] - pre[i] - 1)
         return max(ans, 0)
+
+
+# 2566 - Maximum Difference by Remapping a Digit - EASY
+class Solution:
+    def minMaxDifference(self, num: int) -> int:
+        mx = list(str(num))
+        for c in mx:
+            if c != "9":
+                for i in range(len(mx)):
+                    if mx[i] == c:
+                        mx[i] = "9"
+                break
+        mi = list(str(num))
+        for i in range(len(mi))[::-1]:
+            if mi[i] == mi[0]:
+                mi[i] = "0"
+        return int("".join(mx)) - int("".join(mi))
+
+
+# 2567 - Minimum Score by Changing Two Elements - MEDIUM
+class Solution:
+    def minimizeSum(self, nums: List[int]) -> int:
+        nums.sort()
+        if len(nums) <= 3:
+            return 0
+        a = nums[-1] - nums[2]
+        b = nums[-2] - nums[1]
+        c = nums[-3] - nums[0]
+        return min(a, b, c)
+
+
+# 2568 - Minimum Impossible OR - MEDIUM
+class Solution:
+    # O(n + logU) / O(n)
+    def minImpossibleOR(self, nums: List[int]) -> int:
+        s = set(nums)
+        for i in range(31):
+            if 2**i not in s:
+                return 2**i
+        return -1
+
+    def minImpossibleOR(self, nums: List[int]) -> int:
+        s = set(nums)
+        return next(1 << i for i in range(31) if 1 << i not in s)
+
+
+# 2570 - Merge Two 2D Arrays by Summing Values - EASY
+class Solution:
+    def mergeArrays(
+        self, nums1: List[List[int]], nums2: List[List[int]]
+    ) -> List[List[int]]:
+        ans = []
+        i = j = 0
+        while i < len(nums1) and j < len(nums2):
+            if nums1[i][0] < nums2[j][0]:
+                ans.append(nums1[i])
+                i += 1
+            elif nums1[i][0] > nums2[j][0]:
+                ans.append(nums2[j])
+                j += 1
+            else:
+                ans.append((nums1[i][0], nums1[i][1] + nums2[j][1]))
+                i += 1
+                j += 1
+        if i < len(nums1):
+            ans.extend(nums1[i:])
+        else:
+            ans.extend(nums2[j:])
+        return ans
