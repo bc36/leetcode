@@ -763,6 +763,31 @@ class Solution:
         return [i ^ (i >> 1) ^ start for i in range(1 << n)]
 
 
+# 1245 - Tree Diameter - MEDIUM - PREMIUM
+class Solution:
+    # 求解树的直径维护的是 f[u] 表示在所有枚举过的 u 的子树中, 以 u 为端点且只往子树里走的最长路径是多少
+    def treeDiameter(self, edges: List[List[int]]) -> int:
+        n = len(edges) + 1
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        ans = 0
+
+        def dfs(x: int, fa: int) -> int:
+            nonlocal ans
+            mx = 0
+            for y in g[x]:
+                if y != fa:
+                    r = dfs(y, x)
+                    ans = max(ans, r + mx)
+                    mx = max(r, mx)
+            return mx + 1
+
+        dfs(0, -1)
+        return ans
+
+
 # 1247 - Minimum Swaps to Make Strings Equal - MEDIUM
 class Solution:
     # skip if s1[i] == s2[i]

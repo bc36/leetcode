@@ -2161,9 +2161,7 @@ class Solution:
         self, items1: List[List[int]], items2: List[List[int]]
     ) -> List[List[int]]:
         d = collections.defaultdict(int)
-        for v, w in items1:
-            d[v] += w
-        for v, w in items2:
+        for v, w in itertools.chain(items1, items2):
             d[v] += w
         return sorted(d.items())
 
@@ -2515,6 +2513,16 @@ class Solution:
         grid.pop()
         grid.pop()
         return grid
+
+    def largestLocal(self, grid: List[List[int]]) -> List[List[int]]:
+        n = len(grid)
+
+        def f(i: int, j: int) -> int:
+            return max(
+                grid[x][y] for x in range(i - 1, i + 2) for y in range(j - 1, j + 2)
+            )
+
+        return [[f(i, j) for j in range(1, n - 1)] for i in range(1, n - 1)]
 
 
 # 2374 - Node With Highest Edge Score - MEDIUM

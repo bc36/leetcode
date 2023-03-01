@@ -80,6 +80,19 @@ isbn: 978-7-83009-313-6
 <br><br>
 
 
+# Java:
+
+* [`var`](https://openjdk.org/projects/amber/guides/lvti-style-guide):
+  * Java SE 10 introduced [type inference for local variables](https://openjdk.org/jeps/286). With type inference, the explicit type can be replaced by the reserved type name var for local variable declarations that have initializers.
+  * You can use `var` only for local variables (in methods). It cannot be used for instance variables (at class level).
+  * cannot use `var` in Lambda expressions.
+  * cannot use `var` for method signatures (in return types and parameters).
+  * cannot use it with a generic type.
+
+
+<br><br>
+
+
 # Big O
 The O is short for “Order of”. If we’re discussing an algorithm with O(n), we say its **order of**, or **rate of growth**, is n, or linear complexity.
 
