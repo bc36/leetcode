@@ -1,6 +1,7 @@
 package src;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Lc2300_2399 {
     // 2325. Decode the Message - E
@@ -119,6 +120,113 @@ public class Lc2300_2399 {
             ans.add(Arrays.asList(e.getKey(), e.getValue())); // 11ms
 
             // ans.add(List.of(e.getKey(), e.getValue())); // 11ms
+        }
+        return ans;
+    }
+
+    // 2357. Make Array Zero by Subtracting Equal Amounts - E
+    public int minimumOperations(int[] nums) {
+        Set<Integer> s = new HashSet<>();
+        for (int v : nums) {
+            s.add(v);
+        }
+        return s.contains(0) ? s.size() - 1 : s.size();
+    }
+
+    public int minimumOperations3(int[] nums) {
+        Set<Integer> s = new HashSet<>();
+        for (int v : nums) {
+            if (v > 0) {
+                s.add(v);
+            }
+        }
+        return s.size();
+    }
+
+    public int minimumOperations2(int[] nums) {
+        boolean[] arr = new boolean[101];
+        arr[0] = true;
+        int ans = 0;
+        for (int x : nums) {
+            if (!arr[x]) {
+                ++ans;
+                arr[x] = true;
+            }
+        }
+        return ans;
+    }
+
+    public int minimumOperations4(int[] nums) {
+        // 3ms
+        return (int) Arrays.stream(nums).filter(v -> 0 != v).distinct().count();
+    }
+
+    public int minimumOperations5(int[] nums) {
+        // 3ms
+        return Arrays.stream(nums).filter(r -> r > 0).boxed().collect(Collectors.toSet()).size();
+    }
+
+    // 2367. Number of Arithmetic Triplets - E
+    public int arithmeticTriplets(int[] nums, int diff) {
+        int ans = 0;
+        int n = nums.length;
+        for (int i = 0; i < n - 2; i++) {
+            int j = i + 1;
+            for (; j < n - 1; j++) {
+                if (nums[j] - nums[i] == diff) {
+                    for (int k = j + 1; k < n; k++) {
+                        if (nums[k] - nums[j] == diff) {
+                            ans++;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+
+    public int arithmeticTriplets2(int[] nums, int diff) {
+        int ans = 0;
+        Set<Integer> s = new HashSet<>();
+        for (int v : nums) {
+            s.add(v);
+        }
+        for (int v : nums) {
+            if (s.contains(v - diff) && s.contains(v + diff)) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+
+    public int arithmeticTriplets3(int[] nums, int diff) {
+        int ans = 0;
+        int[] arr = new int[251];
+        for (int v : nums) {
+            arr[v]++;
+        }
+        for (int v : nums) {
+            if (arr[v + diff] != 0 && arr[v + diff * 2] != 0) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+
+    // 2373. Largest Local Values in a Matrix - E
+    public int[][] largestLocal(int[][] grid) {
+        int n = grid.length;
+        int[][] ans = new int[n - 2][n - 2];
+        for (int i = 0; i < n - 2; i++) {
+            for (int j = 0; j < n - 2; j++) {
+                for (int x = 0; x < 3; x++) {
+                    for (int y = 0; y < 3; y++) {
+                        ans[i][j] = Math.max(ans[i][j], grid[i + x][j + y]);
+                    }
+                }
+            }
         }
         return ans;
     }

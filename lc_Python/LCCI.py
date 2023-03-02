@@ -1,9 +1,17 @@
-import collections, heapq
-from typing import List
+import bisect, collections, functools, heapq, itertools, math, operator, string
+from typing import List, Optional, Tuple
+import sortedcontainers
 
 """
 Cracking the Coding Interview
 """
+
+
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
 
 # https://leetcode.cn/problems/is-unique-lcci/
 # 面试题 01.01. 判定字符是否唯一 - EASY
@@ -175,6 +183,63 @@ class Solution:
                 if s2 == s1[i:] + s1[:i]:
                     return True
         return False
+
+
+# https://leetcode.cn/problems/kth-node-from-end-of-list-lcci/
+# 面试题 02.02. 返回倒数第 k 个节点 - EASY
+class Solution:
+    def kthToLast(self, head: ListNode, k: int) -> int:
+        tail = head
+        for _ in range(k):
+            head = head.next
+        while head:
+            head = head.next
+            tail = tail.next
+        return tail.val
+
+
+# https://leetcode.cn/problems/delete-middle-node-lcci/
+# 面试题 02.03. 删除中间节点 - EASY
+class Solution:
+    def deleteNode(self, node: ListNode) -> None:
+        """
+        :type node: ListNode
+        :rtype: void Do not return anything, modify node in-place instead.
+        """
+        node.val = node.next.val
+        node.next = node.next.next
+        return
+
+
+# https://leetcode.cn/problems/bianry-number-to-string-lcci/
+# 面试题 05.02. 二进制数转字符串 - MEDIUM
+class Solution:
+    # 任何进制表示的小数, 乘上进制等价于小数点往右移一位
+    # num 如果可以表示为有限位二进制小数, 那么可以表示为一个形如 b / (2^k) 的最简分数
+    def printBin(self, num: float) -> str:
+        s = ["0."]
+        for _ in range(6):
+            num *= 2
+            if num < 1:
+                s.append("0")
+            else:
+                num -= 1
+                s.append("1")
+                if num == 0:
+                    return "".join(s)
+        return "ERROR"
+
+    # 十进制小数转二进制小数:
+    # 小数部分乘以 2, 取整数部分(1 或 0)作为二进制小数的下一位(然后置零),
+    # 小数部分作为下一次乘法的被乘数, 直到小数部分为 0 或者二进制小数的长度超过 32 位
+    def printBin(self, num: float) -> str:
+        ans = "0."
+        while len(ans) < 32 and num:
+            num *= 2
+            x = int(num)
+            ans += str(x)
+            num -= x
+        return "ERROR" if num else ans
 
 
 # https://leetcode.cn/problems/get-kth-magic-number-lcci/
