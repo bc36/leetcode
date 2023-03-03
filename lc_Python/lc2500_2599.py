@@ -1758,6 +1758,97 @@ class Solution:
         return ans
 
 
+# 2555 - Maximize Win From Two Segments - MEDIUM
+class Solution:
+    # pre[r + 1] 表示线段右端点不超过 prize[r] 时最多可以覆盖多少个奖品
+    # 设第二条线段右端点在 prize[r] 时, 左端点最远覆盖到 prize[l], prize[l] 左侧的第一条线段最多可以覆盖多少个奖品
+    # 双指针, 窗口大小不固定
+    def maximizeWin(self, prizePositions: List[int], k: int) -> int:
+        pre = [0] * (len(prizePositions) + 1)
+        ans = l = 0
+        for r, v in enumerate(prizePositions):
+            # 注意两个线段不会重叠
+            while v - prizePositions[l] > k:
+                l += 1
+            ans = max(ans, r - l + 1 + pre[l])
+            pre[r + 1] = max(pre[r], r - l + 1)
+        return ans
+
+    def maximizeWin(self, prizePositions: List[int], k: int) -> int:
+        n = len(prizePositions)
+        # 预处理 f[i] 表示以第 i 个奖品为右端点的线段能覆盖多少个奖品
+        f = [0] * n
+        cnt = l = 0
+        for r, v in enumerate(prizePositions):
+            cnt += 1
+            while l <= r and v - prizePositions[l] > k:
+                cnt -= 1
+                l += 1
+            f[r] = cnt
+        # 把 f[i] 变成前缀和, 表示右端点不超过第 i 个奖品的线段最多能覆盖多少个奖品
+        for i in range(1, n):
+            f[i] = max(f[i], f[i - 1])
+        ans = cnt = 0
+        r = n - 1
+        # 枚举右边线段的左端点, 同时用 two pointers 计算线段覆盖了多少奖品
+        for l in range(n - 1, -1, -1):
+            cnt += 1
+            while l <= r and prizePositions[r] - prizePositions[l] > k:
+                cnt -= 1
+                r -= 1
+            ans = max(ans, cnt + (0 if l == 0 else f[l - 1]))
+        return ans
+
+
+# 2556 - Disconnect Path in a Binary Matrix by at Most One Flip - MEDIUM
+class Solution:
+    # 所有连通路径可以用一个 上轮廓 和 下轮廓包围
+    # 假设先遍历下轮廓, 然后删除下轮廓所有点(置 0)
+    # 若此时走上轮廓无法到达终点 -> 上 / 下轮廓有交集(至少一个交点)
+    # 或者说 若此时任意一个随机路径无法到达终点 -> 上轮廓也无法到达终点 (即如下实现)
+    # 注意第一条必须选取 上/下轮廓, 不能是随机选取的
+    # O(nm) / O(n + m)
+    def isPossibleToCutPath(self, grid: List[List[int]]) -> bool:
+        n = len(grid)
+        m = len(grid[0])
+
+        def dfs(x: int, y: int) -> bool:
+            if x == n - 1 and y == m - 1:
+                return True
+            grid[x][y] = 0
+            # 先下再右 -> 下轮廓
+            return (
+                x < n - 1
+                and grid[x + 1][y]
+                and dfs(x + 1, y)
+                or y < m - 1
+                and grid[x][y + 1]
+                and dfs(x, y + 1)
+            )
+
+        return not dfs(0, 0) or not dfs(0, 0)
+
+    def isPossibleToCutPath(self, grid) -> bool:
+        n = len(grid)
+        m = len(grid[0])
+
+        def has_path(i: int, j: int) -> bool:
+            if i == n or j == m:
+                return False
+            if grid[i][j] == 0:
+                return False
+            if i == n - 1 and j == m - 1:
+                return True
+
+            grid[i][j] = 0
+            return has_path(i + 1, j) or has_path(i, j + 1)
+
+        if not has_path(0, 0):
+            return True
+        grid[0][0] = 1
+        return not has_path(0, 0)
+
+
 # 2558 - Take Gifts From the Richest Pile - EASY
 class Solution:
     # O(klogn) / O(n)

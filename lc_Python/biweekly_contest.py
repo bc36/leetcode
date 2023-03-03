@@ -532,3 +532,10 @@ T4: 840 pass
 # 排序 + 枚举 + 最小堆
 # 308 / https://leetcode.cn/contest/biweekly-contest-96/problems/check-if-point-is-reachable/
 # gcd, 数学
+
+
+# https://leetcode.cn/contest/biweekly-contest-97/
+# 549 / https://leetcode.cn/contest/biweekly-contest-97/problems/maximize-win-from-two-segments/
+# 双指针 + 枚举
+# 127 / https://leetcode.cn/contest/biweekly-contest-97/problems/disconnect-path-in-a-binary-matrix-by-at-most-one-flip/
+# dfs
