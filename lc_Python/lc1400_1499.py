@@ -700,6 +700,21 @@ class Solution:
         return ans
 
 
+# 1487 - Making File Names Unique - MEDIUM
+class Solution:
+    def getFolderNames(self, names: List[str]) -> List[str]:
+        d = collections.defaultdict(int)
+        for i, v in enumerate(names):
+            if v in d:
+                k = d[v]
+                while f"{v}({k})" in d:
+                    k += 1
+                d[v] = k + 1
+                names[i] = f"{v}({k})"
+            d[names[i]] = 1
+        return names
+
+
 # 1491 - Average Salary Excluding the Minimum and Maximum Salary - EASY
 class Solution:
     def average(self, s: List[int]) -> float:

@@ -37,4 +37,21 @@ public class Lc1400_1499 {
 		}
 		return findMinFibonacciNumbers2(k - f2) + 1;
 	}
+
+	// 1487. Making File Names Unique - M
+	public String[] getFolderNames(String[] names) {
+		Map<String, Integer> m = new HashMap<>();
+		for (int i = 0; i < names.length; ++i) {
+			if (m.containsKey(names[i])) {
+				int k = m.get(names[i]);
+				while (m.containsKey(names[i] + "(" + k + ")")) {
+					k++;
+				}
+				m.put(names[i], k + 1);
+				names[i] += "(" + k + ")";
+			}
+			m.put(names[i], 1);
+		}
+		return names;
+	}
 }

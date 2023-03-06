@@ -325,6 +325,56 @@ class Solution:
         return ans
 
 
+# 1653 - Minimum Deletions to Make String Balanced - MEDIUM
+class Solution:
+    # 前后缀分解 + 枚举分割点
+    # O(n) / O(1)
+    def minimumDeletions(self, s: str) -> int:
+        b = 0
+        a = s.count("a")
+        ans = len(s)
+        for c in s:
+            a -= c == "a"
+            ans = min(ans, b + a)
+            b += c == "b"
+        return ans
+
+    def minimumDeletions(self, s: str) -> int:
+        ans = delete = s.count("a")  # prefix sum
+        for c in s:
+            delete += -1 if c == "a" else 1
+            if delete < ans:
+                ans = delete
+        return ans
+
+    # dp
+    # 考虑 s 的最后一个字母, 如果它是
+    #   'b' -> 无需删除, 问题规模缩小,
+    #   'a' -> 删除它, 则答案为 使 s 的前 n − 1 个字母平衡的最少删除次数加 1,
+    #       -> 保留它, 那么前面的所有 'b' 都要删除,
+    # 定义 f[i] 表示使 s 的前 i 个字母平衡的最少删除次数
+    # 第 i 个字母是:
+    #   'b' -> f[i] = f[i - 1],
+    #   'a' -> f[i] = min(f[i - 1] + 1, cntB)
+    def minimumDeletions(self, s: str) -> int:
+        ans = b = 0
+        for c in s:
+            if c == "b":
+                b += 1
+            else:
+                ans = min(ans + 1, b)
+        return ans
+
+    def minimumDeletions(self, s: str) -> int:
+        ans = 0
+        s = s.lstrip("a").rstrip("b")
+        while s:
+            ans += s.count("ba")
+            s = s.replace("ba", "")
+            s = s.lstrip("a").rstrip("b")
+        return ans
+
+
 # 1656 - Design an Ordered Stream - EASY
 class OrderedStream:
     def __init__(self, n: int):

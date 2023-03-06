@@ -336,3 +336,65 @@ class Solution:
             else:
                 ans += 1
         return ans
+
+
+# 1599 - Maximum Profit of Operating a Centennial Wheel - MEDIUM
+class Solution:
+    # O(max(n, 5e6/4)) / O(1), 1000ms
+    def minOperationsMaxProfit(
+        self, customers: List[int], boardingCost: int, runningCost: int
+    ) -> int:
+        ans = -1
+        profit = mx = wait = i = rotation = 0
+        while i < len(customers) or wait:
+            if i < len(customers):
+                wait += customers[i]
+                i += 1
+            onboard = 4 if wait >= 4 else wait
+            wait -= onboard
+            profit += onboard * boardingCost - runningCost
+            rotation += 1
+            if profit > mx:
+                mx = profit
+                ans = rotation
+        return ans
+
+    # O(n) / O(1), 160ms
+    def minOperationsMaxProfit(
+        self, customers: List[int], boardingCost: int, runningCost: int
+    ) -> int:
+        ans = -1
+        profit = mx = wait = 0
+        for i, v in enumerate(customers):
+            wait += v
+            onboard = 4 if wait >= 4 else wait
+            wait -= onboard
+            profit += onboard * boardingCost - runningCost
+            if profit > mx:
+                mx = profit
+                ans = i + 1
+        if min(4, wait) * boardingCost > runningCost:  # if it can make profit
+            loop = wait // 4
+            wait %= 4
+            profit += loop * (4 * boardingCost - runningCost)
+            # remainingProfit = wait * boardingCost - runningCost
+            if profit > mx:
+                ans = len(customers) + loop + (wait * boardingCost > runningCost)
+            elif profit + wait * boardingCost - runningCost > mx:
+                ans = len(customers) + loop + 1
+        return ans
+
+    def minOperationsMaxProfit(
+        self, customers: List[int], boardingCost: int, runningCost: int
+    ) -> int:
+        wait = rotation = total = 0
+        for v in customers:
+            total += v
+            wait += v
+            wait = wait - 4 if wait > 4 else 0
+            rotation += 1
+        rotation += wait // 4
+        wait %= 4
+        if wait * boardingCost > runningCost:
+            rotation += 1
+        return -1 if total * boardingCost - rotation * runningCost <= 0 else rotation
