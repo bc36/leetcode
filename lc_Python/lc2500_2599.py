@@ -2354,3 +2354,266 @@ class Solution:
         else:
             ans.extend(nums2[j:])
         return ans
+
+
+# 2582 - Pass the Pillow - EASY
+class Solution:
+    # O(time) / O(1)
+    def passThePillow(self, n: int, time: int) -> int:
+        cur = d = 1
+        for _ in range(time):
+            if cur + d > n or cur + d < 1:
+                d = -d
+            cur += d
+        return cur
+
+    # O(1) / O(1)
+    def passThePillow(self, n: int, time: int) -> int:
+        time %= 2 * n - 2
+        return 1 + time if time <= n - 1 else n - (time - (n - 1))
+
+    def passThePillow(self, n: int, time: int) -> int:
+        d, m = divmod(time, n - 1)
+        return n - m if d % 2 else 1 + m
+
+    def passThePillow(self, n: int, time: int) -> int:
+        return n - abs(time % (2 * n - 2) - n + 1)
+
+
+# 2583 - Kth Largest Sum in a Binary Tree - MEDIUM
+class Solution:
+    def kthLargestLevelSum(self, root: Optional[TreeNode], k: int) -> int:
+        def dfs(root: TreeNode, d: int) -> None:
+            if not root:
+                return
+            summ[d] += root.val
+            dfs(root.left, d + 1)
+            dfs(root.right, d + 1)
+            return
+
+        summ = collections.defaultdict(int)
+        dfs(root, 1)
+        if len(summ) < k:
+            return -1
+        return sorted(summ.values())[-k]
+
+    def kthLargestLevelSum(self, root: Optional[TreeNode], k: int) -> int:
+        q = [root]
+        summ = []
+        while q:
+            cur = 0
+            new = []
+            for n in q:
+                cur += n.val
+                if n.left:
+                    new.append(n.left)
+                if n.right:
+                    new.append(n.right)
+            summ.append(cur)
+            q = new
+        if len(summ) < k:
+            return -1
+        summ.sort()
+        return summ[-k]
+
+
+# 2584 - Split the Array to Make Coprime Products - MEDIUM
+class Solution:
+    # O(n * sqrt(U)) / O(n + U / logU), U = max(nums), U 范围内质数有 U / logU 个, 1000ms
+    def findValidSplit(self, nums: List[int]) -> int:
+        primes = collections.defaultdict(list)
+        sub = collections.defaultdict(int)
+        for v in nums:
+            ori = v
+            if v not in primes:
+                arr = []
+                for i in range(2, int(v**0.5) + 1):
+                    while v % i == 0:
+                        v //= i
+                        arr.append(i)
+                if v > 1:
+                    arr.append(v)
+                primes[ori] = arr
+            for x in primes[ori]:
+                sub[x] += 1
+        pre = collections.defaultdict(int)
+        for i in range(len(nums) - 1):
+            v = nums[i]
+            for x in primes[v]:
+                sub[x] -= 1
+                pre[x] += 1
+            f = True
+            for x in pre:
+                if sub[x] > 0:
+                    f = False
+                    break
+            if f:
+                return i
+        return -1
+
+    # 2100ms
+    def findValidSplit(self, nums: List[int]) -> int:
+        n = len(nums)
+        # d[i] 表示第 i 个数里有哪些质数
+        # d = [collections.defaultdict(int)] * n  # wrong!!
+        d = list(collections.defaultdict(int) for _ in range(n))
+        tot = collections.defaultdict(int)
+        for i, v in enumerate(nums):
+            for j in range(2, int(v**0.5) + 1):
+                if v % j == 0:
+                    while v % j == 0:
+                        d[i][j] += 1
+                        tot[j] += 1
+                        v //= j
+            if v > 1:
+                d[i][v] += 1
+                tot[v] += 1
+        cur = collections.defaultdict(int)
+        for i in range(n - 1):
+            for k, v in d[i].items():
+                cur[k] += v
+                if cur[k] == tot[k]:
+                    del cur[k]
+            if len(cur) == 0:
+                return i
+        return -1
+
+    # 2100ms
+    def findValidSplit(self, nums: List[int]) -> int:
+        n = len(nums)
+        # d[i] 表示第 i 个数里有哪些质数
+        d = list(collections.defaultdict(int) for _ in range(n))
+        tot = collections.defaultdict(int)
+        for i, v in enumerate(nums):
+            for j in range(2, int(v**0.5) + 1):
+                if v % j == 0:
+                    # 只统计一次
+                    d[i][j] += 1
+                    tot[j] += 1
+                    while v % j == 0:
+                        v //= j
+            if v > 1:
+                d[i][v] += 1
+                tot[v] += 1
+        # good 表示有几个质数 p 满足"分割点左边要么不包含 p, 要么包含所有 p"
+        # 假设分割点一开始是 -1, 那么分割点左边就是空的, 肯定所有 p 都满足条件,
+        # 因此 good 初始值就是 cnt.size(), 即(不同的)质数的总数
+        good = len(tot)
+        have = collections.defaultdict(int)
+        for i in range(len(nums) - 1):
+            for p in d[i]:
+                have[p] += 1
+                if have[p] == 1:
+                    good -= 1
+                if have[p] == tot[p]:
+                    good += 1
+            if good == len(tot):
+                return i
+        return -1
+
+    # 逆向思维: 哪些地方不能分割?
+    # 对每个质因子, 处理得到它在 nums 中的最左/最右下标, left/right
+    # 答案不能在 [left, right) 中 -> 最小答案可能是 right
+    # 2500ms
+    def findValidSplit(self, nums: List[int]) -> int:
+        left = {}  # left[p] 表示质数 p 首次出现的下标
+        right = [0] * len(nums)  # right[i] 表示左端点为 i 的区间的右端点的最大值, 类似跳跃游戏
+
+        def f(p: int, i: int) -> None:
+            if p in left:
+                right[left[p]] = i  # 记录左端点 l 对应的右端点的最大值
+            else:
+                left[p] = i
+            return
+
+        for i, v in enumerate(nums):
+            for d in range(2, int(v**0.5) + 1):
+                if v % d == 0:
+                    f(d, i)
+                    v //= d
+                    while v % d == 0:
+                        v //= d
+            if v > 1:
+                f(v, i)
+
+        canReach = 0
+        for l, r in enumerate(right):
+            if l > canReach:  # 最远可以遇到 canReach
+                return canReach  # 也可以写 l-1
+            canReach = max(canReach, r)
+        return -1
+
+
+# 2585 - Number of Ways to Earn Points - HARD
+class Solution:
+    def waysToReachTarget(self, target: int, types: List[List[int]]) -> int:
+        mod = 1000000007
+
+        @functools.lru_cache(None)
+        def dfs(i: int, target: int) -> int:
+            if i == len(types):
+                return 1 if target == 0 else 0
+            count, marks = types[i]
+            r = dfs(i + 1, target)  # 一个都不选
+            for _ in range(count):
+                target -= marks
+                if target < 0:
+                    break
+                r = (r + dfs(i + 1, target)) % mod
+            return r
+
+        return dfs(0, target)
+
+    # 原问题: n 种题目, 恰好组成 target 分的方案数
+    # 若最后一种题目, 做了 k 道题
+    # 子问题: n - 1 种题目, 恰好组成 target - types[n - 1][1] * k 分的方案数
+    def waysToReachTarget(self, target: int, types: List[List[int]]) -> int:
+        mod = 1000000007
+
+        @functools.lru_cache(None)
+        def dfs(i: int, target: int) -> int:
+            if i < 0:
+                return 1 if target == 0 else 0
+            count, marks = types[i]
+            r = 0
+            for j in range(min(count, target // marks) + 1):
+                r = (r + dfs(i - 1, target - marks * j)) % mod
+            return r
+
+        return dfs(len(types) - 1, target)
+
+    def waysToReachTarget(self, target: int, types: List[List[int]]) -> int:
+        mod = 1000000007
+        f = [[0] * (target + 1) for _ in range(len(types) + 1)]
+        f[0][0] = 1
+        for i, (count, marks) in enumerate(types):
+            for j in range(target + 1):
+                r = 0
+                for k in range(min(count, j // marks) + 1):
+                    r += f[i][j - marks * k]
+                f[i + 1][j] = r % mod
+        return f[-1][-1]
+
+    def waysToReachTarget(self, target: int, types: List[List[int]]) -> int:
+        mod = 1000000007
+        f = [1] + [0] * target
+        for count, marks in types:
+            for i in range(target, 0, -1):
+                # j = 1
+                # while j * marks <= i and j <= count:
+                #     f[i] = (f[i] + f[i - j * marks]) % mod
+                #     j += 1
+
+                for j in range(1, min(count, i // marks) + 1):
+                    f[i] = (f[i] + f[i - j * marks]) % mod
+        return f[-1]
+
+    def waysToReachTarget(self, target: int, types: List[List[int]]) -> int:
+        mod = 1000000007
+        f = [[0] * (target + 1) for _ in range(len(types) + 1)]
+        f[0][0] = 1
+        for i in range(1, len(types) + 1):
+            for j in range(types[i - 1][0] + 1):
+                for k in range(j * types[i - 1][1], target + 1):
+                    f[i][k] = (f[i][k] + f[i - 1][k - j * types[i - 1][1]]) % mod
+        return f[len(types)][target]

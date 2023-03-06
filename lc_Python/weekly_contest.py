@@ -1171,3 +1171,8 @@ T4: 528 pass
 # https://leetcode.cn/contest/weekly-contest-332/
 # 308 / https://leetcode.cn/contest/weekly-contest-332/problems/subsequence-with-the-minimum-score/
 # 枚举 + 前后缀分解
+
+
+# https://leetcode.cn/contest/weekly-contest-335/
+# 1206 / https://leetcode.cn/contest/weekly-contest-335/problems/number-of-ways-to-earn-points/
+# dp 分组背包

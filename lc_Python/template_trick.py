@@ -401,6 +401,21 @@ def powerOfTwo(x: int) -> bool:
     return (x & (x - 1)) == 0
 
 
+def find_all_primes(n: int) -> None:
+    d = collections.defaultdict(int)  # frequence
+    arr = []  # kind/set
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            arr.append(i)
+            while n % i == 0:
+                n //= i
+                d[i] += 1
+        if n > 1:
+            arr.append(n)
+            d[n] += 1
+    return
+
+
 @functools.lru_cache(None)
 def get_factors(n: int) -> collections.defaultdict(int):
     if n == 1:
