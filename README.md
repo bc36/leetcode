@@ -88,7 +88,7 @@ isbn: 978-7-83009-313-6
   * cannot use `var` in Lambda expressions.
   * cannot use `var` for method signatures (in return types and parameters).
   * cannot use it with a generic type.
-
+* `x += s.charAt(i) - 'a';` is much faster than `x += s.charAt(i) == 'b' ? 1 : 0;`
 
 <br><br>
 
