@@ -1517,6 +1517,60 @@ class TimeMap:
         return "" if p == 0 else self.d[key][p - 1][1]
 
 
+# 982 - Triples with Bitwise AND Equal To Zero - HARD
+class Solution:
+    # O(n^2) / O(U), U = max(nums), 2400ms
+    def countTriplets(self, nums: List[int]) -> int:
+        cnt = collections.Counter(x & y for x in nums for y in nums)
+        return sum(v for x, v in cnt.items() for y in nums if x & y == 0)
+
+    # 集合 A 和集合 B 没有交集 -> B 是 A 的补集的子集
+    # O(n^2 + nU) / O(U), U = max(nums), 390ms
+    def countTriplets(self, nums: List[int]) -> int:
+        cnt = [0] * (1 << 16)
+        for x in nums:
+            for y in nums:
+                cnt[x & y] += 1
+        ans = 0
+        for v in nums:
+            v ^= 0xFFFF
+            x = v
+            while True:  # 枚举 v 的子集(包括空集)
+                ans += cnt[x]
+                x = (x - 1) & v
+                if x == v:  # 当 x = 0 时 -> -1 的二进制全为 1 -> 等式成立
+                    break
+        return ans
+
+    # 预处理每个 nums[k] 的补集的子集的出现次数 cnt, 360ms
+    def countTriplets(self, nums: List[int]) -> int:
+        cnt = [0] * (1 << 16)
+        cnt[0] = len(nums)  # 直接统计空集
+        for v in nums:
+            v ^= 0xFFFF
+            x = v
+            while x:  # 枚举 v 的非空子集
+                cnt[x] += 1
+                x = (x - 1) & v
+        return sum(cnt[x & y] for x in nums for y in nums)
+
+    # 仔细计算 cnt 的实际大小 u, 相应的全集就是 u - 1, 260ms
+    def countTriplets(self, nums: List[int]) -> int:
+        u = 1
+        for v in nums:
+            while u <= v:
+                u <<= 1
+        cnt = [0] * u
+        cnt[0] = len(nums)  # 直接统计空集
+        for v in nums:
+            v ^= u - 1
+            x = v
+            while x:  # 枚举 v 的非空子集
+                cnt[x] += 1
+                x = (x - 1) & v
+        return sum(cnt[x & y] for x in nums for y in nums)
+
+
 # 985 - Sum of Even Numbers After Queries - MEDIUM
 class Solution:
     def sumEvenAfterQueries(
