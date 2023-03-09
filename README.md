@@ -1,7 +1,15 @@
 # Leetcode diary 📅
-![Go version](https://img.shields.io/badge/Go-1.18-white?labelColor=deepskyblue&color=white)
+<!-- ![Go version](https://img.shields.io/badge/Go-1.18-white?labelColor=deepskyblue&color=white)
 ![Py version](https://img.shields.io/badge/Python-3.8-white?labelColor=blue&color=white)
-![Java version](https://img.shields.io/badge/Java-17.0.6-white?labelColor=red&color=white)
+![Java version](https://img.shields.io/badge/Java-17.0.6-white?labelColor=red&color=white) -->
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Python-3.8-FFD43B?style=for-the-badge&logo=python&logoColor=blue&labelColor=FFD43B&color=555" alt="python version">
+  <img src="https://img.shields.io/badge/Go-1.18-00ADD8?style=for-the-badge&logo=go&logoColor=blue&labelColor=azure&color=00ADD8" alt="go version">
+  <img src="https://img.shields.io/badge/Java-17.0.6-FFFFFF?style=for-the-badge&logo=openjdk&logoColor=FFFFFF&labelColor=5283a2&color=eb6f09" alt="java version">
+  <!-- <img src="https://img.shields.io/badge/JavaScript-16.17.0-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="js version"> -->
+</p>
+
 * Forgetting Go 😕
 * Training Python 🥱
 * Picking up Java 🥹
