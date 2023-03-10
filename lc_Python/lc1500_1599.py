@@ -316,6 +316,39 @@ class Solution:
         return ans
 
 
+# 1590 - Make Sum Divisible by P - MEDIUM
+class Solution:
+    def minSubarray(self, nums: List[int], p: int) -> int:
+        ans = len(nums)
+        m = t = 0
+        for v in nums:
+            m = (m + v) % p
+        d = {0: -1}
+        for i, v in enumerate(nums):
+            t = (t + v) % p
+            d[t] = i
+            ans = min(ans, i - d.get((t - m) % p, -1e9))
+        return -1 if ans == len(nums) else ans
+
+    # 92ms, 100.00%
+    def minSubarray(self, nums: List[int], p: int) -> int:
+        ans = len(nums)
+        t = 0
+        m = sum(nums) % p
+        if m == 0:
+            return 0
+        d = {0: -1}
+        for i, v in enumerate(nums):
+            t = (t + v) % p
+            d[t] = i
+            x = (t - m) % p
+            if x in d:
+                ans = min(ans, i - d[x])
+                if ans == 1 and ans != len(nums):
+                    return 1
+        return -1 if ans == len(nums) else ans
+
+
 # 1592 - Rearrange Spaces Between Words - EASY
 class Solution:
     def reorderSpaces(self, text: str) -> str:
