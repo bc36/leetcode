@@ -16,6 +16,7 @@
 * Drown by C++ 🫠
 * Is JavaScript the best programming language to become a full-stack developer 🤔
 
+
 <br><br>
 
 
@@ -42,6 +43,7 @@
 
 
 <br><br>
+
 
 # 💡
 * [Python3 template and tricks](./lc_Python/template_trick.py)
@@ -97,6 +99,11 @@ isbn: 978-7-83009-313-6
   * cannot use `var` for method signatures (in return types and parameters).
   * cannot use it with a generic type.
 * `x += s.charAt(i) - 'a';` is much faster than `x += s.charAt(i) == 'b' ? 1 : 0;`
+* `System.arraycopy` vs `Arrays.copyOf`
+  * `native` keyword shows that `System.arraycopy` is implemented by other languages like C/C++ (fast)
+  * `Arrays.copyOf` will create a new item. `System.arraycopy` only copy from src to dst.
+  * `Arrays.copyOf` will call `System.arraycopy`, so it is a bit slow. 
+
 
 <br><br>
 

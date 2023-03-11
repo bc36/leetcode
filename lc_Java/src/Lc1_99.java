@@ -24,6 +24,25 @@ import java.util.LinkedHashSet;
 import java.util.BitSet;
 
 public class Lc1_99 {
+	public class TreeNode {
+		int val;
+		TreeNode left;
+		TreeNode right;
+
+		TreeNode() {
+		}
+
+		TreeNode(int val) {
+			this.val = val;
+		}
+
+		TreeNode(int val, TreeNode left, TreeNode right) {
+			this.val = val;
+			this.left = left;
+			this.right = right;
+		}
+	}
+
 	// 1. Two Sum - E
 	public int[] twoSum(int[] nums, int target) {
 		Map<Integer, Integer> m = new HashMap<Integer, Integer>();
@@ -162,5 +181,37 @@ public class Lc1_99 {
 			}
 		}
 		return ans.toArray(new int[0][]);
+	}
+
+	// 94. Binary Tree Inorder Traversal - E
+	public List<Integer> inorderTraversal(TreeNode root) {
+		List<Integer> ans = new ArrayList<Integer>();
+		inorder(root, ans);
+		return ans;
+	}
+
+	public void inorder(TreeNode root, List<Integer> arr) {
+		if (root == null) {
+			return;
+		}
+		inorder(root.left, arr);
+		arr.add(root.val);
+		inorder(root.right, arr);
+	}
+
+	public List<Integer> inorderTraversal2(TreeNode root) {
+		class Inner {
+			private void inorder(TreeNode root, List<Integer> arr) {
+				if (root == null)
+					return;
+				inorder(root.left, arr);
+				arr.add(root.val);
+				inorder(root.right, arr);
+			}
+		}
+		Inner in = new Inner();
+		List<Integer> ans = new ArrayList<Integer>();
+		in.inorder(root, ans);
+		return ans;
 	}
 }

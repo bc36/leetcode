@@ -242,6 +242,92 @@ class Solution:
         return "ERROR" if num else ans
 
 
+# https://leetcode.cn/problems/add-without-plus-lcci/
+# 面试题 17.01. 不用加号的加法 - EASY
+class Solution:
+    def add(self, a: int, b: int) -> int:
+        return sum((a, b))
+
+    def add(self, a: int, b: int) -> int:
+        return a - (-b)
+
+    # python 左移位都不会溢出, 负数会超时
+    # def add(self, a: int, b: int) -> int:
+    #     summ = carry = 0
+    #     while b:
+    #         summ = a ^ b
+    #         carry = (a & b) << 1
+    #         a, b = summ, carry
+    #     return a
+
+    def add(self, a: int, b: int) -> int:
+        a %= 2**32
+        b %= 2**32
+        while b != 0:
+            carry = ((a & b) << 1) % (2**32)
+            a = (a ^ b) % (2**32)
+            b = carry
+        if a & (2**31):  # 负数
+            return ~((a ^ (2**31)) ^ (2**31) - 1)
+        else:  # 正数
+            return a
+
+
+# https://leetcode.cn/problems/missing-number-lcci/
+# 面试题 17.04. 消失的数字 - EASY
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+        return set(range(len(nums) + 1)).difference(set(nums)).pop()
+
+    def missingNumber(self, nums: List[int]) -> int:
+        return len(nums) * (len(nums) + 1) // 2 - sum(nums)
+
+    def missingNumber(self, nums: List[int]) -> int:
+        return sum(range(len(nums) + 1)) - sum(nums)
+
+    def missingNumber(self, nums: List[int]) -> int:
+        return functools.reduce(operator.xor, nums) ^ functools.reduce(
+            operator.xor, range(len(nums) + 1)
+        )
+
+    def missingNumber(self, nums: List[int]) -> int:
+        x = 0
+        for i, v in enumerate(nums):
+            x ^= i ^ v
+        return x ^ len(nums)
+
+
+# https://leetcode.cn/problems/find-longest-subarray-lcci/
+# 面试题 17.05.  字母与数字 - MEDIUM
+class Solution:
+    def findLongestSubarray(self, array: List[str]) -> List[str]:
+        s = set(string.ascii_letters)
+        d = {0: -1}
+        pre = mx = l = r = 0
+        for i, v in enumerate(array):
+            pre += 1 if v in s else -1
+            if pre in d:
+                if i - d[pre] > mx:
+                    mx = i - d[pre]
+                    l = d[pre] + 1
+                    r = i + 1
+            else:
+                d[pre] = i
+        return array[l:r]
+
+    def findLongestSubarray(self, array: List[str]) -> List[str]:
+        pre = list(itertools.accumulate((1 if v.isalpha() else -1 for v in array), 0))
+        begin = end = 0
+        first = {}
+        for r, v in enumerate(pre):
+            l = first.get(v, -1)
+            if l < 0:
+                first[v] = r
+            elif r - l > end - begin:
+                begin, end = l, r
+        return array[begin:end]
+
+
 # https://leetcode.cn/problems/get-kth-magic-number-lcci/
 # 面试题 17.09. 第 k 个数 - MEDIUM
 class Solution:

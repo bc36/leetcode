@@ -1,4 +1,4 @@
-import bisect, collections, functools, heapq, itertools, math, operator, string
+import bisect, collections, datetime, functools, heapq, itertools, math, operator, re, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -19,6 +19,33 @@ class Solution:
             if arr[i] - arr[i + 1] != d:
                 return False
         return True
+
+
+# 1507 - Reformat Date - EASY
+class Solution:
+    def reformatDate(self, date: str) -> str:
+        return datetime.datetime.strptime(
+            re.sub("st|nd|rd|th", "", date), "%d %b %Y"
+        ).strftime("%Y-%m-%d")
+
+    def reformatDate(self, date: str) -> str:
+        d, mon, y = date.split()
+        m = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ].index(mon) + 1
+        return "%s-%02d-%02d" % (y, m, int(d[:-2]))
+        return "-".join((y, str(m).zfill(2), d[:-2].zfill(2)))
 
 
 # 1518 - Water Bottles - EASY
