@@ -20,7 +20,7 @@
 <br><br>
 
 
-# 🔧
+# 🔗
 [OI Wiki](https://oi-wiki.org/)  
 
 [clist.by](https://clist.by/) 
@@ -33,13 +33,15 @@
 
 [Contest rating predictor](https://lccn.lbao.site/)
 
-[力扣竞赛 - 勋章及成就规则](https://leetcode.cn/circle/discuss/0fKGDu/) 
+[LCCN - Medal and achievement rules](https://leetcode.cn/circle/discuss/0fKGDu/) 
 
-[周赛评分算法](https://leetcode.cn/circle/article/neTUV4/) 
+[LCCN - Weekly contest rating algorithm](https://leetcode.cn/circle/article/neTUV4/) 
 
-[排名分数计算脚本](https://leetcode.cn/circle/discuss/6gnvEj/view/WbN5TH/) 
+[LCUS - Weekly contest rating algorithm](https://leetcode.com/discuss/general-discussion/468851/New-Contest-Rating-Algorithm-(Coming-Soon))
 
-[Guardian / Knight 历史门槛](https://leetcode.cn/circle/discuss/SKzRis/) 
+[LCCN - Barrier of badge](https://leetcode.cn/circle/discuss/6gnvEj/view/WbN5TH/) 
+
+[LCCN - Histroy of Guardian / Knight score](https://leetcode.cn/circle/discuss/SKzRis/) 
 
 
 <br><br>
@@ -78,13 +80,20 @@ isbn: 978-7-83009-313-6
 
 * `collections.Counter(a) > collections.Counter(b)`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), All of those tests treat missing elements as having zero counts so that Counter(a=1) == Counter(a=1, b=0) returns true.
 
-* `c = Counter(a=3, b=1); d = Counter(a=1, b=2); # c - d -> Counter({'a': 2})`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), Counter() subtract **ONLY** keep positive counts. if we want to include negative values, use `obj1.subtract(obj2)` 
+* `c = Counter(a=3, b=1); d = Counter(a=1, b=2); # c - d -> Counter({'a': 2})`, [New in version 3.10](https://docs.python.org/3/library/collections.html#collections.Counter), Counter() subtract **ONLY** keep positive counts. if we want to include negative values, use `obj1.subtract(obj2)`.
 
-* `x != y != z` behaves as `x != y and y != z`, instead of `x != b and x != z and b != z`, so `x < y > z` is possible, [6.10. Comparisons](https://docs.python.org/3/reference/expressions.html#comparisons)
+* `x != y != z` behaves as `x != y and y != z`, instead of `x != b and x != z and b != z`, so `x < y > z` is possible, [6.10. Comparisons](https://docs.python.org/3/reference/expressions.html#comparisons).
 
-* quotes in type hint, `def lca(root: 'TreeNode')`, [PEP 484](https://peps.python.org/pep-0484/#forward-references)
+* quotes in type hint, `def lca(root: 'TreeNode')`, [PEP 484](https://peps.python.org/pep-0484/#forward-references).
 
-* [Python Glossary](https://docs.python.org/3/glossary.html)
+* Type aliases, [New in version 3.10](https://docs.python.org/3/library/typing.html#typing.TypeAlias). Like `type null = None` will cause `Type alias statement requires Python 3.12 or newer`. [PEP 613](https://peps.python.org/pep-0613/). How to deal with it in Py 3.8? Use `typing_extension.TypeAlias`. [typing-extensions - PyPI](https://pypi.org/project/typing-extensions/)
+
+* `NoneType`
+  * In Python 2.7, `NoneType` is a type defined in the [standard library module types](https://docs.python.org/2/library/types.html#types.NoneType)
+  * In Python 3.0 to 3.9, `NoneType` has been [removed](https://bugs.python.org/issue19438) from module `types`, presumably because there is only a single value of this type. It effectively exists nevertheless, it only has no built-in name: You can access NoneType by writing `type(None)`.
+  * In Python 3.10+, `NoneType` is again a type defined in the [standard library module **`types`**](https://docs.python.org/3.10/library/types.html#types.NoneType), introduced in order to [help type checkers do their work](https://docs.python.org/3.10/whatsnew/3.10.html#types)
+
+* [Python Glossary](https://docs.python.org/3/glossary.html).
 
 
 <br><br>
@@ -143,14 +152,14 @@ The O is short for “Order of”. If we’re discussing an algorithm with O(n),
 <br><br>
 
 
-# 🆚
+# :arrow_forward:
 [推荐观看 0x3f 的b站](https://space.bilibili.com/206214)
 
 
 <br><br>
 
 
-# 🚩 
+# :shipit:
 大佬们的经验之谈:
 
 [🍭可乐可乐吗QAQ](https://leetcode.cn/circle/discuss/PDJMWs/)
