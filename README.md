@@ -20,6 +20,19 @@
 <br><br>
 
 
+# 💡 Have fun!
+* [Python3 template and tricks 🤫](./lc_Python/template_trick.py)
+* [Weekly contest tool 🔥](./lc_Python/contest/)
+* [Try it at here 🔬](https://leetcode.com/problems/find-positive-integer-solution-for-a-given-equation/): `print(inspect.getsource(customfunction.__class__))`
+* Typically:
+  * Java is most likely to AC a problem with brute force 🙃.
+  * Python can AC many string-related problems with time complexity that cannot be passed 😅.
+  * You can import any Go library, the download time won't be counted in the testing time 😈.
+
+
+<br><br>
+
+
 # 🔗
 [OI Wiki](https://oi-wiki.org/)  
 
@@ -42,18 +55,6 @@
 [LCCN - Barrier of badge](https://leetcode.cn/circle/discuss/6gnvEj/view/WbN5TH/) 
 
 [LCCN - Histroy of Guardian / Knight score](https://leetcode.cn/circle/discuss/SKzRis/) 
-
-
-<br><br>
-
-
-# 💡
-* [Python3 template and tricks](./lc_Python/template_trick.py)
-* [Try it at here](https://leetcode.com/problems/find-positive-integer-solution-for-a-given-equation/): `print(inspect.getsource(customfunction.__class__))`
-* Typically:
-  * Java is most likely to AC a problem with brute force 🙃.
-  * Python can AC many string-related problems with time complexity that cannot be passed 😅.
-  * You can import any Go library, the download time won't be counted in the testing time 😈.
 
 
 <br><br>
