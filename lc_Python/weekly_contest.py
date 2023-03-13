@@ -1,5 +1,6 @@
-from typing import List
-import collections, functools, itertools, heapq, math, bisect, sortedcontainers, string, random, operator, re, os, gc
+import bisect, collections, copy, datetime, fractions, functools, gc, heapq, itertools, math, operator, os, queue, random, re, site, string
+from typing import Deque, Callable, List, Literal, Optional, Tuple
+import sortedcontainers
 
 
 """exercise"""
@@ -1171,6 +1172,12 @@ T4: 528 pass
 # https://leetcode.cn/contest/weekly-contest-332/
 # 308 / https://leetcode.cn/contest/weekly-contest-332/problems/subsequence-with-the-minimum-score/
 # 枚举 + 前后缀分解
+
+
+# https://leetcode.cn/contest/weekly-contest-333/
+# 305 / https://leetcode.cn/contest/weekly-contest-333/problems/count-the-number-of-square-free-subsets/
+# 01背包 / 状压dp
+# 133 / https://leetcode.cn/contest/weekly-contest-333/problems/find-the-string-with-lcp/
 
 
 # https://leetcode.cn/contest/weekly-contest-335/

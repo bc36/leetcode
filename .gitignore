@@ -1,6 +1,7 @@
 .*
 !/.gitignore
-??.py
 
 *.class
 lc_Java/test.java
+
+# ??.py # .gitigonre is only used for files that have NOT BEEN TRACKED BEFORE.

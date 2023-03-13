@@ -69,6 +69,8 @@ isbn: 978-7-83009-313-6
 
 # Python3:
 
+* [PEP 8 – Style Guide for Python Code](https://peps.python.org/pep-0008/)
+
 * `math.lcm(*integers)`, [New in version 3.9](https://docs.python.org/3/library/math.html#math.lcm), If any of the arguments is zero, then the returned value is 0. lcm() without arguments returns 1.
 
 * `@functools.cache(user_function)`, [New in version 3.9](https://docs.python.org/3/library/functools.html#functools.cache), Returns the same as lru_cache(maxsize=None).

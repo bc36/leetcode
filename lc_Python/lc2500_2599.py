@@ -2333,6 +2333,17 @@ class Solution:
 
 # 2570 - Merge Two 2D Arrays by Summing Values - EASY
 class Solution:
+    # O(nmlog(nm)) / O(1)
+    def mergeArrays(
+        self, nums1: List[List[int]], nums2: List[List[int]]
+    ) -> List[List[int]]:
+        d = collections.defaultdict(int)
+        for i, v in itertools.chain(nums1, nums2):
+            d[i] += v
+        return sorted(d.items())
+        # return sorted((collections.Counter(dict(nums1)) + collections.Counter(dict(nums2))).items())
+
+    # O(n + m) / O(1)
     def mergeArrays(
         self, nums1: List[List[int]], nums2: List[List[int]]
     ) -> List[List[int]]:
@@ -2354,6 +2365,269 @@ class Solution:
         else:
             ans.extend(nums2[j:])
         return ans
+
+
+# 2571 - Minimum Operations to Reduce an Integer to 0 - MEDIUM
+class Solution:
+    # 贪心, 单个 1 消除, 连续 1 进位
+    # O(logn) / O(1)
+    def minOperations(self, n: int) -> int:
+        ans = 0
+        i = 1
+        while n:
+            while n & i == 0:
+                i <<= 1
+            i <<= 1
+            if n & i != 0:
+                n += i >> 1
+                ans += 1
+            else:
+                n -= i >> 1
+                ans += 1
+        return ans
+
+    def minOperations(self, n: int) -> int:
+        ans = cnt = 0
+        while n:
+            if n & 1:
+                cnt += 1
+            else:
+                if cnt == 1:
+                    ans += 1
+                    cnt = 0
+                elif cnt > 1:
+                    ans += 1
+                    cnt = 1
+            n >>= 1
+        if cnt > 1:
+            ans += 2
+        elif cnt == 1:
+            ans += 1
+        return ans
+
+    def minOperations(self, n: int) -> int:
+        ans = 0
+        for i in range(21):
+            if n & 1 << i > 0:  # 遇到 1, 消除? 进位?
+                if n & 1 << i + 1 > 0:  # 更高位还是 1
+                    n += 1 << i
+                ans += 1
+        return ans
+
+    # 高位比特 1 会受到低位比特 1 加减的影响, 但是最低位的 1 不受约束
+    # -> 处理 lowbit
+    # -> 加 lowbit / 减 lowbit?
+    def minOperations(self, n: int) -> int:
+        ans = 1
+        while n & n - 1:  # 不是 2 的幂次
+            lb = n & -n
+            if n & lb << 1:
+                n += lb  # 多个连续 1
+            else:
+                n -= lb  # 单个 1
+            ans += 1
+        return ans
+
+    def minOperations(self, n: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(n: int) -> int:
+            if n & (n - 1) == 0:  # n 是 2 的幂次
+                return 1
+            lb = n & -n
+            return 1 + min(dfs(n - lb), dfs(n + lb))
+
+        return dfs(n)
+
+    def minOperations(self, n: int) -> int:
+        return (3 * n ^ n).bit_count()  # bin(x).count("1")
+
+
+# 2572 - Count the Number of Square-Free Subsets - MEDIUM
+# 1. 背包
+# 2. 状压
+# 10 个质数 -> 用二进制表示
+
+# 对于每个 [2,30] 内的 无平方因子数(SF, square-free number), 通过预处理得到每个 SF 的质因子集合, 用二进制表示。
+# 二进制从低到高第 i 个比特为 1 表示第 i 个质数在集合中, 为 0 表示第 i 个质数不在集合中。
+# 那么把每个是 SF 的 nums[i] 转换成对应的质因子集合, 题目就变成
+# -> 遍历所有由 30 以内的质数组成的集合 j(这有 2^10个), 对每个 j,
+#    计算选一些不相交的质因子集合, 它们的并集恰好为 j 的方案数
+
+# TODO
+PRIMES = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29
+check = [0] * 31  # check[i] 为 i 对应的质数集合(用二进制表示)
+for i in range(2, 31):
+    for j, p in enumerate(PRIMES):
+        if i % p == 0:
+            if i % (p * p) == 0:  # 有平方因子
+                check[i] = -1
+                break
+            check[i] |= 1 << j  # 把第 j 个质数加到集合中
+
+
+class Solution:
+    # O(n * M), M = 1024, 732ms
+    def squareFreeSubsets(self, nums: List[int]) -> int:
+        mod = 10**9 + 7
+        M = 1 << len(PRIMES)  # 背包
+        f = [0] * M  # f[j] 表示恰好组成集合 j 的方案数
+        f[0] = 1
+        for x in nums:  # 物体
+            mask = check[x]
+            if mask >= 0:  # x 是无平方因子数
+                for j in range(M - 1, mask - 1, -1):  # 逐个背包(二进制)遍历
+                    if (j | mask) == j:  # mask 是 j 的子集
+                        f[j] = (f[j] + f[j ^ mask]) % mod  # 不选 mask + 选 mask
+
+        return (sum(f) - 1) % mod  # -1 去掉空集
+
+    # O(n + 30 * M)
+    def squareFreeSubsets(self, nums: List[int]) -> int:
+        mod = 10**9 + 7
+        cnt = collections.Counter(nums)
+        M = 1 << len(PRIMES)
+        f = [0] * M  # f[j] 表示恰好组成集合 j 的方案数
+        f[0] = 1
+        for x, c in cnt.items():
+            mask = check[x]  # x 是无平方因子数
+            if mask > 0:  # x 是无平方因子数
+                # 88ms
+                for other in range(M - 1, -1, -1):
+                    if (other & mask) == 0:
+                        f[other | mask] = (f[other | mask] + f[other] * c) % mod
+
+                # 60ms
+                # other = (M - 1) ^ mask  # mask 的补集 (学习计算补集的方式)
+                # j = other
+                # while True:  # 枚举 other 的子集 j
+                #     f[j | mask] = (f[j | mask] + f[j] * c) % mod  # 不选 mask + 选 mask
+                #     j = (j - 1) & other  # 学习计算子集的方式
+                #     if j == other:
+                #         break  # 考虑空集的情况 j == 0是, 在减去1变为-1了, 和other&还为other
+
+        return (sum(f) * pow(2, cnt[1], mod) - 1) % mod  # -1 去掉空集
+
+    # 状压dp
+    def squareFreeSubsets(self, nums: List[int]) -> int:
+        # 质数表
+        MAXK = 10  # 小于等于 30 的质数只有 10 个
+        prime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+
+        def check(x: int) -> bool:
+            """检查 x 是否为平方数"""
+            for i in range(MAXK):
+                if x % (prime[i] * prime[i]) == 0:
+                    return True
+            return False
+
+        mod = 10**9 + 7
+        n = len(nums)
+        f = [0] * (1 << MAXK)
+        f[0] = 1
+        for i in range(1, n + 1):
+            x = nums[i - 1]
+            # 如果 x 是平方数, 那么肯定不能把它加入子集, 直接看下一个数
+            if check(x):
+                continue
+            # 计算第 i 个数的质因数分解
+            msk = 0
+            for j in range(MAXK):
+                if x % prime[j] == 0:
+                    msk |= 1 << j
+            # 把第 i 个数加入子集的方案数
+            for j in range(1 << MAXK):
+                if j & msk == 0:
+                    f[j | msk] = (f[j | msk] + f[j]) % mod
+
+        return (sum(f) - 1) % mod
+
+    def squareFreeSubsets(self, nums: List[int]) -> int:
+        mod = 10**9 + 7
+        p = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+        f = [0] * (1 << 10)
+        f[0] = 1
+        for x in nums:
+            y = 0
+            for i in range(10):
+                if x % p[i] == 0:
+                    if x // p[i] % p[i] == 0:
+                        y = -1
+                        break
+                    else:
+                        y |= 1 << i
+            if y == -1:
+                continue
+            if y == 0:
+                for i in range(1 << 10):
+                    f[i] = f[i] * 2 % mod
+            else:
+                for i in range((1 << 10) - 1, -1, -1):
+                    if i & y == y:
+                        f[i] = (f[i] + f[i ^ y]) % mod
+        return (sum(f) - 1) % mod
+
+
+# 2573 - Find the String with LCP - HARD
+class Solution:
+    # 观察
+    # lcp 应该是对称矩阵
+    # lcp[i][i] = n - i
+    # lcp[i][j] <= n - max(i, j)
+    # 考虑 s[0] 能不能是 'a'? 还有哪些 s[i] 可以是 'a'? 哪些 s[i] 绝对不是 'a'
+    # -> 需要考察 lcp[0]
+
+    #
+    # 如果最终没有 s[i] 等于 ‘a’, 那么可以把所有 s[i] 都变小?
+    # -> 比如若 s[0] = 'b', 此时把所有 'a' 换成 'b', 'b' 换成 'a', 不会影响 lcp
+
+    # 根据 LCP 的定义, lcp[0][i] > 0 的一定是‘a’, lcp[0][i] = 0 的一定不是 ‘a’
+    # -> 有哪些 s[i] 可以是 'a'? 哪些 s[i] 绝对不是 'a'
+    # TODO, 离谱, 2681分
+    def findTheString(self, lcp: List[List[int]]) -> str:
+        n = len(lcp)
+        s = [""] * n
+        i = 0  # 还没有填入字母的 s[i]
+        # O(n)
+        for c in string.ascii_lowercase:
+            while i < n and s[i]:
+                i += 1
+            if i == n:
+                break  # 构造完毕
+            # 贪心
+            for j in range(i, n):
+                if lcp[i][j]:
+                    s[j] = c
+        if "" in s:
+            return ""  # 没有构造完
+
+        # 直接在原数组上检查 s 的 lcp 是否和输入一致
+        # O(n^2)
+        for i in range(n - 1, -1, -1):
+            for j in range(n - 1, -1, -1):
+                # actual_lcp = (
+                #     0
+                #     if s[i] != s[j]
+                #     else 1
+                #     if i == n - 1 or j == n - 1
+                #     else lcp[i + 1][j + 1] + 1
+                # )
+
+                # equals to
+
+                actual_lcp = -1
+                if s[i] != s[j]:
+                    actual_lcp = 0
+                elif i == n - 1 or j == n - 1:
+                    actual_lcp = 1
+                else:
+                    actual_lcp = lcp[i + 1][j + 1] + 1
+
+                if lcp[i][j] != actual_lcp:
+                    return ""
+                # 检查不通过, 为什么不用重新构造?
+                # lcp 是一个 pattern, 和字符没什么关系
+
+        return "".join(s)
 
 
 # 2582 - Pass the Pillow - EASY
