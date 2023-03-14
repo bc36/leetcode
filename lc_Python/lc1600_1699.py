@@ -38,6 +38,40 @@ class Solution:
         return sorted(ans)
 
 
+# 1605 - Find Valid Matrix Given Row and Column Sums - MEDIUM
+class Solution:
+    # 贪心, 每次查找行和与列和的最小元素进行填充
+    # O(nm) / O(1)
+    def restoreMatrix(self, rowSum: List[int], colSum: List[int]) -> List[List[int]]:
+        ans = [[0] * len(colSum) for _ in range(len(rowSum))]
+        for i, r in enumerate(rowSum):
+            for j, c in enumerate(colSum):
+                ans[i][j] = v = min(r, c)
+                r -= v
+                colSum[j] -= v
+        return ans
+
+    # 其实需要填的格子组成了一个只能 向下或者向右 的路径(每次去掉一行或者一列), 填 n + m - 1 个格子, 其余为 0
+    # O(n + m) / O(1), initialization is fast
+    def restoreMatrix(self, rowSum: List[int], colSum: List[int]) -> List[List[int]]:
+        n = len(rowSum)
+        m = len(colSum)
+        ans = [[0] * m for _ in range(n)]
+        i = j = 0
+        while i < n and j < m:
+            r = rowSum[i]
+            c = colSum[j]
+            if r < c:
+                ans[i][j] = r
+                colSum[j] -= r
+                i += 1
+            else:
+                ans[i][j] = c
+                rowSum[i] -= c
+                j += 1
+        return ans
+
+
 # 1606 - Find Servers That Handled Most Number of Requests - HARD
 class Solution:
     # O(nlogk + k)

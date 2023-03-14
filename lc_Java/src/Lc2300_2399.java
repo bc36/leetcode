@@ -230,4 +230,20 @@ public class Lc2300_2399 {
         }
         return ans;
     }
+
+    // 2383. Minimum Hours of Training to Win a Competition - E
+    public int minNumberOfHours(int initialEnergy, int initialExperience, int[] energy, int[] experience) {
+        int s = 0;
+        for (int v : energy)
+            s += v;
+        int ans = Math.max(0, s - initialEnergy + 1);
+        for (int v : experience) {
+            if (initialExperience <= v) {
+                ans += v - initialExperience + 1;
+                initialExperience = v + 1;
+            }
+            initialExperience += v;
+        }
+        return ans;
+    }
 }

@@ -3,6 +3,41 @@ package src;
 import java.util.*;
 
 public class Lc1600_1699 {
+    // 1605. Find Valid Matrix Given Row and Column Sums - M
+    public int[][] restoreMatrix(int[] rowSum, int[] colSum) {
+        // 7ms
+        int[][] ans = new int[rowSum.length][colSum.length];
+        for (int i = 0; i < rowSum.length; i++) {
+            for (int j = 0; j < colSum.length; j++) {
+                int v = Math.min(rowSum[i], colSum[j]);
+                ans[i][j] = v;
+                rowSum[i] -= v;
+                colSum[j] -= v;
+            }
+        }
+        return ans;
+    }
+
+    public int[][] restoreMatrix2(int[] rowSum, int[] colSum) {
+        // 1ms
+        int n = rowSum.length, m = colSum.length, i = 0, j = 0;
+        int[][] ans = new int[n][m];
+        while (i < n && j < m) {
+            int r = rowSum[i];
+            int c = colSum[j];
+            if (r < c) {
+                ans[i][j] = r;
+                colSum[j] -= r;
+                i++;
+            } else {
+                ans[i][j] = c;
+                rowSum[i] -= c;
+                j++;
+            }
+        }
+        return ans;
+    }
+
     // 1653. Minimum Deletions to Make String Balanced - M
     public int minimumDeletions(String s) {
         int del = 0; // all 'a'
