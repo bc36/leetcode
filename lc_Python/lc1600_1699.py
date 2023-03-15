@@ -170,6 +170,32 @@ class Solution:
         return ans
 
 
+# 1615 - Maximal Network Rank - MEDIUM
+class Solution:
+    # O(n^2) / O(n^2)
+    def maximalNetworkRank(self, n: int, roads: List[List[int]]) -> int:
+        g = collections.defaultdict(set)
+        for a, b in roads:
+            g[a].add(b)
+            g[b].add(a)
+        return max(
+            len(g[a]) + len(g[b]) - (a in g[b])
+            for a in range(n)
+            for b in range(a + 1, n)
+        )
+
+    def maximalNetworkRank(self, n: int, roads: List[List[int]]) -> int:
+        conn = [[0] * n for _ in range(n)]
+        deg = [0] * n
+        for a, b in roads:
+            conn[a][b] = conn[b][a] = 1
+            deg[a] += 1
+            deg[b] += 1
+        return max(
+            deg[a] + deg[b] - conn[a][b] for a in range(n) for b in range(a + 1, n)
+        )
+
+
 # 1619 - Mean of Array After Removing Some Elements - EASY
 class Solution:
     def trimMean(self, arr: List[int]) -> float:
