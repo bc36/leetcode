@@ -195,6 +195,27 @@ class Solution:
             deg[a] + deg[b] - conn[a][b] for a in range(n) for b in range(a + 1, n)
         )
 
+    def maximalNetworkRank(self, n: int, roads: List[List[int]]) -> int:
+        g = [set() for _ in range(n)]
+        for a, b in roads:
+            g[a].add(b)
+            g[b].add(a)
+        a = b = 0
+        x = []
+        y = []
+        # a = b + 1 or a == b
+        a, b = heapq.nlargest(2, [len(v) for v in g])
+        for i, v in enumerate(g):
+            if len(v) == a:
+                x.append(i)
+            if len(v) == b:
+                y.append(i)
+        for i in x:
+            for j in y:
+                if i != j and i not in g[j]:
+                    return a + b
+        return a + b - 1
+
 
 # 1619 - Mean of Array After Removing Some Elements - EASY
 class Solution:

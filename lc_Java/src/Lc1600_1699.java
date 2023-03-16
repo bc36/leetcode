@@ -38,6 +38,47 @@ public class Lc1600_1699 {
         return ans;
     }
 
+    // 1615. Maximal Network Rank - M
+    // 4ms
+    public int maximalNetworkRank(int n, int[][] roads) {
+        int[][] conn = new int[n][n];
+        int[] deg = new int[n];
+        int ans = 0;
+        for (int i = 0; i < roads.length; i++) {
+            int a = roads[i][0], b = roads[i][1];
+            conn[a][b] = 1;
+            conn[b][a] = 1;
+            deg[a]++;
+            deg[b]++;
+        }
+        for (int a = 0; a < n; a++) {
+            for (int b = a + 1; b < n; b++) {
+                ans = Math.max(ans, deg[a] + deg[b] - conn[a][b]);
+            }
+        }
+        return ans;
+    }
+
+    // 2ms
+    public int maximalNetworkRank2(int n, int[][] roads) {
+        int[][] conn = new int[n][n];
+        int[] deg = new int[n];
+        for (int[] road : roads) { // 1ms faster
+            conn[road[0]][road[1]] = 1;
+            conn[road[1]][road[0]] = 1;
+            deg[road[0]] += 1;
+            deg[road[1]] += 1;
+        }
+        int ans = Integer.MIN_VALUE;
+        for (int a = 0; a < n; a++) {
+            for (int b = a + 1; b < n; b++) {
+                int cnt = deg[a] + deg[b] - conn[a][b]; // 1ms faster
+                ans = ans < cnt ? cnt : ans;
+            }
+        }
+        return ans;
+    }
+
     // 1653. Minimum Deletions to Make String Balanced - M
     public int minimumDeletions(String s) {
         int del = 0; // all 'a'
