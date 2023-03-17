@@ -3164,6 +3164,10 @@ class Solution:
             nums[i] += nums[i - 1]
         return [bisect.bisect_right(nums, q) for q in queries]
 
+    def answerQueries(self, nums: List[int], queries: List[int]) -> List[int]:
+        nums = list(itertools.accumulate(sorted(nums)))
+        return [bisect.bisect_right(nums, q) for q in queries]
+
 
 # 2390 - Removing Stars From a String - MEDIUM
 class Solution:

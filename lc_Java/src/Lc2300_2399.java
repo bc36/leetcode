@@ -4,6 +4,42 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Lc2300_2399 {
+    /**
+     * all e in a[:i] have e < x, and all e in a[i:] have e >= x.
+     * @param nums
+     * @param x
+     * @return position <code> i <code>
+     */
+    private int lowerBound(int[] nums, int x) {
+        int l = 0, r = nums.length;
+        while (l < r) {
+            int m = (l + r) >> 1;
+            if (nums[m] < x)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l;
+    }
+
+    /**
+     * all e in a[:i] have e <= x, and all e in a[i:] have e > x.
+     * @param nums
+     * @param x
+     * @return position <code> i <code>
+     */
+    private int upperBound(int[] nums, int x) {
+        int l = 0, r = nums.length;
+        while (l < r) {
+            int m = (l + r) >> 1;
+            if (nums[m] > x)
+                r = m;
+            else
+                l = m + 1;
+        }
+        return l;
+    }
+
     // 2325. Decode the Message - E
     public String decodeMessage(String key, String message) {
         char[] d = new char[128];
@@ -243,6 +279,19 @@ public class Lc2300_2399 {
                 initialExperience = v + 1;
             }
             initialExperience += v;
+        }
+        return ans;
+    }
+
+    // 2389. Longest Subsequence With Limited Sum - E
+    public int[] answerQueries(int[] nums, int[] queries) {
+        Arrays.sort(nums);
+        for (int i = 1; i < nums.length; i++) {
+            nums[i] += nums[i - 1];
+        }
+        int[] ans = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            ans[i] = upperBound(nums, queries[i]);
         }
         return ans;
     }
