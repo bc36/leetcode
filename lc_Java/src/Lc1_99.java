@@ -43,6 +43,42 @@ public class Lc1_99 {
 		}
 	}
 
+	/**
+	 * all e in a[:i] have e < x, and all e in a[i:] have e >= x.
+	 * @param nums
+	 * @param x
+	 * @return position <code> i <code>
+	 */
+	private int lowerBound(int[] nums, int x) {
+		int l = 0, r = nums.length;
+		while (l < r) {
+			int m = (l + r) >> 1;
+			if (nums[m] < x)
+				l = m + 1;
+			else
+				r = m;
+		}
+		return l;
+	}
+
+	/**
+	 * all e in a[:i] have e <= x, and all e in a[i:] have e > x.
+	 * @param nums
+	 * @param x
+	 * @return position <code> i <code>
+	 */
+	private int upperBound(int[] nums, int x) {
+		int l = 0, r = nums.length;
+		while (l < r) {
+			int m = (l + r) >> 1;
+			if (nums[m] > x)
+				r = m;
+			else
+				l = m + 1;
+		}
+		return l;
+	}
+
 	// 1. Two Sum - E
 	public int[] twoSum(int[] nums, int target) {
 		Map<Integer, Integer> m = new HashMap<Integer, Integer>();

@@ -3,6 +3,61 @@ package src;
 import java.util.*;
 
 public class Lc1400_1499 {
+	public class TreeNode {
+		int val;
+		TreeNode left;
+		TreeNode right;
+
+		TreeNode() {
+		}
+
+		TreeNode(int val) {
+			this.val = val;
+		}
+
+		TreeNode(int val, TreeNode left, TreeNode right) {
+			this.val = val;
+			this.left = left;
+			this.right = right;
+		}
+	}
+
+	/**
+	 * all e in a[:i] have e < x, and all e in a[i:] have e >= x.
+	 * @param nums
+	 * @param x
+	 * @return position <code> i <code>
+	 */
+	private int lowerBound(int[] nums, int x) {
+		int l = 0, r = nums.length;
+		while (l < r) {
+			int m = (l + r) >> 1;
+			if (nums[m] < x)
+				l = m + 1;
+			else
+				r = m;
+		}
+		return l;
+	}
+
+	/**
+	 * all e in a[:i] have e <= x, and all e in a[i:] have e > x.
+	 * @param nums
+	 * @param x
+	 * @return position <code> i <code>
+	 */
+	private int upperBound(int[] nums, int x) {
+		int l = 0, r = nums.length;
+		while (l < r) {
+			int m = (l + r) >> 1;
+			if (nums[m] > x)
+				r = m;
+			else
+				l = m + 1;
+		}
+		return l;
+	}
+
 	// 1414. Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - M
 	public int findMinFibonacciNumbers(int k) {
 		List<Integer> f = new ArrayList<Integer>();
