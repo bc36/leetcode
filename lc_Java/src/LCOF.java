@@ -22,6 +22,7 @@ public class LCOF {
         return memo[i][j] = Math.max(dfs(i, j - 1), dfs(i - 1, j)) + grid[i][j];
     }
 
+    // 内部类实现 dfs
     public int maxValue4(int[][] grid) {
         int m = grid.length, n = grid[0].length;
         int[][] memo = new int[m][n];
@@ -34,8 +35,24 @@ public class LCOF {
                 return memo[i][j] = Math.max(dfs(i, j - 1), dfs(i - 1, j)) + grid[i][j];
             }
         }
-        Inner in = new Inner();
-        return in.dfs(m - 1, n - 1);
+        Inner inr = new Inner();
+        return inr.dfs(m - 1, n - 1);
+    }
+
+    // 匿名类实现 dfs
+    public int maxValue5(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        int[][] memo = new int[m][n];
+
+        return new Helper() {
+            public int dfs(int i, int j) {
+                if (i < 0 || j < 0)
+                    return 0;
+                if (memo[i][j] > 0)
+                    return memo[i][j];
+                return memo[i][j] = Math.max(dfs(i, j - 1), dfs(i - 1, j)) + grid[i][j];
+            }
+        }.dfs(m - 1, n - 1);
     }
 
     public int maxValue3(int[][] grid) {

@@ -115,7 +115,9 @@ isbn: 978-7-83009-313-6
   * `native` keyword shows that `System.arraycopy` is implemented by other languages like C/C++ (fast)
   * `Arrays.copyOf` will create a new item. `System.arraycopy` only copy from src to dst.
   * `Arrays.copyOf` will call `System.arraycopy`, so it is a bit slow. 
-
+* `static`
+  * when we declare a field static, exactly a single copy of that field is created and shared among all instances of that class (access static fields without object initialization!)
+  * static variables are stored in the heap memory (fast)
 
 <br><br>
 

@@ -1,5 +1,5 @@
-import bisect, collections, functools, math, itertools, heapq, operator, string
-from typing import List, Optional
+import bisect, collections, functools, heapq, itertools, math, operator, string
+from typing import List, Optional, Tuple
 import sortedcontainers
 
 
@@ -2289,6 +2289,56 @@ class Solution:
                     cur += abs(robot[i + k - 1] - factory[j][0])
                     f[i] = min(f[i], f[i + k] + cur)
         return f[0]
+
+
+# 2465 - Number of Distinct Averages - EASY
+class Solution:
+    def distinctAverages(self, nums: List[int]) -> int:
+        nums.sort()
+        # no need to divide by 2
+        return len(set(nums[i] + nums[-i - 1] for i in range(len(nums) // 2)))
+
+
+# 2466 - Count Ways To Build Good Strings - MEDIUM
+class Solution:
+    def countGoodStrings(self, low: int, high: int, zero: int, one: int) -> int:
+        @functools.lru_cache
+        def f(n: int):
+            return (
+                0 if n < 0 else 1 if n == 0 else (f(n - zero) + f(n - one)) % 1000000007
+            )
+
+        return sum(f(v) for v in range(low, high + 1)) % 1000000007
+
+    def countGoodStrings(self, low: int, high: int, zero: int, one: int) -> int:
+        mod = 10**9 + 7
+        f = [0] * (high + 1)
+        f[0] = 1
+        for i in range(high + 1 - min(zero, one)):
+            if i + zero <= high:
+                f[i + zero] = (f[i] + f[i + zero]) % mod
+            if i + one <= high:
+                f[i + one] = (f[i] + f[i + one]) % mod
+        return sum(f[low:]) % mod
+
+    def countGoodStrings(self, low: int, high: int, zero: int, one: int) -> int:
+        mod = 10**9 + 7
+        f = [1] + [0] * high
+        ans = 0
+        for i in range(1, high + 1):
+            if i >= one:
+                f[i] = (f[i] + f[i - one]) % mod
+            if i >= zero:
+                f[i] = (f[i] + f[i - zero]) % mod
+            if i >= low:
+                ans = (ans + f[i]) % mod
+        return ans
+
+
+# 2469 - Convert the Temperature - EASY
+class Solution:
+    def convertTemperature(self, celsius: float) -> List[float]:
+        return [celsius + 273.15, celsius * 1.8 + 32]
 
 
 # 2490 - Circular Sentence - EASY

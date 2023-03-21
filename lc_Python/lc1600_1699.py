@@ -217,6 +217,22 @@ class Solution:
         return a + b - 1
 
 
+# 1616 - Split Two Strings to Make Palindrome - MEDIUM
+class Solution:
+    def checkPalindromeFormation(self, a: str, b: str) -> bool:
+        def check(a: str, b: str) -> bool:
+            i = 0
+            j = len(a) - 1
+            while i < j and a[i] == b[j]:
+                i += 1
+                j -= 1
+            m1 = a[i : j + 1]
+            m2 = b[i : j + 1]
+            return m1 == m1[::-1] or m2 == m2[::-1]
+
+        return check(a, b) or check(b, a)
+
+
 # 1619 - Mean of Array After Removing Some Elements - EASY
 class Solution:
     def trimMean(self, arr: List[int]) -> float:
@@ -255,6 +271,47 @@ class Solution:
                 arr[ord(c) - 97] = i
             else:
                 ans = max(ans, i - arr[ord(c) - 97] - 1)
+        return ans
+
+
+# 1625 - Lexicographically Smallest String After Applying Operations - MEDIUM
+class Solution:
+    def findLexSmallestString(self, s: str, a: int, b: int) -> str:
+        q = collections.deque([s])
+        vis = {s}
+        ans = s
+        while q:
+            for _ in range(len(q)):
+                v = q.popleft()
+                if v < ans:
+                    ans = v
+                add = "".join(
+                    chr(48 + (ord(c) - 48 + a) % 10) if i & 1 else c
+                    for i, c in enumerate(v)
+                )
+                rotate = v[-b:] + v[:-b]
+                for x in add, rotate:
+                    if x not in vis:
+                        vis.add(x)
+                        q.append(x)
+        return "".join(ans)
+
+    def findLexSmallestString(self, s: str, a: int, b: int) -> str:
+        q = collections.deque([s])
+        vis = {s}
+        ans = s
+        while q:
+            s = q.popleft()
+            if ans > s:
+                ans = s
+            t1 = "".join(
+                str((int(c) + a) % 10) if i & 1 else c for i, c in enumerate(s)
+            )
+            t2 = s[-b:] + s[:-b]
+            for t in (t1, t2):
+                if t not in vis:
+                    vis.add(t)
+                    q.append(t)
         return ans
 
 
