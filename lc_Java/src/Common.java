@@ -1,5 +1,10 @@
 package src;
 
+/**
+ * Define functions with common structure and overload them to reduce code repetition.
+ * Some unique helper functions for problem solving will be implemented using <code>inner class</code>.
+ * Such as dfs(), check(), etc.
+ */
 class Helper {
     public int dfs(int i, int j) {
         return -1;
