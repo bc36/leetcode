@@ -330,6 +330,28 @@ class Solution:
         return ans
 
 
+# 1630 - Arithmetic Subarrays - MEDIUM
+class Solution:
+    def checkArithmeticSubarrays(
+        self, nums: List[int], l: List[int], r: List[int]
+    ) -> List[bool]:
+        def check(arr: List[int]) -> bool:
+            d = arr[1] - arr[0]
+            for j in range(2, len(arr)):
+                if arr[j] - arr[j - 1] != d:
+                    return False
+            return True
+
+        ans = []
+        for i in range(len(l)):
+            tmp = nums[l[i] : r[i] + 1]
+            tmp.sort()
+            ans.append(check(tmp))
+        return ans
+
+        return list(check(sorted(nums[l[i] : r[i] + 1])) for i in range(len(l)))
+
+
 # 1636 - Sort Array by Increasing Frequency - EASY
 class Solution:
     def frequencySort(self, nums: List[int]) -> List[int]:
