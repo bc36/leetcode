@@ -1070,7 +1070,7 @@ def transpose(matrix: List[List[int]]) -> List[List[int]]:
 """trie"""
 
 
-def build(words: List[List[int]]) -> None:
+def build_trie(words: List[List[int]]) -> None:
     trie = {}
     for w in words:
         r = trie
@@ -1106,8 +1106,8 @@ class Solution:
         return ans
 
 
-def build(words: List[List[int]]) -> None:
-    # 小慢 2s
+def build_trie(words: List[List[int]]) -> None:
+    # (1) 小慢 2s
     trie = {}
     for w in words:
         r = trie
@@ -1120,7 +1120,7 @@ def build(words: List[List[int]]) -> None:
             r = r[c]
         r["end"] = True
 
-    # 小慢 2s
+    # (2) 小慢 2s
     trie = [None] * 27  # 最后一位用于计数
     trie[26] = 0
     for w in words:
@@ -1133,7 +1133,7 @@ def build(words: List[List[int]]) -> None:
             r = r[c]
             r[26] += 1
 
-    # 1s
+    # (3) 1s
     trie = {}
     for w in words:
         r = trie
@@ -1146,6 +1146,7 @@ def build(words: List[List[int]]) -> None:
             r = r[c]
         r["end"] = True
 
+    # (4)
     trie = {}
     for w in words:
         r = trie

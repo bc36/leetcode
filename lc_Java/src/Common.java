@@ -1,16 +1,5 @@
 package src;
 
-/**
- * Define functions with common structure and overload them to reduce code repetition.
- * Some unique helper functions for problem solving will be implemented using <code>inner class</code>.
- * Such as dfs(), check(), etc.
- */
-class Helper {
-    public int dfs(int i, int j) {
-        return -1;
-    }
-}
-
 class Sort {
     /**
      * all e in a[:i] have e < x, and all e in a[i:] have e >= x.
@@ -50,4 +39,25 @@ class Sort {
 }
 
 public class Common {
+}
+
+/**
+ * [Obsolete] Because it will add >=1ms of latency <p>
+ * 
+ * Define functions with common structure and override them to reduce code repetition.
+ * Some unique helper functions for problem solving will be implemented using <code>inner class</code>.
+ * Such as dfs(), check(), etc.
+ */
+class Helper {
+    public int dfs(int i, int j) {
+        return -1;
+    }
+
+    public boolean check(int[] arr) {
+        return false;
+    }
+
+    public boolean check(int[] arr, int x, int y) {
+        return false;
+    }
 }

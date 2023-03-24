@@ -1,4 +1,4 @@
-import bisect, collections, functools, heapq, itertools, math, operator, string
+import bisect, collections, copy, datetime, functools, heapq, itertools, math, operator, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -398,6 +398,71 @@ class Solution:
             [(i, j) for i in range(rows) for j in range(cols)],
             key=lambda x: abs(x[0] - rCenter) + abs(x[1] - cCenter),
         )
+
+
+# 1032 - Stream of Characters - HARD
+class TrieNode:
+    def __init__(self) -> None:
+        self.ch = collections.defaultdict(TrieNode)
+        self.end = False
+
+
+class Trie:
+    def __init__(self, words: List[str]) -> None:
+        self.root = TrieNode()
+        for w in words:
+            r = self.root
+            for c in w:
+                r = r.ch[c]
+            r.end = True
+        self.s = [self.root]
+
+    def query(self, letter: str) -> bool:
+        f = False
+        new = [self.root]
+        for node in self.s:
+            if letter in node.ch:
+                new.append(node.ch[letter])
+                if node.ch[letter].end:
+                    f = True
+        self.s = new
+        return f
+
+
+class StreamChecker:
+    # 建树, query 时维护一个 pointer 集合
+    def __init__(self, words: List[str]):
+        self.trie = Trie(words)
+
+    def query(self, letter: str) -> bool:
+        return self.trie.query(letter)
+
+
+class StreamChecker:
+    # 建树, query 时维护一个 pointer 集合
+    def __init__(self, words: List[str]):
+        trie = dict()
+        for w in words:
+            r = trie
+            for c in w:
+                if c not in r:
+                    r[c] = dict()
+                r = r[c]
+            r["end"] = True
+
+        self.trie = trie
+        self.s = [self.trie]
+
+    def query(self, letter: str) -> bool:
+        f = False
+        new = [self.trie]
+        for r in self.s:
+            if letter in r:
+                new.append(r[letter])
+                if "end" in r[letter]:
+                    f = True
+        self.s = new
+        return f
 
 
 # 1034 - Coloring A Border - MEDIUM

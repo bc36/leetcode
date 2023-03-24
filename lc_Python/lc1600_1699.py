@@ -332,6 +332,7 @@ class Solution:
 
 # 1630 - Arithmetic Subarrays - MEDIUM
 class Solution:
+    # O(nlogn * n * m) / O(n)
     def checkArithmeticSubarrays(
         self, nums: List[int], l: List[int], r: List[int]
     ) -> List[bool]:
@@ -350,6 +351,30 @@ class Solution:
         return ans
 
         return list(check(sorted(nums[l[i] : r[i] + 1])) for i in range(len(l)))
+
+    # O(nm) / O(n)
+    def checkArithmeticSubarrays(
+        self, nums: List[int], l: List[int], r: List[int]
+    ) -> List[bool]:
+        def check(x: int, y: int) -> bool:
+            mi = min(nums[x : y + 1])
+            mx = max(nums[x : y + 1])
+            if mi == mx:
+                return True
+            if (mx - mi) % (y - x) != 0:
+                return False
+            d = (mx - mi) // (y - x)
+            arr = [False] * (y - x + 1)
+            for i in range(x, y + 1):
+                if (nums[i] - mi) % d != 0:
+                    return False
+                j = (nums[i] - mi) // d
+                if arr[j]:
+                    return False
+                arr[j] = True
+            return True
+
+        return [check(x, y) for x, y in zip(l, r)]
 
 
 # 1636 - Sort Array by Increasing Frequency - EASY

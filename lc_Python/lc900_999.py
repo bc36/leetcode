@@ -1650,6 +1650,65 @@ class Solution:
         return [ans[k] for k in sorted(ans)]  # sorting directly will return sorted keys
 
 
+# 989 - Add to Array-Form of Integer - EASY
+class Solution:
+    def addToArrayForm(self, num: List[int], k: int) -> List[int]:
+        num.reverse()
+        i = carry = 0
+        n = len(num)
+        while k or carry:
+            tmp = carry
+            if k:
+                tmp += k % 10
+                k //= 10
+            if i < n:
+                tmp += num[i]
+                num[i] = tmp % 10
+            else:
+                num.append(tmp % 10)
+            carry = tmp // 10
+            i += 1
+        return list(reversed(num))
+
+    def addToArrayForm(self, num: List[int], k: int) -> List[int]:
+        i = len(num) - 1
+        carry = 0
+        while k or carry:
+            if i == -1:
+                i = 0
+                num = [0] + num
+            v = k % 10 + num[i] + carry
+            # num[i] = v % 10
+            # carry = v // 10
+            carry, num[i] = divmod(v, 10)
+            k //= 10
+            i -= 1
+        return num
+
+
+# 990 - Satisfiability of Equality Equations - MEDIUM
+class Solution:
+    # O(n + ClogC) / O(C), C = 26
+    def equationsPossible(self, equations: List[str]) -> bool:
+        p = list(range(26))
+
+        def find(x: int) -> int:
+            if p[x] != x:
+                p[x] = find(p[x])
+            return p[x]
+
+        check = []
+        for a, b, _, c in equations:
+            ia, ic = ord(a) - 97, ord(c) - 97
+            fa, fc = find(ia), find(ic)
+            if b == "=":
+                p[fc] = fa
+            else:
+                check.append((ia, ic))
+
+        return not any(find(ia) == find(ic) for ia, ic in check)
+
+
 # 992 - Subarrays with K Different Integers - HARD
 class Solution:
     def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:

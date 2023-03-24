@@ -193,4 +193,62 @@ public class Lc1600_1699 {
         }
         return Math.min(a, b);
     }
+
+    // 1630. Arithmetic Subarrays - M
+    // O(nlogn * n * m) / O(), 21ms, 暴力排序
+    public List<Boolean> checkArithmeticSubarrays(int[] nums, int[] l, int[] r) {
+        Helper h = new Helper() {
+            public boolean check(int[] arr) {
+                int d = arr[1] - arr[0];
+                for (int j = 2; j < arr.length; ++j) {
+                    if (arr[j] - arr[j - 1] != d) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+
+        List<Boolean> ans = new ArrayList<>();
+        for (int i = 0; i < l.length; ++i) {
+            int len = r[i] - l[i] + 1;
+            int[] tmp = new int[len];
+            System.arraycopy(nums, l[i], tmp, 0, len);
+            Arrays.sort(tmp);
+            ans.add(h.check(tmp));
+        }
+        return ans;
+    }
+
+    // O(nm) / O(n), 3ms, 无排序 + 数组
+    public List<Boolean> checkArithmeticSubarrays2(int[] nums, int[] l, int[] r) {
+        List<Boolean> result = new ArrayList<>();
+        for (int i = 0; i < l.length; ++i) {
+            result.add(check(nums, l[i], r[i]));
+        }
+        return result;
+    }
+
+    private boolean check(int[] nums, int l, int r) {
+        int min = (int) 1e9, max = (int) -1e9;
+        for (int i = l; i <= r; ++i) {
+            min = Math.min(min, nums[i]);
+            max = Math.max(max, nums[i]);
+        }
+        if (min == max)
+            return true;
+        if ((max - min) % (r - l) != 0)
+            return false;
+        int d = (max - min) / (r - l);
+        boolean[] dict = new boolean[r - l + 1];
+        for (int i = l; i <= r; ++i) {
+            if ((nums[i] - min) % d != 0)
+                return false;
+            int j = (nums[i] - min) / d;
+            if (dict[j])
+                return false;
+            dict[j] = true;
+        }
+        return true;
+    }
 }

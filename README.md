@@ -111,13 +111,32 @@ isbn: 978-7-83009-313-6
   * cannot use `var` for method signatures (in return types and parameters).
   * cannot use it with a generic type.
 * `x += s.charAt(i) - 'a';` is much faster than `x += s.charAt(i) == 'b' ? 1 : 0;`
-* `System.arraycopy` vs `Arrays.copyOf`
+* `System.arraycopy` vs `Arrays.copyOf` ?
   * `native` keyword shows that `System.arraycopy` is implemented by other languages like C/C++ (fast)
   * `Arrays.copyOf` will create a new item. `System.arraycopy` only copy from src to dst.
   * `Arrays.copyOf` will call `System.arraycopy`, so it is a bit slow. 
 * `static`
   * when we declare a field static, exactly a single copy of that field is created and shared among all instances of that class (access static fields without object initialization!)
   * static variables are stored in the heap memory (fast)
+* `ArrayList` vs `LinkedList` ?
+  * `ArrayList`: implements it with a dynamically re-sizing array, O(1) accessing, O(n) adding
+  * `LinkedList`: implements it with a doubly-linked list. O(n) accessing, O(n) adding. Memory costing. So why not use `ArrayDeque` ?
+  * ```
+    Algorithm           ArrayList   LinkedList
+    seek front            O(1)         O(1)
+    seek back             O(1)         O(1)
+    seek to index         O(1)         O(N)
+    insert at front       O(N)         O(1)
+    insert at back        O(1)         O(1)
+    insert after an item  O(N)         O(1)
+    ```
+* print List: 
+  * System.out.println(Arrays.toString()), which will call String.valueOf()
+  * System.out.println(Arrays.asList(intArray));
+  * Stream.of(target).forEach(System.out::println);
+  * Arrays.stream(target).forEach(System.out::println);
+  * Arrays.asList(target).stream().forEach(s -> System.out.println(s));
+  * System.out.println(Arrays.deepToString(twoDimensionalArray));
 
 <br><br>
 
