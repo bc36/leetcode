@@ -261,6 +261,28 @@ class Solution:
         return ans - mat[m][m] * (n & 1)
 
 
+# 1574 - Shortest Subarray to be Removed to Make Array Sorted - MEDIUM
+class Solution:
+    def findLengthOfShortestSubarray(self, arr: List[int]) -> int:
+        n = len(arr)
+        l = 0
+        while l < n - 1 and arr[l] <= arr[l + 1]:
+            l += 1
+        if l == n - 1:
+            return 0
+        ans = n - 1 - l
+        r = n - 1
+        while l >= 0:
+            while l < r and arr[r - 1] <= arr[r] and arr[l] <= arr[r - 1]:
+                r -= 1
+            if arr[l] <= arr[r]:
+                ans = min(ans, r - l - 1)
+            l -= 1
+        while r > 0 and arr[r - 1] <= arr[r]:
+            r -= 1
+        return min(ans, r)
+
+
 # 1576 - Replace All ?'s to Avoid Consecutive Repeating Characters - EASY
 class Solution:
     def modifyString(self, s: str) -> str:

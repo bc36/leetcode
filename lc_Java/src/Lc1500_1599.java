@@ -3,6 +3,50 @@ package src;
 import java.util.*;
 
 public class Lc1500_1599 {
+    // 1574. Shortest Subarray to be Removed to Make Array Sorted - M
+    // 1ms
+    public int findLengthOfShortestSubarray(int[] arr) {
+        int l = 0, n = arr.length, r = n - 1;
+        while (l < n - 1 && arr[l] <= arr[l + 1])
+            ++l;
+        if (l == n - 1)
+            return 0;
+        int ans = n - l - 1;
+        while (l >= 0) {
+            while (l < r && arr[l] <= arr[r - 1] && arr[r - 1] <= arr[r])
+                --r;
+            if (arr[l] <= arr[r])
+                ans = Math.min(ans, r - l - 1);
+            --l;
+        }
+        while (r > 0 && arr[r - 1] <= arr[r])
+            --r;
+        return Math.min(ans, r);
+    }
+
+    // 1ms
+    public int findLengthOfShortestSubarray2(int[] arr) {
+        int n = arr.length, l = 0, r = n - 1;
+        while (l < n - 1 && arr[l] <= arr[l + 1])
+            ++l;
+        while (r > 0 && arr[r - 1] <= arr[r])
+            --r;
+        if (l == n - 1)
+            return 0;
+        if (arr[l] <= arr[r])
+            return r - l - 1;
+        int ans = Math.min(r, n - 1 - l), i = 0, j = r;
+        // i 增大, j 可能也增大
+        while (i <= l && j < n) {
+            while (j < n && arr[i] > arr[j])
+                ++j;
+            if (j < n)
+                ans = Math.min(ans, j - i - 1);
+            ++i;
+        }
+        return ans;
+    }
+
     // 1590. Make Sum Divisible by P - M
     // O(n) / O(n)
     public int minSubarray(int[] nums, int p) {
