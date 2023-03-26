@@ -259,4 +259,16 @@ public class Lc2300_2399 {
         }
         return ans;
     }
+
+    // 2395. Find Subarrays With Equal Sum - E
+    public boolean findSubarrays(int[] nums) {
+        Set<Integer> s = new HashSet<>();
+        for (int i = 0; i < nums.length - 1; ++i) {
+            int sum = nums[i] + nums[i + 1];
+            if (!s.add(sum)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

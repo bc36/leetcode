@@ -315,6 +315,51 @@ class Solution:
         return ans
 
 
+# 1626 - Best Team With No Conflicts - MEDIUM
+class Solution:
+    # O(n^2) / O(n)
+    def bestTeamScore(self, scores: List[int], ages: List[int]) -> int:
+        arr = sorted(zip(scores, ages))
+        f = [0] * len(arr)
+        for i, (s, a) in enumerate(arr):
+            for j in range(i):
+                if arr[j][1] <= a:
+                    f[i] = max(f[i], f[j])
+            f[i] += s
+        return max(f)
+
+    # ages[i] 值域较小, f[i] 表示年龄最大值恰好等于 x 的球队最大分数和
+    # O(nlogn + nU) / O(n + U), U = max(ages)
+    def bestTeamScore(self, scores: List[int], ages: List[int]) -> int:
+        f = [0] * (max(ages) + 1)
+        for score, age in sorted(zip(scores, ages)):
+            f[age] = max(f[: age + 1]) + score
+        return max(f)
+
+    # BIT, TODO
+    def bestTeamScore(self, scores: List[int], ages: List[int]) -> int:
+        u = max(ages)
+        t = [0] * (u + 1)
+
+        # 返回 max(max_sum[:i+1])
+        def query(i: int) -> int:
+            mx = 0
+            while i:
+                mx = max(mx, t[i])
+                i &= i - 1
+            return mx
+
+        # 更新 max_sum[i] 为 mx
+        def update(i: int, mx: int) -> None:
+            while i < len(t):
+                t[i] = max(t[i], mx)
+                i += i & -i
+
+        for score, age in sorted(zip(scores, ages)):
+            update(age, query(age) + score)
+        return query(u)
+
+
 # 1629 - Slowest Key - EASY
 class Solution:
     def slowestKey(self, rT: List[int], keys: str) -> str:

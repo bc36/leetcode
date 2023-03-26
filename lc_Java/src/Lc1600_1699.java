@@ -194,6 +194,237 @@ public class Lc1600_1699 {
         return Math.min(a, b);
     }
 
+    // 1626. Best Team With No Conflicts - M
+    // O(n^2) / O(n), 48ms
+    public int bestTeamScore(int[] scores, int[] ages) {
+        int n = scores.length, ans = 0, f[] = new int[n + 1];
+        Integer[] order = new Integer[n];
+        for (int i = 0; i < n; ++i)
+            order[i] = i;
+        Arrays.sort(order, (i, j) -> scores[i] != scores[j] ? scores[i] - scores[j] : ages[i] - ages[j]);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < i; ++j)
+                if (ages[order[j]] <= ages[order[i]])
+                    f[i] = Math.max(f[i], f[j]);
+            f[i] += scores[order[i]];
+            ans = Math.max(ans, f[i]);
+        }
+        return ans;
+    }
+
+    public int bestTeamScore4(int[] scores, int[] ages) {
+        int n = ages.length, arr[][] = new int[n][2], f[] = new int[n], ans = 0;
+        for (int i = 0; i < n; ++i) {
+            arr[i] = new int[] { scores[i], ages[i] };
+        }
+        Arrays.sort(arr, (a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < i; ++j) {
+                if (arr[i][1] >= arr[j][1]) {
+                    f[i] = Math.max(f[i], f[j]);
+                }
+            }
+            f[i] += arr[i][0];
+            ans = Math.max(ans, f[i]);
+        }
+        return ans;
+    }
+
+    // O(nlogn + nU) / O(n + U), U = max(ages), 48ms
+    public int bestTeamScore2(int[] scores, int[] ages) {
+        int n = scores.length, u = 0, ans = 0;
+        Integer[] order = new Integer[n];
+        for (int i = 0; i < n; ++i) {
+            order[i] = i;
+            u = Math.max(u, ages[i]);
+        }
+        Arrays.sort(order, (i, j) -> scores[i] != scores[j] ? scores[i] - scores[j] : ages[i] - ages[j]);
+        int[] f = new int[u + 1];
+        for (int i : order) {
+            int a = ages[i];
+            for (int j = 1; j <= a; ++j)
+                f[a] = Math.max(f[a], f[j]);
+            f[a] += scores[i];
+            ans = Math.max(ans, f[a]);
+        }
+        return ans;
+    }
+
+    // 10ms
+    public int bestTeamScore3(int[] scores, int[] ages) {
+        int n = scores.length;
+        Integer[] ids = new Integer[n];
+        for (int i = 0; i < n; ++i)
+            ids[i] = i;
+        Arrays.sort(ids, (i, j) -> scores[i] != scores[j] ? scores[i] - scores[j] : ages[i] - ages[j]);
+
+        for (int i : ids)
+            update(ages[i], query(ages[i]) + scores[i]);
+        return query(MX);
+    }
+
+    private static final int MX = 1000;
+    private final int[] t = new int[MX + 1];
+
+    // 返回 max(maxSum[:i+1])
+    private int query(int i) {
+        int mx = 0;
+        for (; i > 0; i &= i - 1)
+            mx = Math.max(mx, t[i]);
+        return mx;
+    }
+
+    // 更新 maxSum[i] 为 mx
+    private void update(int i, int mx) {
+        for (; i <= MX; i += i & -i)
+            t[i] = Math.max(t[i], mx);
+    }
+
+    // 11ms, BIT TODO
+    class Solution1626 {
+        private int[] tree;
+        private int maxAge;
+
+        public int bestTeamScore(int[] scores, int[] ages) {
+            int n = scores.length;
+            Integer[] idx = new Integer[n];
+            maxAge = 0;
+            for (int i = 0; i < n; i++) {
+                idx[i] = i;
+                maxAge = Math.max(maxAge, ages[i]);
+            }
+            tree = new int[maxAge + 1];
+            Arrays.sort(idx, (a, b) -> {
+                if (scores[a] == scores[b])
+                    return ages[a] - ages[b];
+                return scores[a] - scores[b];
+            });
+            int res = 0;
+            for (int i = 0; i < n; i++) {
+                int curMax = scores[idx[i]] + find(ages[idx[i]]);
+                update(ages[idx[i]], curMax);
+                res = Math.max(res, curMax);
+            }
+            return res;
+        }
+
+        private int lowBit(int x) {
+            return x & (-x);
+        }
+
+        /*更新tree[i]保存的以age[i]为最大年龄的最大得分，由于tree[i]更新，因此包含age[i]的区间的最大值也要随之更新*/
+        private void update(int i, int v) {
+            for (; i <= maxAge; i += lowBit(i))
+                tree[i] = Math.max(tree[i], v);
+        }
+
+        /*以区间为单位获取以<=age[i]的每个球员为最大年龄球员的各个组合最大得分
+         * 比较<=age[i]的各个区间的最大值，取最大*/
+        private int find(int i) {
+            int res = 0;
+            for (; i > 0; i -= lowBit(i))
+                res = Math.max(res, tree[i]);
+            return res;
+        }
+    }
+
+    class Solution16261 {
+        int maxAge;
+        int[][] sa;
+        // 数状数组存储当前age的最大分数和，长度为maxAge
+        int[] tree;
+
+        public int bestTeamScore(int[] scores, int[] ages) {
+            // 流式处理获取ages的最大值
+            this.maxAge = Arrays.stream(ages).max().getAsInt();
+            this.tree = new int[maxAge + 1];
+            int n = scores.length;
+            this.sa = new int[n][2];
+            for (int i = 0; i < n; i++) {
+                sa[i] = new int[] { scores[i], ages[i] };
+            }
+            // 按照ages和scores从小到大排序
+            Arrays.sort(sa, (a, b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+            int res = 0;
+            for (int i = 0; i < n; i++) {
+                int curr = query(sa[i][1]) + sa[i][0];
+                // update参数代表树状数组的坐标 也就是age
+                update(sa[i][1], curr);
+                res = Math.max(res, curr);
+            }
+            return res;
+        }
+
+        private int lowbit(int x) {
+            return x & (-x);
+        }
+
+        // 寻找小于等于当前age的最大分数
+        private int query(int i) {
+            int res = 0;
+            while (i > 0) {
+                res = Math.max(res, tree[i]);
+                i -= lowbit(i);
+            }
+            return res;
+        }
+
+        // 更新数状数组中当前坐标及其有贡献的父节点的值
+        private void update(int i, int val) {
+            while (i <= maxAge) {
+                tree[i] = Math.max(tree[i], val);
+                i += lowbit(i);
+            }
+        }
+    }
+
+    // 10ms
+    class BinaryIndexedTree {
+        private int n;
+        private int[] c;
+
+        public BinaryIndexedTree(int n) {
+            this.n = n;
+            c = new int[n + 1];
+        }
+
+        public void update(int x, int val) {
+            while (x <= n) {
+                c[x] = Math.max(c[x], val);
+                x += x & -x;
+            }
+        }
+
+        public int query(int x) {
+            int s = 0;
+            while (x > 0) {
+                s = Math.max(s, c[x]);
+                x -= x & -x;
+            }
+            return s;
+        }
+    }
+
+    class Solution {
+        public int bestTeamScore(int[] scores, int[] ages) {
+            int n = ages.length;
+            int[][] arr = new int[n][2];
+            for (int i = 0; i < n; ++i) {
+                arr[i] = new int[] { scores[i], ages[i] };
+            }
+            Arrays.sort(arr, (a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
+            int m = 0;
+            for (int age : ages) {
+                m = Math.max(m, age);
+            }
+            BinaryIndexedTree tree = new BinaryIndexedTree(m);
+            for (int[] x : arr) {
+                tree.update(x[1], x[0] + tree.query(x[1]));
+            }
+            return tree.query(m);
+        }
+    }
+
     // 1630. Arithmetic Subarrays - M
     // O(nlogn * n * m) / O(), 21ms, 暴力排序
     public List<Boolean> checkArithmeticSubarrays(int[] nums, int[] l, int[] r) {
