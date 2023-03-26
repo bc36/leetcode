@@ -103,8 +103,6 @@ public class Lc1600_1699 {
         return inr.check(a, b) || inr.check(b, a);
     }
 
-    // 如果 a_prefix + b_suffix 可以构成回文串则返回 true，否则返回 false
-
     // 1625. Lexicographically Smallest String After Applying Operations - M
     public String findLexSmallestString(String s, int a, int b) {
         Deque<String> q = new ArrayDeque<>();
@@ -127,6 +125,62 @@ public class Lc1600_1699 {
             for (String x : List.of(s1, s2)) {
                 if (vis.add(x)) {
                     q.offer(x);
+                }
+            }
+        }
+        return ans;
+    }
+
+    // 1638. Count Substrings That Differ by One Character - M
+    // 6ms
+    public int countSubstrings(String s, String t) {
+        int n = s.length(), m = t.length(), ans = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (s.charAt(i) == t.charAt(j))
+                    continue;
+                int l = 0;
+                while (i - (l + 1) >= 0 && j - (l + 1) >= 0 && s.charAt(i - (l + 1)) == t.charAt(j - (l + 1)))
+                    ++l;
+                int r = 0;
+                while (i + (r + 1) <= n && j + (r + 1) <= m && s.charAt(i + (r + 1)) == t.charAt(j + (r + 1)))
+                    ++r;
+                ans += (l + 1) * (r + 1);
+            }
+        }
+        return ans;
+    }
+
+    // 3ms
+    public int countSubstrings2(String s, String t) {
+        int n = s.length(), m = t.length(), ans = 0;
+        for (int d = -(n - 1); d < m; ++d) {
+            for (int i = Math.max(-d, 0), j = i + d, l = 0, r = 1; i <= n && j <= m; ++i, ++j) {
+                if (i == n || j == m || s.charAt(i) != t.charAt(j)) {
+                    ans += l * r;
+                    l = r;
+                    r = 1;
+                } else {
+                    ++r;
+                }
+            }
+
+        }
+        return ans;
+    }
+
+    // 2ms, cs[i] versus s.charAt(i)
+    public int countSubstrings3(String s, String t) {
+        char[] cs = s.toCharArray(), ct = t.toCharArray();
+        int n = cs.length, m = ct.length, ans = 0;
+        for (int d = -(n - 1); d < m; ++d) {
+            for (int i = Math.max(-d, 0), j = i + d, l = 0, r = 1; i <= n && j <= m; ++i, ++j) {
+                if (i == n || j == m || cs[i] != ct[j]) {
+                    ans += l * r;
+                    l = r;
+                    r = 1;
+                } else {
+                    ++r;
                 }
             }
         }

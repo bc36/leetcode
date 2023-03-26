@@ -431,6 +431,79 @@ class Solution:
         return sorted(nums, key=lambda x: (cnt.get(x), -x))
 
 
+# 1638 - Count Substrings That Differ by One Character - MEDIUM
+class Solution:
+    # 枚举分歧点, 向两端扩展
+    # O(n * m * min(n, m)) / O(1)
+    def countSubstrings(self, s: str, t: str) -> int:
+        n = len(s)
+        m = len(t)
+        ans = 0
+        for i, x in enumerate(s):
+            for j, y in enumerate(t):
+                if x != y:
+                    l = r = 0
+                    while (
+                        i - (l + 1) >= 0
+                        and j - (l + 1) >= 0
+                        and s[i - (l + 1)] == t[j - (l + 1)]
+                    ):
+                        l += 1
+                    while (
+                        i + (r + 1) < n
+                        and j + (r + 1) < m
+                        and s[i + (r + 1)] == t[j + (r + 1)]
+                    ):
+                        r += 1
+                    ans += (l + 1) * (r + 1)
+        return ans
+
+    # 枚举两个字符串对齐的方式, 然后再一次遍历求和
+    # O((n + m) * min(n, m)) / O(1)
+    # -> if n > m: O(n * m)
+    # -> if n < m: O(m * n)
+    # O(nm) / O(1)
+    def countSubstrings(self, s: str, t: str) -> int:
+        n = len(s)
+        m = len(t)
+        ans = 0
+        for d in range(-(n - 1), m):
+            i = max(-d, 0)
+            j = i + d
+            l = 0
+            r = 1
+            while i <= n and j <= m:
+                if i == n or j == m or s[i] != t[j]:
+                    ans += l * r
+                    l = r
+                    r = 1
+                else:
+                    r += 1
+                i += 1
+                j += 1
+        return ans
+
+    # O(nm) / O(m)
+    def countSubstrings(self, s: str, t: str) -> int:
+        n = len(s)
+        m = len(t)
+        f = [(0, 0)] * (m + 1)  # 以 s[i] 和 t[j] 结尾的 (满足条件的子字符串对数目, 连续相同的位数)
+        ans = 0
+        for i in range(n):
+            last = f[0]
+            for j in range(m):
+                if s[i] == t[j]:
+                    cur = (f[j][0], f[j][1] + 1)
+                    ans += f[j][0]
+                else:
+                    cur = (f[j][1] + 1, 0)
+                    ans += f[j][1] + 1
+                f[j] = last
+                last = cur
+            f[m] = last
+        return ans
+
+
 # 1640 - Check Array Formation Through Concatenation - EASY
 class Solution:
     def canFormArray(self, arr: List[int], pieces: List[List[int]]) -> bool:
