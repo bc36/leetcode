@@ -40,6 +40,42 @@ class Sort {
     }
 }
 
+class MathTheory {
+    /**
+     * [0, n] 区间的合数
+     * @param n
+     * @return
+     */
+    public static boolean[] getComposite(int n) {
+        boolean[] composite = new boolean[n + 1];
+        for (int i = 2; i < n + 1; ++i) {
+            for (int j = i + i; j < n + 1; j += i) {
+                composite[j] = true;
+            }
+        }
+        return composite;
+    }
+
+    /**
+     * [0, n] 区间的质数
+     * @param n
+     * @return
+     */
+    public static boolean[] getPrimes(int n) {
+        boolean[] primes = new boolean[n + 1];
+        for (int i = 2; i <= n; ++i) {
+            primes[i] = true;
+            for (int j = 2; j * j <= i; ++j) {
+                if (i % j == 0) {
+                    primes[i] = false;
+                    break;
+                }
+            }
+        }
+        return primes;
+    }
+}
+
 public class Common {
     void examples() {
         // 声明数组

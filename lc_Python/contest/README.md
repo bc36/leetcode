@@ -3,9 +3,9 @@
 <summary>Copy a part of the new function definition and overwrite the old "blue" part.</summary>
 <br>
 <p>From a new problem</p>
-<img src="./p1.png"/>
+<img src="../../pic/py_contest_p1.png"/>
 <p>To one of template file</p> 
-<img src="./p2.png"/> 
+<img src="../../pic/py_contest_p2.png"/> 
 </details>
 <br>
 
@@ -13,7 +13,7 @@
 <details>
 <summary>Copy test cases and overwrite old ones</summary>
 <br>
-<img src="./p3.png"/>
+<img src="../../pic/py_contest_p3.png"/>
 </details>
 <br>
 
@@ -22,11 +22,11 @@
 # cd to "/contest" and try to run a solution
 cd ./leetcode/lc_Python/contest
 # run problem 1
-./run 1
+./run.sh 1
 # run problem 2, etc.
-./run 2
+./run.sh 2
 # ...
 
 # revert to the original template
-./run flush
+./run.sh flush
 ```

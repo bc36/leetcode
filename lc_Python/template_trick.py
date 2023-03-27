@@ -266,21 +266,22 @@ def countSpecialNumbers(n: int) -> int:
 
 
 def euler(n: int) -> List[int]:
+    """[2, x] 内的质数"""
     primes = []
-    is_prime = [True] * (n + 1)
+    isPrime = [True] * (n + 1)
     for i in range(2, n + 1):
-        if is_prime[i]:
+        if isPrime[i]:
             primes.append(i)
         for p in primes:
             if i * p >= n:
                 break
-            is_prime[i * p] = False
+            isPrime[i * p] = False
             if i % p == 0:  # p 是 lpf[i]
                 break
     return primes
 
 
-primes = euler(10**6 + 1)
+primes = euler(10**6)
 
 
 """eratosthenes
@@ -293,17 +294,18 @@ primes = euler(10**6 + 1)
 
 
 def eratosthenes(n: int) -> List[int]:
+    """[2, x] 内的质数"""
     primes = []
-    is_prime = [True] * (n + 1)
+    isPrime = [True] * (n + 1)
     for i in range(2, n + 1):
-        if is_prime[i]:
+        if isPrime[i]:
             primes.append(i)
             for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
-                is_prime[j] = False
+                isPrime[j] = False
     return primes
 
 
-primes = eratosthenes(10**6 + 1)
+primes = eratosthenes(10**6)
 
 
 """
