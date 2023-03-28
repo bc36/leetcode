@@ -56,5 +56,5 @@ n = 3, edges = [[0,1],[1,2]], price = [1,1,1]
 
 obj = Solution()
 for i, args in enumerate(parseInput(testcase)):
-    print(f"Testcase {i}: ")
+    print(f"\nTestcase {i}: {args}\n")
     print(obj.solve(*args))

@@ -40,6 +40,5 @@ s = "11", target = "00"
 
 obj = Solution()
 for i, args in enumerate(parseInput(testcase)):
-    print(f"Testcase {i}: ")
-    print(args)
+    print(f"\nTestcase {i}: {args}\n")
     print(obj.solve(*args))

@@ -34,5 +34,5 @@ score = [[3,4],[5,6]], k = 0
 
 obj = Solution()
 for i, args in enumerate(parseInput(testcase)):
-    print(f"Testcase {i}: ")
+    print(f"\nTestcase {i}: {args}\n")
     print(obj.solve(*args))
