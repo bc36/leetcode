@@ -92,6 +92,11 @@ public class Common {
             order2[i] = new int[] { seq1[i], seq2[i] };
         Arrays.sort(order2, (x, y) -> x[0] == y[0] ? x[1] - y[1] : x[0] - y[0]);
 
+        // 
+        int sum = Arrays.stream(seq1).sum();
+        int max = Arrays.stream(seq1).max().orElse(0);
+        int min = Arrays.stream(seq1).min().orElse(1000_000_000);
+
         // cs[i] versus s.charAt(i)
         char c;
         String s = new String();

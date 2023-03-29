@@ -891,6 +891,103 @@ class Solution:
         return -1
 
 
+# 1092 - Shortest Common Supersequence  - HARD
+class Solution:
+    # 最长公共子序列
+    # f[i][j] 表示字符串 str1 的前 i 个字符和字符串 str2 的前 j 个字符的最长公共子序列的长度
+    # f[i][j] = 0                                   if i == 0 or j == 0
+    #         = f[i - 1][j - 1]                     if str1[i] == str2[j]
+    #         = min(f[i - 1][j], f[i][j - 1]) + 1   if str1[i] != str2[j]
+    # O(nm) / O(nm)
+    def shortestCommonSupersequence(self, str1: str, str2: str) -> str:
+        n, m = len(str1), len(str2)
+        f = [[0] * (m + 1) for _ in range(n + 1)]
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                if str1[i - 1] == str2[j - 1]:
+                    f[i][j] = f[i - 1][j - 1] + 1
+                else:
+                    f[i][j] = max(f[i - 1][j], f[i][j - 1])
+        ans = []
+        i, j = n, m
+        while i and j:
+            # 如果 str1[i] != str2[j], 则将 f[i][j] 与 f[i - 1][j] 和 f[i][j - 1] 中的最大值进行比较
+            if f[i][j] == f[i - 1][j]:
+                i -= 1
+                ans.append(str1[i])
+            elif f[i][j] == f[i][j - 1]:
+                j -= 1
+                ans.append(str2[j])
+            else:
+                i, j = i - 1, j - 1
+                ans.append(str1[i])
+        return "".join(itertools.chain.from_iterable((str1[:i], str2[:j], ans[::-1])))
+
+    # f[i + 1][j + 1] 表示 s 的前 i 个字母和 t 的前 j 个字母的最短公共超序列的长度
+    # f[i][j] = f[i - 1][j - 1] + 1                 if s[i] == t[j]
+    #         = min(f[i - 1][j], f[i][j - 1]) + 1   if s[i] != t[j]
+    # 初始值 f[i][0] = i, f[0][j] = j
+    # O(nm) / O(nm)
+    def shortestCommonSupersequence(self, s: str, t: str) -> str:
+        n, m = len(s), len(t)
+        f = [[0] * (m + 1) for _ in range(n + 1)]
+        f[0] = list(range(m + 1))
+        for i in range(1, n + 1):
+            f[i][0] = i
+        for i, x in enumerate(s):
+            for j, y in enumerate(t):
+                if x == y:
+                    f[i + 1][j + 1] = f[i][j] + 1
+                else:
+                    f[i + 1][j + 1] = min(f[i][j + 1], f[i + 1][j]) + 1
+        ans = []
+        i, j = n - 1, m - 1
+        while i >= 0 and j >= 0:
+            if s[i] == t[j]:
+                ans.append(s[i])
+                i -= 1
+                j -= 1
+            elif f[i + 1][j + 1] == f[i][j + 1] + 1:
+                ans.append(s[i])
+                i -= 1
+            else:
+                ans.append(t[j])
+                j -= 1
+        return s[: i + 1] + t[: j + 1] + "".join(ans[::-1])
+
+    def shortestCommonSupersequence(self, str1: str, str2: str) -> str:
+        if len(str1) < len(str2):
+            str1, str2 = str2, str1
+        l2 = len(str2)
+        # 先找最长公共串, 再把没有的加上
+        f = [""] * (l2 + 1)
+        g = [""] * (l2 + 1)
+        for c1 in str1:
+            for i, c2 in enumerate(str2):
+                if c2 == c1:
+                    f[i + 1] = g[i] + c1
+                else:
+                    f[i + 1] = f[i] if len(f[i]) > len(g[i + 1]) else g[i + 1]
+            g, f = f, g
+        lcs = g[-1]
+        if not lcs:  # == 0
+            return str1 + str2
+        ans = ""
+        i = j = k = 0
+        while k < len(lcs):
+            while str1[i] != lcs[k]:
+                ans += str1[i]
+                i += 1
+            while str2[j] != lcs[k]:
+                ans += str2[j]
+                j += 1
+            ans += lcs[k]
+            k += 1
+            i += 1
+            j += 1
+        return ans + str1[i:] + str2[j:]
+
+
 # 1094 - Car Pooling - MEDIUM
 class Solution:
     def carPooling(self, trips, capacity):

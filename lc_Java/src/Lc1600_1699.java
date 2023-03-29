@@ -187,6 +187,40 @@ public class Lc1600_1699 {
         return ans;
     }
 
+    // 1641. Count Sorted Vowel Strings - M
+    // 1ms
+    public int countVowelStrings(int n) {
+        int[][] f = new int[n][5];
+        for (int i = 0; i < 5; ++i)
+            f[0][i] = 1;
+        for (int i = 1; i < n; ++i) {
+            f[i][0] = f[i - 1][0];
+            f[i][1] = f[i - 1][0] + f[i - 1][1];
+            f[i][2] = f[i - 1][0] + f[i - 1][1] + f[i - 1][2];
+            f[i][3] = f[i - 1][0] + f[i - 1][1] + f[i - 1][2] + f[i - 1][3];
+            f[i][4] = f[i - 1][0] + f[i - 1][1] + f[i - 1][2] + f[i - 1][3] + f[i - 1][4];
+        }
+        return Arrays.stream(f[n - 1]).sum();
+    }
+
+    // 0ms
+    public int countVowelStrings2(int n) {
+        int a = 1, e = 1, i = 1, o = 1, u = 1;
+        for (int j = 1; j < n; ++j) {
+            a = a + e + i + o + u;
+            e = e + i + o + u;
+            i = i + o + u;
+            o = o + u;
+            u = u;
+        }
+        return a + e + i + o + u;
+    }
+
+    // 0ms
+    public int countVowelStrings3(int n) {
+        return (n + 1) * (n + 2) * (n + 3) * (n + 4) / 24; // C(n + 4, 4)
+    }
+
     // 1653. Minimum Deletions to Make String Balanced - M
     public int minimumDeletions(String s) {
         int del = 0; // all 'a'

@@ -529,6 +529,49 @@ class Solution:
         return True
 
 
+# 1641 - Count Sorted Vowel Strings - MEDIUM
+class Solution:
+    def countVowelStrings(self, n: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(n, k):
+            if k == 1:
+                return 1
+            elif n == 1:
+                return k
+            return dfs(n - 1, k) + dfs(n, k - 1)
+
+        return dfs(n, 5)
+
+    def countVowelStrings(self, n: int) -> int:
+        f = [[0] * 5 for _ in range(n + 1)]
+        f[1] = [1, 1, 1, 1, 1]
+        for i in range(2, n + 1):
+            f[i][0] = f[i - 1][0]
+            f[i][1] = f[i - 1][0] + f[i - 1][1]
+            f[i][2] = f[i - 1][0] + f[i - 1][1] + f[i - 1][2]
+            f[i][3] = f[i - 1][0] + f[i - 1][1] + f[i - 1][2] + f[i - 1][3]
+            f[i][4] = (
+                f[i - 1][0] + f[i - 1][1] + f[i - 1][2] + f[i - 1][3] + f[i - 1][4]
+            )
+        return sum(f[n])
+
+    def countVowelStrings(self, n: int) -> int:
+        f = [1] * 5
+        for _ in range(n - 1):
+            for j in range(1, 5):
+                f[j] += f[j - 1]
+        return sum(f)
+
+    def countVowelStrings(self, n: int) -> int:
+        f = [1] * 5
+        for _ in range(1, n):
+            f = itertools.accumulate(f)
+        return sum(f)
+
+    def countVowelStrings(self, n: int) -> int:
+        return math.comb(n + 4, 4)
+
+
 # 1648 - Sell Diminishing-Valued Colored Balls - MEDIUM
 class Solution:
     # O(nlogC) / O(1), C = max(inventory)

@@ -519,16 +519,89 @@ class Solution:
 
 # 1143 - Longest Common Subsequence - MEDIUM
 class Solution:
+    # O(nm) / O(nm), 1400ms
     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
-        len1, len2 = len(text1) + 1, len(text2) + 1
-        dp = [[0 for _ in range(len2)] for _ in range(len1)]
-        for i in range(1, len1):
-            for j in range(1, len2):
+        n, m = len(text1), len(text2)
+
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            if i < 0 or j < 0:
+                return 0
+            if text1[i] == text2[j]:
+                return dfs(i - 1, j - 1) + 1
+            return max(dfs(i - 1, j), dfs(i, j - 1))
+
+        return dfs(n - 1, m - 1)
+
+    # O(nm) / O(nm), 900ms
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        n, m = len(text1) + 1, len(text2) + 1
+        f = [[0 for _ in range(m)] for _ in range(n)]
+        for i in range(1, n):
+            for j in range(1, m):
                 if text1[i - 1] == text2[j - 1]:
-                    dp[i][j] = dp[i - 1][j - 1] + 1
+                    f[i][j] = f[i - 1][j - 1] + 1
                 else:
-                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
-        return dp[-1][-1]
+                    f[i][j] = max(f[i - 1][j], f[i][j - 1])
+        return f[-1][-1]
+
+    # O(nm) / O(min(n, m)), 660ms
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        f = [0] * (len(text2) + 1)
+        for x in text1:
+            pre = 0  # f[0]
+            for j, y in enumerate(text2):
+                tmp = f[j + 1]
+                f[j + 1] = pre + 1 if x == y else max(f[j + 1], f[j])
+                pre = tmp
+        return f[-1]
+
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        def LCS(s: str, t: str) -> int:
+            """requirement: len(s) <= len(t)"""
+            d = collections.defaultdict(list)
+            for i in reversed(range(len(t))):
+                d[t[i]].append(i)
+            nums = []
+            for c in s:
+                if c in d:
+                    nums.extend(d[c])
+            return LIS(nums)
+
+        def LIS(nums: List[int]) -> int:
+            """O(nlogn), Longest Increasing Subsequence"""
+            stack = []
+            for x in nums:
+                idx = bisect.bisect_left(stack, x)
+                if idx < len(stack):
+                    stack[idx] = x
+                else:
+                    stack.append(x)
+            return len(stack)
+
+        if len(text1) > len(text2):
+            return self.longestCommonSubsequence(text2, text1)
+        if text1 in text2:
+            return len(text1)  # huge speed up
+        return LCS(text1, text2)
+
+    # 36ms code of leetcode, only replaced with simple var-name
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        if len(text1) < len(text2):
+            text1, text2 = text2, text1
+        if text2 in text1:
+            return len(text2)
+        d = collections.defaultdict(list)
+        e = []  # e: ends
+        for i, c in enumerate(text2):
+            d[c].append(i)
+        for i in itertools.chain.from_iterable(reversed(d[c]) for c in text1 if c in d):
+            l = bisect.bisect_left(e, i)
+            if l == len(e):
+                e.append(i)
+            else:
+                e[l] = i
+        return len(e)
 
 
 # 1144 - Decrease Elements To Make Array Zigzag - MEDIUM
