@@ -431,6 +431,14 @@ class Solution:
         return sorted(nums, key=lambda x: (cnt.get(x), -x))
 
 
+# 1637 - Widest Vertical Area Between Two Points Containing No Points - MEDIUM
+class Solution:
+    def maxWidthOfVerticalArea(self, points: List[List[int]]) -> int:
+        arr = sorted(x for x, _ in points)
+        return max(b - a for a, b in zip(arr, arr[1:]))
+        return max(arr[i] - arr[i - 1] for i in range(len(arr) - 1))
+
+
 # 1638 - Count Substrings That Differ by One Character - MEDIUM
 class Solution:
     # 枚举分歧点, 向两端扩展
@@ -736,6 +744,51 @@ class OrderedStream:
         return ans
 
 
+# 1657 - Determine if Two Strings Are Close - MEDIUM
+class Solution:
+    def closeStrings(self, word1: str, word2: str) -> bool:
+        return set(word1) == set(word2) and sorted(
+            collections.Counter(word1).values()
+        ) == sorted(collections.Counter(word2).values())
+
+    def closeStrings(self, word1: str, word2: str) -> bool:
+        a = collections.Counter(word1)
+        b = collections.Counter(word2)
+        return set(a) == set(b) and sorted(a.values()) == sorted(b.values())
+
+
+# 1658 - Minimum Operations to Reduce X to Zero - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def minOperations(self, nums: List[int], x: int) -> int:
+        t = sum(nums) - x
+        vis = {0: -1}  # vis[s] 表示前缀和为 s 的最小下标
+        ans = math.inf
+        s = 0
+        for r, v in enumerate(nums):
+            s += v
+            if s not in vis:
+                vis[s] = r
+            if s - t in vis:
+                l = vis[s - t]
+                ans = min(ans, len(nums) - (r - l))
+        return -1 if ans == math.inf else ans
+
+    # O(n) / O(1)
+    def minOperations(self, nums: List[int], x: int) -> int:
+        s = sum(nums)
+        l = 0
+        ans = math.inf
+        for r, v in enumerate(nums):
+            s -= v
+            while l <= r and s < x:
+                s += nums[l]
+                l += 1
+            if s == x:
+                ans = min(ans, len(nums) - (r - l + 1))
+        return -1 if ans == math.inf else ans
+
+
 # 1662 - Check If Two String Arrays are Equivalent - EASY
 class Solution:
     def arrayStringsAreEqual(self, word1: List[str], word2: List[str]) -> bool:
@@ -961,36 +1014,6 @@ class Solution:
         return ans
 
 
-# 1658 - Minimum Operations to Reduce X to Zero - MEDIUM
-class Solution:
-    # O(n) / O(n)
-    def minOperations(self, nums: List[int], x: int) -> int:
-        t = sum(nums) - x
-        vis = {0: -1}  # vis[s] 表示前缀和为 s 的最小下标
-        ans = math.inf
-        s = 0
-        for r, v in enumerate(nums):
-            s += v
-            if s not in vis:
-                vis[s] = r
-            if s - t in vis:
-                l = vis[s - t]
-                ans = min(ans, len(nums) - (r - l))
-        return -1 if ans == math.inf else ans
-
-    # O(n) / O(1)
-    def minOperations(self, nums: List[int], x: int) -> int:
-        s = sum(nums)
-        l = 0
-        ans = math.inf
-        for r, v in enumerate(nums):
-            s -= v
-            while l <= r and s < x:
-                s += nums[l]
-                l += 1
-            if s == x:
-                ans = min(ans, len(nums) - (r - l + 1))
-        return -1 if ans == math.inf else ans
 
 
 # 1688 - Count of Matches in Tournament - EASY
