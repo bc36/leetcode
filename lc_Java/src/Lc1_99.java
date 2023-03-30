@@ -25,174 +25,192 @@ import java.util.BitSet;
 
 public class Lc1_99 {
     // 1. Two Sum - E
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> m = new HashMap<Integer, Integer>();
-        for (int i = 0; i < nums.length; i++) {
-            if (m.containsKey(target - nums[i])) {
-                return new int[] { m.get(target - nums[i]), i };
+    class Solution1a {
+        public int[] twoSum(int[] nums, int target) {
+            Map<Integer, Integer> m = new HashMap<Integer, Integer>();
+            for (int i = 0; i < nums.length; i++) {
+                if (m.containsKey(target - nums[i])) {
+                    return new int[] { m.get(target - nums[i]), i };
+                }
+                m.put(nums[i], i);
             }
-            m.put(nums[i], i);
+            return new int[0];
         }
-        return new int[0];
     }
 
     // 9. Palindrome Number - E
-    public boolean isPalindrome(int x) {
-        String s = String.valueOf(x);
-        int n = s.length();
-        for (int i = 0; i < n / 2; i++) {
-            if (s.charAt(i) != s.charAt(n - 1 - i)) {
-                return false;
+    class Solution9a {
+        public boolean isPalindrome(int x) {
+            String s = String.valueOf(x);
+            int n = s.length();
+            for (int i = 0; i < n / 2; i++) {
+                if (s.charAt(i) != s.charAt(n - 1 - i)) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
     }
 
-    public boolean isPalindrome2(int x) {
-        if (x < 0) {
-            return false;
+    class Solution9b {
+        public boolean isPalindrome(int x) {
+            if (x < 0) {
+                return false;
+            }
+            int ori = x;
+            int cur = 0;
+            while (x != 0) {
+                cur = cur * 10 + x % 10;
+                x /= 10;
+            }
+            return cur == ori;
         }
-        int ori = x;
-        int cur = 0;
-        while (x != 0) {
-            cur = cur * 10 + x % 10;
-            x /= 10;
-        }
-        return cur == ori;
     }
 
     // 14. Longest Common Prefix - E
-    public String longestCommonPrefix(String[] strs) {
-        if (strs.length == 0) { // strs == null
-            return null;
-        }
-        int row = strs.length;
-        int col = strs[0].length();
-        for (int j = 0; j < col; j++) {
-            char c = strs[0].charAt(j);
-            for (int i = 1; i < row; i++) {
-                if (j == strs[i].length() || strs[i].charAt(j) != c) {
-                    return strs[0].substring(0, j);
+    class Solution14a {
+        public String longestCommonPrefix(String[] strs) {
+            if (strs.length == 0) { // strs == null
+                return null;
+            }
+            int row = strs.length;
+            int col = strs[0].length();
+            for (int j = 0; j < col; j++) {
+                char c = strs[0].charAt(j);
+                for (int i = 1; i < row; i++) {
+                    if (j == strs[i].length() || strs[i].charAt(j) != c) {
+                        return strs[0].substring(0, j);
+                    }
                 }
             }
+            return strs[0];
         }
-        return strs[0];
     }
 
     // 15. 3Sum - M
-    public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> ans = new ArrayList<>();
-        if (nums == null || nums.length < 3) {
-            return ans;
-        }
-        Arrays.sort(nums);
-        for (int i = 0; i < nums.length - 2; i++) {
-            if (nums[i] > 0)
-                break;
-            if (i > 0 && nums[i] == nums[i - 1])
-                continue;
-            int target = -nums[i];
-            int left = i + 1, right = nums.length - 1;
-            while (left < right) {
-                if (nums[left] + nums[right] == target) {
-                    ans.add(Arrays.asList(nums[i], nums[left], nums[right]));
-                    left++;
-                    right--;
-                    while (left < right && nums[left] == nums[left - 1]) {
+    class Solution15a {
+        public List<List<Integer>> threeSum(int[] nums) {
+            List<List<Integer>> ans = new ArrayList<>();
+            if (nums == null || nums.length < 3) {
+                return ans;
+            }
+            Arrays.sort(nums);
+            for (int i = 0; i < nums.length - 2; i++) {
+                if (nums[i] > 0)
+                    break;
+                if (i > 0 && nums[i] == nums[i - 1])
+                    continue;
+                int target = -nums[i];
+                int left = i + 1, right = nums.length - 1;
+                while (left < right) {
+                    if (nums[left] + nums[right] == target) {
+                        ans.add(Arrays.asList(nums[i], nums[left], nums[right]));
                         left++;
-                    }
-                    while (left < right && nums[right] == nums[right + 1]) {
+                        right--;
+                        while (left < right && nums[left] == nums[left - 1]) {
+                            left++;
+                        }
+                        while (left < right && nums[right] == nums[right + 1]) {
+                            right--;
+                        }
+                    } else if (nums[left] + nums[right] < target) {
+                        left++;
+                    } else {
                         right--;
                     }
-                } else if (nums[left] + nums[right] < target) {
-                    left++;
-                } else {
-                    right--;
                 }
             }
+            return ans;
         }
-        return ans;
     }
 
     // 48. Rotate Image - E
-    public void rotate(int[][] matrix) {
-        int n = matrix.length;
-        for (int i = 0; i < n / 2; i++) {
-            for (int j = 0; j < n; j++) {
-                int tmp = matrix[i][j];
-                matrix[i][j] = matrix[n - 1 - i][j];
-                matrix[n - 1 - i][j] = tmp;
+    class Solution48a {
+        public void rotate(int[][] matrix) {
+            int n = matrix.length;
+            for (int i = 0; i < n / 2; i++) {
+                for (int j = 0; j < n; j++) {
+                    int tmp = matrix[i][j];
+                    matrix[i][j] = matrix[n - 1 - i][j];
+                    matrix[n - 1 - i][j] = tmp;
+                }
             }
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                int tmp = matrix[i][j];
-                matrix[i][j] = matrix[j][i];
-                matrix[j][i] = tmp;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < i; j++) {
+                    int tmp = matrix[i][j];
+                    matrix[i][j] = matrix[j][i];
+                    matrix[j][i] = tmp;
+                }
             }
+            return;
         }
-        return;
     }
 
     // 56. Merge Intervals - M
-    public int[][] merge(int[][] intervals) {
-        List<int[]> ans = new ArrayList<>();
-        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
-        // int left = intervals[0][0];
-        // int right = intervals[0][1];
-        // for (int i = 1; i < intervals.length; i++) {
-        // if (intervals[i][0] <= right) {
-        // right = Math.max(right, intervals[i][1]);
-        // } else {
-        // ans.add(new int[] { left, right });
-        // left = intervals[i][0];
-        // right = intervals[i][1];
-        // }
-        // }
-        // ans.add(new int[] { left, right });
+    class Solution56a {
+        public int[][] merge(int[][] intervals) {
+            List<int[]> ans = new ArrayList<>();
+            Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+            // int left = intervals[0][0];
+            // int right = intervals[0][1];
+            // for (int i = 1; i < intervals.length; i++) {
+            // if (intervals[i][0] <= right) {
+            // right = Math.max(right, intervals[i][1]);
+            // } else {
+            // ans.add(new int[] { left, right });
+            // left = intervals[i][0];
+            // right = intervals[i][1];
+            // }
+            // }
+            // ans.add(new int[] { left, right });
 
-        int[] newInterval = intervals[0];
-        ans.add(newInterval);
-        for (int[] interval : intervals) {
-            if (interval[0] <= newInterval[1]) {
-                newInterval[1] = Math.max(newInterval[1], interval[1]);
-            } else {
-                newInterval = interval;
-                ans.add(newInterval);
+            int[] newInterval = intervals[0];
+            ans.add(newInterval);
+            for (int[] interval : intervals) {
+                if (interval[0] <= newInterval[1]) {
+                    newInterval[1] = Math.max(newInterval[1], interval[1]);
+                } else {
+                    newInterval = interval;
+                    ans.add(newInterval);
+                }
             }
+            return ans.toArray(new int[0][]);
         }
-        return ans.toArray(new int[0][]);
     }
 
     // 94. Binary Tree Inorder Traversal - E
-    public List<Integer> inorderTraversal(TreeNode root) {
-        List<Integer> ans = new ArrayList<Integer>();
-        inorder(root, ans);
-        return ans;
-    }
-
-    public void inorder(TreeNode root, List<Integer> arr) {
-        if (root == null) {
-            return;
+    class Solution94a {
+        public List<Integer> inorderTraversal(TreeNode root) {
+            List<Integer> ans = new ArrayList<Integer>();
+            inorder(root, ans);
+            return ans;
         }
-        inorder(root.left, arr);
-        arr.add(root.val);
-        inorder(root.right, arr);
-    }
 
-    public List<Integer> inorderTraversal2(TreeNode root) {
-        class Inner {
-            private void inorder(TreeNode root, List<Integer> arr) {
-                if (root == null)
-                    return;
-                inorder(root.left, arr);
-                arr.add(root.val);
-                inorder(root.right, arr);
+        public void inorder(TreeNode root, List<Integer> arr) {
+            if (root == null) {
+                return;
             }
+            inorder(root.left, arr);
+            arr.add(root.val);
+            inorder(root.right, arr);
         }
-        Inner inr = new Inner();
-        List<Integer> ans = new ArrayList<Integer>();
-        inr.inorder(root, ans);
-        return ans;
+    }
+
+    class Solution94b {
+        public List<Integer> inorderTraversal(TreeNode root) {
+            class Inner {
+                private void inorder(TreeNode root, List<Integer> arr) {
+                    if (root == null)
+                        return;
+                    inorder(root.left, arr);
+                    arr.add(root.val);
+                    inorder(root.right, arr);
+                }
+            }
+            Inner inr = new Inner();
+            List<Integer> ans = new ArrayList<Integer>();
+            inr.inorder(root, ans);
+            return ans;
+        }
     }
 }

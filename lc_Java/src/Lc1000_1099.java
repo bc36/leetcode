@@ -191,124 +191,129 @@ public class Lc1000_1099 {
     }
 
     // 1092. Shortest Common Supersequence - H
-    // 最长公共子序列
-    // f[i][j] 表示字符串 str1 的前 i 个字符和字符串 str2 的前 j 个字符的最长公共子序列的长度
-    // 6ms
-    public String shortestCommonSupersequence4(String str1, String str2) {
-        char[] s = str1.toCharArray(), t = str2.toCharArray();
-        int m = s.length, n = t.length, f[][] = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; ++i) {
-            for (int j = 1; j <= n; ++j) {
-                if (s[i - 1] == t[j - 1]) {
-                    f[i][j] = f[i - 1][j - 1] + 1;
-                } else {
-                    f[i][j] = Math.max(f[i - 1][j], f[i][j - 1]);
-                }
-            }
-        }
-        int i = m, j = n;
-        StringBuilder ans = new StringBuilder();
-        while (i > 0 || j > 0) {
-            if (i == 0) {
-                ans.append(t[--j]);
-            } else if (j == 0) {
-                ans.append(s[--i]);
-            } else {
-                if (f[i][j] == f[i - 1][j]) {
-                    ans.append(s[--i]);
-                } else if (f[i][j] == f[i][j - 1]) {
-                    ans.append(t[--j]);
-                } else {
-                    --i;
-                    --j;
-                    ans.append(s[i]);
-                }
-            }
-        }
-        return ans.reverse().toString();
-    }
-
-    // f[i + 1][j + 1] 表示 s 的前 i 个字母和 t 的前 j 个字母的最短公共超序列的长度
-    // 6ms
-    public String shortestCommonSupersequence(String str1, String str2) {
-        char[] s = str1.toCharArray(), t = str2.toCharArray();
-        int n = s.length, m = t.length, f[][] = new int[n + 1][m + 1];
-        for (int j = 1; j < m; ++j)
-            f[0][j] = j;
-        for (int i = 1; i < n; ++i)
-            f[i][0] = i;
-        for (int i = 0; i < n; ++i)
-            for (int j = 0; j < m; ++j)
-                if (s[i] == t[j])
-                    f[i + 1][j + 1] = f[i][j] + 1;
-                else
-                    f[i + 1][j + 1] = Math.min(f[i][j + 1], f[i + 1][j]) + 1;
-        int l = f[n][m];
-        char[] ans = new char[l];
-        for (int i = n - 1, j = m - 1, k = l - 1;;) {
-            if (i < 0) {
-                System.arraycopy(t, 0, ans, 0, j + 1);
-                break;
-            }
-            if (j < 0) {
-                System.arraycopy(s, 0, ans, 0, i + 1);
-                break;
-            }
-            if (s[i] == t[j]) {
-                ans[k--] = s[i];
-                --i;
-                --j;
-            } else if (f[i + 1][j + 1] == f[i][j + 1] + 1)
-                ans[k--] += s[i--];
-            else
-                ans[k--] += t[j--];
-        }
-        return new String(ans);
-    }
-
-    // 6ms
-    public String shortestCommonSupersequence2(String str1, String str2) {
-        char[] s = str1.toCharArray(), t = str2.toCharArray();
-        int n = s.length, m = t.length, f[][] = new int[n + 1][m + 1];
-        for (int j = 0; j <= m; ++j) {
-            f[0][j] = j;
-        }
-        for (int i = 0; i <= n; ++i) {
-            f[i][0] = i;
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m; ++j) {
-                if (s[i] == t[j]) {
-                    f[i + 1][j + 1] = f[i][j] + 1;
-                } else {
-                    f[i + 1][j + 1] = Math.min(f[i][j + 1], f[i + 1][j]) + 1;
-                }
-            }
-        }
-        int l = f[n][m], k = l - 1, i = n, j = m;
-        char[] ans = new char[l];
-        while (k >= 0) {
-            char c;
-            if (i == 0) {
-                c = t[--j];
-            } else if (j == 0) {
-                c = s[--i];
-            } else {
-                if (s[i - 1] == t[j - 1]) {
-                    c = s[i - 1];
-                    --i;
-                    --j;
-                } else {
-                    if (f[i][j - 1] < f[i - 1][j]) {
-                        c = t[--j];
+    class Solution1092a {
+        // 最长公共子序列
+        // f[i][j] 表示字符串 str1 的前 i 个字符和字符串 str2 的前 j 个字符的最长公共子序列的长度
+        // 6ms
+        public String shortestCommonSupersequence(String str1, String str2) {
+            char[] s = str1.toCharArray(), t = str2.toCharArray();
+            int m = s.length, n = t.length, f[][] = new int[m + 1][n + 1];
+            for (int i = 1; i <= m; ++i) {
+                for (int j = 1; j <= n; ++j) {
+                    if (s[i - 1] == t[j - 1]) {
+                        f[i][j] = f[i - 1][j - 1] + 1;
                     } else {
-                        c = s[--i];
+                        f[i][j] = Math.max(f[i - 1][j], f[i][j - 1]);
                     }
                 }
             }
-            ans[k--] = c;
+            int i = m, j = n;
+            StringBuilder ans = new StringBuilder();
+            while (i > 0 || j > 0) {
+                if (i == 0) {
+                    ans.append(t[--j]);
+                } else if (j == 0) {
+                    ans.append(s[--i]);
+                } else {
+                    if (f[i][j] == f[i - 1][j]) {
+                        ans.append(s[--i]);
+                    } else if (f[i][j] == f[i][j - 1]) {
+                        ans.append(t[--j]);
+                    } else {
+                        --i;
+                        --j;
+                        ans.append(s[i]);
+                    }
+                }
+            }
+            return ans.reverse().toString();
         }
-        return new String(ans);
     }
 
+    class Solution1092b {
+        // f[i + 1][j + 1] 表示 s 的前 i 个字母和 t 的前 j 个字母的最短公共超序列的长度
+        // 6ms
+        public String shortestCommonSupersequence(String str1, String str2) {
+            char[] s = str1.toCharArray(), t = str2.toCharArray();
+            int n = s.length, m = t.length, f[][] = new int[n + 1][m + 1];
+            for (int j = 1; j < m; ++j)
+                f[0][j] = j;
+            for (int i = 1; i < n; ++i)
+                f[i][0] = i;
+            for (int i = 0; i < n; ++i)
+                for (int j = 0; j < m; ++j)
+                    if (s[i] == t[j])
+                        f[i + 1][j + 1] = f[i][j] + 1;
+                    else
+                        f[i + 1][j + 1] = Math.min(f[i][j + 1], f[i + 1][j]) + 1;
+            int l = f[n][m];
+            char[] ans = new char[l];
+            for (int i = n - 1, j = m - 1, k = l - 1;;) {
+                if (i < 0) {
+                    System.arraycopy(t, 0, ans, 0, j + 1);
+                    break;
+                }
+                if (j < 0) {
+                    System.arraycopy(s, 0, ans, 0, i + 1);
+                    break;
+                }
+                if (s[i] == t[j]) {
+                    ans[k--] = s[i];
+                    --i;
+                    --j;
+                } else if (f[i + 1][j + 1] == f[i][j + 1] + 1)
+                    ans[k--] += s[i--];
+                else
+                    ans[k--] += t[j--];
+            }
+            return new String(ans);
+        }
+    }
+
+    class Solution1092c {
+        // 6ms
+        public String shortestCommonSupersequence(String str1, String str2) {
+            char[] s = str1.toCharArray(), t = str2.toCharArray();
+            int n = s.length, m = t.length, f[][] = new int[n + 1][m + 1];
+            for (int j = 0; j <= m; ++j) {
+                f[0][j] = j;
+            }
+            for (int i = 0; i <= n; ++i) {
+                f[i][0] = i;
+            }
+            for (int i = 0; i < n; ++i) {
+                for (int j = 0; j < m; ++j) {
+                    if (s[i] == t[j]) {
+                        f[i + 1][j + 1] = f[i][j] + 1;
+                    } else {
+                        f[i + 1][j + 1] = Math.min(f[i][j + 1], f[i + 1][j]) + 1;
+                    }
+                }
+            }
+            int l = f[n][m], k = l - 1, i = n, j = m;
+            char[] ans = new char[l];
+            while (k >= 0) {
+                char c;
+                if (i == 0) {
+                    c = t[--j];
+                } else if (j == 0) {
+                    c = s[--i];
+                } else {
+                    if (s[i - 1] == t[j - 1]) {
+                        c = s[i - 1];
+                        --i;
+                        --j;
+                    } else {
+                        if (f[i][j - 1] < f[i - 1][j]) {
+                            c = t[--j];
+                        } else {
+                            c = s[--i];
+                        }
+                    }
+                }
+                ans[k--] = c;
+            }
+            return new String(ans);
+        }
+    }
 }
