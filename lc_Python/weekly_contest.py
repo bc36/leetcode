@@ -1183,3 +1183,8 @@ T4: 528 pass
 # https://leetcode.cn/contest/weekly-contest-335/
 # 1206 / https://leetcode.cn/contest/weekly-contest-335/problems/number-of-ways-to-earn-points/
 # dp 分组背包
+
+
+# https://leetcode.cn/contest/weekly-contest-338/
+# 141 / https://leetcode.cn/contest/weekly-contest-338/problems/collect-coins-in-a-tree/
+# 拓扑排序
