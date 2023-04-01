@@ -2891,3 +2891,99 @@ class Solution:
                 for k in range(j * types[i - 1][1], target + 1):
                     f[i][k] = (f[i][k] + f[i - 1][k - j * types[i - 1][1]]) % mod
         return f[len(types)][target]
+
+
+# 2586 - Count the Number of Vowel Strings in Range - EASY
+class Solution:
+    def vowelStrings(self, words: List[str], left: int, right: int) -> int:
+        return sum(
+            w[0] in "aeiou" and w[-1] in "aeiou" for w in words[left : right + 1]
+        )
+
+
+# 2587 - Rearrange Array to Maximize Prefix Score - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def maxScore(self, nums: List[int]) -> int:
+        return sum(v > 0 for v in itertools.accumulate(sorted(nums, reverse=True)))
+
+    def maxScore(self, nums: List[int]) -> int:
+        heapq.heapify(nums)
+        s = sum(nums)
+        while nums and s <= 0:
+            s -= heapq.heappop(nums)
+        return len(nums)
+
+
+# 2588 - Count the Number of Beautiful Subarrays - MEDIUM
+class Solution:
+    def beautifulSubarrays(self, nums: List[int]) -> int:
+        ans = 0
+        d = collections.defaultdict(int)
+        l = [0] * 20
+        d[tuple(l)] += 1
+        for v in nums:
+            for k in range(20):
+                if v & 1 << k > 0:
+                    l[k] ^= 1
+            t = tuple(l)
+            ans += d[t]
+            d[t] += 1
+        return ans
+
+    # 每次修改两个 1
+    # -> 需要偶数个 1, 即异或为 0
+    # -> 子数组异或和为 0 的子数组个数
+    # -> 转化成两个前缀和的异或
+    # O(n) / O(n)
+    def beautifulSubarrays(self, nums: List[int]) -> int:
+        ans = x = 0
+        d = collections.defaultdict(int)
+        d[0] += 1
+        for v in nums:
+            x ^= v
+            ans += d[x]
+            d[x] += 1
+        return ans
+
+    def beautifulSubarrays(self, nums: List[int]) -> int:
+        cnt = collections.Counter([0])
+        ans = p = 0
+        for v in nums:
+            p ^= v
+            ans += cnt[p]
+            cnt[p] += 1
+        return ans
+
+    def beautifulSubarrays(self, nums: List[int]) -> int:
+        pre = list(itertools.accumulate(nums, operator.xor, initial=0))
+        ans = 0
+        d = collections.defaultdict(int)
+        for x in pre:
+            ans += d[x]
+            d[x] += 1
+        return ans
+
+
+# 2589 - Minimum Time to Complete All Tasks - HARD
+class Solution:
+    # 贪心, 去掉运行中的时间点, 剩余的 d 填充区间后缀
+    # 按照右端点排序, 重叠区间 会是 先遍历到的区间 的一个后缀
+    # O(nU) / O(U), U = max(end)
+    def findMinimumTime(self, tasks: List[List[int]]) -> int:
+        tasks.sort(key=lambda t: t[1])
+        run = [False] * 2001
+        # run = [False] * (tasks[-1][1] + 1)
+        for s, e, d in tasks:
+            d -= sum(run[s : e + 1])
+            if d > 0:
+                for i in range(e, s - 1, -1):
+                    if run[i]:
+                        continue
+                    run[i] = True
+                    d -= 1
+                    if d == 0:
+                        break
+        return sum(run)
+
+    # 还有线段树做法 O(nlogn), TODO

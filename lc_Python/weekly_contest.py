@@ -1185,6 +1185,11 @@ T4: 528 pass
 # dp 分组背包
 
 
+# https://leetcode.cn/contest/weekly-contest-336/
+# 517 / https://leetcode.cn/contest/weekly-contest-336/problems/minimum-time-to-complete-all-tasks/
+# 贪心 + 排序 / 线段树 / 差分约束
+
+
 # https://leetcode.cn/contest/weekly-contest-338/
 # 141 / https://leetcode.cn/contest/weekly-contest-338/problems/collect-coins-in-a-tree/
 # 拓扑排序
