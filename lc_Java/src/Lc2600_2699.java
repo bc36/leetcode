@@ -1,6 +1,8 @@
 package src;
 
 import java.util.*;
+import java.math.BigInteger;
+import java.util.function.Function;
 
 public class Lc2600_2699 {
     // 2600. K Items With the Maximum Sum - EASY
@@ -284,6 +286,88 @@ public class Lc2600_2699 {
                 if (time[e[0]] >= 2 && time[e[1]] >= 2)
                     ans += 2;
             return ans;
+        }
+    }
+
+    // 2607. Make K-Subarray Sums Equal - M
+    class Solution2607a {
+        public long makeSubKSumEqual(int[] arr, int k) {
+            long gcd = BigInteger.valueOf(arr.length).gcd(BigInteger.valueOf(k)).intValue(), sum = 0;
+            for (int i = 0; i < gcd; i++) {
+                ArrayList<Integer> list = new ArrayList<>();
+                for (int j = i; j < arr.length; j += gcd) {
+                    list.add(arr[j]);
+                }
+                Collections.sort(list);
+                for (int j = 0; j < list.size(); j++) {
+                    sum += Math.abs(list.get(j) - list.get(list.size() / 2));
+                }
+            }
+            return sum;
+        }
+    }
+
+    // 2608. Shortest Cycle in a Graph - H
+    class Solution2608a {
+        // 351ms
+        public int findShortestCycle(int n, int[][] edges) {
+            HashMap<Integer, ArrayList<Integer>> g = new HashMap<>();
+            for (int[] e : edges) {
+                g.computeIfAbsent(e[0], t -> new ArrayList<>()).add(e[1]);
+                g.computeIfAbsent(e[1], t -> new ArrayList<>()).add(e[0]);
+            }
+            int ans = Integer.MAX_VALUE;
+            for (int i = 0; i < n; i++) {
+                int[] dist = new int[n];
+                dist[i] = 1;
+                for (ArrayDeque<Integer> deque = new ArrayDeque<>(List.of(i)); !deque.isEmpty();) {
+                    int x = deque.poll();
+                    for (int y : g.getOrDefault(x, new ArrayList<>())) {
+                        if (dist[y] == 0) {
+                            dist[y] = dist[x] + 1;
+                            deque.offer(y);
+                        } else if (dist[y] != dist[x] - 1) {
+                            ans = Math.min(ans, dist[x] + dist[y] - 1);
+                        }
+                    }
+                }
+            }
+            return ans == Integer.MAX_VALUE ? -1 : ans;
+        }
+    }
+
+    class Solution2608b {
+        // 226ms
+        public int findShortestCycle(int n, int[][] edges) {
+            List<List<Integer>> g = new ArrayList<>();
+            for (int i = 0; i < n; ++i) {
+                g.add(new ArrayList<>());
+            }
+            for (int[] e : edges) {
+                g.get(e[0]).add(e[1]);
+                g.get(e[1]).add(e[0]);
+            }
+            int inf = 10000, ans = inf;
+            Function<Integer, Integer> root = i -> {
+                List<Integer> dist = new ArrayList<>(Collections.nCopies(n, inf));
+                dist.set(i, 0);
+                Queue<Integer> q = new LinkedList<>(Arrays.asList(i));
+                while (!q.isEmpty()) {
+                    i = q.poll();
+                    for (int j : g.get(i)) {
+                        if (dist.get(j) == inf) {
+                            dist.set(j, 1 + dist.get(i));
+                            q.offer(j);
+                        } else if (dist.get(i) <= dist.get(j)) {
+                            return dist.get(i) + dist.get(j) + 1;
+                        }
+                    }
+                }
+                return inf;
+            };
+            for (int i = 0; i < n; ++i)
+                ans = Math.min(ans, root.apply(i));
+            return ans < inf ? ans : -1;
         }
     }
 }

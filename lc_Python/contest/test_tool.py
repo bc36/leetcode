@@ -1,4 +1,5 @@
 from collections import deque
+from re import split
 from typing import List, Optional, Union
 
 from typing_extensions import TypeAlias
@@ -43,44 +44,42 @@ def parseInput(s: str) -> List[tuple]:
     for line in s.split("\n"):
         if len(line) == 0:
             continue
-        case = []
-        for equation in line.split(", "):
-            logger.debug(f"equation, {equation}")
 
-            i = equation.index("= ")
-            target = equation[i + 2 :]
-            logger.debug(f"target, {target}")
+        args = []
+        for e in split(",[a-z\s]", line):
+            logger.debug(f"equation: {e}")
+            t = e[e.index("=") + 1 :].strip()
+            logger.debug(f"target: {t}")
 
-            if target[0] == '"':
-                logging.debug(f"string, {target}")
-                case.append(target)
-            elif target[0].isdigit():
-                logging.debug(f"number, {target}")
-                case.append(int(target))
-            elif target[0] == "[":
-                if target[1] == "[":
-                    if target[2] == '"':
-                        logging.debug(f"List[List[str]], {target}")
+            if t[0] == '"':
+                logging.debug(f"[Pattern] string: {t}")
+                args.append(t[1:-1])
+            elif t[0].isdigit():
+                logging.debug(f"[Pattern] int: {t}")
+                args.append(int(t))
+            elif t[0] == "[":
+                if t[1] == "[":
+                    if t[2] == '"':
+                        logging.debug(f"[Pattern] List[List[str]]: {t}")
                         l = []
-                        for v in target[2:-2].split("],["):
+                        for v in t[2:-2].split("],["):
                             l.append(list(w[1:-1] for w in v.split(",")))
-                        case.append(l)
+                        args.append(l)
                     else:
-                        logging.debug(f"List[List[int]], {target}")
+                        logging.debug(f"[Pattern] List[List[int]]: {t}")
                         l = []
-                        for v in target[2:-2].split("],["):
+                        for v in t[2:-2].split("],["):
                             l.append(list(map(int, (num for num in v.split(",")))))
-                        case.append(l)
+                        args.append(l)
                 else:
-                    if target[1] == '"':
-                        logging.debug(f"List[str], {target[1]}")
-                        case.append(list(w[1:-1] for w in target[1:-1].split(",")))
+                    if t[1] == '"':
+                        logging.debug(f"[Pattern] List[str]: {t[1]}")
+                        args.append(list(w[1:-1] for w in t[1:-1].split(",")))
                     else:
-                        logging.debug(f"List[int], {target[1]}")
-                        case.append(
-                            list(map(int, (num for num in target[1:-1].split(","))))
-                        )
-        totalCases.append(case)
+                        logging.debug(f"[Pattern] List[int]: {t[1]}")
+                        args.append(list(map(int, (num for num in t[1:-1].split(",")))))
+
+        totalCases.append(args)
     return totalCases
 
 
@@ -89,8 +88,8 @@ s = "1010", target = "0110"
 words = [["a","a"],["a"],["a","a","a"]], left = 0, right = 2
 words = [[1,2,3],[4,5,6],[7,8,9]], left = 1, right = 4
 """
-for v in parseInput(testcase):
-    logger.debug(v)
+# for v in parseInput(testcase):
+#     logger.debug(v)
 
 # logger.debug("\n")
 

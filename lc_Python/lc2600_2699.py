@@ -210,3 +210,188 @@ class Solution:
                     dist[y] = dist[x] + 1
                     q.append(y)
         return sum(2 for x, y in edges if dist[x] >= 2 and dist[y] >= 2)
+
+
+# 2605 - Form Smallest Number From Two Digit Arrays - EASY
+class Solution:
+    def minNumber(self, nums1: List[int], nums2: List[int]) -> int:
+        ans = 100
+        for x in nums1:
+            for y in nums2:
+                if x == y:
+                    ans = min(ans, x)
+                else:
+                    ans = min(ans, x * 10 + y, y * 10 + x)
+        return ans
+
+    def minNumber(self, nums1: List[int], nums2: List[int]) -> int:
+        s = set(nums1) & set(nums2)
+        if len(s) > 0:
+            return min(s)
+        x = min(nums1)
+        y = min(nums2)
+        return min(x * 10 + y, y * 10 + x)
+
+
+# 2606 - Find the Substring With Maximum Cost - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def maximumCostSubstring(self, s: str, chars: str, vals: List[int]) -> int:
+        d = dict(zip(chars, vals))
+        for i in range(0, 26):
+            if chr(i + ord("a")) not in d:
+                d[chr(i + ord("a"))] = i + 1
+        f = [0] * (len(s) + 1)
+        for i in range(1, len(s) + 1):
+            f[i] = max(f[i - 1] + d[s[i - 1]], d[s[i - 1]])
+        return max(f)
+
+    # O(n) / O(26)
+    def maximumCostSubstring(self, s: str, chars: str, vals: List[int]) -> int:
+        ans = cur = 0
+        d = {c: v for c, v in zip(string.ascii_lowercase, range(1, 27))}
+        d.update(zip(chars, vals))
+        for c in s:
+            cur += d[c]
+            if cur < 0:
+                cur = 0
+            ans = max(ans, cur)
+        return ans
+
+
+# 2607 - Make K-Subarray Sums Equal - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def makeSubKSumEqual(self, arr: List[int], k: int) -> int:
+        n = len(arr)
+        vis = [False] * n
+        ans = 0
+        for i in range(n):
+            if not vis[i]:
+                x = i
+                l = []
+                while not vis[x]:
+                    vis[x] = True
+                    l.append(arr[x])
+                    x = (x + k) % n
+                mid = sorted(l)[len(l) // 2]
+
+                # 注意, 最大值和最小值移动到 target 的和是一定的
+                # 不断去除不影响结果的 最大/小值 之后, 若剩余偶数, 任选一个即可
+                # mid = sorted(l)[(len(l) - 1) // 2]
+
+                ans += sum(abs(x - mid) for x in l)
+        return ans
+
+    # 按照 i mod k 的结果将 arr 分组, 让每组 l 的所有元素相等的最少运算次数 之和
+    # 另有结论: 一个循环数组如果既有周期 n 又有周期 k 那么必然有周期 g = gcd(n, k)
+    # 由裴蜀定理可证明: arr[i] = arr[i + nx + ky] = a[i + g]
+    # 从而转换成不是循环数组的情况
+    def makeSubKSumEqual(self, arr: List[int], k: int) -> int:
+        g = math.gcd(k, len(arr))
+        ans = 0
+        for i in range(g):
+            l = sorted(arr[i::g])
+            mid = l[len(l) // 2]
+            ans += sum(abs(x - mid) for x in l)
+        return ans
+
+
+# 2608 - Shortest Cycle in a Graph - HARD
+class Solution:
+    # 最小环模板题
+    # 枚举所有边, 每次把一条边 u - v 从图中删掉, 然后求从 u 出发, 不经过 u - v 到达 v 的最短路, 这条最短路, 加上被删掉的边 u - v 就是一个环
+    # 而且由于我们求了从 u 到 v 的最短路, 这个环就是包含 u - v 的最小环
+    # 因此, 实际上就是在枚举, 真正的最小环包含图中的哪一条边
+    # 取所有答案的最小值, 就是真正的最小环
+    # 因为边长都是 1 只要通过 BFS 即可求最短路 / 边长不是 1, dijkstra
+    # O(ne) / O(n + e), e = len(edges)
+    def findShortestCycle(self, n: int, edges: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        ans = math.inf
+        for x in range(n):
+            dist = {}
+            q = collections.deque([(x, -1, 0)])
+            while q:
+                x, p, d = q.popleft()
+                if x in dist:  # 第二次遇到, 由于是 BFS, 后面不会遇到更短的环
+                    ans = min(ans, d + dist[x])
+                    break
+                dist[x] = d
+                for y in g[x]:
+                    if y != p:
+                        q.append((y, x, d + 1))
+        return ans if ans < math.inf else -1
+
+    def findShortestCycle(self, n: int, edges: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        def bfs(start: int) -> int:
+            dist = [-1] * n  # dist[i] 表示从 start 到 i 的最短路长度
+            dist[start] = 0
+            q = collections.deque([(start, -1)])
+            while q:
+                x, fa = q.popleft()
+                for y in g[x]:
+                    if dist[y] < 0:
+                        dist[y] = dist[x] + 1
+                        q.append((y, x))
+                    elif y != fa:
+                        return dist[x] + dist[y] + 1
+            return math.inf
+
+        def bfs2(start: int) -> int:
+            dist = [-1] * n
+            dist[start] = 0
+            q = collections.deque([start])
+            while q:
+                x = q.popleft()
+                for y in g[x]:
+                    if dist[y] < 0:
+                        dist[y] = dist[x] + 1
+                        q.append(y)
+                    # 由于是 bfs, 可以用距离判断是不是父节点
+                    elif dist[y] + 1 != dist[x]:
+                        return dist[x] + dist[y] + 1
+            return math.inf
+
+        ans = min(bfs(i) for i in range(n))
+        return ans if ans < math.inf else -1
+
+    # 枚举点, 在BFS的过程中, 如果发现有两条路径都到达了 v, 更新答案 ans = min(ans, 两条路径之和)
+
+    # 1 -  2 - 3 - 5
+    #      |     /
+    #      4  --
+    #
+    # 1 —> 2 —> 3 —> 5,  1 —> 2 —> 4 —> 5, 这两条路径其实没有环, 但是会在 BFS(2) 时排除
+
+    # O(n * (n + e)) / O(n + e), e = len(edges)
+    def findShortestCycle(self, n: int, edges: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        ans = math.inf
+        for x in range(n):
+            vis = [-1] * n
+            pre = [-1] * n
+            vis[x] = 0
+            q = collections.deque([x])
+            while q:
+                x = q.popleft()
+                for y in g[x]:
+                    if vis[y] == -1:
+                        vis[y] = vis[x] + 1
+                        pre[y] = x
+                        q.append(y)
+                    elif y != pre[x]:
+                        l = vis[x] + vis[y] + 1
+                        ans = min(ans, l)
+        return -1 if ans == math.inf else ans

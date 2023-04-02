@@ -539,3 +539,10 @@ T4: 840 pass
 # 双指针 + 枚举
 # 127 / https://leetcode.cn/contest/biweekly-contest-97/problems/disconnect-path-in-a-binary-matrix-by-at-most-one-flip/
 # dfs
+
+
+# https://leetcode.cn/contest/biweekly-contest-101/
+# 704 / https://leetcode.cn/contest/biweekly-contest-101/problems/make-k-subarray-sums-equal/
+# 中位数贪心, 取模分组 / 裴蜀定理 / 公约数
+# 441 / https://leetcode.cn/contest/biweekly-contest-101/problems/shortest-cycle-in-a-graph/
+# 无向图 最小环 / BFS 枚举 / 常用技巧: 考察父节点(BFS可以用 (距离 + 1) 代替判断父节点)
