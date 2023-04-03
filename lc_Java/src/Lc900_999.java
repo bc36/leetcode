@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc900_999 {
-    // 989. Add to Array-Form of Integer - E
+    // 989. Add to Array-Form of Integer - EASY
     class Solution989a {
         // 3ms
         public List<Integer> addToArrayForm(int[] num, int k) {
@@ -70,7 +70,7 @@ public class Lc900_999 {
         }
     }
 
-    // 990. Satisfiability of Equality Equations - M
+    // 990. Satisfiability of Equality Equations - MEDIUM
     class Solution990a {
         public boolean equationsPossible(String[] equations) {
             int[] p = new int[26];

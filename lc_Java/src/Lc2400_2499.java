@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc2400_2499 {
-    // 2465. Number of Distinct Averages - E
+    // 2465. Number of Distinct Averages - EASY
     class Solution2465a {
         // 1ms
         public int distinctAverages(int[] nums) {
@@ -32,7 +32,7 @@ public class Lc2400_2499 {
         }
     }
 
-    // 2466. Count Ways To Build Good Strings - M
+    // 2466. Count Ways To Build Good Strings - MEDIUM
     class Solution2466a {
         // 7ms
         public int countGoodStrings(int low, int high, int zero, int one) {
@@ -64,14 +64,14 @@ public class Lc2400_2499 {
         }
     }
 
-    // 2469. Convert the Temperature - E
+    // 2469. Convert the Temperature - EASY
     class Solution2469a {
         public double[] convertTemperature(double celsius) {
             return new double[] { celsius + 273.15, celsius * 1.8 + 32 };
         }
     }
 
-    // 2488. Count Subarrays With Median K - H
+    // 2488. Count Subarrays With Median K - HARD
     class Solution2488a {
         // 12ms
         public int countSubarrays(int[] nums, int k) {

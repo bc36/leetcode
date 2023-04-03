@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc1600_1699 {
-    // 1604. Alert Using Same Key-Card Three or More Times in a One Hour Period - M
+    // 1604. Alert Using Same Key-Card Three or More Times in a One Hour Period - MEDIUM
     class Solution1604a {
         // 45ms
         public List<String> alertNames(String[] keyName, String[] keyTime) {
@@ -69,7 +69,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1605. Find Valid Matrix Given Row and Column Sums - M
+    // 1605. Find Valid Matrix Given Row and Column Sums - MEDIUM
     class Solution1605a {
         // 7ms
         public int[][] restoreMatrix(int[] rowSum, int[] colSum) {
@@ -108,7 +108,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1608. Special Array With X Elements Greater Than or Equal X - E
+    // 1608. Special Array With X Elements Greater Than or Equal X - EASY
     class Solution1608a {
         // 0ms
         public int specialArray(int[] nums) {
@@ -171,7 +171,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1615. Maximal Network Rank - M
+    // 1615. Maximal Network Rank - MEDIUM
     class Solution1615a {
         // 4ms
         public int maximalNetworkRank(int n, int[][] roads) {
@@ -216,7 +216,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1616. Split Two Strings to Make Palindrome - M
+    // 1616. Split Two Strings to Make Palindrome - MEDIUM
     class Solution1616a {
         public boolean checkPalindromeFormation(String a, String b) {
             class Inner {
@@ -242,7 +242,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1625. Lexicographically Smallest String After Applying Operations - M
+    // 1625. Lexicographically Smallest String After Applying Operations - MEDIUM
     class Solution1625a {
         public String findLexSmallestString(String s, int a, int b) {
             Deque<String> q = new ArrayDeque<>();
@@ -272,7 +272,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1626. Best Team With No Conflicts - M
+    // 1626. Best Team With No Conflicts - MEDIUM
     class Solution1626a {
         // O(n^2) / O(n), 48ms
         public int bestTeamScore(int[] scores, int[] ages) {
@@ -511,7 +511,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1630. Arithmetic Subarrays - M
+    // 1630. Arithmetic Subarrays - MEDIUM
     class Solution1630a {
         // O(nlogn * n * m) / O(), 21ms, 暴力排序
         public List<Boolean> checkArithmeticSubarrays(int[] nums, int[] l, int[] r) {
@@ -573,7 +573,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1637. Widest Vertical Area Between Two Points Containing No Points - M
+    // 1637. Widest Vertical Area Between Two Points Containing No Points - MEDIUM
     class Solution1637a {
         // 13ms
         public int maxWidthOfVerticalArea(int[][] points) {
@@ -589,7 +589,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1638. Count Substrings That Differ by One Character - M
+    // 1638. Count Substrings That Differ by One Character - MEDIUM
     class Solution1638a {
         // 6ms
         public int countSubstrings(String s, String t) {
@@ -651,7 +651,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1641. Count Sorted Vowel Strings - M
+    // 1641. Count Sorted Vowel Strings - MEDIUM
     class Solution1641a {
         // 1ms
         public int countVowelStrings(int n) {
@@ -691,7 +691,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1653. Minimum Deletions to Make String Balanced - M
+    // 1653. Minimum Deletions to Make String Balanced - MEDIUM
     class Solution1653a {
         public int minimumDeletions(String s) {
             int del = 0; // all 'a'
@@ -760,7 +760,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 1657. Determine if Two Strings Are Close - M
+    // 1657. Determine if Two Strings Are Close - MEDIUM
     class Solution1657a {
         // 15ms
         public boolean closeStrings(String word1, String word2) {

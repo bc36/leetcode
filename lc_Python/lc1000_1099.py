@@ -728,33 +728,19 @@ class Solution:
         return ans
 
 
-# 1160 - Find Words That Can Be Formed by Characters - EASY
+# 1053 - Previous Permutation With One Swap - MEDIUM
 class Solution:
-    def countCharacters(self, words: List[str], chars: str) -> int:
-        cnt = collections.Counter(chars)
-        return sum(len(w) for w in words if collections.Counter(w) <= cnt)  # py3.10
-
-
-# 1161 - Maximum Level Sum of a Binary Tree - MEDIUM
-class Solution:
-    def maxLevelSum(self, root: Optional[TreeNode]) -> int:
-        ans = lv = 1
-        mx = total = root.val
-        dq = collections.deque([root])
-        while dq:
-            total = 0
-            for _ in range(len(dq)):
-                n = dq.popleft()
-                total += n.val
-                if n.left:
-                    dq.append(n.left)
-                if n.right:
-                    dq.append(n.right)
-            if total > mx:
-                ans = lv
-                mx = total
-            lv += 1
-        return ans
+    # O(n) / O(1)
+    def prevPermOpt1(self, arr: List[int]) -> List[int]:
+        for i in range(len(arr) - 1, 0, -1):
+            if arr[i - 1] > arr[i]:
+                t = i
+                for j in range(i, len(arr)):
+                    if arr[i - 1] > arr[j] and arr[j] > arr[t]:
+                        t = j
+                arr[i - 1], arr[t] = arr[t], arr[i - 1]
+                break
+        return arr
 
 
 # 1078 - Occurrences After Bigram - EASY

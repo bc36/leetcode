@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc1000_1099 {
-    // 1032. Stream of Characters - H
+    // 1032. Stream of Characters - HARD
     // 倒序建树, 倒序查找, 52ms
     class StreamChecker {
         class Trie {
@@ -190,7 +190,29 @@ public class Lc1000_1099 {
         }
     }
 
-    // 1092. Shortest Common Supersequence - H
+    // 1053. Previous Permutation With One Swap - MEDIUM
+    class Solution1053a {
+        // 0ms
+        public int[] prevPermOpt1(int[] arr) {
+            for (int i = arr.length - 1; i > 0; --i) {
+                if (arr[i - 1] > arr[i]) {
+                    int t = i;
+                    for (int j = i; j < arr.length; ++j) {
+                        if (arr[i - 1] > arr[j] && arr[j] > arr[t]) {
+                            t = j;
+                        }
+                    }
+                    int tmp = arr[t];
+                    arr[t] = arr[i - 1];
+                    arr[i - 1] = tmp;
+                    break;
+                }
+            }
+            return arr;
+        }
+    }
+
+    // 1092. Shortest Common Supersequence - HARD
     class Solution1092a {
         // 最长公共子序列
         // f[i][j] 表示字符串 str1 的前 i 个字符和字符串 str2 的前 j 个字符的最长公共子序列的长度

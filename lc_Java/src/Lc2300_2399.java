@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Lc2300_2399 {
-    // 2325. Decode the Message - E
+    // 2325. Decode the Message - EASY
     class Solution2325a {
         public String decodeMessage(String key, String message) {
             char[] d = new char[128];
@@ -23,7 +23,7 @@ public class Lc2300_2399 {
         }
     }
 
-    // 2357. Make Array Zero by Subtracting Equal Amounts - E
+    // 2357. Make Array Zero by Subtracting Equal Amounts - EASY
     class Solution2357a {
         public int minimumOperations(int[] nums) {
             Set<Integer> s = new HashSet<>();
@@ -75,7 +75,7 @@ public class Lc2300_2399 {
         }
     }
 
-    // 2363. Merge Similar Items - E
+    // 2363. Merge Similar Items - EASY
     class Solution2363a {
         public List<List<Integer>> mergeSimilarItems(int[][] items1, int[][] items2) {
             List<List<Integer>> ans = new ArrayList<>();
@@ -188,7 +188,7 @@ public class Lc2300_2399 {
         }
     }
 
-    // 2367. Number of Arithmetic Triplets - E
+    // 2367. Number of Arithmetic Triplets - EASY
     class Solution2367a {
         public int arithmeticTriplets(int[] nums, int diff) {
             int ans = 0;
@@ -243,7 +243,7 @@ public class Lc2300_2399 {
         }
     }
 
-    // 2373. Largest Local Values in a Matrix - E
+    // 2373. Largest Local Values in a Matrix - EASY
     class Solution2373a {
         public int[][] largestLocal(int[][] grid) {
             int n = grid.length;
@@ -261,7 +261,7 @@ public class Lc2300_2399 {
         }
     }
 
-    // 2383. Minimum Hours of Training to Win a Competition - E
+    // 2383. Minimum Hours of Training to Win a Competition - EASY
     class Solution2383a {
         public int minNumberOfHours(int initialEnergy, int initialExperience, int[] energy, int[] experience) {
             int s = 0;
@@ -279,7 +279,7 @@ public class Lc2300_2399 {
         }
     }
 
-    // 2389. Longest Subsequence With Limited Sum - E
+    // 2389. Longest Subsequence With Limited Sum - EASY
     class Solution2389a {
         public int[] answerQueries(int[] nums, int[] queries) {
             Arrays.sort(nums);
@@ -294,7 +294,7 @@ public class Lc2300_2399 {
         }
     }
 
-    // 2395. Find Subarrays With Equal Sum - E
+    // 2395. Find Subarrays With Equal Sum - EASY
     class Solution2395a {
         public boolean findSubarrays(int[] nums) {
             Set<Integer> s = new HashSet<>();

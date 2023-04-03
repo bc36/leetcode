@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc100_199 {
-    // 119. Pascal's Triangle II - E
+    // 119. Pascal's Triangle II - EASY
     class Solution119a {
         public List<Integer> getRow(int rowIndex) {
             List<Integer> pre = new ArrayList<Integer>();
@@ -22,7 +22,7 @@ public class Lc100_199 {
         }
     }
 
-    // 136. Single Number - E
+    // 136. Single Number - EASY
     class Solution136a {
         public int singleNumber(int[] nums) {
             for (int i = 0; i < nums.length - 1; i++) {
@@ -42,7 +42,7 @@ public class Lc100_199 {
         }
     }
 
-    // 169. Majority Element - E
+    // 169. Majority Element - EASY
     class Solution169a {
         // O(n) / O(1)
         public int majorityElement(int[] nums) {
@@ -98,7 +98,7 @@ public class Lc100_199 {
         }
     }
 
-    // 189. Rotate Array - M
+    // 189. Rotate Array - MEDIUM
     class Solution189a {
         // O(n) / O(n)
         public void rotate(int[] nums, int k) {

@@ -24,7 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.BitSet;
 
 public class Lc1_99 {
-    // 1. Two Sum - E
+    // 1. Two Sum - EASY
     class Solution1a {
         public int[] twoSum(int[] nums, int target) {
             Map<Integer, Integer> m = new HashMap<Integer, Integer>();
@@ -38,7 +38,7 @@ public class Lc1_99 {
         }
     }
 
-    // 9. Palindrome Number - E
+    // 9. Palindrome Number - EASY
     class Solution9a {
         public boolean isPalindrome(int x) {
             String s = String.valueOf(x);
@@ -67,7 +67,7 @@ public class Lc1_99 {
         }
     }
 
-    // 14. Longest Common Prefix - E
+    // 14. Longest Common Prefix - EASY
     class Solution14a {
         public String longestCommonPrefix(String[] strs) {
             if (strs.length == 0) { // strs == null
@@ -87,7 +87,7 @@ public class Lc1_99 {
         }
     }
 
-    // 15. 3Sum - M
+    // 15. 3Sum - MEDIUM
     class Solution15a {
         public List<List<Integer>> threeSum(int[] nums) {
             List<List<Integer>> ans = new ArrayList<>();
@@ -124,7 +124,7 @@ public class Lc1_99 {
         }
     }
 
-    // 48. Rotate Image - E
+    // 48. Rotate Image - EASY
     class Solution48a {
         public void rotate(int[][] matrix) {
             int n = matrix.length;
@@ -146,7 +146,7 @@ public class Lc1_99 {
         }
     }
 
-    // 56. Merge Intervals - M
+    // 56. Merge Intervals - MEDIUM
     class Solution56a {
         public int[][] merge(int[][] intervals) {
             List<int[]> ans = new ArrayList<>();
@@ -178,7 +178,7 @@ public class Lc1_99 {
         }
     }
 
-    // 94. Binary Tree Inorder Traversal - E
+    // 94. Binary Tree Inorder Traversal - EASY
     class Solution94a {
         public List<Integer> inorderTraversal(TreeNode root) {
             List<Integer> ans = new ArrayList<Integer>();

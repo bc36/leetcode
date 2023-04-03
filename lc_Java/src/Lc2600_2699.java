@@ -289,7 +289,7 @@ public class Lc2600_2699 {
         }
     }
 
-    // 2607. Make K-Subarray Sums Equal - M
+    // 2607. Make K-Subarray Sums Equal - MEDIUM
     class Solution2607a {
         public long makeSubKSumEqual(int[] arr, int k) {
             long gcd = BigInteger.valueOf(arr.length).gcd(BigInteger.valueOf(k)).intValue(), sum = 0;
@@ -307,7 +307,7 @@ public class Lc2600_2699 {
         }
     }
 
-    // 2608. Shortest Cycle in a Graph - H
+    // 2608. Shortest Cycle in a Graph - HARD
     class Solution2608a {
         // 351ms
         public int findShortestCycle(int n, int[][] edges) {

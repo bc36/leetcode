@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc1500_1599 {
-    // 1574. Shortest Subarray to be Removed to Make Array Sorted - M
+    // 1574. Shortest Subarray to be Removed to Make Array Sorted - MEDIUM
     class Solution1574a {
         // 1ms
         public int findLengthOfShortestSubarray(int[] arr) {
@@ -51,7 +51,7 @@ public class Lc1500_1599 {
         }
     }
 
-    // 1590. Make Sum Divisible by P - M
+    // 1590. Make Sum Divisible by P - MEDIUM
     class Solution1590a {
         // O(n) / O(n)
         public int minSubarray(int[] nums, int p) {
@@ -92,7 +92,7 @@ public class Lc1500_1599 {
         }
     }
 
-    // 1599. Maximum Profit of Operating a Centennial Wheel - M
+    // 1599. Maximum Profit of Operating a Centennial Wheel - MEDIUM
     class Solution1599a {
         // O(n) / O(1)
         public int minOperationsMaxProfit(int[] customers, int boardingCost, int runningCost) {

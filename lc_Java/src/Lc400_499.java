@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc400_499 {
-    // 409. Longest Palindrome - E
+    // 409. Longest Palindrome - EASY
     class Solution409a {
         public int longestPalindrome(String s) {
             Map<Character, Integer> cnt = new HashMap<Character, Integer>();
@@ -36,12 +36,12 @@ public class Lc400_499 {
         }
     }
 
-    // 415. Add Strings - E
+    // 415. Add Strings - EASY
     public String addStrings(String num1, String num2) {
         return "";
     }
 
-    // 438. Find All Anagrams in a String - M
+    // 438. Find All Anagrams in a String - MEDIUM
     class Solution438a {
         // O(C * n + m), O(C)
         public List<Integer> findAnagrams(String s, String p) {

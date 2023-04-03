@@ -3,7 +3,7 @@ package src;
 import java.util.*;
 
 public class Lc1400_1499 {
-    // 1414. Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - M
+    // 1414. Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - MEDIUM
     class Solution1414a {
         public int findMinFibonacciNumbers(int k) {
             List<Integer> f = new ArrayList<Integer>();
@@ -42,7 +42,7 @@ public class Lc1400_1499 {
         }
     }
 
-    // 1487. Making File Names Unique - M
+    // 1487. Making File Names Unique - MEDIUM
     class Solution1487a {
         public String[] getFolderNames(String[] names) {
             Map<String, Integer> m = new HashMap<>();

@@ -188,8 +188,7 @@ class BIT:
 
 
 """dfs"""
-
-
+# 利用父节点
 def example():
     g = []
 
@@ -208,19 +207,24 @@ def example():
 
 """dijkstra"""
 # 返回从 start 到每个点的最短路
-def dijkstra(g: List[List[Tuple[int]]], start: int) -> List[int]:
+def dijkstra(
+    g: List[List[Tuple[int]]], start: int, d1: int = -1, d2: int = -1
+) -> List[int]:
+    """d1, d2 用于去除图中的环"""
     dist = [math.inf] * len(g)
     dist[start] = 0
-    h = [(0, start)]
-    while h:
-        d, x = heapq.heappop(h)
-        if d > dist[x]:
+    q = [(0, start)]
+    while q:
+        cur, x = heapq.heappop(q)
+        if cur > dist[x]:
             continue
         for y, w in g[x]:
+            # if x == d1 and y == d2 or x == d2 and y == d1:  # 去除环
+            #     continue
             new = dist[x] + w
             if new < dist[y]:
                 dist[y] = new
-                heapq.heappush(h, (new, y))
+                heapq.heappush(q, (new, y))
     return dist
 
 
