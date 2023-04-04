@@ -10,6 +10,61 @@ class TreeNode:
         self.right = right
 
 
+# 1000 - Minimum Cost to Merge Stones - HARD
+class Solution:
+    # 区间 DP, 枚举区间长度, 枚举左端点
+    # O(n^3) / O(n^2 * k)
+    def mergeStones(self, stones: List[int], k: int) -> int:
+        n = len(stones)
+        if (n - 1) % (k - 1) != 0:  # (n - k) % (k - 1)
+            return -1
+
+        # stone[l] 到 stone[r] 合并成 p 堆的最低成本
+        @functools.lru_cache(None)
+        def dfs(l: int, r: int, p: int) -> int:
+            if r - l + 1 < p:
+                return 0
+            if p == 1:
+                return dfs(l, r, k) + sum(stones[l : r + 1])
+            # return min(dfs(l, i, 1) + dfs(i + 1, r, p - 1) for i in range(l, r - p + 2, k - 1))
+            return min(dfs(l, i, 1) + dfs(i + 1, r, p - 1) for i in range(l, r, k - 1))
+
+        return dfs(0, n - 1, k)
+
+    def mergeStones(self, stones: List[int], k: int) -> int:
+        n = len(stones)
+        if (n - 1) % (k - 1):
+            return -1
+        pre = list(itertools.accumulate(stones, initial=0))
+
+        @functools.lru_cache(None)
+        def dfs(l: int, r: int, p: int) -> int:
+            if p == 1:
+                return 0 if l == r else dfs(l, r, k) + pre[r + 1] - pre[l]
+            return min(dfs(l, i, 1) + dfs(i + 1, r, p - 1) for i in range(l, r, k - 1))
+
+        return dfs(0, n - 1, 1)
+
+    def mergeStones(self, stones: List[int], k: int) -> int:
+        n = len(stones)
+        if (n - 1) % (k - 1):
+            return -1
+        pre = list(itertools.accumulate(stones, initial=0))
+
+        f = [[[math.inf] * (k + 1) for _ in range(n + 1)] for _ in range(n + 1)]
+        for i in range(1, n + 1):
+            f[i][i][1] = 0
+        for l in range(2, n + 1):
+            for i in range(1, n - l + 2):
+                j = i + l - 1
+                for m in range(1, k + 1):
+                    f[i][j][m] = min(
+                        f[i][h][1] + f[h + 1][j][m - 1] for h in range(i, j)
+                    )
+                f[i][j][1] = f[i][j][k] + pre[j] - pre[i - 1]
+        return f[1][n][1]
+
+
 # 1001 - Grid Illumination - HARD
 class Solution:
     def gridIllumination(

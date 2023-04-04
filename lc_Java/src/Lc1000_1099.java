@@ -3,6 +3,51 @@ package src;
 import java.util.*;
 
 public class Lc1000_1099 {
+    // 1000. Minimum Cost to Merge Stones - HARD
+    class Solution1000a {
+        private int k, pre[], memo[][][];
+
+        private int dfs(int l, int r, int p) {
+            if (memo[l][r][p] != -1)
+                return memo[l][r][p];
+            if (p == 1)
+                return memo[l][r][p] = l == r ? 0 : dfs(l, r, k) + pre[r + 1] - pre[l];
+            int cur = Integer.MAX_VALUE;
+            for (int i = l; i < r; i += k - 1)
+                cur = Math.min(cur, dfs(l, i, 1) + dfs(i + 1, r, p - 1));
+            return memo[l][r][p] = cur;
+        }
+
+        private int dfs2(int l, int r, int p) {
+            if (memo[l][r][p] != -1)
+                return memo[l][r][p];
+            if (r - l + 1 < p)
+                return memo[l][r][p] = 0;
+            if (p == 1)
+                return memo[l][r][p] = dfs2(l, r, k) + pre[r + 1] - pre[l];
+            int cur = Integer.MAX_VALUE;
+            for (int i = l; i < r; i += k - 1)
+                cur = Math.min(cur, dfs2(l, i, 1) + dfs2(i + 1, r, p - 1));
+            return memo[l][r][p] = cur;
+        }
+
+        public int mergeStones(int[] stones, int k) {
+            int n = stones.length;
+            if ((n - 1) % (k - 1) > 0)
+                return -1;
+            this.k = k;
+            pre = new int[n + 1];
+            for (int i = 0; i < n; i++)
+                pre[i + 1] = pre[i] + stones[i];
+            memo = new int[n][n][k + 1];
+            for (int i = 0; i < n; ++i)
+                for (int j = 0; j < n; ++j)
+                    Arrays.fill(memo[i][j], -1);
+            // return dfs(0, n - 1, 1);
+            return dfs2(0, n - 1, k);
+        }
+    }
+
     // 1032. Stream of Characters - HARD
     // 倒序建树, 倒序查找, 52ms
     class StreamChecker {
