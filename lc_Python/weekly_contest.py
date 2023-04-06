@@ -1193,3 +1193,10 @@ T4: 528 pass
 # https://leetcode.cn/contest/weekly-contest-338/
 # 141 / https://leetcode.cn/contest/weekly-contest-338/problems/collect-coins-in-a-tree/
 # 拓扑排序
+
+
+# https://leetcode.cn/contest/weekly-contest-339/
+# 2508 / https://leetcode.cn/contest/weekly-contest-339/problems/mice-and-cheese/
+# 贪心 + 排序, 按差值排序
+# 77 / https://leetcode.cn/contest/weekly-contest-339/problems/minimum-reverse-operations/
+# BFS + 平衡树 / 并查集

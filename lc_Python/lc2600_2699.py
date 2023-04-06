@@ -249,7 +249,8 @@ class Solution:
     # O(n) / O(26)
     def maximumCostSubstring(self, s: str, chars: str, vals: List[int]) -> int:
         ans = cur = 0
-        d = {c: v for c, v in zip(string.ascii_lowercase, range(1, 27))}
+        # d = dict(zip(string.ascii_lowercase, range(1, 27))) | dict(zip(chars, vals))
+        d = dict(zip(string.ascii_lowercase, range(1, 27)))
         d.update(zip(chars, vals))
         for c in s:
             cur += d[c]
@@ -395,3 +396,152 @@ class Solution:
                         l = vis[x] + vis[y] + 1
                         ans = min(ans, l)
         return -1 if ans == math.inf else ans
+
+
+# 2609 - Find the Longest Balanced Substring of a Binary String - EASY
+class Solution:
+    def findTheLongestBalancedSubstring(self, s: str) -> int:
+        pre0 = ans = 0
+        for k, g in itertools.groupby(s):
+            l = len(list(g))
+            if k == "0":
+                pre0 = l
+            else:
+                ans = max(ans, min(l, pre0) * 2)
+                pre0 = 0
+        return ans
+
+    def findTheLongestBalancedSubstring(self, s: str) -> int:
+        ans = pre = cur = 0
+        for i, c in enumerate(s):
+            cur += 1
+            if i == len(s) - 1 or c != s[i + 1]:  # 找分界线套路
+                if c == "1":
+                    ans = max(ans, min(pre, cur) * 2)
+                pre = cur
+                cur = 0
+        return ans
+
+    def findTheLongestBalancedSubstring(self, s: str) -> int:
+        for i in range(25, 0, -1):
+            if ("0" * i) + ("1" * i) in s:
+                return 2 * i
+        return 0
+
+
+# 2610 - Convert an Array Into a 2D Array With Conditions - MEDIUM
+class Solution:
+    def findMatrix(self, nums: List[int]) -> List[List[int]]:
+        cnt = collections.Counter(nums)
+        ans = []
+        for _ in range(max(cnt.values())):
+            l = []
+            for k, v in list(cnt.items()):
+                l.append(k)
+                cnt[k] = v - 1
+                if v - 1 == 0:
+                    del cnt[k]
+            ans.append(l)
+        return ans
+
+    def findMatrix(self, nums: List[int]) -> List[List[int]]:
+        ans = []
+        cnt = collections.Counter(nums)
+        for k in cnt:
+            for i in range(cnt[k]):
+                if i == len(ans):
+                    ans.append([])
+                ans[i].append(k)
+        return ans
+
+    def findMatrix(self, nums: List[int]) -> List[List[int]]:
+        ans = []
+        cnt = collections.Counter(nums)
+        while cnt:
+            row = list(cnt)
+            ans.append(row)
+            for k in row:
+                cnt[k] -= 1
+                if cnt[k] == 0:
+                    del cnt[k]
+        return ans
+
+
+# 2611 - Mice and Cheese - MEDIUM
+class Solution:
+    # 任意 i, j
+    # a[i] + b[j] 选法 1
+    # a[j] + b[i] 选法 2
+    #
+    # 若选法 1 优于 法2
+    # -> a[i] + b[j] > a[j] + b[i]
+    # -> a[i] - a[j] > b[i] - b[j]
+    # -> d[i] > d[j]
+    # 说明 d[i] 越大, 越选 a 内的值, 反之选 b 内的值
+    # 贪心排序套路: 按差值排序
+    def solve(self, reward1: List[int], reward2: List[int], k: int) -> int:
+        arr = sorted(
+            [(x - y, x, y) for x, y in zip(reward1, reward2)], key=lambda x: -x[0]
+        )
+        return sum(x for _, x, _ in arr[:k]) + sum(y for _, _, y in arr[k:])
+
+    def miceAndCheese(self, reward1: List[int], reward2: List[int], k: int) -> int:
+        arr = sorted([x - y for x, y in zip(reward1, reward2)], reverse=True)
+        return sum(reward2) + sum(arr[:k])
+
+
+# 2612 - Minimum Reverse Operations - HARD
+class Solution:
+    def minReverseOperations(
+        self, n: int, p: int, banned: List[int], k: int
+    ) -> List[int]:
+        s = set(banned)
+        arr = [i for i in range(n) if i != p and i not in s]
+        odd = sortedcontainers.SortedList([x for x in arr if x % 2])
+        even = sortedcontainers.SortedList([x for x in arr if x % 2 == 0])
+        dist = {p: 0}
+        q = collections.deque([p])
+        while q:
+            x = q.popleft()
+            left = max(0, x - k + 1)
+            right = min(n - 1, x + k - 1) - k + 1
+            left = 2 * left + k - 1 - x
+            right = 2 * right + k - 1 - x
+            tree = odd if left % 2 else even
+            i = tree.bisect_left(left)
+            j = tree.bisect_right(right)
+            for it in range(i, j):
+                y = tree[it]
+                dist[y] = dist[x] + 1
+                q.append(y)
+            for it in range(i, j):
+                tree.pop(i)
+        return [dist[i] if i in dist else -1 for i in range(n)]
+
+    def minReverseOperations(
+        self, n: int, p: int, banned: List[int], k: int
+    ) -> List[int]:
+        kend = k - 1
+        s = set(banned) | {p}
+        choice = [
+            sortedcontainers.SortedList(set(range(0, n, 2)) - s),
+            sortedcontainers.SortedList(set(range(1, n, 2)) - s),
+        ]
+
+        def rotate(p: int) -> int:
+            left = max(p - kend, 0) * 2 + kend - p
+            right = min(p + 1, n - kend) * 2 + kend - p
+            curchoice = choice[left % 2]
+            res = list(curchoice.irange(left, right - 1))
+            for i in res:
+                curchoice.discard(i)
+            return res
+
+        bfs = [p]
+        visited = {p: 0}
+        for i in bfs:
+            vi = visited[i] + 1
+            for j in rotate(i):
+                visited[j] = vi
+                bfs.append(j)
+        return [visited.get(i, -1) for i in range(n)]

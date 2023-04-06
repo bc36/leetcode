@@ -289,6 +289,64 @@ public class Lc2600_2699 {
         }
     }
 
+    // 2605. Form Smallest Number From Two Digit Arrays - EASY
+    class Solution2605a {
+        public int minNumber(int[] nums1, int[] nums2) {
+            int[] count = new int[10];
+            for (int v : nums1) {
+                count[v] = 1;
+            }
+            for (int v : nums2) {
+                count[v] += 2;
+            }
+            for (int i = 1; i < 10; i++) {
+                if (count[i] == 3) {
+                    return i;
+                }
+            }
+            for (int i = 1;; i++) {
+                for (int j = i + 1; j < 10; j++) {
+                    if (count[i] * count[j] == 2) {
+                        return i * 10 + j;
+                    }
+                }
+            }
+        }
+    }
+
+    // 2606. Find the Substring With Maximum Cost - MEDIUM
+    class Solution2606a {
+        // 14ms
+        public int maximumCostSubstring(String s, String chars, int[] vals) {
+            HashMap<Character, Integer> m = new HashMap<>();
+            for (int i = 0; i < chars.length(); i++) {
+                m.put(chars.charAt(i), vals[i]);
+            }
+            int ans = 0, cur = 0;
+            for (char c : s.toCharArray()) {
+                ans = Math.max(ans, cur = Math.max(0, cur + m.getOrDefault(c, c - 'a' + 1)));
+            }
+            return ans;
+        }
+    }
+
+    class Solution2606b {
+        // 3ms
+        public int maximumCostSubstring(String s, String chars, int[] vals) {
+            int ans = 0, cur = 0;
+            int[] m = new int[26];
+            for (int i = 0; i < 26; ++i)
+                m[i] = i + 1;
+            for (int i = 0; i < chars.length(); ++i) {
+                m[chars.charAt(i) - 'a'] = vals[i];
+            }
+            for (char c : s.toCharArray()) {
+                ans = Math.max(ans, cur = Math.max(0, cur + m[c - 'a']));
+            }
+            return ans;
+        }
+    }
+
     // 2607. Make K-Subarray Sums Equal - MEDIUM
     class Solution2607a {
         public long makeSubKSumEqual(int[] arr, int k) {
@@ -368,6 +426,133 @@ public class Lc2600_2699 {
             for (int i = 0; i < n; ++i)
                 ans = Math.min(ans, root.apply(i));
             return ans < inf ? ans : -1;
+        }
+    }
+
+    // 2609. Find the Longest Balanced Substring of a Binary String - EASY
+    class Solution2609a {
+        // 36ms
+        public int findTheLongestBalancedSubstring(String s) {
+            for (int i = s.length() / 2; i > 0; i--) {
+                if (s.matches(".*0{" + i + "}1{" + i + "}.*")) {
+                    return 2 * i;
+                }
+            }
+            return 0;
+        }
+    }
+
+    class Solution2609b {
+        // 1ms
+        public int findTheLongestBalancedSubstring(String s) {
+            int ans = 0, pre = 0, cur = 0, n = s.length();
+            char[] cs = s.toCharArray();
+            for (int i = 0; i < n; ++i) {
+                ++cur;
+                if (i == n - 1 || cs[i] != cs[i + 1]) {
+                    if (cs[i] == '1') {
+                        ans = Math.max(ans, Math.min(pre, cur) * 2);
+                    }
+                    pre = cur;
+                    cur = 0;
+                }
+            }
+            return ans;
+        }
+    }
+
+    // 2610. Convert an Array Into a 2D Array With Conditions - MEDIUM
+    class Solution2610a {
+        // 1ms
+        public List<List<Integer>> findMatrix(int[] nums) {
+            ArrayList<List<Integer>> ans = new ArrayList<>();
+            int[] count = new int[nums.length + 1];
+            for (int v : nums) {
+                if (ans.size() <= count[v]) {
+                    ans.add(new ArrayList<>());
+                }
+                ans.get(count[v]++).add(v);
+            }
+            return ans;
+        }
+    }
+
+    class Solution2610b {
+        // 4ms
+        public List<List<Integer>> findMatrix(int[] nums) {
+            HashMap<Integer, Integer> cnt = new HashMap<>();
+            for (int k : nums)
+                cnt.merge(k, 1, Integer::sum);
+            List<List<Integer>> ans = new ArrayList<>();
+            while (!cnt.isEmpty()) {
+                List<Integer> row = new ArrayList<>();
+                for (Iterator<Map.Entry<Integer, Integer>> it = cnt.entrySet().iterator(); it.hasNext();) {
+                    Map.Entry<Integer, Integer> e = it.next();
+                    row.add(e.getKey());
+                    e.setValue(e.getValue() - 1);
+                    if (e.getValue() == 0)
+                        it.remove();
+                }
+                ans.add(row);
+            }
+            return ans;
+        }
+    }
+
+    // 2611. Mice and Cheese - MEDIUM
+    class Solution2611a {
+        // 11ms
+        public int miceAndCheese(int[] reward1, int[] reward2, int k) {
+            int ans = 0, n = reward1.length, diff[] = new int[n];
+            for (int i = 0; i < n; ++i) {
+                diff[i] = reward2[i] - reward1[i];
+                ans += reward2[i];
+            }
+            Arrays.sort(diff);
+            for (int i = 0; i < k; ++i) {
+                ans -= diff[i];
+            }
+            return ans;
+        }
+    }
+
+    class Solution2611b {
+        // 11ms
+        public int miceAndCheese(int[] reward1, int[] reward2, int k) {
+            int ans = 0, n = reward1.length;
+            for (int i = 0; i < n; ++i) {
+                ans += reward2[i]; // 全部给第二只老鼠
+                reward1[i] -= reward2[i];
+            }
+            Arrays.sort(reward1);
+            for (int i = n - k; i < n; ++i)
+                ans += reward1[i];
+            return ans;
+        }
+    }
+
+    // 2612. Minimum Reverse Operations - HARD
+    class Solution2612a {
+        public int[] minReverseOperations(int n, int p, int[] banned, int k) {
+            int[] result = new int[n];
+            TreeSet<Integer>[] set = new TreeSet[] { new TreeSet<>(), new TreeSet<>() };
+            for (int i = 0; i < n; ++i) {
+                set[i % 2].add(i);
+                result[i] = i == p ? 0 : -1;
+            }
+            set[p % 2].remove(p);
+            for (int i : banned) {
+                set[i % 2].remove(i);
+            }
+            for (ArrayDeque<Integer> deque = new ArrayDeque<>(List.of(p)); !deque.isEmpty();) {
+                for (Integer poll = deque.poll(), i = Math.abs(poll - k + 1), j = set[i % 2].ceiling(i); j != null
+                        && j < n - Math.abs(n - poll - k); j = set[i % 2].higher(j)) {
+                    deque.offer(j);
+                    result[j] = result[poll] + 1;
+                    set[i % 2].remove(j);
+                }
+            }
+            return result;
         }
     }
 }
