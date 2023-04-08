@@ -492,6 +492,27 @@ class Solution:
 
 # 2612 - Minimum Reverse Operations - HARD
 class Solution:
+    # 难点一
+    #   求反转长度为 k 的子数组, 从位置 i 可以到达的左右边界闭区间
+    # 难点二
+    #   一个边数为 O(n * k) 的无权图最短路问题
+
+    # 容易想到一个 BFS 的方法
+    # 当位置 i 从 BFS 队列中出队时, 枚举翻转哪个子数组, 就能算出位置 i 能跳到哪些位置.
+    # 这样做的复杂度是 O(n(n−k)) 的, 因为共有 n 个位置, 且共有 (n−k+1) 个子数组可以翻转.
+    # 上述 BFS 做法复杂度较高的原因是, 我们检查了很多没用的"跳跃"(目标位置已经被跳过了, 不需要再检查一次)
+    # 所以需要更多性质来优化这个做法
+    # 位置 i 可以"跳跃"到的位置是"连续"的(事实上, 是和奇偶性有关的连续)
+    # 既然可以跳到的位置是"连续"的, 那么我们可以考虑用两个 有序集合 来保存还没有被跳过的位置(分奇偶)
+    # 因为 有序集合 里保存的都是没有被跳过的位置, 我们就不会重复枚举一个已经被跳过的位置,
+    # 这样枚举的次数只有 O(n) 次. 总体复杂度 O(nlogn)
+
+    # 翻转后的所有位置组成了一个公差为 2 的等差数列
+    # 注意当 i 在数组边界 0 或 n - 1 附近时, 有些位置是无法翻转到的
+    # 不考虑边界, [i - k + 1, i + k - 1]
+    # 在左边附近, 0 + (k - 1) - i = k - i - 1
+    # 在右边附近, (n - k) + (n - 1) - i = 2 * n - k - i - 1
+    # 实际范围, [max(i - k + 1, k - i - 1), min(i + k - 1, 2 * n - k - i - 1)]
     def minReverseOperations(
         self, n: int, p: int, banned: List[int], k: int
     ) -> List[int]:
@@ -516,7 +537,7 @@ class Solution:
                 q.append(y)
             for it in range(i, j):
                 tree.pop(i)
-        return [dist[i] if i in dist else -1 for i in range(n)]
+        return [dist.get(i, -1) for i in range(n)]
 
     def minReverseOperations(
         self, n: int, p: int, banned: List[int], k: int
@@ -531,17 +552,94 @@ class Solution:
         def rotate(p: int) -> int:
             left = max(p - kend, 0) * 2 + kend - p
             right = min(p + 1, n - kend) * 2 + kend - p
-            curchoice = choice[left % 2]
-            res = list(curchoice.irange(left, right - 1))
+            cur = choice[left % 2]
+            res = list(cur.irange(left, right - 1))
             for i in res:
-                curchoice.discard(i)
+                cur.discard(i)
             return res
 
         bfs = [p]
-        visited = {p: 0}
+        dist = {p: 0}
         for i in bfs:
-            vi = visited[i] + 1
+            d = dist[i] + 1
             for j in rotate(i):
-                visited[j] = vi
+                dist[j] = d
                 bfs.append(j)
-        return [visited.get(i, -1) for i in range(n)]
+        return [dist.get(i, -1) for i in range(n)]
+
+    def minReverseOperations(
+        self, n: int, p: int, banned: List[int], k: int
+    ) -> List[int]:
+        ban = set(banned)
+        # 把除了 p 和 banned 的所有位置, 按奇偶性放进两个 set 里
+        # 这些就是我们还没被跳到的位置
+        st = [sortedcontainers.SortedList() for _ in range(2)]
+        for i in range(n):
+            if i != p and i not in ban:
+                st[i % 2].add(i)
+        q = collections.deque()
+        q.append(p)
+        ans = [-1] * n
+        ans[p] = 0
+        while q:
+            cur = q.popleft()
+            # 计算可以跳的范围
+            left = max(-(k - 1), k - 1 - cur * 2)
+            right = min(k - 1, -(k - 1) + (n - cur - 1) * 2)
+            # 寻找第一个大于等于 cur + left 的位置, 并开始枚举后面连续的位置
+            x = (cur + (k - 1)) % 2
+            idx = st[x].bisect_left(cur + left)
+            while idx != len(st[x]):
+                # 遇到了第一个大于 cur + right 的位置, 结束枚举
+                if st[x][idx] > cur + right:
+                    break
+                # 这个位置还没被跳过, 但是可以从 cur 一步跳过来
+                # 更新答案, 并从 set<int> 里去掉
+                ans[st[x][idx]] = ans[cur] + 1
+                q.append(st[x][idx])
+                st[x].remove(st[x][idx])
+        return ans
+
+    # 并查集的思路是, 如果要删除一个元素, 那么把它的下标 j 和 j+1 合并, 这样后面删除的时候就会自动跳过已删除的元素
+    def minReverseOperations(
+        self, n: int, p: int, banned: List[int], k: int
+    ) -> List[int]:
+        s = set(banned) | {p}
+        not_banned = [[], []]
+        for i in range(n):
+            if i not in s:
+                not_banned[i % 2].append(i)
+        not_banned[0].append(n)
+        not_banned[1].append(n)  # 哨兵
+
+        fa = [list(range(len(not_banned[0]))), list(range(len(not_banned[1])))]
+
+        def find(i: int, x: int) -> int:
+            f = fa[i]
+            if f[x] != x:
+                f[x] = find(i, f[x])
+            return f[x]
+
+        def merge(i: int, from_: int, to: int) -> None:
+            x, y = find(i, from_), find(i, to)
+            fa[i][x] = y
+
+        ans = [-1] * n
+        q = [p]
+        step = 0
+        while q:
+            tmp = q
+            q = []
+            for i in tmp:
+                ans[i] = step
+                # 从 mn 到 mx 的所有位置都可以翻转到
+                mn = max(i - k + 1, k - i - 1)
+                mx = min(i + k - 1, n * 2 - k - i - 1)
+                a = not_banned[mn % 2]
+                j = find(mn % 2, bisect.bisect_left(a, mn))
+                while a[j] <= mx:
+                    q.append(a[j])
+                    merge(mn % 2, j, j + 1)  # 删除 j
+                    j = find(mn % 2, j + 1)
+            step += 1
+        return ans

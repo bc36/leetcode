@@ -236,6 +236,19 @@ class Solution:
             n = r * 10 + 1
 
 
+# 1017 - Convert to Base -2 - MEDIUM
+class Solution:
+    def baseNeg2(self, n: int) -> str:
+        if n == 0:
+            return "0"
+        ans = ""
+        while n:
+            k = n % 2
+            n = -(n // 2)
+            ans = str(k) + ans
+        return ans
+
+
 # 1020 - Number of Enclaves - MEDIUM
 class Solution:
     def numEnclaves(self, grid: List[List[int]]) -> int:
@@ -670,6 +683,33 @@ class Solution:
         x2, y2 = p[2]
         # (y1 - y0) / (x1 - x0) != (y2 - y1) / (x2 - x1)
         return (y1 - y0) * (x2 - x1) != (y2 - y1) * (x1 - x0)
+
+
+# 1039 - Minimum Score Triangulation of Polygon - MEDIUM
+class Solution:
+    def minScoreTriangulation(self, values: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            if i + 1 == j:
+                return 0
+            return min(
+                dfs(i, k) + dfs(k, j) + values[i] * values[j] * values[k]
+                for k in range(i + 1, j)
+            )
+
+        return dfs(0, len(values) - 1)
+
+    def minScoreTriangulation(self, values: List[int]) -> int:
+        n = len(values)
+        f = [[0] * n for _ in range(n)]
+        for r in range(2, n):
+            for l in range(r - 2, -1, -1):
+                f[l][r] = math.inf
+                for m in range(l + 1, r):
+                    f[l][r] = min(
+                        f[l][r], f[l][m] + f[m][r] + values[l] * values[r] * values[m]
+                    )
+        return f[0][n - 1]
 
 
 # 1041 - Robot Bounded In Circle - MEDIUM

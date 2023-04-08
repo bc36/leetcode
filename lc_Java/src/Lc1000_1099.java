@@ -48,6 +48,22 @@ public class Lc1000_1099 {
         }
     }
 
+    // 1017. Convert to Base -2 - MEDIUM
+    class Solution1017a {
+        public String baseNeg2(int n) {
+            if (n == 0)
+                return String.valueOf(n);
+            StringBuilder ans = new StringBuilder();
+            while (n != 0) {
+                int k = n & 1;
+                n -= k;
+                n /= -2;
+                ans.append(k);
+            }
+            return ans.reverse().toString();
+        }
+    }
+
     // 1032. Stream of Characters - HARD
     // 倒序建树, 倒序查找, 52ms
     class StreamChecker {
@@ -232,6 +248,33 @@ public class Lc1000_1099 {
             index = ++index % 200;
             lmt = lmt < 200 ? ++lmt : lmt;
             return root.search(queries, index, lmt);
+        }
+    }
+
+    // 1039. Minimum Score Triangulation of Polygon - MEDIUM
+    class Solution1039a {
+        // 2ms
+        private int[] v;
+        private int[][] memo;
+
+        public int minScoreTriangulation(int[] values) {
+            v = values;
+            int n = v.length;
+            memo = new int[n][n];
+            for (int i = 0; i < n; ++i)
+                Arrays.fill(memo[i], -1);
+            return dfs(0, n - 1);
+        }
+
+        private int dfs(int i, int j) {
+            if (i + 1 == j)
+                return 0;
+            if (memo[i][j] != -1)
+                return memo[i][j];
+            int res = Integer.MAX_VALUE;
+            for (int k = i + 1; k < j; ++k)
+                res = Math.min(res, dfs(i, k) + dfs(k, j) + v[i] * v[j] * v[k]);
+            return memo[i][j] = res;
         }
     }
 
