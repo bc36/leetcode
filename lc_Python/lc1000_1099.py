@@ -3,6 +3,12 @@ from typing import List, Optional, Tuple
 import sortedcontainers
 
 
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -246,6 +252,36 @@ class Solution:
             k = n % 2
             n = -(n // 2)
             ans = str(k) + ans
+        return ans
+
+
+# 1019 - Next Greater Node In Linked List - MEDIUM
+class Solution:
+    def nextLargerNodes(self, head: Optional[ListNode]) -> List[int]:
+        arr = []
+        while head:
+            arr.append(head.val)
+            head = head.next
+        ans = []
+        st = []
+        while arr:
+            while st and st[-1] <= arr[-1]:
+                st.pop()
+            ans.append(st[-1] if st else 0)
+            st.append(arr.pop())
+        return ans[::-1]
+
+    def nextLargerNodes(self, head: Optional[ListNode]) -> List[int]:
+        arr = []
+        while head:
+            arr.append(head.val)
+            head = head.next
+        ans = [0] * len(arr)
+        st = []
+        for i in range(len(arr)):
+            while st and arr[i] > arr[st[-1]]:
+                ans[st.pop()] = arr[i]
+            st.append(i)
         return ans
 
 
