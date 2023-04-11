@@ -763,6 +763,16 @@ class Solution:
         return ans
 
 
+# 831 - Masking Personal Information - MEDIUM
+class Solution:
+    def maskPII(self, s: str) -> str:
+        at = s.find("@")
+        if at != -1:
+            return (s[0] + "*" * 5 + s[at - 1 :]).lower()
+        s = "".join(i for i in s if i.isdigit())
+        return ["", "+*-", "+**-", "+***-"][len(s) - 10] + "***-***-" + s[-4:]
+
+
 # 832 - Flipping an Image - EASY
 class Solution:
     def flipAndInvertImage(self, image: List[List[int]]) -> List[List[int]]:

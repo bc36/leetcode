@@ -3,6 +3,23 @@ package src;
 import java.util.*;
 
 public class Lc1000_1099 {
+    public class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
     // 1000. Minimum Cost to Merge Stones - HARD
     class Solution1000a {
         private int k, pre[], memo[][][];
@@ -61,6 +78,56 @@ public class Lc1000_1099 {
                 ans.append(k);
             }
             return ans.reverse().toString();
+        }
+    }
+
+    // 1019. Next Greater Node In Linked List - MEDIUM
+    class Solution1019a {
+        // 15ms
+        public int[] nextLargerNodes(ListNode head) {
+            List<Integer> arr = new ArrayList<>();
+            while (head != null) {
+                arr.add(head.val);
+                head = head.next;
+            }
+            int[] ans = new int[arr.size()];
+            Deque<Integer> st = new ArrayDeque<>();
+            for (int i = 0; i < arr.size(); ++i) {
+                while (!st.isEmpty() && arr.get(i) > arr.get(st.peek())) {
+                    ans[st.poll()] = arr.get(i);
+                }
+                // st.push(i);
+                st.offerFirst(i);
+                // st.addFirst(i);
+            }
+            return ans;
+        }
+    }
+
+    class Solution1019b {
+        // 4ms
+        public int[] nextLargerNodes(ListNode head) {
+            int n = 0;
+            ListNode cur = head;
+            while (cur != null) {
+                n++;
+                cur = cur.next;
+            }
+            int[] arr = new int[n], ans = new int[n], st = new int[n];
+            cur = head;
+            for (int i = 0; i < n; ++i) {
+                arr[i] = cur.val;
+                cur = cur.next;
+            }
+            int j = -1;
+            for (int i = n - 1; i >= 0; --i) {
+                while (j != -1 && arr[st[j]] <= arr[i]) {
+                    j--;
+                }
+                ans[i] = j == -1 ? 0 : arr[st[j]];
+                st[++j] = i;
+            }
+            return ans;
         }
     }
 
