@@ -679,6 +679,76 @@ class SnapshotArray:
         return d[k[i - 1]]  # [4, 6] 查找 5, 指向下标 1
 
 
+# 1147 - Longest Chunked Palindrome Decomposition - HARD
+class Solution:
+    # O(n^2) / O(n)
+    def longestDecomposition(self, text: str) -> int:
+        n = len(text)
+        ans = 0
+        pre, suf = [], []
+        for i in range(n // 2):
+            pre.append(text[i])
+            suf.append(text[-(i + 1)])
+            if pre == suf[::-1]:
+                ans += 2
+                pre = []
+                suf = []
+        return ans + 1 if n % 2 or len(pre) else ans
+
+    def longestDecomposition(self, s: str) -> int:
+        if s == "":
+            return 0
+        for i in range(1, len(s) // 2 + 1):
+            if s[:i] == s[-i:]:
+                return 2 + self.longestDecomposition(s[i:-i])
+        return 1
+
+    def longestDecomposition(self, s: str) -> int:
+        ans = 0
+        while s:
+            i = 1
+            while i <= len(s) // 2 and s[:i] != s[-i:]:
+                i += 1
+            if i > len(s) // 2:
+                ans += 1
+                break
+            ans += 2
+            s = s[i:-i]
+        return ans
+
+    # O(n) / O(n)
+    def longestDecomposition(self, text: str) -> int:
+        def get(l, r):
+            return (h[r] - h[l - 1] * p[r - l + 1]) % mod
+
+        n = len(text)
+        base = 131
+        mod = int(1e9) + 7
+        h = [0] * (n + 10)
+        p = [1] * (n + 10)
+        for i, c in enumerate(text):
+            t = ord(c) - ord("a") + 1
+            h[i + 1] = (h[i] * base) % mod + t
+            p[i + 1] = (p[i] * base) % mod
+        ans = 0
+        i, j = 0, n - 1
+        while i <= j:
+            k = 1
+            ok = False
+            while i + k - 1 < j - k + 1:
+                if get(i + 1, i + k) == get(j - k + 2, j + 1):
+                    ans += 2
+                    i += k
+                    j -= k
+                    ok = True
+                    break
+                k += 1
+            if not ok:
+                ans += 1
+                break
+        return ans
+
+
 # 1154 - Day of the Year - EASY
 class Solution:
     def dayOfYear(self, date: str) -> int:

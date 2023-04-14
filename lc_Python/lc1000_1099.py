@@ -1,4 +1,4 @@
-import bisect, collections, copy, datetime, functools, heapq, itertools, math, operator, string
+import bisect, collections, copy, datetime, functools, heapq, itertools, math, operator, re, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -405,6 +405,26 @@ class Solution:
         self.ans = 0
         dfs(root, 0)
         return self.ans
+
+
+# 1023 - Camelcase Matching - MEDIUM
+class Solution:
+    def camelMatch(self, queries: List[str], pattern: str) -> List[bool]:
+        p = "^[a-z]*" + "[a-z]*".join(pattern) + "[a-z]*$"
+        return [re.match(p, q) is not None for q in queries]
+
+    def camelMatch(self, queries: List[str], pattern: str) -> List[bool]:
+        def check(s: str) -> bool:
+            j = 0
+            for i in range(len(s)):
+                if j < m and s[i] == pattern[j]:
+                    j += 1
+                elif s[i].isupper():
+                    return False
+            return j == m
+
+        m = len(pattern)
+        return list(check(q) for q in queries)
 
 
 # 1025 - Divisor Game - EASY

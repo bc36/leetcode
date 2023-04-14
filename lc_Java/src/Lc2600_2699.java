@@ -114,6 +114,7 @@ public class Lc2600_2699 {
     // 2603. Collect Coins in a Tree - HARD
     class Solution2603a {
         // 93ms
+        @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             HashSet<Integer> sets[] = new HashSet[coins.length], set = new HashSet<>();
             for (int i = 0; i < coins.length; i++) {
@@ -191,6 +192,7 @@ public class Lc2600_2699 {
             return false;
         }
 
+        @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             int n = coins.length;
             g = new List[n];
@@ -245,6 +247,7 @@ public class Lc2600_2699 {
 
     class Solution2603c {
         // 35ms
+        @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             int n = coins.length, ind[] = new int[n];
             List<Integer> g[] = new ArrayList[n];

@@ -24,6 +24,7 @@ public class Lc1000_1099 {
     class Solution1000a {
         private int k, pre[], memo[][][];
 
+        @SuppressWarnings("unused")
         private int dfs(int l, int r, int p) {
             if (memo[l][r][p] != -1)
                 return memo[l][r][p];
@@ -128,6 +129,32 @@ public class Lc1000_1099 {
                 st[++j] = i;
             }
             return ans;
+        }
+    }
+
+    // 1023. Camelcase Matching - MEDIUM
+    class Solution1023a {
+        private Boolean check(String s, String p) {
+            int m = p.length(), j = 0;
+            for (int i = 0; i < s.length(); ++i) {
+                if (j < m && s.charAt(i) == p.charAt(j)) {
+                    ++j;
+                } else if (s.charAt(i) < 'a') { // is upper
+                    return false;
+                }
+            }
+            return j == p.length();
+        }
+
+        public List<Boolean> camelMatch(String[] queries, String pattern) {
+            // 0ms
+            List<Boolean> ans = new ArrayList<>(pattern.length());
+            for (String q : queries) {
+                ans.add(check(q, pattern));
+            }
+            return ans;
+            // 2ms
+            // return Arrays.stream(queries).map(q -> check(q, pattern)).toList();
         }
     }
 
