@@ -643,3 +643,247 @@ class Solution:
                     j = find(mn % 2, j + 1)
             step += 1
         return ans
+
+
+# 2614 - Prime In Diagonal - EASY
+class Solution:
+    # 注意 1 不是质数
+    # 数据范围 4 * 10^6, nlogn 暴力预处理筛质数会 TLE
+    # O(n * sqrt(U)) / O(1), U = max(对角线上最大值)
+    def diagonalPrime(self, nums: List[List[int]]) -> int:
+        def isPrime(x: int):
+            if x == 1:
+                return False
+            for i in range(2, int(x**0.5) + 1):
+                if x % i == 0:
+                    return False
+            return True
+
+        ans = 0
+        for i, row in enumerate(nums):
+            for x in row[i], row[-1 - i]:
+                if x > ans and isPrime(x):
+                    ans = x
+        return ans
+
+
+# 2615 - Sum of Distances - MEDIUM
+class Solution:
+    def distance(self, nums: List[int]) -> List[int]:
+        d = {}
+        n = len(nums)
+        left = [0] * n
+        for i, v in enumerate(nums):
+            j, t, pre = d.get(v, (0, 0, 0))
+            left[i] += t * (i - j) + pre
+            d[v] = (i, t + 1, left[i])
+        d.clear()
+        right = [0] * n
+        for i in range(n - 1, -1, -1):
+            j, t, pre = d.get(nums[i], (n - 1, 0, 0))
+            right[i] = t * (j - i) + pre
+            d[nums[i]] = (i, t + 1, right[i])
+        return [a + b for a, b in zip(left, right)]
+
+    def distance(self, nums: List[int]) -> List[int]:
+        groups = collections.defaultdict(list)
+        for i, x in enumerate(nums):
+            groups[x].append(i)
+        ans = [0] * len(nums)
+        for a in groups.values():
+            n = len(a)
+            s = list(itertools.accumulate(a, initial=0))
+            for j, target in enumerate(a):
+                left = target * j - s[j]
+                right = s[n] - s[j] - target * (n - j)
+                ans[target] = left + right
+        return ans
+
+    def distance(self, nums: List[int]) -> List[int]:
+        groups = collections.defaultdict(list)
+        for i, x in enumerate(nums):
+            groups[x].append(i)
+        ans = [0] * len(nums)
+        for a in groups.values():
+            n = len(a)
+            s = sum(x - a[0] for x in a)  # a[0] 到其它下标的距离之和
+            ans[a[0]] = s
+            for i in range(1, n):
+                # 从计算 a[i-1] 到计算 a[i]，考虑 s 增加了多少
+                s += (i * 2 - n) * (a[i] - a[i - 1])
+                ans[a[i]] = s
+        return ans
+
+
+# 2616 - Minimize the Maximum Difference of Pairs - MEDIUM
+class Solution:
+    # O(nlogn + nlogU) / O(1), U = max(nums) - min(nums)
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        nums.sort()
+
+        def check(m: int) -> bool:
+            t = i = 0
+            while i < n - 1:
+                if nums[i + 1] - nums[i] <= m:
+                    t += 1
+                    i += 1
+                i += 1
+            return t >= p
+
+        n = len(nums)
+        l = 0
+        r = max(nums)
+        while l < r:
+            m = l + r >> 1
+            if check(m):
+                r = m
+            else:
+                l = m + 1
+        return l
+
+        return bisect.bisect_left(range(nums[-1] - nums[0]), True, key=check)
+        return bisect.bisect_left(range(nums[-1] - nums[0]), 1, key=check)
+
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        def check(m: int) -> int:
+            t = i = 0
+            while i < len(nums) - 1:
+                if nums[i + 1] - nums[i] <= m:
+                    t += 1
+                    i += 1
+                i += 1
+            return t
+
+        nums.sort()
+        return bisect.bisect_left(range(nums[-1] - nums[0]), p, key=check)
+
+
+# 2617 - Minimum Number of Visited Cells in a Grid - HARD
+class Solution:
+    # m + n 个优先队列
+    # 假如往下走, 前一个位置 (ii, j), ii < i, ii 还需要满足:
+    # 1. (ii, j) 能到 (i, j)
+    # 2. 到达 (ii, j) 移动次数最少
+    # 由条件二可以想到优先队列」来维护所有的 ii, 堆顶为移动次数最少的位置
+    # 由条件一可得若堆顶的 ii 不满足要求, 就可以将它永久从优先队列中移除,
+    # 因为之后共享同一列 j 的位置 i 只会更大, 更不可能走到
+    # O(n * m * log(nm)) / O(nm)
+    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        m = len(grid[0])
+        f = [[-1] * m for _ in range(n)]  # distance
+        f[0][0] = 1
+        row = [[] for _ in range(n)]
+        col = [[] for _ in range(m)]
+
+        def update(x: int, y: int) -> int:
+            return y if x == -1 or x > y else x
+
+        for i in range(n):
+            for j in range(m):
+                while row[i] and row[i][0][1] + grid[i][row[i][0][1]] < j:
+                    heapq.heappop(row[i])
+                if row[i]:
+                    f[i][j] = update(f[i][j], f[i][row[i][0][1]] + 1)
+
+                while col[j] and col[j][0][1] + grid[col[j][0][1]][j] < i:
+                    heapq.heappop(col[j])
+                if col[j]:
+                    f[i][j] = update(f[i][j], f[col[j][0][1]][j] + 1)
+
+                if f[i][j] != -1:
+                    heapq.heappush(row[i], (f[i][j], j))
+                    heapq.heappush(col[j], (f[i][j], i))
+
+        return f[n - 1][m - 1]
+
+    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        n, m = len(grid), len(grid[0])
+        a = [[] for _ in range(m)]
+
+        f = [[-1] * m for _ in range(n)]
+        f[0][0] = 1
+        for i in range(n):
+            q = []
+            for j in range(m):
+                while len(a[j]) > 0 and a[j][0][1] < i:
+                    heapq.heappop(a[j])
+                if len(a[j]) > 0:
+                    f[i][j] = a[j][0][0] + 1
+                while len(q) > 0 and q[0][1] < j:
+                    heapq.heappop(q)
+                if len(q) > 0 and (f[i][j] == -1 or f[i][j] > q[0][0] + 1):
+                    f[i][j] = q[0][0] + 1
+                if f[i][j] != -1:
+                    heapq.heappush(q, (f[i][j], j + grid[i][j]))
+                    heapq.heappush(a[j], (f[i][j], i + grid[i][j]))
+        return f[-1][-1]
+
+    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        f = [[-1] * n for _ in range(m)]
+        f[0][0] = 1
+        rows = [sortedcontainers.SortedList(range(0, n)) for _ in range(m)]
+        cols = [sortedcontainers.SortedList(range(0, m)) for _ in range(n)]
+        q = [[0, 0]]
+        index = 0
+        while index < len(q):
+            x, y = q[index]
+            index += 1
+            sl = rows[x]
+            while True:
+                pos = sl.bisect_left(y + 1)
+                if pos == len(sl):
+                    break
+                ny = sl[pos]
+                if ny > y + grid[x][y]:
+                    break
+                f[x][ny] = f[x][y] + 1
+                q.append([x, ny])
+                del sl[pos]
+                cols[ny].remove(x)
+            sl = cols[y]
+            while True:
+                pos = sl.bisect_left(x + 1)
+                if pos == len(sl):
+                    break
+                nx = sl[pos]
+                if nx > x + grid[x][y]:
+                    break
+                f[nx][y] = f[x][y] + 1
+                q.append([nx, y])
+                del sl[pos]
+                rows[nx].remove(y)
+        return f[-1][-1]
+
+    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        q = collections.deque([(0, 0)])
+        row = [sortedcontainers.SortedList(range(n)) for _ in range(m)]
+        col = [sortedcontainers.SortedList(range(m)) for _ in range(n)]
+        visit = [[False] * n for _ in range(m)]
+        visit[0][0] = True
+        cnt = 1
+        while q:
+            for _ in range(len(q)):
+                x, y = q.popleft()
+                if x == m - 1 and y == n - 1:
+                    return cnt
+                index1 = row[x].bisect_right(y + grid[x][y])
+                index2 = row[x].bisect_left(y)
+                for _ in range(index1 - index2):
+                    t = row[x].pop(index2)
+                    if visit[x][t] == False:
+                        visit[x][t] = True
+                        q.append((x, t))
+
+                index3 = col[y].bisect_right(x + grid[x][y])
+                index4 = col[y].bisect_left(x)
+                for _ in range(index3 - index4):
+                    t = col[y].pop(index4)
+                    if visit[t][y] == False:
+                        visit[t][y] = True
+                        q.append((t, y))
+            cnt += 1
+        return -1

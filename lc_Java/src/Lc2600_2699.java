@@ -537,6 +537,7 @@ public class Lc2600_2699 {
     // 2612. Minimum Reverse Operations - HARD
     class Solution2612a {
         // 420ms
+        @SuppressWarnings("unchecked")
         public int[] minReverseOperations(int n, int p, int[] banned, int k) {
             int[] result = new int[n];
             TreeSet<Integer>[] set = new TreeSet[] { new TreeSet<>(), new TreeSet<>() };
@@ -562,6 +563,7 @@ public class Lc2600_2699 {
 
     class Solution2612b {
         // 170ms
+        @SuppressWarnings("unchecked")
         public int[] minReverseOperations(int n, int p, int[] banned, int k) {
             var ban = new boolean[n];
             ban[p] = true;
@@ -594,6 +596,153 @@ public class Lc2600_2699 {
                         s.remove(j);
                     }
                 }
+            }
+            return ans;
+        }
+    }
+
+    // 2614. Prime In Diagonal - EASY
+    class Solution2614a {
+        public int diagonalPrime(int[][] nums) {
+            int n = nums.length, ans = 0;
+            for (int i = 0; i < n; ++i) {
+                int x = nums[i][i];
+                if (x > ans && isPrime(x))
+                    ans = x;
+                x = nums[i][n - 1 - i];
+                if (x > ans && isPrime(x))
+                    ans = x;
+            }
+            return ans;
+        }
+
+        private boolean isPrime(int n) {
+            for (int i = 2; i * i <= n; i++) {
+                if (n % i == 0) {
+                    return false;
+                }
+            }
+            return n > 1;
+        }
+    }
+
+    // 2615. Sum of Distances - MEDIUM
+    class Solution2615a {
+        // 18ms
+        public long[] distance(int[] nums) {
+            HashMap<Integer, ArrayList<Integer>> group = new HashMap<>();
+            for (int i = 0; i < nums.length; i++) {
+                group.computeIfAbsent(nums[i], k -> new ArrayList<>()).add(i);
+            }
+            long[] ans = new long[nums.length];
+            for (ArrayList<Integer> list : group.values()) {
+                int n = list.size();
+                long[] pre = new long[n + 1];
+                for (int i = 0; i < n; i++) {
+                    pre[i + 1] = pre[i] + list.get(i);
+                }
+                for (int i = 0; i < n; i++) {
+                    // int t = list.get(i);
+                    // long left = (long) t * i - pre[i]; // without (long), overflow -> ERROR
+                    // long right = pre[n] - pre[i] - 1L * t * (n - i);
+                    // ans[t] = left + right;
+                    ans[list.get(i)] = pre[n] - 2 * pre[i] - list.get(i) * (n - 2L * i);
+                }
+            }
+            return ans;
+        }
+    }
+
+    // 2616. Minimize the Maximum Difference of Pairs - MEDIUM
+    class Solution2616a {
+        public int minimizeMax(int[] nums, int p) {
+            // int l = 0, r = 1000000000; // 20ms
+            // for (Arrays.sort(nums); l < r;) {
+
+            Arrays.sort(nums); // 17ms
+            int l = 0, r = nums[nums.length - 1] - nums[0];
+            while (l < r) {
+
+                int m = l + r >> 1, count = 0;
+                for (int i = 1; i < nums.length; i++) {
+                    if (nums[i] - nums[i - 1] <= m) {
+                        count++;
+                        i++;
+                    }
+                }
+                if (count < p) {
+                    l = m + 1;
+                } else {
+                    r = m;
+                }
+            }
+            return l;
+        }
+    }
+
+    // 2617. Minimum Number of Visited Cells in a Grid - HARD
+    class Solution2617a {
+        @SuppressWarnings("unchecked")
+        public int minimumVisitedCells(int[][] grid) {
+            int n = grid.length;
+            int m = grid[0].length;
+            TreeSet<Integer>[] rows = new TreeSet[n];
+            TreeSet<Integer>[] cols = new TreeSet[m];
+            for (int i = 0; i < n; i++) {
+                rows[i] = new TreeSet<>();
+                for (int j = 0; j < m; j++) {
+                    rows[i].add(j);
+                }
+            }
+            for (int i = 0; i < m; i++) {
+                cols[i] = new TreeSet<>();
+                for (int j = 0; j < n; j++) {
+                    cols[i].add(j);
+                }
+            }
+            int inf = (int) 1e8;
+            int[][] dist = new int[n][m];
+            for (int[] row : dist) {
+                Arrays.fill(row, inf);
+            }
+            dist[0][0] = 1;
+            Deque<int[]> dq = new ArrayDeque<>();
+            dq.addLast(new int[] { 0, 0 });
+            rows[0].remove(0);
+            cols[0].remove(0);
+            while (!dq.isEmpty()) {
+                int[] head = dq.removeFirst();
+                int x = head[0];
+                int y = head[1];
+                int r = grid[x][y] + y;
+                int b = grid[x][y] + x;
+
+                while (true) {
+                    var next = rows[x].higher(y);
+                    if (next == null || next > r) {
+                        break;
+                    }
+                    dist[x][next] = dist[x][y] + 1;
+                    rows[x].remove(next);
+                    cols[next].remove(x);
+                    dq.addLast(new int[] { x, next });
+                }
+
+                while (true) {
+                    var next = cols[y].higher(x);
+                    if (next == null || next > b) {
+                        break;
+                    }
+                    dist[next][y] = dist[x][y] + 1;
+                    rows[next].remove(y);
+                    cols[y].remove(next);
+                    dq.addLast(new int[] { next, y });
+                }
+            }
+
+            int ans = dist[n - 1][m - 1];
+            if (ans == inf) {
+                return -1;
             }
             return ans;
         }

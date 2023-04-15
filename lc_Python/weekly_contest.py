@@ -1200,3 +1200,8 @@ T4: 528 pass
 # 贪心 + 排序, 按差值排序
 # 77 / https://leetcode.cn/contest/weekly-contest-339/problems/minimum-reverse-operations/
 # BFS + 平衡树 / 并查集
+
+
+# https://leetcode.cn/contest/weekly-contest-340/
+# 163 / https://leetcode.cn/contest/weekly-contest-340/problems/minimum-number-of-visited-cells-in-a-grid/
+# dp, 优先队列

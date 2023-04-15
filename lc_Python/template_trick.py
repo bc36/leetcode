@@ -34,6 +34,7 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     math related
     minimum cost flow
     permutation
+    prime
     segment tree
     set
     st, sparse table
@@ -856,6 +857,29 @@ def fn() -> None:
     k = 2
     p = math.perm(n, k)
     return
+
+
+"""prime"""
+# euler - sieve of Euler - 欧拉筛/线性筛
+# eratosthenes - sieve of Eratosthenes - 埃式筛
+
+
+def isPrime(x: int) -> bool:
+    if x == 1:
+        return False
+    for i in range(2, int(x**0.5) + 1):
+        if x % i == 0:
+            return False
+    return True
+
+
+def isPrime(n: int) -> bool:
+    i = 2
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += 1
+    return n >= 2  # 1 不是质数
 
 
 """set"""
