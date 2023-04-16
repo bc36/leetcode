@@ -1,5 +1,5 @@
+import re
 from collections import deque
-from re import split
 from typing import List, Optional, Union
 
 from typing_extensions import TypeAlias
@@ -30,7 +30,7 @@ class TreeNode:
         self.right = right
 
 
-def parseInput(s: str) -> List[tuple]:
+def parseTestCases(s: str) -> List[tuple]:
     """
     support parsing:
         str
@@ -45,8 +45,9 @@ def parseInput(s: str) -> List[tuple]:
         if len(line) == 0:
             continue
 
+        logger.debug(f"line: {line}")
         args = []
-        for e in split(",[a-z\s]", line):
+        for e in filter(lambda x: not x.isspace(), re.split(r",(\s?)[a-z]", line)):
             logger.debug(f"equation: {e}")
             t = e[e.index("=") + 1 :].strip()
             logger.debug(f"target: {t}")
@@ -54,7 +55,7 @@ def parseInput(s: str) -> List[tuple]:
             if t[0] == '"':
                 logging.debug(f"[Pattern] string: {t}")
                 args.append(t[1:-1])
-            elif t[0].isdigit():
+            elif t[0].isdigit() or t[0] == "-":
                 logging.debug(f"[Pattern] int: {t}")
                 args.append(int(t))
             elif t[0] == "[":
@@ -62,21 +63,21 @@ def parseInput(s: str) -> List[tuple]:
                     if t[2] == '"':
                         logging.debug(f"[Pattern] List[List[str]]: {t}")
                         l = []
-                        for v in t[2:-2].split("],["):
+                        for v in re.findall(r"\[(.*?)\]", t[1:-1]):
                             l.append(list(w[1:-1] for w in v.split(",")))
                         args.append(l)
                     else:
                         logging.debug(f"[Pattern] List[List[int]]: {t}")
                         l = []
-                        for v in t[2:-2].split("],["):
+                        for v in re.findall(r"\[(.*?)\]", t[1:-1]):
                             l.append(list(map(int, (num for num in v.split(",")))))
                         args.append(l)
                 else:
                     if t[1] == '"':
-                        logging.debug(f"[Pattern] List[str]: {t[1]}")
+                        logging.debug(f"[Pattern] List[str]: {t}")
                         args.append(list(w[1:-1] for w in t[1:-1].split(",")))
                     else:
-                        logging.debug(f"[Pattern] List[int]: {t[1]}")
+                        logging.debug(f"[Pattern] List[int]: {t}")
                         args.append(list(map(int, (num for num in t[1:-1].split(",")))))
 
         totalCases.append(args)
@@ -84,12 +85,18 @@ def parseInput(s: str) -> List[tuple]:
 
 
 testcase = """
+a = 1, b = 2
 s = "1010", target = "0110"
+nums = [1,1,2,4,8,16]
+reward1 = [3,1,1,3], reward2 = [3,2,3,1], k = 3
+reward1 = [1], reward2 = [4], k = 1
 words = [["a","a"],["a"],["a","a","a"]], left = 0, right = 2
 words = [[1,2,3],[4,5,6],[7,8,9]], left = 1, right = 4
+grid = [[-15,1,3],[15,7,12],[5,6,-2]]
+grid = [[-10], [3], [12]]
 """
-# for v in parseInput(testcase):
-#     logger.debug(v)
+# for v in parseTestCases(testcase):
+#     logger.info(v)
 
 # logger.debug("\n")
 

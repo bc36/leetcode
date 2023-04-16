@@ -5,7 +5,7 @@ from heapq import heappushpop, heapreplace
 
 from sortedcontainers import SortedList, SortedDict, SortedSet
 
-from test_tool import ListNode, TreeNode, null, tree2array, parseInput
+from test_tool import ListNode, TreeNode, null, tree2array, parseTestCases
 
 """
 Some hint
@@ -31,6 +31,6 @@ testcase = """
 """
 
 obj = Solution()
-for i, args in enumerate(parseInput(testcase)):
+for i, args in enumerate(parseTestCases(testcase)):
     print(f"\nTestcase {i}: {args}\n")
     print(obj.solve(*args))

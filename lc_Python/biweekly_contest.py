@@ -546,3 +546,13 @@ T4: 840 pass
 # 中位数贪心, 取模分组 / 裴蜀定理 / 公约数
 # 441 / https://leetcode.cn/contest/biweekly-contest-101/problems/shortest-cycle-in-a-graph/
 # 无向图 最小环 / BFS 枚举 / 常用技巧: 考察父节点(BFS可以用 (距离 + 1) 代替判断父节点)
+
+
+"""
+AK, 2023-04-15
+https://leetcode.cn/contest/biweekly-contest-102/
+Rank: 232 / 565
+WA: T4(1)
+FT: 0:36:45
+T4: 955 pass
+"""

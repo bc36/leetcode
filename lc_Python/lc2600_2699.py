@@ -2,6 +2,14 @@ import bisect, collections, functools, heapq, itertools, math, operator, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 # 2600 - K Items With the Maximum Sum - EASY
 class Solution:
     # O(k) / O(1)
@@ -887,3 +895,155 @@ class Solution:
                         q.append((t, y))
             cnt += 1
         return -1
+
+
+# 2639 - Find the Width of Columns of a Grid - EASY
+class Solution:
+    # O(nm) / O(1)
+    def findColumnWidth(self, grid: List[List[int]]) -> List[int]:
+        m = len(grid)
+        n = len(grid[0])
+        return [max(len(str(grid[i][j])) for i in range(m)) for j in range(n)]
+
+    def findColumnWidth(self, grid: List[List[int]]) -> List[int]:
+        return [max(len(str(v)) for v in col) for col in zip(*grid)]
+
+
+# 2640 - Find the Score of All Prefixes of an Array - MEDIUM
+class Solution:
+    # O(n) / O(1)
+    def findPrefixScore(self, nums: List[int]) -> List[int]:
+        mx = 0
+        n = len(nums)
+        cover = [0] * n
+        for i, v in enumerate(nums):
+            mx = max(mx, v)
+            cover[i] = v + mx
+        return list(itertools.accumulate(cover))
+
+    def findPrefixScore(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        preMax = list(itertools.accumulate(nums, max))
+        cover = [nums[i] + preMax[i] for i in range(n)]
+        return list(itertools.accumulate(cover))
+        return list(itertools.accumulate(cover, operator.add))  # same
+
+    def findPrefixScore(self, nums: List[int]) -> List[int]:
+        ans = []
+        mx = summ = 0
+        for v in nums:
+            mx = max(mx, v)
+            summ += v + mx
+            ans.append(summ)
+        return ans
+
+
+# 2641 - Cousins in Binary Tree II - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def replaceValueInTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        q = [(root, -1)]
+        while q:
+            new = []
+            d = dict()
+            summ = 0
+            for x, fa in q:
+                d[fa] = d.get(fa, 0) + x.val
+                summ += x.val
+                if x.left:
+                    new.append((x.left, x))
+                if x.right:
+                    new.append((x.right, x))
+            # summ = sum(d.values())
+            for x, fa in q:
+                x.val = summ - d.get(fa)
+            q = new
+        return root
+
+    def replaceValueInTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        root.val = 0
+        q = [root]
+        while q:
+            new = []
+            summ = 0
+            for x in q:
+                if x.left:
+                    new.append(x.left)
+                    summ += x.left.val
+                if x.right:
+                    new.append(x.right)
+                    summ += x.right.val
+            for x in q:
+                cur = 0
+                if x.left:
+                    cur += x.left.val
+                if x.right:
+                    cur += x.right.val
+                if x.left:
+                    x.left.val = summ - cur
+                if x.right:
+                    x.right.val = summ - cur
+            q = new
+        return root
+
+    def replaceValueInTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        d = collections.defaultdict(int)
+
+        def dfs(root: TreeNode, lv: int) -> None:
+            if not root:
+                return
+            dfs(root.left, lv + 1)
+            dfs(root.right, lv + 1)
+            d[lv] += root.val
+            return
+
+        dfs(root, 0)
+
+        def dfs2(root: TreeNode, pre: int, lv: int) -> None:
+            if not root:
+                return
+            root.val = pre
+            nxt = d[lv + 1]
+            if root.left:
+                nxt -= root.left.val
+            if root.right:
+                nxt -= root.right.val
+            dfs2(root.left, nxt, lv + 1)
+            dfs2(root.right, nxt, lv + 1)
+            return
+
+        dfs2(root, 0, 0)
+        return root
+
+
+# 2642 - Design Graph With Shortest Path Calculator - HARD
+class Graph:
+    # O(qmlogm) / O(m), q = shortestPath 调用次数, 稀疏图中 m = O(n), 稠密图中 m = (n^2)
+    def __init__(self, n: int, edges: List[List[int]]):
+        self.g = [[] for _ in range(n)]
+        for x, y, w in edges:
+            self.g[x].append((y, w))
+
+    def addEdge(self, edge: List[int]) -> None:
+        x, y, w = edge
+        self.g[x].append((y, w))
+        return
+
+    def shortestPath(self, node1: int, node2: int) -> int:
+        arr = self.dijkstra(self.g, node1)
+        return -1 if arr[node2] == math.inf else arr[node2]
+
+    def dijkstra(self, g: List[List[Tuple[int]]], start: int) -> List[int]:
+        dist = [math.inf] * len(g)
+        dist[start] = 0
+        q = [(0, start)]
+        while q:
+            cur, x = heapq.heappop(q)
+            if cur > dist[x]:
+                continue
+            for y, w in g[x]:
+                new = dist[x] + w
+                if new < dist[y]:
+                    dist[y] = new
+                    heapq.heappush(q, (new, y))
+        return dist

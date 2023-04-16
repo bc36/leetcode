@@ -747,4 +747,79 @@ public class Lc2600_2699 {
             return ans;
         }
     }
+
+    // 2640. Find the Score of All Prefixes of an Array - MEDIUM
+    class Solution2640a {
+        // 3ms
+        public long[] findPrefixScore(int[] nums) {
+            long ans[] = new long[nums.length], sum = 0, mx = 0;
+            for (int i = 0; i < nums.length; i++) {
+                ans[i] = sum += (mx = Math.max(mx, nums[i])) + nums[i];
+            }
+            return ans;
+        }
+    }
+
+    // 2641. Cousins in Binary Tree II - MEDIUM
+    class Solution2641a {
+        // 92ms
+        public TreeNode replaceValueInTree(TreeNode root) {
+            HashMap<TreeNode, Integer> map = new HashMap<>();
+            HashMap<Integer, Integer> map2 = new HashMap<>();
+            dfs(root, null, 0, map, map2);
+            dfs2(root, null, 0, map, map2);
+            return root;
+        }
+
+        private void dfs(TreeNode root, TreeNode parent, int depth, HashMap<TreeNode, Integer> map,
+                HashMap<Integer, Integer> map2) {
+            if (root != null) {
+                if (parent != null) {
+                    map.put(parent, map.getOrDefault(parent, 0) + root.val);
+                }
+                map2.put(depth, map2.getOrDefault(depth, 0) + root.val);
+                dfs(root.left, root, depth + 1, map, map2);
+                dfs(root.right, root, depth + 1, map, map2);
+            }
+        }
+
+        private void dfs2(TreeNode root, TreeNode parent, int depth, HashMap<TreeNode, Integer> map,
+                HashMap<Integer, Integer> map2) {
+            if (root != null) {
+                root.val = parent == null ? 0 : map2.get(depth) - map.get(parent);
+                dfs2(root.left, root, depth + 1, map, map2);
+                dfs2(root.right, root, depth + 1, map, map2);
+            }
+        }
+    }
+
+    // 2642. Design Graph With Shortest Path Calculator - HARD
+    class Graph extends HashMap<Integer, ArrayList<int[]>> {
+        public Graph(int n, int[][] edges) {
+            for (int[] edge : edges) {
+                addEdge(edge);
+            }
+        }
+
+        public void addEdge(int[] edge) {
+            computeIfAbsent(edge[0], t -> new ArrayList<>()).add(edge);
+        }
+
+        public int shortestPath(int node1, int node2) {
+            PriorityQueue<int[]> queue = new PriorityQueue<>((o, p) -> o[0] - p[0]);
+            queue.offer(new int[] { 0, node1 });
+            for (HashSet<Integer> set = new HashSet<>(); !queue.isEmpty();) {
+                int[] poll = queue.poll();
+                if (poll[1] == node2) {
+                    return poll[0];
+                } else if (!set.contains(poll[1])) {
+                    set.add(poll[1]);
+                    for (int[] i : getOrDefault(poll[1], new ArrayList<>())) {
+                        queue.offer(new int[] { poll[0] + i[2], i[1] });
+                    }
+                }
+            }
+            return -1;
+        }
+    }
 }
