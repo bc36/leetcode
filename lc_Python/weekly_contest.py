@@ -1205,3 +1205,8 @@ T4: 528 pass
 # https://leetcode.cn/contest/weekly-contest-340/
 # 163 / https://leetcode.cn/contest/weekly-contest-340/problems/minimum-number-of-visited-cells-in-a-grid/
 # dp, 优先队列
+
+
+# https://leetcode.cn/contest/weekly-contest-341/
+# 553 / https://leetcode.cn/contest/weekly-contest-341/problems/minimize-the-total-price-of-the-trips/
+# 树形dp (树上最大独立集) 树(无环) -> 说明点到点只有唯一一条路径! / Tarjan 离线 LCA + 树上差分

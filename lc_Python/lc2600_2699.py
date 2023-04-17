@@ -3,6 +3,13 @@ from typing import List, Optional, Tuple
 import sortedcontainers
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -717,7 +724,7 @@ class Solution:
             s = sum(x - a[0] for x in a)  # a[0] 到其它下标的距离之和
             ans[a[0]] = s
             for i in range(1, n):
-                # 从计算 a[i-1] 到计算 a[i]，考虑 s 增加了多少
+                # 从计算 a[i-1] 到计算 a[i], 考虑 s 增加了多少
                 s += (i * 2 - n) * (a[i] - a[i - 1])
                 ans[a[i]] = s
         return ans
@@ -1017,7 +1024,9 @@ class Solution:
 
 
 # 2642 - Design Graph With Shortest Path Calculator - HARD
+# 可以看出 Dijkstra 适合加边多的情况, Floyd 适合查询多的情况
 class Graph:
+    # Dijkstra 堆实现
     # O(qmlogm) / O(m), q = shortestPath 调用次数, 稀疏图中 m = O(n), 稠密图中 m = (n^2)
     def __init__(self, n: int, edges: List[List[int]]):
         self.g = [[] for _ in range(n)]
@@ -1029,6 +1038,7 @@ class Graph:
         self.g[x].append((y, w))
         return
 
+    # O(1)
     def shortestPath(self, node1: int, node2: int) -> int:
         arr = self.dijkstra(self.g, node1)
         return -1 if arr[node2] == math.inf else arr[node2]
@@ -1047,3 +1057,239 @@ class Graph:
                     dist[y] = new
                     heapq.heappush(q, (new, y))
         return dist
+
+
+class Graph:
+    # Dijkstra 朴素实现
+    # O(qn^2) / O(n^2), q = shortestPath 调用次数
+    def __init__(self, n: int, edges: List[List[int]]):
+        g = [[math.inf] * n for _ in range(n)]
+        for x, y, w in edges:
+            g[x][y] = w
+        self.g = g
+
+    # O(1)
+    def addEdge(self, e: List[int]) -> None:
+        self.g[e[0]][e[1]] = e[2]
+
+    # 朴素 Dijkstra 算法每次求最短路的时间复杂度为 O(n^2)
+    # 在本题的输入下 (稠密图), 这比堆的实现要快, (实际测试还是稀疏图多...)
+    def shortestPath(self, start: int, end: int) -> int:
+        n = len(self.g)
+        dist = [math.inf] * n
+        dist[start] = 0
+        vis = [False] * n
+        while True:  # 最多 n 次
+            x = -1
+            for i in range(n):
+                if not vis[i] and (x < 0 or dist[i] < dist[x]):
+                    x = i
+            if x < 0 or dist[x] == math.inf:
+                return -1
+            if x == end:
+                return dist[x]
+            vis[x] = True
+            for y, w in enumerate(self.g[x]):
+                if dist[x] + w < dist[y]:
+                    dist[y] = dist[x] + w
+
+
+class Graph:
+    # Floyd, 本质是动态规划
+
+    # 定义 f[k][i][j] 表示从 i 到 j 的最短路长度, 并且从 i 到 j 的路径上的中间节点(不含 i 和 j)的编号至多为 k.
+    # 分类讨论:
+    #   1. 从 i 到 j 的最短路没有 k, 那么按照定义 f[k][i][j]= f[k - 1][i][j].
+    #   2. 从 i 到 j 的最短路有 k, 说明 k 一定是中间节点, 那么可以视作先从 i 到 k, 再从 k 到 j
+    #      所以有 f[k][i][j] = f[k - 1][i][k] + f[k - 1][k][j].
+    # 取最小值, 得 f[k][i][j] = min(f[k - 1][i][j], f[k - 1][i][k] + f[k - 1][k][j])
+    #
+    # k 从 k - 1转移而来, 一般可以优化掉 (倒序更新)
+    # f[i][j] = min(f[i][j], f[i][k] + f[k][j])
+    #
+    # 但是注意 f[k - 1][i][k] 和 f[k - 1][k][j] 同时包含 k - 1 和 k, 优化后转移方程不就错了?
+    # f[k][i][k] + f[k][k][j]
+    # 为什么状态被覆盖还能算出来正确答案?
+    # 由状态定义得: f[k][i][k] 的一端点为 k, 中间又包含 k 个节点(其实这是矛盾的), f[k][i][k] 等于 f[k - 1][i][k]
+    # 所以可以直接压缩状态
+    # 算法导论也有解释
+
+    # O(n^3 + qn^2) / O(n^2), q = shortestPath 调用次数
+    def __init__(self, n: int, edges: List[List[int]]):
+        g = [[math.inf] * n for _ in range(n)]
+        for i in range(n):
+            g[i][i] = 0
+        for x, y, w in edges:
+            g[x][y] = w
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    g[i][j] = min(g[i][j], g[i][k] + g[k][j])
+        self.g = g
+
+    def addEdge(self, e: List[int]) -> None:
+        g = self.g
+        n = len(g)
+        x, y, w = e
+        if w >= g[x][y]:
+            return
+        # 只有一种加边 (增加 x 到 y) 情况可能会更新距离 a 到 b:
+        # a ------------- b
+        #   \           /
+        #    x  ----- y
+        for i in range(n):
+            for j in range(n):
+                g[i][j] = min(g[i][j], g[i][x] + w + g[y][j])
+
+    # O(1)
+    def shortestPath(self, start: int, end: int) -> int:
+        ans = self.g[start][end]
+        return ans if ans < math.inf else -1
+
+
+# 2643 - Row With Maximum Ones - EASY
+class Solution:
+    def rowAndMaximumOnes(self, mat: List[List[int]]) -> List[int]:
+        idx = summ = -1
+        for i, row in enumerate(mat):
+            v = sum(row)
+            if v > summ:
+                idx, summ = i, v
+        return [idx, summ]
+
+
+# 2644 - Find the Maximum Divisibility Score - EASY
+class Solution:
+    def maxDivScore(self, nums: List[int], divisors: List[int]) -> int:
+        n = len(divisors)
+        arr = [0] * n
+        cnt = collections.Counter(nums)
+        for i, x in enumerate(divisors):
+            for k, v in cnt.items():
+                if k % x == 0:
+                    arr[i] += v
+        ans = 0
+        mx = -1
+        for i in range(n):
+            if arr[i] > mx:
+                ans = divisors[i]
+                mx = arr[i]
+            elif arr[i] == mx:
+                ans = min(ans, divisors[i])
+        return ans
+
+    def maxDivScore(self, nums: List[int], divisors: List[int]) -> int:
+        n = len(divisors)
+        arr = [0] * n
+        for num in nums:
+            for i, v in enumerate(divisors):
+                if num % v == 0:
+                    arr[i] += 1
+        mx = max(arr)
+        ans = math.inf
+        for i in range(n):
+            if arr[i] == mx:
+                ans = min(ans, divisors[i])
+        return ans
+
+    def maxDivScore(self, nums: List[int], divisors: List[int]) -> int:
+        ans = mx = -1
+        for d in divisors:
+            cnt = sum(x % d == 0 for x in nums)
+            if cnt > mx or (cnt == mx and d < ans):
+                ans = d
+                mx = cnt
+        return ans
+
+
+# 2645 - Minimum Additions to Make Valid String - MEDIUM
+class Solution:
+    def addMinimum(self, s: str) -> int:
+        n = len(s)
+        i = ans = 0
+        while i < n:
+            for c in "abc":
+                if i < n and c == s[i]:
+                    i += 1
+                else:
+                    ans += 1
+        return ans
+
+    # 若 s[i + 1] < s[i], 说明 s[i] 和 s[i + 1] 属于两个不同的 abc
+    # 假设 s[i + 1] < s[i] 的下标 i 有 k 个
+    # -> 至少有 (k + 1) 个 abc
+    # -> 答案就是 3 * (k + 1) - n
+    def addMinimum(self, word: str) -> int:
+        return (sum(a >= b for a, b in pairwise(word)) + 1) * 3 - len(word)
+
+    # 考虑相邻字母, 细节不太好想
+    # (y - x - 1 + 3) % 3
+    # 再考虑特例
+    #   第一个 s[0] - 'a',
+    #   最后一个 'c' - s[n - 1]
+    # 得 s[0] - s[n - 1] + 'c' - 'a'
+    def addMinimum(self, s: str) -> int:
+        ans = ord(s[0]) - ord(s[-1]) + 2
+        for x, y in pairwise(map(ord, s)):
+            ans += (y - x + 2) % 3
+        return ans
+
+    # 符合上述公式 y - x + 2 的哨兵, 更难想
+    def addMinimum(self, s: str) -> int:
+        s = "c" + s + "a"
+        return sum((y - x + 2) % 3 for x, y in pairwise(map(ord, s)))
+
+    def addMinimum(self, word: str) -> int:
+        word = (
+            word.replace("abc", " ")
+            .replace("ab", "1")
+            .replace("bc", "1")
+            .replace("ac", "1")
+            .replace("a", "2")
+            .replace("b", "2")
+            .replace("c", "2")
+        )
+        return word.count("1") + word.count("2") * 2
+
+
+# 2646 - Minimize the Total Price of the Trips - HARD
+class Solution:
+    # 树形dp
+    # 注意: 树 只有唯一的一条简单路径!
+    # 思路:
+    #   1. dfs求每个点被访问多少次
+    #   2. 类似 打家劫舍3, dp计算答案
+    # O(nm) / O(n), m = len(trips)
+    def minimumTotalPrice(
+        self, n: int, edges: List[List[int]], price: List[int], trips: List[List[int]]
+    ) -> int:
+        cnt = [0] * n
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        def dfs(x: int, fa: int, end: int) -> False:
+            if x == end:
+                cnt[x] += 1
+                return True
+            for y in g[x]:
+                if y != fa and dfs(y, x, end):
+                    cnt[x] += 1
+                    return True
+            return False
+
+        for start, end in trips:
+            dfs(start, -1, end)
+
+        def dfs2(x: int, fa: int) -> Tuple[int, int]:  # (ori, half)
+            ori = price[x] * cnt[x]
+            half = ori // 2
+            for y in g[x]:
+                if y != fa:
+                    o, h = dfs2(y, x)
+                    ori += min(o, h)  # 原价可选邻近的 原价或半价
+                    half += o  # 半价只能选邻近原价
+            return ori, half
+
+        return min(dfs2(0, -1))  # 随便挑一个起点都可以

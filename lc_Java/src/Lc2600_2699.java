@@ -748,6 +748,7 @@ public class Lc2600_2699 {
         }
     }
 
+    // 2639. Find the Width of Columns of a Grid - EASY
     // 2640. Find the Score of All Prefixes of an Array - MEDIUM
     class Solution2640a {
         // 3ms
@@ -820,6 +821,130 @@ public class Lc2600_2699 {
                 }
             }
             return -1;
+        }
+    }
+
+    // 2643. Row With Maximum Ones - EASY
+    // 2644. Find the Maximum Divisibility Score - EASY
+    // 2645. Minimum Additions to Make Valid String - MEDIUM
+    class Solution2645a {
+        // 1ms
+        public int addMinimum(String word) {
+            int count = 0, i = 0;
+            for (int j = 0; j < word.length(); i++) {
+                if (word.charAt(j) == i % 3 + 'a') {
+                    j++;
+                } else {
+                    count++;
+                }
+            }
+            return count + (3 - i % 3) % 3;
+        }
+    }
+
+    // 2646. Minimize the Total Price of the Trips - HARD
+    class Solution2646a {
+        // 11ms
+        public int minimumTotalPrice(int n, int[][] edges, int[] price, int[][] trips) {
+            HashMap<Integer, ArrayList<Integer>> g = new HashMap<>();
+            for (int[] edge : edges) {
+                g.computeIfAbsent(edge[0], t -> new ArrayList<>()).add(edge[1]);
+                g.computeIfAbsent(edge[1], t -> new ArrayList<>()).add(edge[0]);
+            }
+            int[] count = new int[n];
+            for (int[] trip : trips) {
+                dfs(trip[0], -1, trip[1], count, g);
+            }
+            int[] result = dfs2(0, -1, price, count, g);
+            return Math.min(result[0], result[1]);
+        }
+
+        private boolean dfs(int u, int p, int end, int[] count, HashMap<Integer, ArrayList<Integer>> g) {
+            if (u == end) {
+                count[u]++;
+                return true;
+            }
+            for (int v : g.getOrDefault(u, new ArrayList<>())) {
+                if (v != p && dfs(v, u, end, count, g)) {
+                    count[u]++;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private int[] dfs2(int u, int p, int[] count, int[] price, HashMap<Integer, ArrayList<Integer>> g) {
+            int[] result = { price[u] * count[u], price[u] * count[u] / 2 };
+            for (int v : g.getOrDefault(u, new ArrayList<>())) {
+                if (v != p) {
+                    int[] next = dfs2(v, u, count, price, g);
+                    result = new int[] { result[0] + Math.min(next[0], next[1]), result[1] + next[0] };
+                }
+            }
+            return result;
+        }
+    }
+
+    class Solution2646b {
+        // 13ms
+        List<Integer>[] g;
+        int[] count;
+        int[] prices;
+
+        @SuppressWarnings("unchecked")
+        public int minimumTotalPrice(int n, int[][] edges, int[] price, int[][] trips) {
+            g = new List[n];
+            count = new int[n];
+            this.prices = price;
+            for (int i = 0; i < n; i++) {
+                g[i] = new ArrayList<>();
+            }
+            for (int[] e : edges) {
+                int a = e[0];
+                int b = e[1];
+                g[a].add(b);
+                g[b].add(a);
+            }
+            for (int[] t : trips) {
+                int a = t[0];
+                int b = t[1];
+                List<Integer> trace = new ArrayList<>();
+                dfs(a, -1, b, trace);
+                for (int x : trace) {
+                    count[x]++;
+                }
+            }
+            int[] ans = dp(0, -1);
+            return Math.min(ans[0], ans[1]);
+        }
+
+        private boolean dfs(int x, int p, int end, List<Integer> trace) {
+            trace.add(x);
+            if (x == end) {
+                return true;
+            }
+            for (int y : g[x]) {
+                if (y == p) {
+                    continue;
+                }
+                if (dfs(y, x, end, trace)) {
+                    return true;
+                }
+            }
+            trace.remove(trace.size() - 1);
+            return false;
+        }
+
+        private int[] dp(int x, int p) {
+            int[] ans = new int[] { count[x] * prices[x], count[x] * (prices[x] / 2) };
+            for (int y : g[x]) {
+                if (y == p) {
+                    continue;
+                }
+                int[] sub = dp(y, x);
+                ans = new int[] { ans[0] + Math.min(sub[0], sub[1]), ans[1] + sub[0] };
+            }
+            return ans;
         }
     }
 }

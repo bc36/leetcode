@@ -29,6 +29,7 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     dp
     euler - sieve of Euler - 欧拉筛/线性筛
     eratosthenes - sieve of Eratosthenes - 埃式筛
+    floyd
     inv - Modular Multiplicative Inverse - 逆元
     low bit
     math related
@@ -206,7 +207,17 @@ def example():
     return
 
 
-"""dijkstra"""
+"""dijkstra
+(贪心)求解 非负权图 上单源最短路径的算法
+加边 O(1) 操作多, 查询操作少
+
+时间复杂度: 
+    暴力实现: O(n^2 + m) = O(n^2)
+    优先队列: O(mlogm), 堆内元素个数是 m
+稀疏图中 m = O(n), 稠密图中 m = O(n^2)
+稀疏图 -> 暴力, 稠密图 -> 优先队列
+
+"""
 
 
 def dijkstra(
@@ -279,6 +290,28 @@ def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
         for y, w in g[x]:
             heapq.heappush(q, (cur + w, y))
     return -1
+
+
+# 朴素 Dijkstra 算法每次求最短路的时间复杂度为 O(n^2)
+# 在稠密图中, 比堆的实现要快, (实际测试一般题还是稀疏图多...)
+def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
+    n = len(g)
+    dist = [math.inf] * n
+    dist[start] = 0
+    vis = [False] * n
+    while True:  # 最多 n 次
+        x = -1
+        for i in range(n):
+            if not vis[i] and (x < 0 or dist[i] < dist[x]):
+                x = i
+        if x < 0 or dist[x] == math.inf:
+            return -1
+        if x == end:  # 巨大优化
+            return dist[x]
+        vis[x] = True
+        for y, w in enumerate(g[x]):
+            if dist[x] + w < dist[y]:
+                dist[y] = dist[x] + w
 
 
 """dp - digit DP"""
@@ -364,6 +397,33 @@ def eratosthenes(n: int) -> List[int]:
 
 primes = eratosthenes(10**6)
 
+"""
+floyd
+复杂度比较高 时间 O(n^3), 空间 O(n^2), 但是常数小
+适用于任何图, 不管有向无向, 边权正负, 但是最短路必须存在。（不能有个负环）
+加边 O(n^2) 操作少, 查询 O(1) 操作多
+
+Floyd, 本质是动态规划
+
+定义 f[k][i][j] 表示从 i 到 j 的最短路长度, 并且从 i 到 j 的路径上的中间节点(不含 i 和 j)的编号至多为 k.
+分类讨论:
+    1. 从 i 到 j 的最短路没有 k, 那么按照定义 f[k][i][j]= f[k - 1][i][j].
+    2. 从 i 到 j 的最短路有 k, 说明 k 一定是中间节点, 那么可以视作先从 i 到 k, 再从 k 到 j
+        所以有 f[k][i][j] = f[k - 1][i][k] + f[k - 1][k][j].
+取最小值, 得 f[k][i][j] = min(f[k - 1][i][j], f[k - 1][i][k] + f[k - 1][k][j])
+f[k - 1][i][j], 为不经过 k 点的最短路径, 而 f[k - 1][i][k]+f[k-1][k][j], 为经过了 k 点的最短路
+
+k 从 k - 1转移而来, 一般可以优化掉 (倒序更新)
+f[i][j] = min(f[i][j], f[i][k] + f[k][j])
+
+但是注意 f[k - 1][i][k] 和 f[k - 1][k][j] 同时包含 k - 1 和 k, 优化后转移方程不就错了?
+f[k][i][k] + f[k][k][j]
+为什么状态被覆盖还能算出来正确答案?
+由状态定义得: f[k][i][k] 的一端点为 k, 中间又包含 k 个节点(其实这是矛盾的), f[k][i][k] 等于(包含) f[k - 1][i][k]
+所以可以直接压缩状态
+算法导论也有解释
+
+"""
 
 """
 inv
