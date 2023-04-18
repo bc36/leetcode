@@ -27,6 +27,13 @@ def solution():
     return
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val

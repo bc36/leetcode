@@ -439,14 +439,14 @@ class Solution:
     def maxAncestorDiff(self, root: TreeNode) -> int:
         self.ans = 0
 
-        def dfs(root: TreeNode) -> tuple(int, int):
+        def dfs(root: TreeNode) -> Tuple[int, int]:
             if not root:
                 return float("inf"), -float("inf")
             lmin, lmax = dfs(root.left)
             rmin, rmax = dfs(root.right)
             rootmin = min(root.val, lmin, rmin)
             rootmax = max(root.val, lmax, rmax)
-            self.ans = max(self.ans, abs(root.val - rootmin), abs(root.val - rootmax))
+            self.ans = max(self.ans, rootmax - root.val, root.val - rootmin)
             return rootmin, rootmax
 
         dfs(root)
@@ -463,6 +463,18 @@ class Solution:
 
         return dfs(root, root.val, root.val)
 
+    def maxAncestorDiff(self, root: Optional[TreeNode]) -> int:
+        def dfs(root: TreeNode, mx: int, mi: int) -> int:
+            if not root:
+                return 0
+            if root.val > mx:
+                mx = root.val
+            if root.val < mi:
+                mi = root.val
+            return max(mx - mi, dfs(root.left, mx, mi), dfs(root.right, mx, mi))
+
+        return dfs(root, 0, math.inf)
+
     # top to down, pass the minimum and maximum values to the children
     def maxAncestorDiff(self, root: TreeNode, mn: int = 100000, mx: int = 0) -> int:
         return (
@@ -475,26 +487,16 @@ class Solution:
         )
 
     def maxAncestorDiff(self, root: TreeNode) -> int:
-        if not root:
-            return 0
-        stack = [(root, root.val, root.val)]  # stack, parent, child
-        res = 0
-        while stack:
-            node, parent, child = stack.pop()
-            res = max(res, abs(parent - child))
-            if node.left:
-                stack.append(
-                    (node.left, max(parent, node.left.val), min(child, node.left.val))
-                )
-            if node.right:
-                stack.append(
-                    (
-                        node.right,
-                        max(parent, node.right.val),
-                        min(child, node.right.val),
-                    )
-                )
-        return res
+        q = [(root, root.val, root.val)]  # node, parent, child
+        ans = 0
+        while q:
+            x, fa, ch = q.pop()
+            ans = max(ans, fa - ch)
+            if x.left:
+                q.append((x.left, max(fa, x.left.val), min(ch, x.left.val)))
+            if x.right:
+                q.append(x.right, max(fa, x.right.val), min(ch, x.right.val))
+        return ans
 
 
 # 1029 - Two City Scheduling - MEDIUM
@@ -780,6 +782,33 @@ class Solution:
             if i == "G":
                 x, y = x + dx, y + dy
         return (x, y) == (0, 0) or not (dx == 0 and dy > 0)
+
+
+# 1042 - Flower Planting With No Adjacent - MEDIUM
+class Solution:
+    def gardenNoAdj(self, n: int, paths: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for x, y in paths:
+            g[x - 1].append(y - 1)
+            g[y - 1].append(x - 1)
+        ans = [0] * n
+        for i, adj in enumerate(g):
+            tmp = [1, 2, 3, 4]
+            for y in adj:
+                if ans[y] and ans[y] in tmp:
+                    tmp.remove(ans[y])
+            ans[i] = tmp[0]
+        return ans
+
+    def gardenNoAdj(self, n: int, paths: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for x, y in paths:
+            g[x - 1].append(y - 1)
+            g[y - 1].append(x - 1)
+        ans = [0] * n
+        for i, adj in enumerate(g):
+            ans[i] = ({1, 2, 3, 4} - {ans[j] for j in adj}).pop()
+        return ans
 
 
 # 1046 - Last Stone Weight - EASY

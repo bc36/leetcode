@@ -158,6 +158,23 @@ public class Lc1000_1099 {
         }
     }
 
+    // 1026. Maximum Difference Between Node and Ancestor - MEDIUM
+    class Solution1026a {
+        // 0ms
+        public int maxAncestorDiff(TreeNode root) {
+            return dfs(root, root.val, root.val);
+        }
+
+        private int dfs(TreeNode root, int mx, int mi) {
+            if (root == null) {
+                return mx - mi;
+            }
+            mx = Math.max(root.val, mx);
+            mi = Math.min(root.val, mi);
+            return Math.max(dfs(root.left, mx, mi), dfs(root.right, mx, mi));
+        }
+    }
+
     // 1032. Stream of Characters - HARD
     // 倒序建树, 倒序查找, 52ms
     class StreamChecker {
@@ -369,6 +386,34 @@ public class Lc1000_1099 {
             for (int k = i + 1; k < j; ++k)
                 res = Math.min(res, dfs(i, k) + dfs(k, j) + v[i] * v[j] * v[k]);
             return memo[i][j] = res;
+        }
+    }
+
+    // 1042. Flower Planting With No Adjacent - MEDIUM
+    class Solution1042a {
+        // 5ms
+        public int[] gardenNoAdj(int n, int[][] paths) {
+            int[] ans = new int[n];
+            int[][] g = new int[n][4];
+            // g[x] = [len, a, b, c], at most 3 adjacent points
+            for (int[] path : paths) {
+                int x = path[0] - 1, y = path[1] - 1;
+                g[x][g[x][0]++ + 1] = y;
+                g[y][g[y][0]++ + 1] = x;
+            }
+            for (int i = 0; i < n; i++) {
+                int p = 0;
+                for (int j = 1; j <= g[i][0]; j++) {
+                    p = p | (1 << (ans[g[i][j]] - 1));
+                }
+                for (int j = 0; j < 4; j++) {
+                    if ((p & (1 << j)) == 0) {
+                        ans[i] = j + 1;
+                        break;
+                    }
+                }
+            }
+            return ans;
         }
     }
 
