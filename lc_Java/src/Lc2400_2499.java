@@ -3,6 +3,13 @@ package src;
 import java.util.*;
 
 public class Lc2400_2499 {
+    // 2413. Smallest Even Multiple - EASY
+    class Solution2413a {
+        public int smallestEvenMultiple(int n) {
+            return (n % 2 + 1) * n;
+        }
+    }
+
     // 2465. Number of Distinct Averages - EASY
     class Solution2465a {
         // 1ms

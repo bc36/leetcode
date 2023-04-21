@@ -1,4 +1,4 @@
-import bisect, collections, functools, heapq, itertools, math, operator, string
+import bisect, collections, datetime, functools, heapq, itertools, math, operator, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -341,9 +341,19 @@ class Solution:
         def calc(date: str) -> int:
             return presum[int(date[:2]) - 1] + int(date[3:])
 
-        start = calc(min(leaveAlice, leaveBob))
-        end = calc(max(arriveAlice, arriveBob))
-        return max(start - end + 1, 0)
+        left = calc(max(arriveAlice, arriveBob))
+        right = calc(min(leaveAlice, leaveBob))
+        return max(right - left + 1, 0)
+
+    def countDaysTogether(
+        self, arriveAlice: str, leaveAlice: str, arriveBob: str, leaveBob: str
+    ) -> int:
+        def calc(date: str) -> datetime.datetime:
+            return datetime.datetime.strptime(date, "%m-%d")
+
+        left = calc(max(arriveAlice, arriveBob))
+        right = calc(min(leaveAlice, leaveBob))
+        return max((right - left).days + 1, 0)
 
 
 # 2410 - Maximum Matching of Players With Trainers - MEDIUM
