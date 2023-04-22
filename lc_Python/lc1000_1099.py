@@ -499,6 +499,37 @@ class Solution:
         return ans
 
 
+# 1027 - Longest Arithmetic Subsequence - MEDIUM
+class Solution:
+    def longestArithSeqLength(self, nums: List[int]) -> int:
+        def check(d: int) -> int:
+            m = {}
+            for v in nums:
+                m[v + d] = m.get(v, 0) + 1
+            return max(m.values())
+
+        return max(check(i) for i in range(-500, 501))
+
+    def longestArithSeqLength(self, nums: List[int]) -> int:
+        f = [{} for _ in range(len(nums))]
+        for i in range(len(nums)):
+            for j in range(i):
+                d = nums[i] - nums[j]
+                f[i][d] = f[j].get(d, 1) + 1
+        return max(max(d.values(), default=0) for d in f)
+        return max(max(d.values()) for d in f[1:])
+
+    def longestArithSeqLength(self, nums: List[int]) -> int:
+        vis = set()
+        m = {}
+        for v in nums:
+            for u in vis:
+                d = u - v
+                m[(v, d)] = m.get((u, d), 1) + 1
+            vis.add(v)
+        return max(m.values())
+
+
 # 1029 - Two City Scheduling - MEDIUM
 class Solution:
     # O(nlogn) / O(logn)

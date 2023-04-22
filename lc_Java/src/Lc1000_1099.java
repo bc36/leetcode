@@ -175,6 +175,39 @@ public class Lc1000_1099 {
         }
     }
 
+    // 1027. Longest Arithmetic Subsequence - MEDIUM
+    class Solution1027a {
+        // 24ms
+        public int longestArithSeqLength(int[] nums) {
+            int n = nums.length, ans = 0, f[][] = new int[n][1001];
+            for (int i = 1; i < nums.length; i++) {
+                for (int j = i - 1; j >= 0; j--) {
+                    int d = nums[i] - nums[j] + 500;
+                    if (f[i][d] == 0) {
+                        f[i][d] = f[j][d] + 1;
+                        ans = Math.max(ans, f[i][d]);
+                    }
+                }
+            }
+            return ans + 1;
+        }
+    }
+
+    class Solution1027b {
+        // 35ms
+        public int longestArithSeqLength(int[] nums) {
+            int n = nums.length, ans = 0, f[][] = new int[n][1001];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < i; j++) {
+                    int d = nums[i] - nums[j] + 500;
+                    f[i][d] = Math.max(f[i][d], f[j][d] + 1);
+                    ans = Math.max(ans, f[i][d]);
+                }
+            }
+            return ans + 1;
+        }
+    }
+
     // 1032. Stream of Characters - HARD
     // 倒序建树, 倒序查找, 52ms
     class StreamChecker {
