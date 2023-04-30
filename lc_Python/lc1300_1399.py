@@ -434,6 +434,45 @@ class Solution:
         return "a" + "b" * (n - 1)
 
 
+# 1376 - Time Needed to Inform All Employees - MEDIUM
+class Solution:
+    def numOfMinutes(
+        self, n: int, headID: int, manager: List[int], informTime: List[int]
+    ) -> int:
+        sub = collections.defaultdict(list)
+        for i, v in enumerate(manager):
+            sub[v].append(i)
+
+        def dfs(x: int) -> int:
+            if informTime[x] == 0:
+                return 0
+            return informTime[x] + max(dfs(i) for i in sub[x])
+
+        return dfs(headID)
+
+    def numOfMinutes(
+        self, n: int, headID: int, manager: List[int], informTime: List[int]
+    ) -> int:
+        @functools.lru_cache(None)
+        def dfs(x: int) -> int:
+            if manager[x] < 0:
+                return informTime[x]
+            return dfs(manager[x]) + informTime[x]
+
+        return max(dfs(i) for i in range(n))
+
+    def numOfMinutes(
+        self, n: int, headID: int, manager: List[int], informTime: List[int]
+    ) -> int:
+        def dfs(x: int) -> int:
+            if manager[x] >= 0:
+                informTime[x] += dfs(manager[x])
+                manager[x] = -1  # visited
+            return informTime[x]
+
+        return max(dfs(i) for i in range(n))
+
+
 # 1380 - Lucky Numbers in a Matrix - EASY
 class Solution:
     def luckyNumbers(self, matrix: List[List[int]]) -> List[int]:
