@@ -1419,6 +1419,63 @@ class Solution:
         return ans
 
 
+# 970 - Powerful Integers - MEDIUM
+class Solution:
+    def powerfulIntegers(self, x: int, y: int, bound: int) -> List[int]:
+        if bound < 2:
+            return []
+        if x > y:
+            return self.powerfulIntegers(y, x, bound)
+        if x == 1:
+            if y == 1:
+                return [2]
+            ans = []
+            jy = 1
+            while 1 + jy <= bound:
+                ans.append(1 + jy)
+                jy *= y
+            return ans
+        s = set()
+        ix = 1
+        while ix <= bound:
+            jy = 1
+            while ix + jy <= bound:
+                s.add(ix + jy)
+                jy *= y
+            ix *= x
+        return list(s)
+
+    def powerfulIntegers(self, x: int, y: int, bound: int) -> List[int]:
+        ans = set()
+        ix = 1
+        while ix <= bound:
+            jy = 1
+            while ix + jy <= bound:
+                ans.add(ix + jy)
+                jy *= y
+                if y == 1:
+                    break
+            if x == 1:
+                break
+            ix *= x
+        return list(ans)
+
+    def powerfulIntegers(self, x: int, y: int, bound: int) -> List[int]:
+        res = set()
+        if bound == 2:
+            return [2]
+        # 2 ** 20 ~= 10 ^ 6
+        for i in range(21):
+            for j in range(21):
+                tmp = x**i + y**j
+                if tmp <= bound:
+                    res.add(tmp)
+                else:
+                    break
+
+        return list(res)
+
+
 # 973 - K Closest Points to Origin - MEDIUM
 class Solution:
     # Pay attention that if the points are at the same distance,

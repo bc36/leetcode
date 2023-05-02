@@ -3,6 +3,45 @@ package src;
 import java.util.*;
 
 public class Lc900_999 {
+    // 970. Powerful Integers - MEDIUM
+    class Solution970a {
+        // 1ms
+        public List<Integer> powerfulIntegers(int x, int y, int bound) {
+            Set<Integer> ans = new HashSet<>();
+            int ix = 1;
+            while (ix <= bound) {
+                int jy = 1;
+                while (ix + jy <= bound) {
+                    ans.add(ix + jy);
+                    jy *= y;
+                    if (y == 1)
+                        break;
+                }
+                if (x == 1)
+                    break;
+                ix *= x;
+            }
+            return List.copyOf(ans);
+            // return new ArrayList<>(ans);
+        }
+    }
+
+    class Solution970b {
+        public List<Integer> powerfulIntegers(int x, int y, int bound) {
+            Set<Integer> set = new HashSet<>();
+            int m = x == 1 ? 0 : (int) (Math.log10(bound) / Math.log10(x));
+            int n = y == 1 ? 0 : (int) (Math.log10(bound) / Math.log10(y));
+            for (int i = 0; i <= m; i++) {
+                for (int j = 0; j <= n; j++) {
+                    int cur = (int) Math.pow(x, i) + (int) Math.pow(y, j);
+                    if (cur <= bound)
+                        set.add(cur);
+                }
+            }
+            return new ArrayList<>(set);
+        }
+    }
+
     // 989. Add to Array-Form of Integer - EASY
     class Solution989a {
         // 3ms
