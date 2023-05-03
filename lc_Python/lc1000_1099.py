@@ -119,6 +119,53 @@ class Solution:
         return ans
 
 
+# 1003 - Check If Word Is Valid After Substitutions - MEDIUM
+class Solution:
+    def isValid(self, s: str) -> bool:
+        while True:
+            t = s.replace("abc", "")
+            if s == t:
+                break
+            s = t
+        return len(s) == 0
+
+    def isValid(self, s: str) -> bool:
+        t = s.replace("abc", "")
+        while s != t:
+            s = t
+            t = s.replace("abc", "")
+        return len(s) == 0
+
+    def isValid(self, s: str) -> bool:
+        while "abc" in s:
+            s = s.replace("abc", "")
+            if s == "":
+                return True
+        return False
+
+    def isValid(self, s: str) -> bool:
+        st = []
+        for c in s:
+            if c == "a" or c == "b":
+                st.append(c)
+            elif c == "c":
+                if len(st) >= 2 and st[-1] == "b" and st[-2] == "a":
+                    st.pop()
+                    st.pop()
+                else:
+                    return False
+        return len(st) == 0
+
+    def isValid(self, s: str) -> bool:
+        st = []
+        for c in map(ord, s):
+            if c > ord("a") and (len(st) == 0 or c - st.pop() != 1):
+                return False
+            if c < ord("c"):
+                st.append(c)
+        return len(st) == 0
+
+
 # 1005 - Maximize Sum Of Array After K Negations - EASY
 class Solution:
     def largestSumAfterKNegations(self, nums: List[int], k: int) -> int:

@@ -66,6 +66,86 @@ public class Lc1000_1099 {
         }
     }
 
+    // 1003. Check If Word Is Valid After Substitutions - MEDIUM
+    class Solution1003a {
+        // 6ms
+        public boolean isValid(String s) {
+            String t = "abc";
+            while (s.length() > 0) {
+                if (s.indexOf(t) == -1) {
+                    return false;
+                }
+                s = s.replace(t, "");
+            }
+            return true;
+        }
+    }
+
+    class Solution1003b {
+        // 6ms
+        public boolean isValid(String s) {
+            Deque<Character> st = new ArrayDeque<>();
+            for (char c : s.toCharArray()) {
+                if (c == 'c') {
+                    if (st.size() < 2)
+                        return false;
+                    char p1 = st.pop();
+                    char p2 = st.pop();
+                    if (p1 != 'b' || p2 != 'a')
+                        return false;
+                } else {
+                    st.push(c);
+                }
+            }
+            return st.isEmpty();
+        }
+    }
+
+    class Solution1003c {
+        // 2ms
+        public boolean isValid(String S) {
+            char[] s = S.toCharArray();
+            int i = 0; // 
+            for (char c : s) {
+                if (c > 'a' && (i == 0 || c - s[--i] != 1))
+                    return false;
+                if (c < 'c')
+                    s[i++] = c;
+            }
+            return i == 0;
+        }
+    }
+
+    class Solution1003d {
+        // 7ms
+        public boolean isValid(String S) {
+            char[] s = S.toCharArray();
+            Deque<Character> st = new ArrayDeque<>();
+            for (char c : s) {
+                if (c > 'a' && (st.isEmpty() || c - st.pop() != 1))
+                    return false;
+                if (c < 'c')
+                    st.push(c);
+            }
+            return st.isEmpty();
+        }
+    }
+
+    class Solution1003e {
+        // 3ms
+        public boolean isValid(String s) {
+            char[] st = new char[s.length()];
+            int i = 0;
+            for (char c : s.toCharArray()) {
+                st[i++] = c;
+                if (i > 2 && st[i - 3] == 'a' && st[i - 2] == 'b' && st[i - 1] == 'c') {
+                    i -= 3;
+                }
+            }
+            return i == 0;
+        }
+    }
+
     // 1017. Convert to Base -2 - MEDIUM
     class Solution1017a {
         public String baseNeg2(int n) {
