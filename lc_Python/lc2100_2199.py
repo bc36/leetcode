@@ -220,6 +220,23 @@ class Solution:
             summ -= f[i][1]
         return ans
 
+    def maxTotalFruits(self, fruits: List[List[int]], startPos: int, k: int) -> int:
+        l = bisect.bisect_left(fruits, [startPos - k])
+        r = bisect.bisect_left(fruits, [startPos + 1])
+        ans = s = sum(c for _, c in fruits[l:r])
+        while r < len(fruits) and fruits[r][0] <= startPos + k:
+            s += fruits[r][1]
+            while (
+                fruits[r][0] * 2 - startPos - fruits[l][0] > k
+                and fruits[r][0] + startPos - fruits[l][0] * 2 > k
+            ):
+                s -= fruits[l][1]
+                l += 1
+            if s > ans:
+                ans = s
+            r += 1
+        return ans
+
 
 # 2108 - Find First Palindromic String in the Array - EASY
 class Solution:
