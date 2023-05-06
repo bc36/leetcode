@@ -212,30 +212,27 @@ class Solution:
 class Solution:
     def numPairsDivisibleBy60(self, time: List[int]) -> int:
         ans = 0
-        c = [0] * 60
+        d = collections.defaultdict(int)
         for t in time:
-            ans += c[-t % 60]
-            c[t % 60] += 1
-        return ans
-
-    def numPairsDivisibleBy60(self, time: List[int]) -> int:
-        ans = 0
-        cnt = collections.Counter()
-        for t in time:
-            ans += cnt[-t % 60]
-            cnt[t % 60] += 1
+            t %= 60
+            ans += d[(60 - t) % 60]
+            d[t] += 1
         return ans
 
     def numPairsDivisibleBy60(self, time: List[int]) -> int:
         ans = 0
         d = collections.defaultdict(int)
         for t in time:
-            mod = t % 60
-            d[mod] += 1
-            if mod == 30 or mod == 0:
-                ans += d[mod] - 1
-            elif 60 - mod in d:
-                ans += d[60 - mod]
+            ans += d[-t % 60]
+            d[t % 60] += 1
+        return ans
+
+    def numPairsDivisibleBy60(self, time: List[int]) -> int:
+        ans = 0
+        cnt = [0] * 60
+        for t in time:
+            ans += cnt[-t % 60]
+            cnt[t % 60] += 1
         return ans
 
 

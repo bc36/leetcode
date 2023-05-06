@@ -146,6 +146,58 @@ public class Lc1000_1099 {
         }
     }
 
+    // 1010. Pairs of Songs With Total Durations Divisible by 60 - MEDIUM
+    class Solution1010a {
+        // 18ms
+        public int numPairsDivisibleBy60(int[] time) {
+            int ans = 0;
+            Map<Integer, Integer> cnt = new HashMap<>();
+            for (int t : time) {
+                t %= 60;
+                ans += cnt.getOrDefault((60 - t) % 60, 0);
+                cnt.put(t, cnt.getOrDefault(t, 0) + 1);
+            }
+            return ans;
+        }
+    }
+
+    class Solution1010b {
+        // 2ms
+        public int numPairsDivisibleBy60(int[] time) {
+            int ans = 0, cnt[] = new int[60];
+            for (int t : time) {
+                t %= 60;
+                ans += cnt[(60 - t) % 60];
+                cnt[t]++;
+            }
+            return ans;
+        }
+    }
+
+    class Solution1010c {
+        public int numPairsDivisibleBy60(int[] time) {
+            int ans = 0, cnt[] = new int[60];
+            for (int t : time) {
+                cnt[t % 60] += 1;
+            }
+            ans += combination(cnt[0], 2) + combination(cnt[30], 2);
+            int i = 1, j = 59;
+            while (i < j) {
+                ans += cnt[i++] * cnt[j--];
+            }
+            return ans;
+        }
+
+        // 求组合数
+        public long combination(int n, int k) {
+            long res = 1;
+            for (int i = 1; i <= k; i++) {
+                res = res * (n - i + 1) / i;
+            }
+            return (int) res;
+        }
+    }
+
     // 1017. Convert to Base -2 - MEDIUM
     class Solution1017a {
         public String baseNeg2(int n) {
