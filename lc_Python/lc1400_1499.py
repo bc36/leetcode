@@ -3,6 +3,13 @@ from typing import List, Optional, Tuple, Union
 import sortedcontainers
 
 
+def pairwise(iterable):
+    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -175,7 +182,7 @@ class Solution:
 # 1419 - Minimum Number of Frogs Croaking - MEDIUM
 class Solution:
     def minNumberOfFrogs(self, croakOfFrogs: str) -> int:
-        mx = c = r = o = a = k = 0
+        mx = c = r = o = a = 0
         for ch in croakOfFrogs:
             if ch == "c":
                 c += 1
@@ -188,14 +195,29 @@ class Solution:
             elif ch == "a":
                 o -= 1
                 a += 1
-            elif ch == "k":
+            else:
                 a -= 1
-            if c < 0 or r < 0 or o < 0 or a < 0 or k < 0:
+            if c < 0 or r < 0 or o < 0 or a < 0:
                 return -1
-            mx = max(mx, c + r + o + a + k)
-        if c + r + o + a + k != 0:
+            mx = max(mx, c + r + o + a)
+        if c + r + o + a != 0:
             return -1
         return mx
+
+    def minNumberOfFrogs(self, croakOfFrogs: str) -> int:
+        # pre = dict(pairwise("croakc"[::-1]))
+        pre = dict(zip("roakc", "croak"))
+        d = collections.defaultdict(int)
+        for ch in croakOfFrogs:
+            p = pre[ch]
+            if d[p]:
+                d[p] -= 1
+            elif ch != "c":
+                return -1
+            d[ch] += 1
+        if any(d[ch] for ch in "croa"):
+            return -1
+        return d["k"]
 
 
 # 1422 - Maximum Score After Splitting a String - EASY

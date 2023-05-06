@@ -42,6 +42,37 @@ public class Lc1400_1499 {
         }
     }
 
+    // 1419. Minimum Number of Frogs Croaking - MEDIUM
+    class Solution1419 {
+        public int minNumberOfFrogs(String croakOfFrogs) {
+            int ans = 0, c = 0, r = 0, o = 0, a = 0;
+            for (char ch : croakOfFrogs.toCharArray()) {
+                if (ch == 'c') {
+                    c++;
+                } else if (ch == 'r') {
+                    c--;
+                    r++;
+                } else if (ch == 'o') {
+                    r--;
+                    o++;
+                } else if (ch == 'a') {
+                    o--;
+                    a++;
+                } else {
+                    a--;
+                }
+                if (c < 0 || r < 0 || o < 0 || a < 0) {
+                    return -1;
+                }
+                ans = Math.max(ans, c + r + o + a);
+            }
+            if (c + r + o + a != 0) {
+                return -1;
+            }
+            return ans;
+        }
+    }
+
     // 1487. Making File Names Unique - MEDIUM
     class Solution1487a {
         public String[] getFolderNames(String[] names) {
