@@ -1293,3 +1293,210 @@ class Solution:
             return ori, half
 
         return min(dfs2(0, -1))  # 随便挑一个起点都可以
+
+
+# 2651 - Calculate Delayed Arrival Time - EASY
+class Solution:
+    def findDelayedArrivalTime(self, arrivalTime: int, delayedTime: int) -> int:
+        return (arrivalTime + delayedTime) % 24
+
+
+# 2652 - Sum Multiples - EASY
+class Solution:
+    def sumOfMultiples(self, n: int) -> int:
+        return sum(
+            x for x in range(1, n + 1) if (x % 3 == 0 or x % 5 == 0 or x % 7 == 0)
+        )
+
+    # 容斥原理 + 等差数列求和
+    def sumOfMultiples(self, n: int) -> int:
+        def f(m: int) -> int:
+            return (1 + n // m) * (n // m) // 2 * m
+
+        return f(3) + f(5) + f(7) - f(15) - f(21) - f(35) + f(105)
+
+
+# 2653 - Sliding Subarray Beauty - MEDIUM
+class Solution:
+    # O(nlogn) / O(U), U = 50
+    def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
+        sl = sortedcontainers.SortedList(nums[: k - 1])
+        ans = []
+        for i in range(k - 1, len(nums)):
+            sl.add(nums[i])
+            ans.append(sl[x - 1] if sl[x - 1] < 0 else 0)
+            sl.remove(nums[i - (k - 1)])
+        return ans
+
+    def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
+        sl = sortedcontainers.SortedList(nums[: k - 1])
+        ans = []
+        for i, v in enumerate(nums[k - 1 :]):
+            sl.add(v)
+            ans.append(min(sl[x - 1], 0))
+            sl.discard(nums[i])
+        return ans
+
+    # O(nU) / O(U), U = 50
+    def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
+        cnt = [0] * 101
+        for v in nums[: k - 1]:
+            cnt[v] += 1
+        ans = [0] * (len(nums) - k + 1)
+        for i, (inn, out) in enumerate(zip(nums[k - 1 :], nums)):
+            cnt[inn] += 1
+            left = x
+            for j in range(-50, 0):
+                left -= cnt[j]
+                if left <= 0:
+                    ans[i] = j
+                    break
+            cnt[out] -= 1
+        return ans
+
+    def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
+        U = 50
+        cnt = [0] * (101)
+
+        def f() -> int:
+            s = 0
+            for i in range(U):
+                s += cnt[i]
+                if s >= x:
+                    return i - U
+            return 0
+
+        ans = []
+        for i in range(k):
+            cnt[nums[i] + U] += 1
+        ans.append(f())
+        for i in range(k, len(nums)):
+            cnt[nums[i] + U] += 1
+            cnt[nums[i - k] + U] -= 1
+            ans.append(f())
+        return ans
+
+
+# 2654 - Minimum Number of Operations to Make All Array Elements Equal to 1 - MEDIUM
+class Solution:
+    # O(n * (n + logU)) / O(1)
+    def minOperations(self, nums: List[int]) -> int:
+        ones = sum(x == 1 for x in nums)
+        if ones > 0:
+            return len(nums) - ones
+        if math.gcd(*nums) > 1:
+            return -1
+
+        # 求区间 gcd
+        n = len(nums)
+        ans = math.inf
+        for i in range(n - 1):
+            x = nums[i]
+            for j in range(i + 1, n):
+                x = math.gcd(x, nums[j])
+                if x == 1:
+                    ans = min(ans, n + (j - i) - 1)
+        return -1 if ans == math.inf else ans
+
+        mi = n = len(nums)
+        for i in range(n):
+            g = 0
+            for j in range(i, n):
+                g = math.gcd(g, nums[j])
+                if g == 1:
+                    mi = min(mi, j - i)
+                    break
+        return mi + n - 1
+
+        for l in range(2, len(nums) + 1):
+            f = False
+            for t in range(len(nums) - l + 1):
+                if math.gcd(*nums[t : t + l]) == 1:
+                    f = True
+            if f:
+                return len(nums) - 1 + l - 1
+
+
+class Solution:
+    # 线段树 区间运算问题
+    def queryGCD(self, k, l, r, x, y):
+        if l == x and r == y:
+            return self.tree[k]
+        mid = l + r >> 1
+        if y <= mid:
+            g = self.queryGCD(k << 1, l, mid, x, y)
+        else:
+            if x > mid:
+                g = self.queryGCD(k << 1 | 1, mid + 1, r, x, y)
+            else:
+                g = math.gcd(
+                    self.queryGCD(k << 1, l, mid, x, mid),
+                    self.queryGCD(k << 1 | 1, mid + 1, r, mid + 1, y),
+                )
+        return g
+
+    def build(self, k, l, r):
+        if l == r:
+            self.tree[k] = self.nums[l]
+            if self.tree[k] == 1:
+                self.m += 1
+            return
+        mid = l + r >> 1
+        self.build(k << 1, l, mid)
+        self.build(k << 1 | 1, mid + 1, r)
+        self.tree[k] = math.gcd(self.tree[k << 1], self.tree[k << 1 | 1])
+
+    def minOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        self.m = 0
+        self.nums = [0] + nums
+        self.tree = [0] * (4 * n)
+        self.build(1, 1, n)
+        if self.m > 0:
+            return n - self.m
+        else:
+            self.m, i = math.inf, 1
+            for j in range(1, n + 1):
+                while i < j and self.queryGCD(1, 1, n, i + 1, j) == 1:
+                    i += 1
+                if self.queryGCD(1, 1, n, i, j) == 1:
+                    self.m = min(j - i, self.m)
+            return n + self.m - 1 if self.m < n else -1
+
+
+class SparseTable:
+    def __init__(self, data: list, func=operator.or_):
+        # ST表 稀疏表，O(nlgn) 预处理，O(1)查询区间最值/或和/gcd
+        # 下标从 0 开始
+        self.func = func
+        self.st = st = [list(data)]
+        i, N = 1, len(st[0])
+        while 2 * i <= N + 1:
+            pre = st[-1]
+            st.append([func(pre[j], pre[j + i]) for j in range(N - 2 * i + 1)])
+            i <<= 1
+
+    def query(self, begin: int, end: int):  # 查询闭区间[begin, end]的最大值
+        lg = (end - begin + 1).bit_length() - 1
+        return self.func(self.st[lg][begin], self.st[lg][end - (1 << lg) + 1])
+
+
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        if math.gcd(*nums) != 1:
+            return -1
+        ones = nums.count(1)
+        if ones:
+            return n - ones
+        st = SparseTable(nums, math.gcd)
+        ans = math.inf
+        for i in range(n):
+
+            def query(k):
+                return st.query(k, i)
+
+            pos = bisect.bisect_right(range(i), 1, lo=0, key=query)
+            if pos and query(pos - 1) == 1:
+                ans = min(ans, i - pos + 1)
+        return ans + n - 1

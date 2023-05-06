@@ -1210,3 +1210,13 @@ T4: 528 pass
 # https://leetcode.cn/contest/weekly-contest-341/
 # 553 / https://leetcode.cn/contest/weekly-contest-341/problems/minimize-the-total-price-of-the-trips/
 # 树形dp (树上最大独立集) 树(无环) -> 说明点到点只有唯一一条路径! / Tarjan 离线 LCA + 树上差分
+
+
+"""
+AK, 2023-04-22
+https://leetcode.cn/contest/weekly-contest-342/
+Rank: 548 / 1813
+WA: T4(2)
+FT: 1:26:01
+T4: 761 pass
+"""

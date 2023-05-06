@@ -1,5 +1,6 @@
 package src;
 
+import static java.math.BigInteger.valueOf;
 import java.util.*;
 import java.math.BigInteger;
 import java.util.function.Function;
@@ -945,6 +946,44 @@ public class Lc2600_2699 {
                 ans = new int[] { ans[0] + Math.min(sub[0], sub[1]), ans[1] + sub[0] };
             }
             return ans;
+        }
+    }
+
+    // 2651. Calculate Delayed Arrival Time - EASY
+    // 2652. Sum Multiples - EASY
+    // 2653. Sliding Subarray Beauty - MEDIUM
+    class Solution2653a {
+        public int[] getSubarrayBeauty(int[] nums, int k, int x) {
+            int[] result = new int[nums.length - k + 1], count = new int[101];
+            for (int i = 0; i < nums.length; i++) {
+                count[nums[i] + 50]++;
+                if (i >= k - 1) {
+                    for (int j = 0, c = 0; j < 50 && c < x; j++) {
+                        if ((c += count[j]) >= x) {
+                            result[i - k + 1] = j - 50;
+                        }
+                    }
+                    count[nums[i - k + 1] + 50]--;
+                }
+            }
+            return result;
+        }
+    }
+
+    // 2654. Minimum Number of Operations to Make All Array Elements Equal to 1 - MEDIUM
+    class Solution2654a {
+        public int minOperations(int[] nums) {
+            int count = 0;
+            for (int num : nums) {
+                count += num == 1 ? 1 : 0;
+            }
+            int min = count > 0 ? nums.length - count : Integer.MAX_VALUE;
+            for (int i = 0; i < nums.length; i++) {
+                for (int j = i + 1, gcd = nums[i]; j < nums.length; j++) {
+                    min = Math.min(min, (gcd = valueOf(gcd).gcd(valueOf(nums[j])).intValue()) > 1 ? Integer.MAX_VALUE : j - i + nums.length - 1);
+                }
+            }
+            return min == Integer.MAX_VALUE ? -1 : min;
         }
     }
 }

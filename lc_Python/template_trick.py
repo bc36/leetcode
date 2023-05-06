@@ -1,4 +1,4 @@
-import bisect, collections, copy, functools, heapq, itertools, math, random, string
+import bisect, collections, copy, functools, heapq, itertools, math, operator, random, string
 from typing import List, Tuple, Optional, cast
 
 MOD = 10**9 + 7
@@ -1156,6 +1156,23 @@ class SparseTable:
     def query(self, l, r):
         pos = self.note[r - l + 1]
         return self.merge_method(self.ST[pos][l], self.ST[pos][r - (1 << pos) + 1])
+
+
+class SparseTable:
+    def __init__(self, data: list, func=operator.or_):
+        # ST表 稀疏表，O(nlgn) 预处理，O(1) 查询区间最值/或和/gcd
+        # 下标从 0 开始
+        self.func = func
+        self.st = st = [list(data)]
+        i, N = 1, len(st[0])
+        while 2 * i <= N + 1:
+            pre = st[-1]
+            st.append([func(pre[j], pre[j + i]) for j in range(N - 2 * i + 1)])
+            i <<= 1
+
+    def query(self, begin: int, end: int):  # 查询闭区间[begin, end]的最大值
+        lg = (end - begin + 1).bit_length() - 1
+        return self.func(self.st[lg][begin], self.st[lg][end - (1 << lg) + 1])
 
 
 """string hash
