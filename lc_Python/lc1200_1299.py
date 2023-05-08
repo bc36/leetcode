@@ -1009,6 +1009,72 @@ class Solution:
         return [arr[i : i + len(grid[0])] for i in range(0, len(arr), len(grid[0]))]
 
 
+# 1263 - Minimum Moves to Move a Box to Their Target Location - HARD
+class Solution:
+    # O(m^2 * n ^ 2) / O(m^2 * n ^ 2)
+    def minPushBox(self, grid: List[List[str]]) -> int:
+        def isValid(p: Tuple[int, int]) -> bool:
+            return 0 <= p[0] < m and 0 <= p[1] < n and grid[p[0]][p[1]] != "#"
+
+        def isConnect(
+            s: Tuple[int, int], t: Tuple[int, int], b: Tuple[int, int]
+        ) -> int:
+            """whether point 's' and point 't' are connected"""
+            q = [s]
+            vis = {s}
+            while q:
+                new = []
+                for x, y in q:
+                    if (x, y) == t:
+                        return True
+                    for p in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                        if isValid(p) and p not in vis and p != b:
+                            vis.add(p)
+                            new.append(p)
+                q = new
+            return False
+
+        m, n = len(grid), len(grid[0])
+        target = box = start = None
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == "T":
+                    target = (i, j)
+                elif v == "B":
+                    box = (i, j)
+                elif v == "S":
+                    start = (i, j)
+        q = []
+        x, y = box
+        # 初始位置在箱子的 (0)上 / (1)下 / (2)左 / (3)右 边
+        for i, p in enumerate(((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1))):
+            if isValid(p) and isConnect(p, start, box):  # 能否到达推箱子所需要的初始位置
+                q.append((box, i))
+        step = 0
+        vis = set(q)
+        while q:
+            new = []
+            for (x, y), d in q:
+                if (x, y) == target:
+                    return step
+                box_next = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+                push_from = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+                for i, p1 in enumerate(box_next):
+                    p2 = push_from[i]
+                    p3 = push_from[d]  # current pos
+                    if (
+                        isValid(p1)
+                        and isValid(p2)
+                        and (p1, i) not in vis
+                        and isConnect(p2, p3, (x, y))
+                    ):
+                        vis.add((p1, i))
+                        new.append((p1, i))
+            step += 1
+            q = new
+        return -1
+
+
 # 1266 - Minimum Time Visiting All Points - EASY
 class Solution:
     def minTimeToVisitAllPoints(self, points: List[List[int]]) -> int:
