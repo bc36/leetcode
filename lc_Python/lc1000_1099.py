@@ -286,6 +286,29 @@ class Solution:
             n = r * 10 + 1
 
 
+# 1016 - Binary String With Substrings Representing 1 To N - MEDIUM
+class Solution:
+    # O(log(min(m, n)) * mlog(min(m, n))) / O(logn), m = len(s)
+    def queryString(self, s: str, n: int) -> bool:
+        return all(bin(i)[2:] in s for i in range(1, n + 1))
+
+    # O(mlogn) / O(min(mlogn, n)), m = len(s)
+    def queryString(self, s: str, n: int) -> bool:
+        seen = set()
+        s = list(map(int, s))
+        for i, x in enumerate(s):
+            if x == 0:
+                continue  # start from 1
+            j = i + 1
+            while x <= n:
+                seen.add(x)
+                if j == len(s):
+                    break
+                x = (x << 1) | s[j]  # 子串 s[i : j + 1] 的二进制数
+                j += 1
+        return len(seen) == n
+
+
 # 1017 - Convert to Base -2 - MEDIUM
 class Solution:
     def baseNeg2(self, n: int) -> str:

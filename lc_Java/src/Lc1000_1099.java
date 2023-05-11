@@ -197,6 +197,39 @@ public class Lc1000_1099 {
             return (int) res;
         }
     }
+    // 1015. Smallest Integer Divisible by K - MEDIUM
+    
+
+    // 1016. Binary String With Substrings Representing 1 To N - MEDIUM
+    class Solution1016a {
+        // 0ms
+        public boolean queryString(String s, int n) {
+            for (int i = 1; i <= n; i++)
+                if (!s.contains(Integer.toBinaryString(i)))
+                    return false;
+            return true;
+        }
+    }
+
+    class Solution1016b {
+        // 2ms
+        public boolean queryString(String S, int n) {
+            Set<Integer> seen = new HashSet<Integer>();
+            char[] s = S.toCharArray();
+            for (int i = 0, m = s.length; i < m; ++i) {
+                int x = s[i] - '0';
+                if (x == 0)
+                    continue; // 二进制数从 1 开始
+                for (int j = i + 1; x <= n; j++) {
+                    seen.add(x);
+                    if (j == m)
+                        break;
+                    x = (x << 1) | (s[j] - '0'); // 子串 [i,j] 的二进制数
+                }
+            }
+            return seen.size() == n;
+        }
+    }
 
     // 1017. Convert to Base -2 - MEDIUM
     class Solution1017a {
