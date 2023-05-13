@@ -286,6 +286,18 @@ class Solution:
             n = r * 10 + 1
 
 
+# 1015 - Smallest Integer Divisible by K - MEDIUM
+class Solution:
+    # O(k) / O(k)
+    def smallestRepunitDivByK(self, k: int) -> int:
+        seen = set()
+        x = 1 % k
+        while x and x not in seen:
+            seen.add(x)
+            x = (x * 10 + 1) % k
+        return -1 if x else len(seen) + 1
+
+
 # 1016 - Binary String With Substrings Representing 1 To N - MEDIUM
 class Solution:
     # O(log(min(m, n)) * mlog(min(m, n))) / O(logn), m = len(s)

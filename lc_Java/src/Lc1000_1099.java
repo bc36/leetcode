@@ -198,6 +198,15 @@ public class Lc1000_1099 {
         }
     }
     // 1015. Smallest Integer Divisible by K - MEDIUM
+    class Solution1015a {
+        public int smallestRepunitDivByK(int k) {
+            Set<Integer> seen = new HashSet<Integer>();
+            int x = 1 % k;
+            while (x > 0 && seen.add(x))
+                x = (x * 10 + 1) % k;
+            return x > 0 ? -1 : seen.size() + 1;
+        }
+    }
     
 
     // 1016. Binary String With Substrings Representing 1 To N - MEDIUM

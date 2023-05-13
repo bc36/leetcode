@@ -1464,6 +1464,10 @@ class Solution:
             s.add(v)
         return ans
 
+    def findMaxK(self, nums: List[int]) -> int:
+        s = set(nums)
+        return max((v for v in s if -v in s), default=-1)
+
 
 # 2442 - Count Number of Distinct Integers After Reverse Operations - MEDIUM
 class Solution:
