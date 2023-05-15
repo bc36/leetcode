@@ -197,6 +197,7 @@ public class Lc1000_1099 {
             return (int) res;
         }
     }
+
     // 1015. Smallest Integer Divisible by K - MEDIUM
     class Solution1015a {
         public int smallestRepunitDivByK(int k) {
@@ -207,7 +208,6 @@ public class Lc1000_1099 {
             return x > 0 ? -1 : seen.size() + 1;
         }
     }
-    
 
     // 1016. Binary String With Substrings Representing 1 To N - MEDIUM
     class Solution1016a {
@@ -643,6 +643,38 @@ public class Lc1000_1099 {
                 }
             }
             return arr;
+        }
+    }
+
+    // 1072. Flip Columns For Maximum Number of Equal Rows - MEDIUM
+    class Solution1072a {
+        // 7ms
+        public int maxEqualRowsAfterFlips(int[][] matrix) {
+            int ans = 0, n = matrix[0].length;
+            var cnt = new HashMap<String, Integer>();
+            for (var row : matrix) {
+                var r = new char[n];
+                for (int j = 0; j < n; j++)
+                    r[j] = (char) (row[j] ^ row[0]); // 翻转第一个数为 1 的行
+                ans = Math.max(ans, cnt.merge(new String(r), 1, Integer::sum));
+            }
+            return ans;
+        }
+    }
+
+    class Solution1072b {
+        // 7ms
+        public int maxEqualRowsAfterFlips(int[][] matrix) {
+            Map<String, Integer> cnt = new HashMap<>();
+            int ans = 0, n = matrix[0].length;
+            for (var row : matrix) {
+                char[] cs = new char[n];
+                for (int i = 0; i < n; ++i) {
+                    cs[i] = (char) (row[0] ^ row[i]);
+                }
+                ans = Math.max(ans, cnt.merge(String.valueOf(cs), 1, Integer::sum));
+            }
+            return ans;
         }
     }
 

@@ -1033,6 +1033,17 @@ class Solution:
         return arr
 
 
+# 1072 - Flip Columns For Maximum Number of Equal Rows - MEDIUM
+class Solution:
+    def maxEqualRowsAfterFlips(self, matrix: List[List[int]]) -> int:
+        cnt = collections.Counter()
+        for row in matrix:
+            t = tuple(row) if row[0] == 0 else tuple(x ^ 1 for x in row)
+            # t = tuple(row) if row[0] == 1 else tuple(x ^ 1 for x in row)
+            cnt[t] += 1
+        return max(cnt.values())
+
+
 # 1078 - Occurrences After Bigram - EASY
 class Solution:
     def findOcurrences(self, text: str, first: str, second: str) -> List[str]:
