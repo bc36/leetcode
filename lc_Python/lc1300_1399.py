@@ -315,6 +315,45 @@ class Solution:
         return 1 if s == s[::-1] else 2
 
 
+# 1335 - Minimum Difficulty of a Job Schedule - HARD
+class Solution:
+    # O(n^2 * d) / O(nd)
+    def minDifficulty(self, jobDifficulty: List[int], d: int) -> int:
+        if len(jobDifficulty) < d:
+            return -1
+
+        @functools.lru_cache(None)
+        def dfs(i: int, day: int) -> int:
+            if day == 1:
+                return max(jobDifficulty[i:])
+            difficulty = 0
+            cur = math.inf
+            for j in range(i, len(jobDifficulty) - day + 1):
+                difficulty = max(difficulty, jobDifficulty[j])
+                cur = min(cur, difficulty + dfs(j + 1, day - 1))
+            return cur
+
+        return dfs(0, d)
+
+    def minDifficulty(self, jobDifficulty: List[int], d: int) -> int:
+        n = len(jobDifficulty)
+        if n < d:
+            return -1
+
+        @functools.lru_cache(None)
+        def dfs(i: int, day: int) -> int:
+            if day == 1:
+                return max(jobDifficulty[: i + 1])
+            cur = math.inf
+            difficulty = 0
+            for j in range(i, day - 2, -1):
+                difficulty = max(difficulty, jobDifficulty[j])
+                cur = min(cur, dfs(j - 1, day - 1) + difficulty)
+            return cur
+
+        return dfs(n - 1, d)
+
+
 # 1342 - Number of Steps to Reduce a Number to Zero - EASY
 class Solution:
     def numberOfSteps(self, num: int) -> int:
