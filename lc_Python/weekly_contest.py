@@ -1220,3 +1220,8 @@ WA: T4(2)
 FT: 1:26:01
 T4: 761 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-344/
+# 1161 / https://leetcode.cn/contest/weekly-contest-344/problems/make-costs-of-paths-equal-in-a-binary-tree/
+# 贪心, 树形dp

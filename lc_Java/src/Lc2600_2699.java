@@ -980,10 +980,61 @@ public class Lc2600_2699 {
             int min = count > 0 ? nums.length - count : Integer.MAX_VALUE;
             for (int i = 0; i < nums.length; i++) {
                 for (int j = i + 1, gcd = nums[i]; j < nums.length; j++) {
-                    min = Math.min(min, (gcd = valueOf(gcd).gcd(valueOf(nums[j])).intValue()) > 1 ? Integer.MAX_VALUE : j - i + nums.length - 1);
+                    min = Math.min(min, (gcd = valueOf(gcd).gcd(valueOf(nums[j])).intValue()) > 1 ? Integer.MAX_VALUE
+                            : j - i + nums.length - 1);
                 }
             }
             return min == Integer.MAX_VALUE ? -1 : min;
+        }
+    }
+
+    // 2670. Find the Distinct Difference Array - EASY
+    // 2671. Frequency Tracker - MEDIUM
+    class FrequencyTracker {
+        private int[] count = new int[100001], freq = new int[200001];
+
+        public void add(int number) {
+            freq[count[number]]--;
+            freq[++count[number]]++;
+        }
+
+        public void deleteOne(int number) {
+            freq[count[number]]--;
+            freq[count[number] -= count[number] > 0 ? 1 : 0]++;
+        }
+
+        public boolean hasFrequency(int frequency) {
+            return freq[frequency] > 0;
+        }
+    }
+
+    // 2672. Number of Adjacent Elements With the Same Color - MEDIUM
+    class Solution2672a {
+        public int[] colorTheArray(int n, int[][] queries) {
+            int[] result = new int[queries.length], A = new int[n + 2];
+            for (int i = 0, count = 0; i < queries.length; i++) {
+                result[i] = count -= (A[queries[i][0] + 1] > 0 ? (A[queries[i][0]] == A[queries[i][0] + 1] ? 1 : 0)
+                        + (A[queries[i][0] + 1] == A[queries[i][0] + 2] ? 1 : 0) : 0)
+                        - (A[queries[i][0]] == (A[queries[i][0] + 1] = queries[i][1]) ? 1 : 0)
+                        - (A[queries[i][0] + 1] == A[queries[i][0] + 2] ? 1 : 0);
+            }
+            return result;
+        }
+    }
+
+    // 2673. Make Costs of Paths Equal in a Binary Tree - MEDIUM
+    class Solution2673a {
+        public int minIncrements(int n, int[] cost) {
+            return dfs(cost, 0)[0];
+        }
+
+        private int[] dfs(int[] cost, int n) {
+            if (n >= cost.length) {
+                return new int[2];
+            }
+            int[] left = dfs(cost, 2 * n + 1), right = dfs(cost, 2 * n + 2);
+            return new int[] { left[0] + right[0] + Math.abs(left[1] - right[1]),
+                    cost[n] + Math.max(left[1], right[1]) };
         }
     }
 }

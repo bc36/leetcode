@@ -1500,3 +1500,160 @@ class Solution:
             if pos and query(pos - 1) == 1:
                 ans = min(ans, i - pos + 1)
         return ans + n - 1
+
+
+# 2670 - Find the Distinct Difference Array - EASY
+class Solution:
+    # O(n^2) / O(n)
+    def distinctDifferenceArray(self, nums: List[int]) -> List[int]:
+        return [
+            len(set(nums[: i + 1])) - len(set(nums[i + 1 :])) for i in range(len(nums))
+        ]
+
+    # O(n) / O(n)
+    def distinctDifferenceArray(self, nums: List[int]) -> List[int]:
+        cnt = collections.Counter(nums)
+        suf = len(cnt)
+        s = set()
+        ans = []
+        for v in nums:
+            cnt[v] -= 1
+            if cnt[v] == 0:
+                suf -= 1
+            s.add(v)
+            ans.append(len(s) - suf)
+        return ans
+
+    def distinctDifferenceArray(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        suf = [0] * (n + 1)
+        s = set()
+        for i in range(n - 1, 0, -1):
+            s.add(nums[i])
+            suf[i] = len(s)
+        s.clear()
+        ans = [0] * n
+        for i, x in enumerate(nums):
+            s.add(x)
+            ans[i] = len(s) - suf[i + 1]
+        return ans
+
+
+# 2671 - Frequency Tracker - MEDIUM
+class FrequencyTracker:
+    def __init__(self):
+        self.freq = collections.defaultdict(int)
+        self.d = collections.defaultdict(int)
+
+    def add(self, number: int) -> None:
+        if number in self.d:
+            self.freq[self.d[number]] -= 1
+        self.d[number] += 1
+        self.freq[self.d[number]] += 1
+        return
+
+    def deleteOne(self, number: int) -> None:
+        if self.d[number] > 0:  # not "if number in self.d" !!!
+            self.freq[self.d[number]] -= 1
+            self.d[number] -= 1
+            self.freq[self.d[number]] += 1
+        return
+
+    def hasFrequency(self, frequency: int) -> bool:
+        return self.freq[frequency] > 0
+
+
+# 2672 - Number of Adjacent Elements With the Same Color - MEDIUM
+class Solution:
+    def colorTheArray(self, n: int, queries: List[List[int]]) -> List[int]:
+        cnt = 0
+        ans = []
+        c = [0] * n
+        for i, col in queries:
+            if i >= 1:
+                if 0 != c[i - 1] and c[i - 1] == c[i] and col != c[i]:
+                    cnt -= 1
+                if c[i - 1] != c[i] and col == c[i - 1]:
+                    cnt += 1
+            if i <= n - 2:
+                if 0 != c[i] and c[i] == c[i + 1] and col != c[i + 1]:
+                    cnt -= 1
+                if c[i] != c[i + 1] and col == c[i + 1]:
+                    cnt += 1
+            ans.append(cnt)
+            c[i] = col
+        return ans
+
+    def colorTheArray(self, n: int, queries: List[List[int]]) -> List[int]:
+        c = [0 for _ in range(n)]
+        ans = []
+        cnt = 0
+        for i, col in queries:
+            if i != 0 and c[i - 1] == c[i] and c[i]:
+                cnt -= 1
+            if i != n - 1 and c[i + 1] == c[i] and c[i]:
+                cnt -= 1
+            c[i] = col
+            if i != 0 and c[i - 1] == c[i] and c[i]:
+                cnt += 1
+            if i != n - 1 and c[i + 1] == c[i] and c[i]:
+                cnt += 1
+            ans.append(cnt)
+        return ans
+
+    def colorTheArray(self, n: int, queries: List[List[int]]) -> List[int]:
+        c = [0] * n
+        cnt = 0
+        ans = []
+        for i, col in queries:
+            if c[i]:
+                if i:
+                    cnt -= c[i] == c[i - 1]
+                if i + 1 < n:
+                    cnt -= c[i] == c[i + 1]
+            c[i] = col
+            if i:
+                cnt += c[i] == c[i - 1]
+            if i + 1 < n:
+                cnt += c[i] == c[i + 1]
+            ans.append(cnt)
+        return ans
+
+
+# 2673 - Make Costs of Paths Equal in a Binary Tree - MEDIUM
+class Solution:
+    # O(n) / O(1)
+    def minIncrements(self, n: int, cost: List[int]) -> int:
+        ans = 0
+        for i in range(n // 2, 0, -1):  # 从最后一个非叶节点开始算
+            ans += abs(cost[i * 2 - 1] - cost[i * 2])
+            cost[i - 1] += max(cost[i * 2 - 1], cost[i * 2])  # 累加路径和
+        return ans
+
+    # O(n) / O(n)
+    def minIncrements(self, n: int, cost: List[int]) -> int:
+        ans = 0
+
+        def dfs(i):  # 表示节点 i 以下的最长路径
+            nonlocal ans
+            if i > n:
+                return 0
+            l = dfs(2 * i)
+            r = dfs(2 * i + 1)
+            ans += abs(l - r)
+            return max(l, r) + cost[i - 1]
+
+        dfs(1)
+        return ans
+
+    # O(n) / O(n)
+    def minIncrements(self, n: int, cost: List[int]) -> int:
+        f = [0] * (n + 1)
+        g = [0] * (n + 1)
+        for i in reversed(range(1, n + 1)):
+            if i * 2 > n:
+                f[i] = cost[i - 1]
+            else:
+                f[i] = max(f[i * 2], f[i * 2 + 1]) + cost[i - 1]
+                g[i] = g[i * 2] + g[i * 2 + 1] + abs(f[i * 2] - f[i * 2 + 1])
+        return g[1]
