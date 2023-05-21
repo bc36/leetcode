@@ -1657,3 +1657,229 @@ class Solution:
                 f[i] = max(f[i * 2], f[i * 2 + 1]) + cost[i - 1]
                 g[i] = g[i * 2] + g[i * 2 + 1] + abs(f[i * 2] - f[i * 2 + 1])
         return g[1]
+
+
+# 2682 - Find the Losers of the Circular Game - EASY
+class Solution:
+    # O(n) / O(n)
+    def circularGameLosers(self, n: int, k: int) -> List[int]:
+        l = [False] * n
+        i = 0
+        nk = k
+        while not l[i]:
+            l[i] = True
+            i = (i + nk) % n
+            nk += k
+        return [i for i, v in enumerate(l, 1) if not v]
+
+
+# 2683 - Neighboring Bitwise XOR - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def doesValidArrayExist(self, derived: List[int]) -> bool:
+        n = len(derived)
+        a = [0] * n
+        b = [1] * n
+        for i in range(n - 1):
+            a[i + 1] = a[i] ^ derived[i]
+            b[i + 1] = b[i] ^ derived[i]
+        return (a[-1] == derived[-1] ^ a[0]) or (b[-1] == derived[-1] ^ b[0])
+
+    def doesValidArrayExist(self, derived: List[int]) -> bool:
+        n = len(derived)
+        a = [0] * n
+        for i in range(n - 1):
+            a[i + 1] = a[i] ^ derived[i]
+        return a[-1] == derived[-1] ^ a[0]
+
+    # O(n) / O(1)
+    def doesValidArrayExist(self, derived: List[int]) -> bool:
+        return functools.reduce(operator.xor, derived) == 0
+
+
+# 2684 - Maximum Number of Moves in a Grid - MEDIUM
+class Solution:
+    # O(mn) / O(mn)
+    def maxMoves(self, grid: List[List[int]]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            cur = 0
+            if i > 0 and j < n - 1 and grid[i][j] < grid[i - 1][j + 1]:
+                cur = max(cur, 1 + dfs(i - 1, j + 1))
+            if j < n - 1 and grid[i][j] < grid[i][j + 1]:
+                cur = max(cur, 1 + dfs(i, j + 1))
+            if i < m - 1 and j < n - 1 and grid[i][j] < grid[i + 1][j + 1]:
+                cur = max(cur, 1 + dfs(i + 1, j + 1))
+            return cur
+
+        m, n = len(grid), len(grid[0])
+        return max(dfs(i, 0) for i in range(m))
+
+    def maxMoves(self, grid: List[List[int]]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            if j == n - 1:
+                return 0
+            cur = 0
+            for k in i - 1, i, i + 1:
+                if 0 <= k < m and grid[i][j] < grid[k][j + 1]:
+                    cur = max(cur, 1 + dfs(k, j + 1))
+            return cur
+
+        m, n = len(grid), len(grid[0])
+        return max(dfs(i, 0) for i in range(m))
+
+
+# 2685 - Count the Number of Complete Components - MEDIUM
+class Solution:
+    # O(n + m + n^2) / O(n + m), m = len(edges)
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        g = collections.defaultdict(set)
+        for x, y in edges:
+            g[x].add(y)
+            g[y].add(x)
+        ans = 0
+        s = set()
+        vis = [False] * n
+        for i in range(n):
+            if vis[i]:
+                continue
+            q = [i]
+            while q:
+                new = []
+                for x in q:
+                    s.add(x)
+                    vis[x] = True
+                    for y in g[x]:
+                        if not vis[y]:
+                            vis[y] = True
+                            s.add(y)
+                            new.append(y)
+                q = new
+            f = True
+            for x in s:
+                for y in s:
+                    if x == y:
+                        continue
+                    if y not in g[x]:
+                        f = False
+                        break
+                if not f:
+                    break
+            ans += f
+
+            # for x in s:
+            #     for y in s:
+            #         if x == y:
+            #             continue
+            #         if y not in g[x]:
+            #             break
+            #     else:
+            #         continue
+            #     break
+            # else:
+            #     ans += 1
+
+            # v = len(s)
+            # e = sum(len(g[x]) for x in s)
+            # ans += e == v * (v - 1)
+
+            s.clear()
+        return ans
+
+    # O(n + m) / O(n + m), m = len(edges)
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        vis = [False] * n
+
+        def dfs(x: int) -> None:
+            """统计当前连通块的点数 v 和边数 e"""
+            vis[x] = True
+            nonlocal v, e
+            v += 1
+            e += len(g[x])
+            for y in g[x]:
+                if not vis[y]:
+                    dfs(y)
+            return
+
+        ans = 0
+        for i, b in enumerate(vis):
+            if not b:
+                v = e = 0
+                dfs(i)
+                ans += e == v * (v - 1)
+        return ans
+
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+                self.e = [0] * n  # 每个连通块内边数量
+                self.v = [1] * n  # 每个连通块内顶点数量
+
+            def find(self, x: int) -> int:
+                """path compression"""
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                """x's root = y"""
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    self.e[px] += 1
+                    return
+                # if self.v[px] > self.v[py]:
+                #     px, py = py, px
+
+                self.p[px] = py
+                self.e[py] += self.e[px] + 1
+                self.v[py] += self.v[px]
+                return
+
+        uf = UnionFind(n)
+        for x, y in edges:
+            uf.union(x, y)
+        return sum(
+            uf.e[i] == (uf.v[i] * (uf.v[i] - 1)) // 2 for i in range(n) if i == uf.p[i]
+        )
+        return sum(uf.e[i] == math.comb(uf.v[i], 2) for i in range(n) if i == uf.p[i])
+
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+
+            def find(self, x: int) -> int:
+                """path compression"""
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                """x's root = y"""
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                return
+
+        uf = UnionFind(n)
+        cnt = [0] * n
+        for x, y in edges:
+            uf.union(x, y)
+            cnt[x] += 1
+            cnt[y] += 1
+        v = [0] * n
+        e = [0] * n
+        for i in range(n):
+            p = uf.find(i)
+            v[p] += 1
+            e[p] += cnt[i]
+        return sum(e[i] == v[i] * (v[i] - 1) for i in range(n) if i == uf.p[i])

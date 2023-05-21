@@ -1037,4 +1037,66 @@ public class Lc2600_2699 {
                     cost[n] + Math.max(left[1], right[1]) };
         }
     }
+
+    // 2682. Find the Losers of the Circular Game - EASY
+    // 2683. Neighboring Bitwise XOR - MEDIUM
+    class Solution2683a {
+        public boolean doesValidArrayExist(int[] derived) {
+            int xor = 0;
+            for (int i : derived) {
+                xor ^= i;
+            }
+            return xor == 0;
+        }
+    }
+
+    // 2684. Maximum Number of Moves in a Grid - MEDIUM
+    class Solution2684a {
+        public int maxMoves(int[][] grid) {
+            int m = grid.length, n = grid[0].length, f[][] = new int[m][n], ans = 0;
+            for (int j = 1; j < n; j++) {
+                for (int i = 0; i < m; i++) {
+                    ans = (f[i][j] = Math.max(i > 0 && grid[i][j] > grid[i - 1][j - 1] ? f[i - 1][j - 1] + 1 : 0,
+                            Math.max(i < m - 1 && grid[i][j] > grid[i + 1][j - 1] ? f[i + 1][j - 1] + 1 : 0,
+                                    grid[i][j] > grid[i][j - 1] ? f[i][j - 1] + 1 : 0))) == j ? j : ans;
+                }
+            }
+            return ans;
+        }
+    }
+    // 2685. Count the Number of Complete Components - MEDIUM
+    class Solution2685a {
+        @SuppressWarnings("unchecked")
+        public int countCompleteComponents(int n, int[][] edges) {
+            ArrayList<Integer>[] g = new ArrayList[n];
+            for (int i = 0; i < n; i++) {
+                g[i] = new ArrayList<>();
+            }
+            for (int[] e : edges) {
+                g[e[0]].add(e[1]);
+                g[e[1]].add(e[0]);
+            }
+            int count = 0, vis[] = new int[n];
+            for (int i = 0; i < n; i++) {
+                if (vis[i] == 0) {
+                    int[] next = dfs(i, vis, g);
+                    count += next[0] * (next[0] - 1) == next[1] ? 1 : 0;
+                }
+            }
+            return count;
+        }
+    
+        private int[] dfs(int n, int[] vis, ArrayList<Integer>[] g) {
+            if (vis[n] == 1) {
+                return new int[2];
+            }
+            vis[n] = 1;
+            int[] res = { 1, g[n].size() };
+            for (int i : g[n]) {
+                int[] next = dfs(i, vis, g);
+                res = new int[] { res[0] + next[0], res[1] + next[1] };
+            }
+            return res;
+        }
+    }
 }
