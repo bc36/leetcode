@@ -1466,7 +1466,7 @@ class Solution:
 
 class SparseTable:
     def __init__(self, data: list, func=operator.or_):
-        # ST表 稀疏表，O(nlgn) 预处理，O(1)查询区间最值/或和/gcd
+        # ST表 稀疏表, O(nlgn) 预处理, O(1)查询区间最值/或和/gcd
         # 下标从 0 开始
         self.func = func
         self.st = st = [list(data)]
@@ -1883,3 +1883,267 @@ class Solution:
             v[p] += 1
             e[p] += cnt[i]
         return sum(e[i] == v[i] * (v[i] - 1) for i in range(n) if i == uf.p[i])
+
+
+# 2696 - Minimum String Length After Removing Substrings - EASY
+class Solution:
+    # O(n^2) / O(n)
+    def minLength(self, s: str) -> int:
+        while "AB" in s or "CD" in s:
+            s = s.replace("AB", "").replace("CD", "")
+        return len(s)
+
+    # O(n) / O(n)
+    def minLength(self, s: str) -> int:
+        st = []
+        for c in s:
+            if st and (c == "B" and st[-1] == "A" or c == "D" and st[-1] == "C"):
+                st.pop()
+            else:
+                st.append(c)
+        return len(st)
+
+
+# 2697 - Lexicographically Smallest Palindrome - EASY
+class Solution:
+    def makeSmallestPalindrome(self, s: str) -> str:
+        n = len(s)
+        s = list(s)
+        for i in range(n // 2):
+            if s[i] != s[n - 1 - i]:
+                s[i] = s[n - 1 - i] = min(s[i], s[n - 1 - i])
+        return "".join(s)
+
+
+# 2698 - Find the Punishment Number of an Integer - MEDIUM
+def check(t: int, s: str) -> bool:
+    if not s or t < 0:
+        return False
+    if t == int(s):
+        return True
+    for i in range(len(s)):
+        if check(t - int(s[: i + 1]), s[i + 1 :]):
+            return True
+    return False
+
+
+arr = [0] * 1001
+for i in range(1, 1001):
+    if check(i, str(i * i)):
+        arr[i] += i * i
+    arr[i] += arr[i - 1]
+
+
+class Solution:
+    def punishmentNumber(self, n: int) -> int:
+        return arr[n]
+
+
+def dfs(s: str, target: int, p: int, summ: int) -> bool:
+    if p == len(s):
+        return summ == target
+    x = 0
+    for j in range(p, len(s)):  # 从 s[p] 到 s[j] 组成的子串
+        x = x * 10 + int(s[j])
+        if dfs(s, target, j + 1, summ + x):
+            return True
+    return False
+
+
+arr = [0] * 1001
+for i in range(1, 1001):
+    if dfs(str(i * i), i, 0, 0):
+        arr[i] += i * i
+    arr[i] += arr[i - 1]
+
+
+class Solution:
+    def punishmentNumber(self, n: int) -> int:
+        return arr[n]
+
+
+# https://oeis.org/A038206
+# 因为 i ^ 2 无论如何切割相加, 得到结果除以 9 的余数都和 i ^ 2 除以 9 的余数相同,
+# 因此要让切割后求和的结果等于 i, 必要条件是 i ^ 2 === i mod 9: 即 i * (i - 1) === 0 mod 9,
+# 所以 i 只能是 9 的倍数或者除以 9 余 1 的数
+arr = [
+    0,
+    1,
+    9,
+    10,
+    36,
+    45,
+    55,
+    82,
+    91,
+    99,
+    100,
+    235,
+    297,
+    369,
+    370,
+    379,
+    414,
+    657,
+    675,
+    703,
+    756,
+    792,
+    909,
+    918,
+    945,
+    964,
+    990,
+    991,
+    999,
+    1000,
+]
+
+
+class Solution:
+    def punishmentNumber(self, n: int) -> int:
+        return sum(v * v for v in arr if v <= n)
+
+
+# 2699 - Modify Graph Edge Weights - HARD
+class Solution:
+    # https://codeforces.com/problemset/problem/715/B
+
+    # Dijkstra
+
+    # 错误思路:
+    # 没经过-1 达到 大于 空()
+    # 没经过-1 达到 正好, 返回 1
+    # 没经过-1 达到 小于 空()
+    # 经过-1 达到 大于 空()
+    # 经过-1 达到 正好, 返回 1
+    # 经过-1 达到 小于 可以调整, 但是不能简单地把路径差值赋值给某一个负边,
+    # 因为在增加边权后, 最短路可能就走别的边了, 不走刚才修改的这条边了
+    # 卡在如何给负边赋值上了...
+
+    # 1. 按照什么顺序增大边, 怎么pick?
+    # 2. 每个边增大多少比较合适?
+
+    # 思路一
+    # 首先注意到 target 的范围, 与边权最大值范围, 先将所有的 -1 改为 2 * 10^9.
+    # 计算初始的最短路, 如果小于 target 则无论怎么修改肯定无解, 如果等于 target 则直接返回.
+    # 如果大于 target, 则尝试依次将每条边权 2 * 10^9 改为 1,
+    # 计算此时最短路 dist, 如果此时 dist 小于等于 target, 则有解,
+    # 并将此时这条边权增加 target - dist, 输出即可.
+    def modifiedGraphEdges(
+        self, n: int, edges: List[List[int]], source: int, destination: int, target: int
+    ) -> List[List[int]]:
+        def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
+            dist = [math.inf] * len(g)
+            dist[start] = 0
+            q = [(0, start)]
+            while q:
+                cur, x = heapq.heappop(q)
+                if cur > dist[x]:
+                    continue
+                if x == end:
+                    return cur
+                for y in g[x]:
+                    new = cur + g[x][y]
+                    if new < dist[y]:
+                        dist[y] = new
+                        heapq.heappush(q, (new, y))
+            return math.inf
+
+        g = [dict() for _ in range(n)]
+        negEdge = []
+        for i, j, w in edges:
+            if w == -1:
+                negEdge.append([i, j, w])
+                w = 2 * 10**9  # 为什么不能用 math.inf?
+            g[i][j] = g[j][i] = w
+
+        def check() -> List[List[int]]:
+            ans = []
+            vis = set()
+            for i in range(n):
+                for j in g[i]:
+                    if (i, j) not in vis:
+                        ans.append([i, j, g[i][j]])
+                        vis.add((i, j))
+                        vis.add((j, i))
+            return ans
+
+        # 第一, 二步
+        dist = dijkstra(g, source, destination)
+        if dist == target:
+            return check()
+        if dist < target:
+            return []
+        # 第三步
+        for x, y, w in negEdge:
+            g[x][y] = g[y][x] = 1
+            dist = dijkstra(g, source, destination)
+            if dist <= target:
+                gap = target - dist
+                g[x][y] = g[y][x] = g[x][y] + gap
+                return check()
+        return []
+
+    # 思路二, 两次 Dijkstra（稠密图下是线性做法）
+    # 先把 -1 都修改成 1, 然后跑第一遍 Dijkstra, 找到 dist: List[int]
+    # 再跑一遍 Dijkstra, 由于 Dijkstra 算法保证每次拿到的点的最短路就是最终的最短路,
+    # 所以按照 Dijkstra 算法遍历点/边的顺序去修改, 就不会对已确定的最短路产生影响
+
+    # 对于一条可以修改的边 x - y, 假设要把它的边权改为 w, 那么
+    # source −> x −> y −> destination 这条路径由三部分组成: (0 / 1 仅用于区分是第几次 dji)
+    # 1. 从 source 到 x 的最短路, 这是第二遍 Dijkstra 算出来的, 即 dX1
+    # 2. 从 x 到 y, 即 w.
+    # 3. 从 y 到 destination 的最短路, 由于后面的边还没有修改, 这个最短路是第一遍 Dijkstra 算出来的, 即 dDestination0 - dY0
+    #    注意这个式子仅当 y 在从 source 到 destination 的最短路上才成立.
+    #    不过, 如果 y 不在最短路上, 修改 x − y 并不会对最短路产生影响, 所以代码中并没有判断 y 是否在最短路上.
+    # 三部分之和为 target = dX1 + w + dDestination0 - dY0
+    # 得 w = target - dDestination0 + dY0 - dX1
+    #    注意 target - dDestination0 是个定值 (delta)
+
+    # O(n^2) / O(m), 时间复杂度与边的数量 m = O(n^2) 成正比
+    def modifiedGraphEdges(
+        self, n: int, edges: List[List[int]], source: int, destination: int, target: int
+    ) -> List[List[int]]:
+        g = [[] for _ in range(n)]
+        for i, (x, y, _) in enumerate(edges):
+            g[x].append((y, i))
+            g[y].append((x, i))  # 额外保存边的编号
+        dist = [[math.inf, math.inf] for _ in range(n)]
+        dist[source] = [0, 0]
+
+        def dijkstra(k: int) -> None:  # 这里 k 表示第一次/第二次
+            vis = [False] * n
+            while True:
+                # 找到当前最短路, 去更新它的邻居的最短路, dis[x][k] 一定是最短路长度
+                x = -1
+                for y, (b, d) in enumerate(zip(vis, dist)):
+                    if not b and (x < 0 or d[k] < dist[x][k]):
+                        x = y
+                if x == destination:
+                    return
+                vis[x] = True
+                for y, eid in g[x]:
+                    wt = edges[eid][2]
+                    if wt == -1:
+                        wt = 1  # 第一次 dji 改成 1
+                    if k == 1 and edges[eid][2] == -1:
+                        # 第二次 dji, 由上述公式改成 w
+                        w = delta + dist[y][0] - dist[x][1]
+                        if w > wt:
+                            edges[eid][2] = wt = w  # 直接在 edges 上修改
+                    dist[y][k] = min(dist[y][k], dist[x][k] + wt)
+
+        dijkstra(0)
+        delta = target - dist[destination][0]
+        if delta < 0:  # 全为 1 时, 最短路比 target 还大
+            return []
+
+        dijkstra(1)
+        if dist[destination][1] < target:  # 最短路无法再变大, 无法达到 target
+            return []
+
+        for e in edges:
+            if e[2] == -1:  # 剩余没修改的边全部改成 1
+                e[2] = 1
+        return edges

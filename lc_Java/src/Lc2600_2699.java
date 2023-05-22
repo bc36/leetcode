@@ -1039,6 +1039,18 @@ public class Lc2600_2699 {
     }
 
     // 2682. Find the Losers of the Circular Game - EASY
+    class Solution2682a {
+        public int[] circularGameLosers(int n, int k) {
+            TreeSet<Integer> set = new TreeSet<>();
+            for (int i = 1; i <= n; i++) {
+                set.add(i);
+            }
+            for (int i = 0, j = 1; set.remove(i + 1); i = (i + j++ * k) % n) {
+            }
+            return set.stream().mapToInt(v -> v).toArray();
+        }
+    }
+
     // 2683. Neighboring Bitwise XOR - MEDIUM
     class Solution2683a {
         public boolean doesValidArrayExist(int[] derived) {
@@ -1064,6 +1076,7 @@ public class Lc2600_2699 {
             return ans;
         }
     }
+
     // 2685. Count the Number of Complete Components - MEDIUM
     class Solution2685a {
         @SuppressWarnings("unchecked")
@@ -1085,7 +1098,7 @@ public class Lc2600_2699 {
             }
             return count;
         }
-    
+
         private int[] dfs(int n, int[] vis, ArrayList<Integer>[] g) {
             if (vis[n] == 1) {
                 return new int[2];
@@ -1097,6 +1110,102 @@ public class Lc2600_2699 {
                 res = new int[] { res[0] + next[0], res[1] + next[1] };
             }
             return res;
+        }
+    }
+
+    // 2696. Minimum String Length After Removing Substrings - EASY
+    class Solution2696a {
+        public int minLength(String s) {
+            for (int i = 0; i < 50; i++) {
+                s = s.replaceAll("AB|CD", "");
+            }
+            return s.length();
+        }
+    }
+
+    // 2697. Lexicographically Smallest Palindrome - EASY
+    class Solution2697a {
+        public String makeSmallestPalindrome(String s) {
+            char[] c = new char[s.length()];
+            for (int i = 0; i < s.length(); i++) {
+                c[i] = (char) Math.min(s.charAt(i), s.charAt(s.length() - 1 - i));
+            }
+            return new String(c);
+        }
+    }
+
+    // 2698. Find the Punishment Number of an Integer - MEDIUM
+    class Solution2698a {
+        public int punishmentNumber(int n) {
+            int ans = 0;
+            for (int i = 1; i <= n; i++) {
+                ans += punishmentNumber(0, "" + i * i, i) ? i * i : 0;
+            }
+            return ans;
+        }
+
+        private boolean punishmentNumber(int i, String s, int n) {
+            if (i == s.length()) {
+                return n == 0;
+            }
+            for (int j = i + 1; j <= s.length(); j++) {
+                if (punishmentNumber(j, s, n - Integer.parseInt(s.substring(i, j)))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    // 2699. Modify Graph Edge Weights - HARD
+    class Solution2699a {
+        public int[][] modifiedGraphEdges(int n, int[][] edges, int source, int destination, int target) {
+            HashMap<Integer, ArrayList<int[]>> map = new HashMap<>();
+            for (int[] edge : edges) {
+                map.computeIfAbsent(edge[0], t -> new ArrayList<>()).add(edge);
+                map.computeIfAbsent(edge[1], t -> new ArrayList<>()).add(edge);
+            }
+            if (modifiedGraphEdges(n, source, destination, target, map, false) < target
+                    || modifiedGraphEdges(n, source, destination, target, map, true) > target) {
+                return new int[0][];
+            }
+            for (int[] edge : edges) {
+                edge[2] = edge[2] > 0 ? edge[2] : 2000000000;
+            }
+            return edges;
+        }
+
+        private int modifiedGraphEdges(int n, int source, int destination, int target,
+                HashMap<Integer, ArrayList<int[]>> map, boolean flag) {
+            int[] start = { 0, source }, visited[] = new int[n][n];
+            HashMap<int[], ArrayList<int[]>> edges = new HashMap<>(Map.of(start, new ArrayList<>()));
+            PriorityQueue<int[]> queue = new PriorityQueue<>(
+                    (o, p) -> edges.get(o).size() == edges.get(p).size() ? o[0] - p[0]
+                            : edges.get(o).size() - edges.get(p).size());
+            for (queue.offer(start); !queue.isEmpty();) {
+                int[] poll = queue.poll();
+                if (poll[0] <= target) {
+                    if (poll[1] == destination) {
+                        for (int i = 0; i < edges.get(poll).size(); i++) {
+                            edges.get(poll).get(i)[2] = i > 0 ? 1 : target - poll[0] + 1;
+                        }
+                        return poll[0];
+                    } else if (visited[edges.get(poll).size()][poll[1]] == 0) {
+                        visited[edges.get(poll).size()][poll[1]] = 1;
+                        for (int[] edge : map.getOrDefault(poll[1], new ArrayList<>())) {
+                            if (edge[2] > 0 || flag) {
+                                int[] next = { poll[0] + Math.max(1, edge[2]), edge[0] == poll[1] ? edge[1] : edge[0] };
+                                edges.put(next, new ArrayList<>(edges.get(poll)));
+                                if (edge[2] < 0) {
+                                    edges.get(next).add(edge);
+                                }
+                                queue.offer(next);
+                            }
+                        }
+                    }
+                }
+            }
+            return Integer.MAX_VALUE;
         }
     }
 }

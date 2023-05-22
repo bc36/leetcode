@@ -13,8 +13,8 @@
 * Forgetting Go 😕
 * Training Python 🥱
 * Picking up Java 😵‍💫
-* Drown by C++ 🫠
-* Is JavaScript the best programming language to become a full-stack developer 🤔
+* ~~Drown by C++ 🫠~~
+* ~~Is JavaScript the best programming language to become a full-stack developer 🤔~~
 
 
 <br><br>

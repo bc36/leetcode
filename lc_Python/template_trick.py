@@ -225,6 +225,7 @@ def dijkstra(
 ) -> List[int]:
     """
     返回从 start 到每个点的最短路 dist: List[int]:
+
     Dijkstra 求(有向)(带权)最短路, (路)变成负数求可以求最长路(还是正权值)
     d1, d2 用于去除图中的环
 
@@ -250,7 +251,7 @@ def dijkstra(
 def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
     """
     返回从 start 到 end 的最短路
-    如果路径不存在, 返回 -1
+    如果路径不存在, 返回 math.inf
 
     O(mlogm) / O(m), 稀疏图中 m = O(n), 稠密图中 m = (n^2)
     """
@@ -268,13 +269,13 @@ def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
             if new < dist[y]:
                 dist[y] = new
                 heapq.heappush(q, (new, y))
-    return -1
+    return math.inf
 
 
 def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
     """
     返回从 start 到 end 的最短路
-    如果路径不存在, 返回 -1
+    如果路径不存在, 返回 math.inf
 
     O(mlogm) / O(m), 稀疏图中 m = O(n), 稠密图中 m = (n^2)
     """
@@ -289,7 +290,40 @@ def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
         vis[x] = True
         for y, w in g[x]:
             heapq.heappush(q, (cur + w, y))
-    return -1
+    return math.inf
+
+
+edges = [[1, 2, 3], [1, 3, 4]]  # [x, y, w]
+n = 3
+g = [[] for _ in range(n)]
+for x, y, w in edges:
+    g[x].append((y, w))
+    g[y].append((x, w))
+
+
+def dijkstra(g: List[List[Tuple[int]]], start: int, end: int) -> int:
+    dist = [math.inf] * len(g)
+    dist[start] = 0
+    q = [(0, start)]
+    while q:
+        cur, x = heapq.heappop(q)
+        if cur > dist[x]:
+            continue
+        if x == end:
+            return cur
+        for y in g[x]:
+            new = cur + g[x][y]
+            if new < dist[y]:
+                dist[y] = new
+                heapq.heappush(q, (new, y))
+    return math.inf
+
+
+edges = [[1, 2, 3], [1, 3, 4]]  # [x, y, w]
+n = 3
+g = [dict() for _ in range(n)]
+for x, y, w in edges:
+    g[x][y] = g[y][x] = w
 
 
 # 朴素 Dijkstra 算法每次求最短路的时间复杂度为 O(n^2)

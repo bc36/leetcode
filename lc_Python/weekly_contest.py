@@ -1232,3 +1232,8 @@ AK, 2023-05-13
 https://leetcode.cn/contest/weekly-contest-345/
 T4: 1496 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-346/
+# 68 / https://leetcode.cn/contest/weekly-contest-346/problems/modify-graph-edge-weights/
+# 两次 Dijkstra
