@@ -1033,6 +1033,44 @@ class Solution:
         return arr
 
 
+# 1071 - Greatest Common Divisor of Strings - EASY
+class Solution:
+    def gcdOfStrings(self, str1: str, str2: str) -> str:
+        for i in range(min(len(str1), len(str2)), 0, -1):
+            if (
+                (len(str1) % i) == 0
+                and (len(str2) % i) == 0
+                and str1[:i] * (len(str1) // i) == str1
+                and str1[:i] * (len(str2) // i) == str2
+            ):
+                return str1[:i]
+        return ""
+
+    def gcdOfStrings(self, str1: str, str2: str) -> str:
+        if len(str1) < len(str2):
+            return self.gcdOfStrings(str2, str1)
+        for i in range(len(str2), 0, -1):
+            if (
+                len(str1) % i == 0
+                and len(str2) % i == 0
+                and str1.replace(str2[:i], "") == ""
+                and str2.replace(str2[:i], "") == ""
+            ):
+                return str2[:i]
+        return ""
+
+    def gcdOfStrings(self, str1: str, str2: str) -> str:
+        l = math.gcd(len(str1), len(str2))
+        tmp = str1[:l]
+        if tmp * (len(str1) // l) == str1 and tmp * (len(str2) // l) == str2:
+            return tmp
+
+        # if str1 + str2 == str2 + str1:
+        #     return tmp
+
+        return ""
+
+
 # 1072 - Flip Columns For Maximum Number of Equal Rows - MEDIUM
 class Solution:
     def maxEqualRowsAfterFlips(self, matrix: List[List[int]]) -> int:
@@ -1087,6 +1125,51 @@ class Solution:
             if text[i - 2] == first and text[i - 1] == second:
                 ans.append(text[i])
         return ans
+
+
+# 1080 - Insufficient Nodes in Root to Leaf Paths - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def sufficientSubset(
+        self, root: Optional[TreeNode], limit: int
+    ) -> Optional[TreeNode]:
+        if not root:
+            return None
+        if not root.left and not root.right:
+            return None if root.val < limit else root
+        root.left = self.sufficientSubset(root.left, limit - root.val)
+        root.right = self.sufficientSubset(root.right, limit - root.val)
+        return None if not root.left and not root.right else root
+
+
+# 1081 - Smallest Subsequence of Distinct Characters - MEDIUM
+class Solution:
+    # O(n * 26) / O(26 * 3)
+    def smallestSubsequence(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        st = []
+        vis = set()
+        for c in s:
+            if c not in vis:
+                while st and st[-1] > c and cnt[st[-1]] > 0:
+                    vis.discard(st.pop())
+                st.append(c)
+                vis.add(c)
+            cnt[c] -= 1
+        return "".join(st)
+
+    # O(n * 26) / O(26 * 3)
+    def smallestSubsequence(self, s: str) -> str:
+        pos = {c: i for i, c in enumerate(s)}  # last occurence
+        st = []
+        vis = set()
+        for i, c in enumerate(s):
+            if c not in vis:
+                while st and c < st[-1] and i < pos[st[-1]]:
+                    vis.remove(st.pop())
+                st.append(c)
+                vis.add(c)
+        return "".join(st)
 
 
 # 1185 - Day of the Week - EASY
@@ -1147,6 +1230,23 @@ class Solution:
 
     def duplicateZeros(self, arr: List[int]) -> None:
         arr[:] = [x for v in arr for x in ([v] if v else [0, 0])][: len(arr)]
+
+
+# 1090 - Largest Values From Labels - MEDIUM
+class Solution:
+    def largestValsFromLabels(
+        self, values: List[int], labels: List[int], numWanted: int, useLimit: int
+    ) -> int:
+        vis = collections.defaultdict(int)
+        ans = cnt = 0
+        for v, l in sorted(zip(values, labels), reverse=True):
+            if vis[l] < useLimit:
+                vis[l] += 1
+                ans += v
+                cnt += 1
+                if cnt == numWanted:
+                    break
+        return ans
 
 
 # 1091 - Shortest Path in Binary Matrix - MEDIUM

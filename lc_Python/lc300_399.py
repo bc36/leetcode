@@ -624,28 +624,27 @@ class Solution:
     # O(n * 26 * 26) / O(26 * 2)
     def removeDuplicateLetters(self, s: str) -> str:
         cnt = collections.Counter(s)
-        stack = []
-        for ch in s:
-            if ch not in stack:  # maximum length of stack = 26
-                while stack and stack[-1] > ch and cnt[stack[-1]] > 0:
-                    stack.pop()
-                stack.append(ch)
-            cnt[ch] -= 1
-        return "".join(stack)
+        st = []
+        for c in s:
+            if c not in st:  # maximum length of st = 26
+                while st and st[-1] > c and cnt[st[-1]] > 0:
+                    st.pop()
+                st.append(c)
+            cnt[c] -= 1
+        return "".join(st)
 
     # O(n * 26) / O(26 * 3)
-    def removeDuplicateLetters(self, s):
-        dic = {c: i for i, c in enumerate(s)}  # last occurence
-        arr = []
-        seen = set()
+    def removeDuplicateLetters(self, s: str) -> str:
+        pos = {c: i for i, c in enumerate(s)}  # last occurence
+        st = []
+        vis = set()
         for i, c in enumerate(s):
-            if c not in seen:
-                while arr and c < arr[-1] and i < dic[arr[-1]]:
-                    t = arr.pop()
-                    seen.remove(t)
-                arr.append(c)
-                seen.add(c)
-        return "".join(arr)
+            if c not in vis:
+                while st and c < st[-1] and i < pos[st[-1]]:
+                    vis.remove(st.pop())
+                st.append(c)
+                vis.add(c)
+        return "".join(st)
 
 
 # 318 - Maximum Product of Word Lengths - MEDIUM

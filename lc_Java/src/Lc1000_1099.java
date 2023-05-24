@@ -705,6 +705,42 @@ public class Lc1000_1099 {
         }
     }
 
+    // 1080. Insufficient Nodes in Root to Leaf Paths - MEDIUM
+    class Solution1080a {
+        public TreeNode sufficientSubset(TreeNode root, int limit) {
+            if (root == null)
+                return null;
+            if (root.left == null && root.right == null)
+                return root.val < limit ? null : root;
+            root.left = sufficientSubset(root.left, limit - root.val);
+            root.right = sufficientSubset(root.right, limit - root.val);
+            return root.left == null && root.right == null ? null : root;
+        }
+    }
+
+    // 1090. Largest Values From Labels - MEDIUM
+    class Solution1090a {
+        // 18ms
+        public int largestValsFromLabels(int[] values, int[] labels, int numWanted, int useLimit) {
+            int n = values.length, pairs[][] = new int[n][2];
+            for (int i = 0; i < n; ++i) {
+                pairs[i] = new int[] { values[i], labels[i] };
+            }
+            Arrays.sort(pairs, (a, b) -> b[0] - a[0]);
+            Map<Integer, Integer> vis = new HashMap<>();
+            int ans = 0, cnt = 0;
+            for (int i = 0; i < n && cnt < numWanted; ++i) {
+                int v = pairs[i][0], l = pairs[i][1];
+                if (vis.getOrDefault(l, 0) < useLimit) {
+                    vis.merge(l, 1, Integer::sum);
+                    cnt += 1;
+                    ans += v;
+                }
+            }
+            return ans;
+        }
+    }
+
     // 1092. Shortest Common Supersequence - HARD
     class Solution1092a {
         // 最长公共子序列
