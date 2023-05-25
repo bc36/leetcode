@@ -512,6 +512,58 @@ class Solution:
         return max(dfs(i) for i in range(n))
 
 
+# 1377 - Frog Position After T Seconds - HARD
+class Solution:
+    def frogPosition(
+        self, n: int, edges: List[List[int]], t: int, target: int
+    ) -> float:
+        g = [[] for _ in range(n + 1)]
+        g[1] = [0]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        ans = 0
+
+        def dfs(x: int, fa: int, t: int, p: int) -> True:
+            # 恰好到达 / target 是叶子停在原地
+            if x == target and (t == 0 or len(g[x]) == 1):
+                nonlocal ans
+                ans = 1 / p
+                return True
+            if x == target or t == 0:
+                return False
+            for y in g[x]:
+                if y != fa and dfs(y, x, t - 1, p * (len(g[x]) - 1)):
+                    return True
+            return False
+
+        dfs(1, 0, t, 1)
+        return ans
+
+    def frogPosition(
+        self, n: int, edges: List[List[int]], t: int, target: int
+    ) -> float:
+        g = collections.defaultdict(list)
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        dq = collections.deque([(1, 1.0)])
+        vis = [False] * (n + 1)
+        vis[1] = True
+        while dq and t >= 0:
+            for _ in range(len(dq)):
+                x, p = dq.popleft()
+                cnt = len(g[x]) - int(x != 1)
+                if x == target:
+                    return p if cnt * t == 0 else 0
+                for y in g[x]:
+                    if not vis[y]:
+                        vis[y] = True
+                        dq.append((y, p / cnt))
+            t -= 1
+        return 0
+
+
 # 1380 - Lucky Numbers in a Matrix - EASY
 class Solution:
     def luckyNumbers(self, matrix: List[List[int]]) -> List[int]:
