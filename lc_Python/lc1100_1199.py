@@ -391,6 +391,54 @@ class Solution:
         return ans
 
 
+# 1130 - Minimum Cost Tree From Leaf Values - MEDIUM
+class Solution:
+    # O(n^3) / O(n^2)
+    def mctFromLeafValues(self, arr: List[int]) -> int:
+        n = len(arr)
+        f = [[0] * n for _ in range(n)]
+        g = [[0] * n for _ in range(n)]
+        for i in range(n):
+            g[i][i] = arr[i]
+        for i in range(n):
+            for j in range(i + 1, n):
+                g[i][j] = max(g[i][j - 1], arr[j])
+                f[i][j] = math.inf
+        for l in range(1, n):  # 长度
+            for i in range(n - l):  # 起点
+                for k in range(i, i + l):  # 枚举分割点(根)
+                    f[i][i + l] = min(
+                        f[i][i + l],
+                        f[i][k] + f[k + 1][i + l] + g[i][k] * g[k + 1][i + l],
+                    )
+        return f[0][n - 1]
+
+    def mctFromLeafValues(self, arr: List[int]) -> int:
+        n = len(arr)
+        f = [[0] * n for _ in range(n)]
+        g = [[0] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):
+            g[i][i] = arr[i]
+            for j in range(i + 1, n):
+                g[i][j] = max(g[i][j - 1], arr[j])
+                f[i][j] = min(
+                    f[i][k] + f[k + 1][j] + g[i][k] * g[k + 1][j] for k in range(i, j)
+                )
+        return f[0][n - 1]
+
+    # O(n) / O(n)
+    def mctFromLeafValues(self, arr: List[int]) -> int:
+        ans = 0
+        st = [math.inf]
+        for x in arr:
+            while st[-1] <= x:
+                ans += st.pop() * min(x, st[-1])  # st[-1] * min(x, st[-2])
+            st.append(x)
+        while len(st) > 2:
+            ans += st.pop() * st[-1]
+        return ans
+
+
 # 1137 - N-th Tribonacci Number - EASY
 class Solution:
     @functools.lru_cache(None)

@@ -3,6 +3,28 @@ package src;
 import java.util.*;
 
 public class Lc1100_1199 {
+    // 1130. Minimum Cost Tree From Leaf Values - MEDIUM
+    class Solution1130a {
+        public int mctFromLeafValues(int[] arr) {
+            // 1. 如果栈顶元素比当前元素小, 弹出栈顶元素, 
+            //    栈顶元素与当前元素和栈顶下一个元素中得最小值组合
+            // 2. 如果栈顶元素比当前元素大, 入栈
+            Stack<Integer> st = new Stack<>();
+            st.push(Integer.MAX_VALUE); // 哨兵
+            int ans = 0;
+            for (int i = 0; i < arr.length; i++) {
+                while (st.peek() < arr[i])
+                    ans += st.pop() * Math.min(arr[i], st.peek());
+                st.push(arr[i]);
+            }
+
+            while (st.size() > 2)
+                ans += st.pop() * st.peek();
+
+            return ans;
+        }
+    }
+
     // 1147. Longest Chunked Palindrome Decomposition - HARD
     class Solution1147 {
         // 1ms
