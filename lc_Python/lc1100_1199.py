@@ -824,6 +824,26 @@ class Solution:
         return dfs(n, target) % mod
 
 
+# 1156 - Swap For Longest Repeated Character Substring - MEDIUM
+class Solution:
+    def maxRepOpt1(self, text: str) -> int:
+        cnt = collections.Counter(text)
+        n = len(text)
+        ans = i = 0
+        while i < n:
+            j = i
+            while j < n and text[i] == text[j]:
+                j += 1
+            l = j - i
+            k = j + 1
+            while k < n and text[i] == text[k]:
+                k += 1
+            r = k - j - 1
+            ans = max(ans, min(l + r + 1, cnt[text[i]]))
+            i = j
+        return ans
+
+
 # 1160 - Find Words That Can Be Formed by Characters - EASY
 class Solution:
     def countCharacters(self, words: List[str], chars: str) -> int:
