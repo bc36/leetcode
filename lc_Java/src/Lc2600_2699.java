@@ -1,9 +1,10 @@
 package src;
 
 import static java.math.BigInteger.valueOf;
-import java.util.*;
 import java.math.BigInteger;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Lc2600_2699 {
     // 2600. K Items With the Maximum Sum - EASY
@@ -1035,6 +1036,58 @@ public class Lc2600_2699 {
             int[] left = dfs(cost, 2 * n + 1), right = dfs(cost, 2 * n + 2);
             return new int[] { left[0] + right[0] + Math.abs(left[1] - right[1]),
                     cost[n] + Math.max(left[1], right[1]) };
+        }
+    }
+
+    // 2678. Number of Senior Citizens - EASY
+    class Solution2678a {
+        public int countSeniors(String[] details) {
+            return (int) Stream.of(details).filter(t -> t.matches(".*(6[1-9]|[789]\\d)..")).count();
+        }
+    }
+
+    // 2679. Sum in a Matrix - MEDIUM
+    class Solution2679a {
+        public int matrixSum(int[][] nums) {
+            int ans = 0;
+            for (int[] v : nums) {
+                Arrays.sort(v);
+            }
+            for (int i = 0; i < nums[0].length; i++) {
+                int mx = 0;
+                for (int j = 0; j < nums.length; j++) {
+                    mx = Math.max(mx, nums[j][i]);
+                }
+                ans += mx;
+            }
+            return ans;
+        }
+    }
+
+    // 2680. Maximum OR - MEDIUM
+    class Solution2680a {
+        public long maximumOr(int[] nums, int k) {
+            long right[] = new long[nums.length], left = 0, ans = 0;
+            for (int i = nums.length - 2; i >= 0; i--) {
+                right[i] = right[i + 1] | nums[i + 1];
+            }
+            for (int i = 0; i < nums.length; left |= nums[i++]) {
+                ans = Math.max(ans, left | right[i] | (long) nums[i] << k);
+            }
+            return ans;
+        }
+    }
+
+    // 2681. Power of Heroes - HARD
+    class Solution2681a {
+        public int sumOfPower(int[] nums) {
+            Arrays.sort(nums);
+            long result = 0, sum = 0;
+            for (long v : nums) {
+                result = (result + v * v % 1000000007 * (sum + v)) % 1000000007;
+                sum = (sum * 2 + v) % 1000000007;
+            }
+            return (int) result;
         }
     }
 

@@ -1659,6 +1659,152 @@ class Solution:
         return g[1]
 
 
+# 2678 - Number of Senior Citizens - EASY
+class Solution:
+    def countSeniors(self, details: List[str]) -> int:
+        return sum(s[11:13] > "60" for s in details)
+
+
+# 2679 - Sum in a Matrix - MEDIUM
+class Solution:
+    # O(mnlogn + logn * m * m) / O(1), m = len(nums), n = len(nums[0])
+    def matrixSum(self, nums: List[List[int]]) -> int:
+        for row in nums:
+            row.sort()
+        return sum(max(heapq.heappop(r) for r in nums) for _ in range(len(nums[0])))
+
+    # O(mnlogn + mn) / O(1), 既然每次选最大的数, 那么干脆对每行排序, 这样每次就选的是一列的最大值
+    def matrixSum(self, nums: List[List[int]]) -> int:
+        for row in nums:
+            row.sort()
+        return sum(map(max, zip(*nums)))  # zip(*nums) 枚举每一列
+
+
+# 2680 - Maximum OR - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def maximumOr(self, nums: List[int], k: int) -> int:
+        cnt = collections.defaultdict(int)
+        for x in nums:
+            s = bin(x)[2:]
+            n = len(s)
+            for i, v in enumerate(s):
+                cnt[n - i - 1] += v == "1"
+        ans = mx = 0
+        for x in nums:
+            s = bin(x)[2:]
+            n = len(s)
+            if n < mx:
+                continue
+            mx = max(mx, n)
+            for i, v in enumerate(s):
+                cnt[n - i - 1] -= v == "1"
+
+            p = x << k
+            for a, b in cnt.items():
+                if b > 0:
+                    p |= 1 << a
+            ans = max(ans, p)
+
+            for i, v in enumerate(s):
+                cnt[n - i - 1] += v == "1"
+        return ans
+
+    def maximumOr(self, nums: List[int], k: int) -> int:
+        cnt = collections.defaultdict(int)
+        for x in nums:
+            y = 0
+            while (1 << y) <= x:
+                if x & (1 << y):
+                    cnt[y] += 1
+                y += 1
+        ans = mx = 0
+        for x in nums:
+            y = 0
+            while (1 << y) <= x:
+                if x & (1 << y):
+                    cnt[y] -= 1
+                y += 1
+
+            # if y < mx:
+            #     y = 0
+            #     while (1 << y) <= x:
+            #         if x & (1 << y):
+            #             cnt[y] += 1
+            #         y += 1
+            #     continue
+            # mx = max(mx, y)
+
+            p = x << k
+            for a, b in cnt.items():
+                if b > 0:
+                    p |= 1 << a
+            ans = max(ans, p)
+
+            y = 0
+            while (1 << y) <= x:
+                if x & (1 << y):
+                    cnt[y] += 1
+                y += 1
+        return ans
+
+    # O(nlogn) / O(n)
+    def maximumOr(self, nums: List[int], k: int) -> int:
+        cnt = collections.defaultdict(int)
+        for x in nums:
+            s = bin(x)[2:]
+            n = len(s)
+            for i, v in enumerate(s):
+                cnt[n - i - 1] += v == "1"
+        ans = mx = 0
+        for x in nums:
+            s = bin(x)[2:]
+            n = len(s)
+            if n < mx:
+                continue
+            mx = max(mx, n)
+            for i, v in enumerate(s):
+                cnt[n - i - 1] -= v == "1"
+
+            p = x << k
+            for a, b in cnt.items():
+                if b > 0:
+                    p |= 1 << a
+            ans = max(ans, p)
+
+            for i, v in enumerate(s):
+                cnt[n - i - 1] += v == "1"
+        return ans
+
+    # O(n) / O(n), 预处理右侧元素的或值, 左侧的或值可以一边枚举一边计算
+    def maximumOr(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        suf = [0] * (n + 1)
+        for i in range(n - 1, 0, -1):
+            suf[i] = suf[i + 1] | nums[i]
+        ans = pre = 0
+        for i, x in enumerate(nums):
+            ans = max(ans, pre | (x << k) | suf[i + 1])
+            pre |= x
+        return ans
+
+
+# 2681 - Power of Heroes - HARD
+class Solution:
+    # 1. 元素的顺序不影响答案 -> 先排序
+    # 2. mx ^ 2 * mi, mi 可以合并为一个 presum
+    # 3. 不取余大数运算非常慢
+    # O(nlogn) / O(1)
+    def sumOfPower(self, nums: List[int]) -> int:
+        mod = 10**9 + 7
+        ans = minSum = 0
+        for v in sorted(nums):
+            ans = (ans + (minSum + v) * v * v) % mod
+            minSum = (minSum * 2 + v) % mod
+            # minSum = minSum * 2 + v  # super slow
+        return ans
+
+
 # 2682 - Find the Losers of the Circular Game - EASY
 class Solution:
     # O(n) / O(n)
