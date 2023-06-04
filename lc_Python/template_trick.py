@@ -29,6 +29,7 @@ Directory: (abcdefghijklmnopqrstuvwxyz)
     dp
     euler - sieve of Euler - 欧拉筛/线性筛
     eratosthenes - sieve of Eratosthenes - 埃式筛
+    factors
     floyd
     inv - Modular Multiplicative Inverse - 逆元
     low bit
@@ -431,6 +432,54 @@ def eratosthenes(n: int) -> List[int]:
 
 primes = eratosthenes(10**6)
 
+
+"""factors"""
+
+
+def find_all_primes(n: int) -> None:
+    d = collections.defaultdict(int)  # frequence
+    arr = []  # kind, which is set
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            arr.append(i)
+            while n % i == 0:
+                n //= i
+                d[i] += 1
+        if n > 1:
+            arr.append(n)
+            d[n] += 1
+    return
+
+
+@functools.lru_cache(None)
+def get_factors(n: int) -> collections.defaultdict(int):
+    if n == 1:
+        return collections.defaultdict(int)
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            tmp = copy.deepcopy(get_factors(n // i))
+            tmp[i] += 1
+            return tmp
+    tmp = collections.defaultdict(int)
+    tmp[n] = 1
+    return tmp
+
+
+@functools.lru_cache(None)
+def get_prime_factor(n: int) -> set:
+    if n == 1:
+        return set()
+    ans = set()
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            n //= i
+            ans.add(i)
+            ans = ans.union(get_prime_factor(n))
+            return ans
+    ans.add(n)
+    return ans
+
+
 """
 floyd
 复杂度比较高 时间 O(n^3), 空间 O(n^2), 但是常数小
@@ -552,50 +601,6 @@ def gcd(a: int, b: int) -> int:
 def powerOfTwo(x: int) -> bool:
     # 是否是 2 的幂次, 位运算
     return (x & (x - 1)) == 0
-
-
-def find_all_primes(n: int) -> None:
-    d = collections.defaultdict(int)  # frequence
-    arr = []  # kind/set
-    for i in range(2, int(n**0.5) + 1):
-        if n % i == 0:
-            arr.append(i)
-            while n % i == 0:
-                n //= i
-                d[i] += 1
-        if n > 1:
-            arr.append(n)
-            d[n] += 1
-    return
-
-
-@functools.lru_cache(None)
-def get_factors(n: int) -> collections.defaultdict(int):
-    if n == 1:
-        return collections.defaultdict(int)
-    for i in range(2, int(n**0.5) + 1):
-        if n % i == 0:
-            tmp = copy.deepcopy(get_factors(n // i))
-            tmp[i] += 1
-            return tmp
-    tmp = collections.defaultdict(int)
-    tmp[n] = 1
-    return tmp
-
-
-@functools.lru_cache(None)
-def get_prime_factor(n: int) -> set:
-    if n == 1:
-        return set()
-    ans = set()
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n % i == 0:
-            n //= i
-            ans.add(i)
-            ans = ans.union(get_prime_factor(n))
-            return ans
-    ans.add(n)
-    return ans
 
 
 @functools.lru_cache(None)
