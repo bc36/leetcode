@@ -1611,6 +1611,23 @@ class Solution:
         )
 
 
+# 2446 - Determine if Two Events Have Conflict - EASY
+class Solution:
+    def haveConflict(self, event1: List[str], event2: List[str]) -> bool:
+        t1 = int(event1[0][:2]) * 60 + int(event1[0][3:])
+        t2 = int(event1[1][:2]) * 60 + int(event1[1][3:])
+        t3 = int(event2[0][:2]) * 60 + int(event2[0][3:])
+        t4 = int(event2[1][:2]) * 60 + int(event2[1][3:])
+        if t1 <= t3 and t2 >= t3:
+            return True
+        if t3 <= t1 and t4 >= t1:
+            return True
+        return False
+
+    def haveConflict(self, event1: List[str], event2: List[str]) -> bool:
+        return not (event1[0] > event2[1] or event1[1] < event2[0])
+
+
 # 2451 - Odd String Difference - EASY
 class Solution:
     # O(mn) / O(m + n)
