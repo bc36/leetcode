@@ -873,6 +873,41 @@ class Solution:
         return ans
 
 
+# 1171 - Remove Zero Sum Consecutive Nodes from Linked List - MEDIUM
+class Solution:
+    def removeZeroSumSublists(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode(0, head)
+        vis = {0: dummy}
+        pre = 0
+        while head:
+            pre += head.val
+            vis[pre] = head
+            head = head.next
+        head = dummy
+        pre = 0
+        while head:
+            pre += head.val
+            head.next = vis[pre].next
+            head = head.next
+        return dummy.next
+
+    def removeZeroSumSublists(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        node = dummy = ListNode(0, head)
+        vis = {}
+        pre = 0
+        while node:
+            pre += node.val
+            vis[pre] = node
+            node = node.next
+        node = dummy
+        pre = 0
+        while node:
+            pre += node.val
+            node.next = vis[pre].next
+            node = node.next
+        return dummy.next
+
+
 # 1175 - Prime Arrangements - EASY
 class Solution:
     def numPrimeArrangements(self, n: int) -> int:

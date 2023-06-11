@@ -3,6 +3,23 @@ package src;
 import java.util.*;
 
 public class Lc1100_1199 {
+    public class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
     // 1130. Minimum Cost Tree From Leaf Values - MEDIUM
     class Solution1130a {
         public int mctFromLeafValues(int[] arr) {
@@ -151,6 +168,43 @@ public class Lc1100_1199 {
                 i = j;
             }
             return ans;
+        }
+    }
+
+    // 1171. Remove Zero Sum Consecutive Nodes from Linked List - MEDIUM
+    class Solution1171a {
+        // 2ms
+        public ListNode removeZeroSumSublists(ListNode head) {
+            ListNode dummy = new ListNode(0, head);
+            int pre = 0;
+            Map<Integer, ListNode> vis = new HashMap<>();
+            for (ListNode node = dummy; node != null; node = node.next) {
+                pre += node.val;
+                vis.put(pre, node);
+            }
+            pre = 0;
+            for (ListNode node = dummy; node != null; node = node.next) {
+                pre += node.val;
+                node.next = vis.get(pre).next;
+            }
+            return dummy.next;
+        }
+    }
+
+    class Solution {
+        // 1ms
+        public ListNode removeZeroSumSublists(ListNode head) {
+            if (head == null)
+                return null;
+            int sum = head.val;
+            if (sum == 0)
+                return removeZeroSumSublists(head.next);
+            var hn = head.next;
+            for (var cur = hn; cur != null; cur = cur.next)
+                if ((sum += cur.val) == 0)
+                    return removeZeroSumSublists(cur.next);
+            head.next = removeZeroSumSublists(hn);
+            return head;
         }
     }
 }
