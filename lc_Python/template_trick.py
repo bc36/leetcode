@@ -1165,7 +1165,10 @@ class SegmentTree:
         return
 
 
-"""st, sparse table"""
+"""st, sparse table
+也用到了 binary lifting 思想
+https://cp-algorithms.com/data_structures/sparse-table.html
+"""
 
 
 class SparseTable:

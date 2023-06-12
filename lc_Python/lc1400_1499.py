@@ -235,6 +235,7 @@ class Solution:
 
 # 1428 - Leftmost Column with at Least a One - MEDIUM
 
+
 # 1431 - Kids With the Greatest Number of Candies - EASY
 class Solution:
     def kidsWithCandies(self, candies: List[int], extraCandies: int) -> List[bool]:
@@ -702,6 +703,122 @@ class Solution:
             ans[i] = prices[i] - st[-1]
             st.append(prices[i])
         return ans
+
+
+# 1483 - Kth Ancestor of a Tree Node - HARD
+class TreeAncestor:
+    # O(nk) / O(n), 暴力, 显然是 TLE 的
+    def __init__(self, n: int, parent: List[int]):
+        self.p = parent
+
+    def getKthAncestor(self, node: int, k: int) -> int:
+        for _ in range(k):
+            node = self.p[node]
+            if node == -1:
+                return -1
+        return node
+
+
+class TreeAncestor:
+    # 一个节点的所有祖先节点 (从根节点到该节点的路径上经过的所有点) 的dfs序 (从根节点以dfs访问的顺序) 都在该节点前
+    # 通过BFS对树进行层次遍历, 确定每层有哪些节点
+    # 假设要找节点 A 的第 k 个父节点, 节点 A 在第 L 层, 即只需找到第 L - k 层的所有节点中 A 的祖先节点.
+    # 又由于 A 的祖先节点在每一层只有一个, 且 dfs 序必然在节点 A 前,
+    # 所以可以通过二分查找在第 L - k 层中找比 A 小且距离 A 最近的元素即为答案
+    # O(n + klogn) / O(n)
+    def __init__(self, n: int, parent: List[int]):
+        self.tree = [[] for _ in range(n)]
+        for i in range(1, n):
+            self.tree[parent[i]].append(i)
+
+        # 构建 dfs 序
+        self.o = 0  # order
+        self.do = [0] * n  # node X's dfs order
+        self.dor = [0] * n  # order to index i, dfs order reverse
+        self.dfs(0)
+
+        # 存下每一层的所有节点 (dfs序号) 及每个节点对应的层号, 每一层是一层 dfs 序
+        self.layers = []
+        self.do2l = [0] * n  # node (X's)'s dfs order to bfs level
+        q = [self.do[0]]
+        lv = 0
+        while q:
+            self.layers.append(q)
+            new = []
+            for do in q:
+                self.do2l[do] = lv
+                for nei in self.tree[self.dor[do]]:
+                    new.append(self.do[nei])
+            q = new
+            lv += 1
+        return
+
+    def dfs(self, x: int) -> None:
+        self.do[x] = self.o
+        self.dor[self.o] = x
+        self.o += 1
+        for y in self.tree[x]:
+            self.dfs(y)
+        return
+
+    def getKthAncestor(self, node: int, k: int) -> int:
+        # 先找到要去的层级
+        do = self.do[node]
+        lv = self.do2l[do]
+        if lv - k < 0:
+            return -1
+        layer = self.layers[lv - k]
+        l = 0
+        r = len(layer) - 1
+        while l < r:
+            m = l + r + 1 >> 1
+            if layer[m] < do:
+                l = m
+            else:
+                r = m - 1
+        return self.dor[layer[l]]
+
+
+class TreeAncestor:
+    # 一个可以优化的点, 在 dfs 时可以同时求当前节点在第几层
+    # O(n + klogn) / O(n)
+    def __init__(self, n: int, parent: List[int]):
+        self.tree = [[] for _ in range(n)]
+        for i in range(1, n):
+            self.tree[parent[i]].append(i)
+        self.o = 0  # order
+        self.do = [0] * n  # node X's dfs order
+        self.level = [0] * n  # node X's bfs level
+        self.layers = [[] for _ in range(n)]  # node X's
+        self.dor = [0] * n
+        self.dfs(0, 0)
+
+    def dfs(self, x: int, l: int) -> None:
+        self.do[x] = self.o
+        self.level[x] = l
+        self.layers[l].append(self.o)
+        self.dor[self.o] = x
+        self.o += 1
+        for y in self.tree[x]:
+            self.dfs(y, l + 1)
+        return
+
+    def getKthAncestor(self, node: int, k: int) -> int:
+        if self.level[node] - k < 0:
+            return -1
+        layer = self.layers[self.level[node] - k]
+        l = 0
+        r = len(layer) - 1
+        while l < r:
+            m = l + r + 1 >> 1
+            if layer[m] < self.do[node]:
+                l = m
+            else:
+                r = m - 1
+        return self.dor[layer[l]]
+
+    # TODO dp 版本
+    # https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/
 
 
 # 1486 - XOR Operation in an Array - EASY

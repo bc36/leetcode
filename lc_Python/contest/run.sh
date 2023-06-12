@@ -11,7 +11,7 @@ if [ "$1" = "flush" ] && [ -f "template.py" ]; then
     cp "template.py" "T4.py"
     echo "Done!"
 elif test -f "T$1.py"; then
-    python3 T$1.py
+    python3.11 T$1.py
 else
     echo "Wrong commmand or maybe in the wrong place."
 fi

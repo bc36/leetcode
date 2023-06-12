@@ -73,6 +73,80 @@ public class Lc1400_1499 {
         }
     }
 
+    // 1483. Kth Ancestor of a Tree Node - HARD
+    class TreeAncestor {
+        // 66ms
+        // 构建 dfs 序
+        int[] i2do;
+        int[] do2i;
+        int o = 0;
+
+        public void dfs(int x, List<Integer>[] tree) {
+            i2do[x] = o;
+            do2i[o] = x;
+            o++;
+            for (int y : tree[x]) {
+                dfs(y, tree);
+            }
+        }
+
+        // 存下每一层的所有节点 (dfs序号) 及每个节点对应的层号
+        List<List<Integer>> layers;
+        int[] do2l;
+
+        public TreeAncestor(int n, int[] parent) {
+            i2do = new int[n];
+            do2i = new int[n];
+            do2l = new int[n];
+            layers = new ArrayList<>();
+
+            List<Integer>[] tree = new List[n];
+            for (int i = 0; i < n; i++)
+                tree[i] = new ArrayList<>();
+            for (int i = 1; i < n; i++) {
+                tree[parent[i]].add(i);
+            }
+            dfs(0, tree);
+
+            List<Integer> q = new ArrayList<>();
+            q.add(i2do[0]);
+            int lv = 0;
+            while (q.size() != 0) {
+                layers.add(q);
+                List<Integer> nxt = new ArrayList<>();
+                for (int x : q) {
+                    do2l[x] = lv;
+                    for (int y : tree[do2i[x]]) {
+                        nxt.add(i2do[y]);
+                    }
+                }
+                q = nxt;
+                lv++;
+            }
+
+        }
+
+        public int getKthAncestor(int node, int k) {
+            // 先找到要去的层级
+            int dfsOrder = i2do[node];
+            int lv = do2l[dfsOrder];
+            int tl = lv - k;
+            if (tl < 0)
+                return -1;
+            List<Integer> layer = layers.get(tl);
+            // 二分查找到祖先节点
+            int l = 0, r = layer.size() - 1;
+            while (l < r) {
+                int m = (l + r + 1) >> 1;
+                if (layer.get(m) < dfsOrder)
+                    l = m;
+                else
+                    r = m - 1;
+            }
+            return do2i[layer.get(l)];
+        }
+    }
+
     // 1487. Making File Names Unique - MEDIUM
     class Solution1487a {
         public String[] getFolderNames(String[] names) {
