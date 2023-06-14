@@ -678,7 +678,7 @@ public class Lc1600_1699 {
                 e = e + i + o + u;
                 i = i + o + u;
                 o = o + u;
-                u = u;
+                // u = u;
             }
             return a + e + i + o + u;
         }
@@ -812,4 +812,34 @@ public class Lc1600_1699 {
             return true;
         }
     }
+
+    // 1685. Sum of Absolute Differences in a Sorted Array - MEDIUM
+    class Solution1685a {
+        public int[] getSumAbsoluteDifferences(int[] nums) {
+            int[] ret = new int[nums.length];
+            int sum = 0;
+            for (int i = 0; i < nums.length; i++) {
+                ret[i] += nums[i] * i - sum;
+                sum += nums[i];
+            }
+            sum = 0;
+            for (int i = nums.length - 1; i >= 0; i--) {
+                sum += nums[i];
+                ret[i] += sum - nums[i] * (nums.length - i);
+            }
+            return ret;
+        }
+    }
+
+    class Solution1685b {
+        public int longestDecomposition(String s) {
+            if (s.isEmpty())
+                return 0;
+            for (int i = 1, n = s.length(); i <= n / 2; ++i)
+                if (s.substring(0, i).equals(s.substring(n - i)))
+                    return 2 + longestDecomposition(s.substring(i, n - i));
+            return 1;
+        }
+    }
+
 }
