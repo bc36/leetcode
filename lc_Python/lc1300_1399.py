@@ -473,6 +473,30 @@ class Solution:
         return "a" + "b" * (n - 1)
 
 
+# 1375 - Number of Times Binary String Is Prefix-Aligned - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def numTimesAllBlue(self, flips: List[int]) -> int:
+        n = len(flips)
+        vis = [False] * n
+        ans = p = mx = 0
+        for x in flips:
+            vis[x - 1] = True
+            mx = max(mx, x)
+            while p < n and vis[p]:
+                p += 1
+            ans += mx == p
+        return ans
+
+    # O(n) / O(1)
+    def numTimesAllBlue(self, flips: List[int]) -> int:
+        ans = mx = 0
+        for i, x in enumerate(flips):
+            mx = max(mx, x)
+            ans += mx == i + 1
+        return ans
+
+
 # 1376 - Time Needed to Inform All Employees - MEDIUM
 class Solution:
     def numOfMinutes(

@@ -51,6 +51,19 @@ public class Lc1300_1399 {
         }
     }
 
+    // 1375. Number of Times Binary String Is Prefix-Aligned - MEDIUM
+    class Solution {
+        public int numTimesAllBlue(int[] flips) {
+            int ans = 0, mx = 0;
+            for (int i = 0; i < flips.length; i++) {
+                mx = Math.max(mx, flips[i]);
+                if (mx == i + 1)
+                    ans++;
+            }
+            return ans;
+        }
+    }
+
     // 1376. Time Needed to Inform All Employees - MEDIUM
     class Solution1376a {
         public int numOfMinutes(int n, int headID, int[] manager, int[] informTime) {
