@@ -191,6 +191,8 @@ class BIT:
 
 
 """dfs"""
+
+
 # 利用父节点
 def example():
     g = []
@@ -1246,6 +1248,7 @@ def string_hash(arr: List[int]) -> None:
 
 """str2binary"""
 
+
 # be careful of Operation Priority: Addition(+), Subtraction(-) higher than Bitwise shift operator(<<, >>)
 def str2binary(s: str):
     n = 0
@@ -1486,3 +1489,9 @@ segment tree:     query: O(logn), update: O(logn)
 # BUG Bugs: Reported defects tracked in bug database.
 # HACK Hacks: Temporary code to force inflexible functionality, or simply a test change, or workaround a known problem.
 # NOTE Notes: Sections where a code reviewer found something that needs discussion or further investigation.
+
+
+# 带余取模
+# (a + b) % m = ((a % m) + (b % m)) % m
+# (a * b) % m = ((a % m) * (b % m)) % m
+# 这两个恒等式, 可以随意地对代码中的加法和乘法的结果取模

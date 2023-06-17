@@ -19,9 +19,6 @@ class TreeNode:
 
 # 2706 - Buy Two Chocolates - EASY
 class Solution:
-    functools.reduce(
-        operator.mul,
-    )
     # O(nlogn) / O(1)
     def buyChoco(self, prices: List[int], money: int) -> int:
         prices.sort()
@@ -156,3 +153,97 @@ class Solution:
         return len(set(uf.find(x) for x in nums)) == 1
         root = uf.find(nums[0])
         return all(uf.find(x) == root for x in nums)
+
+
+# 2729 - Check if The Number is Fascinating - EASY
+class Solution:
+    def isFascinating(self, n: int) -> bool:
+        s = str(n) + str(n * 2)[-3:] + str(n * 3)[-3:]
+        cnt = collections.Counter(s)
+        return len(cnt) == 9 and "0" not in cnt
+
+    def isFascinating(self, n: int) -> bool:
+        if n < 123 or n > 329:
+            return False
+        s = str(n) + str(n * 2) + str(n * 3)
+        return "0" not in s and len(set(s)) == 9
+
+    def isFascinating(self, n: int) -> bool:
+        return n in (192, 219, 273, 327)
+
+
+# 2730 - Find the Longest Semi-Repetitive Substring - MEDIUM
+class Solution:
+    # O(n) / O(1)
+    def longestSemiRepetitiveSubstring(self, s: str) -> int:
+        i = has = 0
+        ans = 1
+        for j in range(1, len(s)):
+            has += s[j] == s[j - 1]
+            if has < 2:
+                ans = max(ans, j - i + 1)
+            while has == 2:
+                i += 1
+                has -= s[i] == s[i - 1]
+        return ans
+
+
+# 2731 - Movement of Robots - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def sumDistance(self, nums: List[int], s: str, d: int) -> int:
+        mod = 10**9 + 7
+        arr = sorted(x + d if y == "R" else x - d for x, y in zip(nums, s))
+        ans = pre = 0
+        for i, x in enumerate(arr):
+            ans = (ans + i * x - pre) % mod
+            pre += x
+        return ans
+
+    # O(nlogn) / O(1)
+    def sumDistance(self, nums: List[int], s: str, d: int) -> int:
+        mod = 10**9 + 7
+        for i, c in enumerate(s):
+            nums[i] += d if c == "R" else -d
+        nums.sort()
+        ans = pre = 0
+        for i, x in enumerate(nums):
+            # ans = (ans + i * x - pre) % mod
+            ans += i * x - pre
+            pre += x
+        return ans % mod  # 可能 ans 不是很大, 最后再进行取模计算甚至运行更快
+
+
+# 2732 - Find a Good Subset of the Matrix - HARD
+class Solution:
+    def goodSubsetofBinaryMatrix(self, grid: List[List[int]]) -> List[int]:
+        d = collections.defaultdict(list)
+        for i, row in enumerate(grid):
+            mask = 0
+            for x in row:
+                mask *= 2
+                mask += x
+            d[mask].append(i)
+        k = list(d.keys())
+        if 0 in k:
+            return [d[0][0]]
+        for i in range(len(k)):
+            for j in range(i + 1, len(k)):
+                if k[i] & k[j] == 0:
+                    return [d[k[i]][0], d[k[j]][0]]
+        return []
+
+    def goodSubsetofBinaryMatrix(self, grid: List[List[int]]) -> List[int]:
+        d = {}
+        for i, row in enumerate(grid):
+            mask = 0
+            for j, x in enumerate(row):
+                mask |= x << j
+            d[mask] = i
+        if 0 in d:
+            return [d[0]]
+        for x, i in d.items():
+            for y, j in d.items():
+                if (x & y) == 0:
+                    return sorted((i, j))
+        return []

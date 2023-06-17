@@ -570,3 +570,10 @@ AK, 2023-05-27
 https://leetcode.cn/contest/biweekly-contest-105/
 T4: 442 pass
 """
+
+
+# https://leetcode.cn/contest/biweekly-contest-106/
+# 614 / https://leetcode.cn/contest/biweekly-contest-106/problems/movement-of-robots/
+# 脑筋急转弯
+# 389 / https://leetcode.cn/contest/biweekly-contest-106/problems/find-a-good-subset-of-the-matrix/
+# 分类讨论
