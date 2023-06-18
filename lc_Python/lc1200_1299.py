@@ -930,6 +930,67 @@ class Solution:
         return sum((r + c) % 2 for r in rows for c in cols)
 
 
+# 1254 - Number of Closed Islands - MEDIUM
+class Solution:
+    # O(mn) / O(mn)
+    def closedIsland(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        vis = [[False] * n for _ in range(m)]
+        ans = 0
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 0 and not vis[i][j]:
+                    f = True
+                    q = [(i, j)]
+                    while q:
+                        new = []
+                        for x, y in q:
+                            if x == 0 or x == m - 1 or y == 0 or y == n - 1:
+                                f = False
+                            for nx, ny in (
+                                (x + 1, y),
+                                (x - 1, y),
+                                (x, y + 1),
+                                (x, y - 1),
+                            ):
+                                if (
+                                    0 <= nx < m
+                                    and 0 <= ny < n
+                                    and grid[nx][ny] == 0
+                                    and not vis[nx][ny]
+                                ):
+                                    new.append((nx, ny))
+                                    vis[nx][ny] = True
+                        q = new
+                    ans += f
+        return ans
+
+    def closedIsland(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        vis = [[False] * n for _ in range(m)]
+
+        def dfs(x: int, y: int, isFrontier: bool) -> bool:
+            vis[x][y] = True
+            if x == 0 or x == m - 1 or y == 0 or y == n - 1:
+                isFrontier = True
+            for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                if (
+                    0 <= nx < m
+                    and 0 <= ny < n
+                    and grid[nx][ny] == 0
+                    and not vis[nx][ny]
+                ):
+                    isFrontier |= dfs(nx, ny, isFrontier)
+            return isFrontier
+
+        return sum(
+            not dfs(i, j, False)
+            for i, row in enumerate(grid)
+            for j, v in enumerate(row)
+            if v == 0 and not vis[i][j]
+        )
+
+
 # 1255 - Maximum Score Words Formed by Letters - HARD
 class Solution:
     def maxScoreWords(

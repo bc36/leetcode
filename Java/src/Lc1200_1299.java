@@ -3,6 +3,42 @@ package src;
 import java.util.*;
 
 public class Lc1200_1299 {
+    // 1254. Number of Closed Islands - MEDIUM
+    class Solution1254a {
+        // 1. dfs 标记 第/最后 一 行/列 格子为 1
+        // 2. 再次遍历, 遇到 0 一定是封闭岛屿, 然后 dfs 标记为 1
+        public int closedIsland(int[][] grid) {
+            int m = grid.length, n = grid[0].length;
+            for (int i = 0; i < m; i++) {
+                int step = i == 0 || i == m - 1 ? 1 : n - 1;
+                for (int j = 0; j < n; j += step)
+                    dfs(grid, i, j);
+            }
+
+            int ans = 0;
+            for (int i = 1; i < m - 1; i++) {
+                for (int j = 1; j < n - 1; j++) {
+                    if (grid[i][j] == 0) {
+                        ans++;
+                        dfs(grid, i, j);
+                    }
+                }
+            }
+            return ans;
+        }
+
+        private void dfs(int[][] grid, int x, int y) {
+            if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] != 0)
+                return;
+            grid[x][y] = 1;
+            dfs(grid, x - 1, y);
+            dfs(grid, x + 1, y);
+            dfs(grid, x, y - 1);
+            dfs(grid, x, y + 1);
+            return;
+        }
+    }
+
     // 1263. Minimum Moves to Move a Box to Their Target Location - HARD
     class Solution1263a {
         private char[][] grid;
