@@ -1247,3 +1247,10 @@ T4: 1496 pass
 # 枚举
 # 214 / https://leetcode.cn/contest/weekly-contest-349/problems/maximum-sum-queries/
 # 排序 + 单调栈 + 二分 / 线段树
+
+
+# https://leetcode.cn/contest/weekly-contest-350/
+# 658 / https://leetcode.cn/contest/weekly-contest-350/problems/special-permutations/
+# 状态压缩 状压 dp
+# 253 / https://leetcode.cn/contest/weekly-contest-350/problems/painting-the-walls/
+# dp, 0/1 背包

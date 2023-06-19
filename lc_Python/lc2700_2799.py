@@ -371,3 +371,121 @@ class Solution:
         return ans
 
     # 线段树, 树状数组, ST表
+
+
+# 2739 - Total Distance Traveled - EASY
+class Solution:
+    # O(mainTank) / O(1)
+    def distanceTraveled(self, mainTank: int, additionalTank: int) -> int:
+        ans = 0
+        while mainTank >= 5:
+            mainTank -= 5
+            ans += 50
+            if additionalTank:
+                additionalTank -= 1
+                mainTank += 1
+        return ans + mainTank * 10
+
+    # O(1) / O(1)
+    def distanceTraveled(self, mainTank: int, additionalTank: int) -> int:
+        return (mainTank + min(additionalTank, (mainTank - 1) // 4)) * 10
+
+
+# 2740 - Find the Value of the Partition - MEDIUM
+class Solution:
+    # O(nlogn) / O(1)
+    def findValueOfPartition(self, nums: List[int]) -> int:
+        nums.sort()
+        return min(y - x for x, y in pairwise(nums))
+
+
+# 2741 - Special Permutations - MEDIUM
+class Solution:
+    # m: 2^n 种, j: n 种
+    # 时间复杂度 = O(状态个数) * O(单个状态的计算时间)
+    #          = O(n * 2^n) * O(n)
+    #          = O(n^2 * 2^n)
+    # 空间复杂度 = O(状态个数)
+    #          = O(n * 2^n)
+    # O(n^2 * 2^n) / O(n * 2^n)
+    def specialPerm(self, nums: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dfs(m: int, j: int) -> int:
+            """m 表示当前可以选的下标集合(状态), j 表示上一个选的数的下标是 j"""
+            if m == 0:
+                return 1
+            res = 0
+            for k, x in enumerate(nums):
+                if m >> k & 1 and (nums[j] % x == 0 or x % nums[j] == 0):
+                    res += dfs(m ^ (1 << k), k)
+            return res
+
+        u = (1 << len(nums)) - 1  # 全集
+        return sum(dfs(u ^ (1 << i), i) for i in range(len(nums))) % 1000000007
+
+    def specialPerm(self, nums: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dfs(state: int, last: int) -> int:
+            """state 表示当前集合状态, last 表示上一个选的数"""
+            if state == (1 << len(nums)) - 1:
+                return 1
+            res = 0
+            for i in range(len(nums)):
+                if (1 << i) & state:  # 这一位(的数字)已经选过了, 跳过
+                    continue
+                if nums[i] % last == 0 or last % nums[i] == 0:
+                    res += dfs(state | (1 << i), nums[i])
+            return res % 1000000007
+
+        return dfs(0, 1)
+
+
+# 2742 - Painting the Walls - HARD
+class Solution:
+    # 1. 选或不选
+    # 2. 枚举选哪个
+    # 是 dp 经常需要思考的问题
+    # 时间复杂度 = O(状态个数) * O(单个状态的计算时间) = O(n^2) * O(1)
+    # 空间复杂度 = O(状态个数) = O(n^2)
+    # O(n^2) / O(n^2)
+    def paintWalls(self, cost: List[int], time: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int) -> int:
+            """刷完 0 ~ i 的墙, 且当前累计付费时间为 j 的最小开销"""
+            if j > i:  # 剩余的墙都可以免费刷
+                return 0
+            if i < 0:
+                return math.inf
+            return min(dfs(i - 1, j + time[i]) + cost[i], dfs(i - 1, j - 1))  # 付费 / 不付费
+
+        return dfs(len(cost) - 1, 0)
+
+    def paintWalls(self, cost: List[int], time: List[int]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, free: int) -> int:
+            if free >= len(cost):  # 攒够足以 cover 所有墙的 free
+                return 0
+            if i == len(cost):  # i 已经到了最后, 但是还没攒够 free
+                return math.inf
+            return min(dfs(i + 1, free + time[i] + 1) + cost[i], dfs(i + 1, free))
+
+        return dfs(0, 0)
+
+    # O(n^2) / O(n), [至少装满型] 0/1 背包
+    def paintWalls(self, cost: List[int], time: List[int]) -> int:
+        n = len(cost)
+        f = [0] + [math.inf] * n  # f[i][0] 表示 j<=0 的状态
+        for c, t in zip(cost, time):
+            for j in range(n, 0, -1):
+                f[j] = min(f[j], f[max(j - t - 1, 0)] + c)
+        return f[n]
+
+    def paintWalls(self, cost: List[int], time: List[int]) -> int:
+        n = len(cost)
+        f = [0] + [math.inf] * n
+        for c, t in zip(cost, time):
+            g = f.copy()
+            for j in range(0, n + 1):
+                g[min(j + 1 + t, n)] = min(g[min(j + 1 + t, n)], f[j] + c)
+            f = g
+        return f[n]

@@ -208,4 +208,62 @@ public class Lc2700_2799 {
             return ans;
         }
     }
+
+    // 2739. Total Distance Traveled - EASY
+    class Solution2739a {
+        public int distanceTraveled(int mainTank, int additionalTank) {
+            return (Math.min(additionalTank, (mainTank - 1) / 4) + mainTank) * 10;
+        }
+    }
+
+    // 2740. Find the Value of the Partition - MEDIUM
+    class Solution2740a {
+        public int findValueOfPartition(int[] nums) {
+            Arrays.sort(nums);
+            int ans = Integer.MAX_VALUE;
+            for (int i = 1; i < nums.length; i++) {
+                ans = Math.min(ans, nums[i] - nums[i - 1]);
+            }
+            return ans;
+        }
+    }
+
+    // 2741. Special Permutations - MEDIUM
+    class Solution2741a {
+        public int specialPerm(int[] nums) {
+            int dp[][] = new int[1 << nums.length][nums.length], sum = 0;
+            for (int i = 0; i < nums.length; i++) {
+                dp[1 << i][i] = 1;
+            }
+            for (int i = 1; i < 1 << nums.length; i++) {
+                for (int j = 0; j < nums.length; j++) {
+                    for (int k = 0; (i & 1 << j) == 0 && k < nums.length; k++) {
+                        if ((i & 1 << k) > 0 && (nums[j] % nums[k] == 0 || nums[k] % nums[j] == 0)) {
+                            dp[i | 1 << j][j] = (dp[i | 1 << j][j] + dp[i][k]) % 1000000007;
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < nums.length; i++) {
+                sum = (sum + dp[(1 << nums.length) - 1][i]) % 1000000007;
+            }
+            return sum;
+        }
+    }
+
+    // 2742. Painting the Walls - HARD
+    class Solution2742a {
+        public int paintWalls(int[] cost, int[] time) {
+            int[] dp = new int[cost.length + 1];
+            for (int i = 1; i <= cost.length; i++) {
+                dp[i] = 1000000000;
+            }
+            for (int i = 0; i < cost.length; i++) {
+                for (int j = cost.length - 1; j >= 0; j--) {
+                    dp[j + 1] = Math.min(dp[j + 1], dp[Math.max(0, j - time[i])] + cost[i]);
+                }
+            }
+            return dp[cost.length];
+        }
+    }
 }
