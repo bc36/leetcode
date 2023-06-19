@@ -139,4 +139,73 @@ public class Lc2700_2799 {
             return List.of();
         }
     }
+
+    // 2733. Neither Minimum nor Maximum - EASY
+    class Solution2733a {
+        public int findNonMinOrMax(int[] nums) {
+            Arrays.sort(nums);
+            return nums.length > 2 ? nums[1] : -1;
+        }
+    }
+
+    // 2734. Lexicographically Smallest String After Substring Operation - MEDIUM
+    class Solution2734a {
+        public String smallestString(String s) {
+            char[] c = s.toCharArray();
+            for (int i = 0; i < s.length(); i++) {
+                if (c[i] > 'a') {
+                    for (; i < c.length && c[i] > 'a'; i++) {
+                        c[i]--;
+                    }
+                    return new String(c);
+                }
+            }
+            c[c.length - 1] = 'z';
+            return new String(c);
+        }
+    }
+
+    // 2735. Collecting Chocolates - MEDIUM
+    class Solution2735a {
+        public long minCost(int[] nums, int x) {
+            long mi = IntStream.of(nums).mapToLong(v -> v).sum();
+            for (long i = 1; i <= nums.length; i++) {
+                int[] next = new int[nums.length];
+                for (int j = 0; j < next.length; j++) {
+                    next[j] = Math.min(nums[j], nums[(j + 1) % nums.length]);
+                }
+                mi = Math.min(mi, i * x + IntStream.of(nums = next).mapToLong(v -> v).sum());
+            }
+            return mi;
+        }
+    }
+
+    // 2736. Maximum Sum Queries - HARD
+    class Solution2736a {
+        public int[] maximumSumQueries(int[] nums1, int[] nums2, int[][] queries) {
+            int[] arr[] = new int[nums1.length][], ans = new int[queries.length];
+            for (int i = 0; i < arr.length; i++) {
+                arr[i] = new int[] { nums1[i], nums2[i] };
+            }
+            Arrays.sort(arr, (o, p) -> p[0] - o[0]);
+            Integer[] index = new Integer[queries.length];
+            for (int i = 0; i < queries.length; i++) {
+                index[i] = i;
+            }
+            Arrays.sort(index, (o, p) -> queries[p][0] - queries[o][0]);
+            TreeMap<Integer, Integer> mp = new TreeMap<>(Map.of(0, Integer.MAX_VALUE, Integer.MAX_VALUE, -1));
+            for (int i = 0, j = 0; i < queries.length; i++) {
+                for (; j < arr.length && arr[j][0] >= queries[index[i]][0]; j++) {
+                    if (mp.ceilingEntry(arr[j][1]).getValue() < arr[j][0] + arr[j][1]) {
+                        while (mp.floorEntry(arr[j][1]).getValue() <= arr[j][0] + arr[j][1]) {
+                            mp.remove(mp.floorKey(arr[j][1]));
+                        }
+                        mp.put(arr[j][1], arr[j][0] + arr[j][1]);
+                    }
+                }
+                ans[index[i]] = mp.ceilingEntry(queries[index[i]][1]).getValue();
+            }
+            return ans;
+        }
+    }
 }

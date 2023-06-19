@@ -247,3 +247,127 @@ class Solution:
                 if (x & y) == 0:
                     return sorted((i, j))
         return []
+
+
+# 2733 - Neither Minimum nor Maximum - EASY
+class Solution:
+    # O(n) / O(1)
+    def findNonMinOrMax(self, nums: List[int]) -> int:
+        mi = min(nums)
+        mx = max(nums)
+        for v in nums:
+            if v != mi and v != mx:
+                return v
+        return -1
+
+    # O(1) / O(1)
+    def findNonMinOrMax(self, nums: List[int]) -> int:
+        return sorted(nums[:3])[1] if len(nums) > 2 else -1
+
+
+# 2734. Lexicographically Smallest String After Substring Operation - MEDIUM
+class Solution:
+    def smallestString(self, s: str) -> str:
+        t = list(s)
+        for i, c in enumerate(t):
+            if c != "a":
+                for j in range(i, len(t)):
+                    if t[j] == "a":
+                        break
+                    t[j] = chr(ord(t[j]) - 1)
+                return "".join(t)
+        t[-1] = "z"
+        return "".join(t)
+
+
+# 2735. Collecting Chocolates - MEDIUM
+class Solution:
+    # 如果不操作, 第 i 个巧克力必须花费 nums[i] 收集, 总成本为所有 nums[i] 之和
+    # 如果操作一次, 第 i 个巧克力可以花费 min(nums[i], nums[(i + 1) % n]) 收集
+    # 如果操作两次, 第 i 个巧克力可以花费 min(nums[i], nums[(i + 1) % n], nums[(i + 2) % n]) 收集
+    # ... 暴力枚举
+    # O(n^3) / O(n)
+    def minCost(self, nums: List[int], x: int) -> int:
+        n = len(nums)
+        ans = sum(nums)
+        mi = [x for x in nums]
+        for i in range(1, n):
+            for j in range(n):
+                mi[j] = min(mi[j], nums[(j + n - i) % n])
+            ans = min(ans, sum(mi) + x * i)
+        return ans
+
+    # 枚举旋转的次数
+    def minCost(self, nums: List[int], x: int) -> int:
+        ans = sum(nums)
+        tmp = nums[:]
+        for i in range(1, len(nums)):
+            tmp = tmp[1:] + [tmp[0]]
+            nums = [min(x, y) for x, y in zip(nums, tmp)]
+            ans = min(ans, sum(nums) + x * i)
+        return ans
+
+    # O(n^2) / O(n), s[i] 对应操作 i 次的总成本
+    def minCost(self, nums: List[int], x: int) -> int:
+        n = len(nums)
+        s = list(range(0, n * x, x))
+        for i, mi in enumerate(nums):
+            for j in range(i, n + i):
+                mi = min(mi, nums[j % n])
+                s[j - i] += mi  # 累加操作 j-i 次的成本
+        return min(s)
+
+    # 或者 预处理 f[i][j] 表示进行 j 次类型修改操作后，类型为 i 的巧克力的最小代价
+
+
+# 2736. Maximum Sum Queries - HARD
+class Solution:
+    # 先把 nums1 和 询问 queries 按照 xi 排序
+    # 可以按照 x 从大到小, nums1[j] 从大到小的顺序处理，同时增量地维护满足 nums1[j] >= xi 的 nums2[j]
+    # 分类讨论 nums2[j] 和之前遍历过的 nums2[k] 的大小关系, 注意 nums1 是从大到小遍历的
+    # O(n + qlogn) / O(n)
+    def maximumSumQueries(
+        self, nums1: List[int], nums2: List[int], queries: List[List[int]]
+    ) -> List[int]:
+        ans = [-1] * len(queries)
+        st = []
+        arr = sorted((a, b) for a, b in zip(nums1, nums2))
+        idx = len(arr) - 1
+        for qid, (x, y) in sorted(enumerate(queries), key=lambda p: -p[1][0]):
+            while idx >= 0 and arr[idx][0] >= x:
+                ax, ay = arr[idx]
+                while st and st[-1][1] <= ax + ay:  # ay >= st[-1][0]
+                    st.pop()
+                if not st or st[-1][0] < ay:
+                    st.append((ay, ax + ay))
+                idx -= 1
+            p = bisect.bisect_left(st, (y,))
+            if p < len(st):
+                ans[qid] = st[p][1]
+        return ans
+
+    def maximumSumQueries(
+        self, nums1: List[int], nums2: List[int], queries: List[List[int]]
+    ) -> List[int]:
+        ans = [-1] * len(queries)
+        st = []
+        arr = sorted(zip(nums1, nums2))
+        for i in range(len(queries)):
+            queries[i].append(i)
+        queries.sort(key=lambda x: -x[0])  # 按 x 从大到小排序
+        idx = len(nums1) - 1
+        for x, y, qid in queries:
+            while idx > -1 and arr[idx][0] >= x:  # 是不是可以加入这个区间
+                ax, ay = arr[idx]
+                while st and st[-1][1] <= ax + ay:  # 要么是一个空的栈 要么就是 无用的数据
+                    st.pop()
+                if not st or ay > st[-1][0]:
+                    st.append((ay, ax + ay))
+                idx -= 1
+            # ax + ay 从低到顶增加 ay 从低到顶减少
+            p = bisect.bisect_left(st, (y,))
+            if p != len(st):
+                ans[qid] = st[p][1]
+        return ans
+
+    # 线段树, 树状数组, ST表

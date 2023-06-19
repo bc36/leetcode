@@ -30,6 +30,8 @@ import sortedcontainers
 
 
 """first lc weekly contest"""
+
+
 ########################
 # 274 / 3道 / 2022.1.1 #
 ########################
@@ -210,6 +212,7 @@ class Solution:
                 pairs.append(i)
             else:
                 d[a].append(i)
+
         # print(pairs, d)
         @functools.lru_cache(None)
         def cal(x):
@@ -1237,3 +1240,10 @@ T4: 1496 pass
 # https://leetcode.cn/contest/weekly-contest-346/
 # 68 / https://leetcode.cn/contest/weekly-contest-346/problems/modify-graph-edge-weights/
 # 两次 Dijkstra
+
+
+# https://leetcode.cn/contest/weekly-contest-349/
+# 978 / https://leetcode.cn/contest/weekly-contest-349/problems/collecting-chocolates/
+# 枚举
+# 214 / https://leetcode.cn/contest/weekly-contest-349/problems/maximum-sum-queries/
+# 排序 + 单调栈 + 二分 / 线段树
