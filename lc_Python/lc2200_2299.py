@@ -1545,6 +1545,46 @@ class Solution:
         return ans
 
 
+class BIT:
+    def __init__(self, n: int):
+        self.tree = [0] * n
+
+    def add(self, i: int, d: int = 1) -> None:
+        while i < len(self.tree):
+            self.tree[i] += d
+            i += i & -i
+        return
+
+    def query(self, i: int) -> int:
+        res = 0
+        while i > 0:
+            res += self.tree[i]
+            i &= i - 1
+        return res
+
+    def rsum(self, l: int, r: int) -> int:
+        return self.query(r) - self.query(l - 1)
+
+
+class Solution:
+    def countRectangles(
+        self, rectangles: List[List[int]], points: List[List[int]]
+    ) -> List[int]:
+        arr = [(x, y, math.inf) for x, y in rectangles] + [
+            (x, y, i) for (x, y), i in zip(points, range(len(points)))
+        ]
+        arr.sort()
+        n = max(max(y for _, y in rectangles), max(y for _, y in points))
+        bit = BIT(n + 1)
+        ans = [0] * len(points)
+        for i in range(len(arr) - 1, -1, -1):
+            if arr[i][2] == math.inf:
+                bit.add(arr[i][1])
+            else:
+                ans[arr[i][2]] = bit.rsum(arr[i][1], n)
+        return ans
+
+
 # 2255 - Count Prefixes of a Given String - EASY
 class Solution:
     def countPrefixes(self, words: List[str], s: str) -> int:

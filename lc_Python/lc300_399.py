@@ -16,46 +16,6 @@ class ListNode:
         self.next = next
 
 
-class NestedInteger:
-    def __init__(self, value=None):
-        """
-        If value is not specified, initializes an empty list.
-        Otherwise initializes a single integer equal to value.
-        """
-
-    def isInteger(self):
-        """
-        @return True if this NestedInteger holds a single integer, rather than a nested list.
-        :rtype bool
-        """
-
-    def add(self, elem):
-        """
-        Set this NestedInteger to hold a nested list and adds a nested integer elem to it.
-        :rtype void
-        """
-
-    def setInteger(self, value):
-        """
-        Set this NestedInteger to hold a single integer equal to value.
-        :rtype void
-        """
-
-    def getInteger(self):
-        """
-        @return the single integer that this NestedInteger holds, if it holds a single integer
-        Return None if this NestedInteger holds a nested list
-        :rtype int
-        """
-
-    def getList(self):
-        """
-        @return the nested list that this NestedInteger holds, if it holds a nested list
-        Return None if this NestedInteger holds a single integer
-        :rtype List[NestedInteger]
-        """
-
-
 # 300 - Longest Increasing Subsequence - MEDIUM
 class Solution:
     # O(n ^ 2) / O(n)
@@ -113,6 +73,7 @@ class Solution:
                 else:
                     r += 1
         ans = []
+
         # cl cr: left or right count
         # dl dr: left or right remain
         @functools.lru_cache(None)
@@ -351,97 +312,58 @@ class NumArray:
         return ans
 
 
-# binary indexed trees
-# O(nlogn + logn) / O(n), constructor: O(nlogn), update / sumRange: O(logn)
+# Fenwick tree
+# O(nlogn + logn) / O(n), constructor: O(nlogn), add / query: O(logn)
 class BIT:
-    def __init__(self, n):
-        self.sums = [0] * (n + 1)
+    def __init__(self, n: int):
+        self.tree = [0] * n
 
-    def update(self, i, delta):
-        while i < len(self.sums):
-            self.sums[i] += delta
-            i += i & (-i)
+    def add(self, i: int, d: int = 1) -> None:
+        while i < len(self.tree):
+            self.tree[i] += d
+            i += i & -i
+        return
 
-    def query(self, i):
+    def query(self, i: int) -> int:
         res = 0
         while i > 0:
-            res += self.sums[i]
-            i -= i & (-i)
+            res += self.tree[i]
+            i &= i - 1
         return res
 
-
-class NumArray:
-    def __init__(self, nums):
-        self.bit = BIT(len(nums))
-        for i, num in enumerate(nums):
-            self.bit.update(i + 1, num)
-        self.nums = [0] + nums
-
-    def update(self, i: int, val: int) -> None:
-        self.bit.update(i + 1, val - self.nums[i + 1])
-        self.nums[i + 1] = val
-
-    def sumRange(self, i: int, j: int) -> int:
-        return self.bit.query(j + 1) - self.bit.query(i)
+    def rsum(self, l: int, r: int) -> int:
+        return self.query(r) - self.query(l - 1)
 
 
 class NumArray:
     def __init__(self, nums: List[int]):
-        self.nums = nums
-        self.tree = [0] * (len(nums) + 1)
-        for i, num in enumerate(nums, 1):
-            self.add(i, num)
-
-    def add(self, index: int, val: int):
-        while index < len(self.tree):
-            self.tree[index] += val
-            index += index & -index
-
-    def prefixSum(self, index) -> int:
-        s = 0
-        while index:
-            s += self.tree[index]
-            index &= index - 1
-        return s
+        self.bit = BIT(len(nums) + 1)
+        for i, x in enumerate(nums):
+            self.bit.add(i + 1, x)
 
     def update(self, index: int, val: int) -> None:
-        self.add(index + 1, val - self.nums[index])
-        self.nums[index] = val
+        ori = self.bit.rsum(index + 1, index + 1)
+        self.bit.add(index + 1, val - ori)
+        return
 
     def sumRange(self, left: int, right: int) -> int:
-        return self.prefixSum(right + 1) - self.prefixSum(left)
+        return self.bit.rsum(left + 1, right + 1)
 
 
-# Use self.t to represent Binary Indexed Tree
 class NumArray:
-    def __init__(self, nums):
-        self.n = len(nums)
-        self.nums = nums
-        self.t = [0] * (self.n + 1)
-        for i in range(self.n):
-            k = i + 1
-            while k <= self.n:
-                self.t[k] += nums[i]
-                k += k & -k
+    def __init__(self, nums: List[int]):
+        self.bit = BIT(len(nums) + 1)
+        for i, x in enumerate(nums):
+            self.bit.add(i + 1, x)
+        self.nums = [0] + nums
 
-    def update(self, i: int, val: int) -> None:
-        diff = val - self.nums[i]
-        self.nums[i] = val
-        i += 1
-        while i <= self.n:
-            self.t[i] += diff
-            i += i & -i
+    def update(self, index: int, val: int) -> None:
+        self.bit.add(index + 1, val - self.nums[index + 1])
+        self.nums[index + 1] = val
+        return
 
-    def sumRange(self, i: int, j: int) -> int:
-        ans = 0
-        j += 1
-        while j:
-            ans += self.t[j]
-            j -= j & -j
-        while i:
-            ans -= self.t[i]
-            i -= i & -i
-        return ans
+    def sumRange(self, left: int, right: int) -> int:
+        return self.bit.rsum(left + 1, right + 1)
 
 
 # TLE
@@ -963,6 +885,46 @@ class Solution:
 
 
 # 339 - Nested List Weight Sum - MEDIUM
+class NestedInteger:
+    def __init__(self, value=None):
+        """
+        If value is not specified, initializes an empty list.
+        Otherwise initializes a single integer equal to value.
+        """
+
+    def isInteger(self):
+        """
+        @return True if this NestedInteger holds a single integer, rather than a nested list.
+        :rtype bool
+        """
+
+    def add(self, elem):
+        """
+        Set this NestedInteger to hold a nested list and adds a nested integer elem to it.
+        :rtype void
+        """
+
+    def setInteger(self, value):
+        """
+        Set this NestedInteger to hold a single integer equal to value.
+        :rtype void
+        """
+
+    def getInteger(self):
+        """
+        @return the single integer that this NestedInteger holds, if it holds a single integer
+        Return None if this NestedInteger holds a nested list
+        :rtype int
+        """
+
+    def getList(self):
+        """
+        @return the nested list that this NestedInteger holds, if it holds a nested list
+        Return None if this NestedInteger holds a single integer
+        :rtype List[NestedInteger]
+        """
+
+
 class Solution:
     # dfs
     def depthSum(self, nestedList: List[NestedInteger]) -> int:
