@@ -39,6 +39,21 @@ public class Lc1200_1299 {
         }
     }
 
+    // 1262. Greatest Sum Divisible by Three - MEDIUM
+    class Solution1262a {
+        // 5ms
+        public int maxSumDivThree(int[] nums) {
+            int[] f = new int[3];
+            for (int x : nums) {
+                int[] addedVal = new int[] { x + f[0], x + f[1], x + f[2] };
+                for (int y : addedVal) {
+                    f[y % 3] = Math.max(f[y % 3], y);
+                }
+            }
+            return f[0];
+        }
+    }
+
     // 1263. Minimum Moves to Move a Box to Their Target Location - HARD
     class Solution1263a {
         private char[][] grid;

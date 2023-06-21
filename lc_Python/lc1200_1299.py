@@ -1070,6 +1070,30 @@ class Solution:
         return [arr[i : i + len(grid[0])] for i in range(0, len(arr), len(grid[0]))]
 
 
+# 1262 - Greatest Sum Divisible by Three - MEDIUM
+class Solution:
+    # a, b, c 加了nums[i] 之后余几不确定, 但是没关系 f[addedVal[i] % 3] 就是它要去的地方
+    # 要比较的就是它要去的地方目前的值, 和他现在的值(这两个是同余)
+    # O(n) / O(1)
+    def maxSumDivThree(self, nums: List[int]) -> int:
+        f = [0] * 3
+        for x in nums:
+            addedVal = [m + x for m in f]
+            for y in addedVal:
+                f[y % 3] = max(f[y % 3], y)
+        return f[0]
+
+    # O(n) / O(1)
+    def maxSumDivThree(self, nums: List[int]) -> int:
+        f = [0, -float("inf"), -float("inf")]
+        for v in nums:
+            g = f[:]
+            for i in range(3):
+                g[(i + v) % 3] = max(g[(i + v) % 3], f[i] + v)
+            f = g
+        return f[0]
+
+
 # 1263 - Minimum Moves to Move a Box to Their Target Location - HARD
 class Solution:
     # O(m^2 * n ^ 2) / O(m^2 * n ^ 2)
