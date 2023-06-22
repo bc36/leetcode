@@ -242,6 +242,66 @@ class Solution:
         return "ERROR" if num else ans
 
 
+# https://leetcode.cn/problems/pond-sizes-lcci/
+# 面试题 16.19. 水域大小 - MEDIUM
+class Solution:
+    def pondSizes(self, land: List[List[int]]) -> List[int]:
+        def bfs(i: int, j: int) -> int:
+            q = [(i, j)]
+            t = 1
+            land[i][j] = 1
+            while q:
+                new = []
+                for x, y in q:
+                    for dx, dy in (
+                        (0, 1),
+                        (0, -1),
+                        (1, 0),
+                        (-1, 0),
+                        (1, 1),
+                        (1, -1),
+                        (-1, 1),
+                        (-1, -1),
+                    ):
+                        nx = x + dx
+                        ny = y + dy
+                        if 0 <= nx < m and 0 <= ny < n and land[nx][ny] == 0:
+                            t += 1
+                            land[nx][ny] = 1
+                            new.append((nx, ny))
+                q = new
+            return t
+
+        def dfs(i: int, j: int) -> int:
+            if land[i][j]:
+                return 0
+            land[i][j] = 1
+            res = 1
+            for dx, dy in (
+                (0, 1),
+                (0, -1),
+                (1, 0),
+                (-1, 0),
+                (1, 1),
+                (1, -1),
+                (-1, 1),
+                (-1, -1),
+            ):
+                nx = i + dx
+                ny = j + dy
+                if 0 <= nx < m and 0 <= ny < n and land[nx][ny] == 0:
+                    res += dfs(nx, ny)
+            return res
+
+        m, n = len(land), len(land[0])
+        return sorted(
+            bfs(i, j) for i, row in enumerate(land) for j, v in enumerate(row) if v == 0
+        )
+        return sorted(
+            dfs(i, j) for i, row in enumerate(land) for j, v in enumerate(row) if v == 0
+        )
+
+
 # https://leetcode.cn/problems/add-without-plus-lcci/
 # 面试题 17.01. 不用加号的加法 - EASY
 class Solution:
