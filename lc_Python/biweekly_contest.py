@@ -577,3 +577,8 @@ T4: 442 pass
 # 脑筋急转弯
 # 389 / https://leetcode.cn/contest/biweekly-contest-106/problems/find-a-good-subset-of-the-matrix/
 # 分类讨论
+
+
+# https://leetcode.cn/contest/biweekly-contest-107/
+# 416 / https://leetcode.cn/contest/biweekly-contest-107/problems/decremental-string-concatenation/
+# dp

@@ -489,3 +489,85 @@ class Solution:
                 g[min(j + 1 + t, n)] = min(g[min(j + 1 + t, n)], f[j] + c)
             f = g
         return f[n]
+
+
+# 2744 - Find Maximum Number of String Pairs - EASY
+class Solution:
+    def maximumNumberOfStringPairs(self, words: List[str]) -> int:
+        ans = 0
+        vis = set()
+        for s in words:
+            if s[::-1] in vis:
+                ans += 1
+            else:
+                vis.add(s)
+        return ans
+
+
+# 2745 - Construct the Longest New String - MEDIUM
+class Solution:
+    def longestString(self, x: int, y: int, z: int) -> int:
+        return 2 * (min(x, y) * 2 + (x != y) + z)
+
+
+# 2746 - Decremental String Concatenation - MEDIUM
+class Solution:
+    def minimizeConcatenatedLength(self, words: List[str]) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int, start: str, end: str) -> int:
+            if i == len(words):
+                return 0
+            w = words[i]
+            return len(w) + min(
+                dfs(i + 1, w[0], end) - (w[-1] == start),  # 接在开头
+                dfs(i + 1, start, w[-1]) - (w[0] == end),  # 接在末尾
+            )
+
+        return len(words[0]) + dfs(1, words[0][0], words[0][-1])
+
+
+# 2747 - Count Zero Request Servers - HARD
+class Solution:
+    # 维护一个 window, 收到请求的 server
+    def countServers(
+        self, n: int, logs: List[List[int]], x: int, queries: List[int]
+    ) -> List[int]:
+        logs.sort(key=lambda x: x[1])
+        ans = [0] * len(queries)
+        l = r = 0
+        vis = dict()
+        for qi, q in sorted(enumerate(queries), key=lambda x: x[1]):
+            while r < len(logs) and logs[r][1] <= q:  # 进入 window
+                vis[logs[r][0]] = vis.get(logs[r][0], 0) + 1
+                r += 1
+            while l < len(logs) and logs[l][1] < q - x:  # 退出 window
+                # Q: no need to determine if key is in dict, why?
+                # A: dict[key] always >= 0, since it is accumulated from "right" and reduced from "left"
+                vis[logs[l][0]] -= 1
+                if vis[logs[l][0]] == 0:
+                    del vis[logs[l][0]]
+                l += 1
+            ans[qi] = n - len(vis)  # 总数 - 当前在 window 内的
+        return ans
+
+    def countServers(
+        self, n: int, logs: List[List[int]], x: int, queries: List[int]
+    ) -> List[int]:
+        logs.sort(key=lambda x: x[1])
+        ans = [0] * len(queries)
+        l = r = 0
+        cnt = [0] * (n + 1)
+        outOfRange = n
+        for qi, q in sorted(enumerate(queries), key=lambda x: x[1]):
+            while r < len(logs) and logs[r][1] <= q:
+                if cnt[logs[r][0]] == 0:
+                    outOfRange -= 1
+                cnt[logs[r][0]] += 1
+                r += 1
+            while l < len(logs) and logs[l][1] < q - x:
+                cnt[logs[l][0]] -= 1
+                if cnt[logs[l][0]] == 0:
+                    outOfRange += 1
+                l += 1
+            ans[qi] = outOfRange
+        return ans

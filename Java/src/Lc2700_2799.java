@@ -266,4 +266,71 @@ public class Lc2700_2799 {
             return dp[cost.length];
         }
     }
+
+    // 2744. Find Maximum Number of String Pairs - EASY
+    class Solution2744a {
+        public int maximumNumberOfStringPairs(String[] words) {
+            int ans = 0;
+            for (int i = 0; i < words.length; i++) {
+                for (int j = i + 1; j < words.length; j++) {
+                    ans += words[i].equals("" + new StringBuilder(words[j]).reverse()) ? 1 : 0;
+                }
+            }
+            return ans;
+        }
+    }
+
+    // 2745. Construct the Longest New String - MEDIUM
+    class Solution2745a {
+        public int longestString(int x, int y, int z) {
+            return Math.min(x, y) * 4 + (x == y ? 0 : 2) + z * 2;
+        }
+    }
+
+    // 2746. Decremental String Concatenation - MEDIUM
+    class Solution2746a {
+        // 32ms
+        public int minimizeConcatenatedLength(String[] words) {
+            return words[0].length() + dfs(1, words[0].charAt(0) - 'a',
+                    words[0].charAt(words[0].length() - 1) - 'a', words, new int[words.length][26][26]);
+        }
+
+        // index, start, end, words, f
+        private int dfs(int i, int s, int e, String[] w, int[][][] f) {
+            if (i == w.length) {
+                return 0;
+            }
+            if (f[i][s][e] == 0) {
+                f[i][s][e] = Math.min(
+                        dfs(i + 1, s, w[i].charAt(w[i].length() - 1) - 'a', w, f) - (w[i].charAt(0) - 'a' == e ? 1 : 0),
+                        dfs(i + 1, w[i].charAt(0) - 'a', e, w, f) - (s == w[i].charAt(w[i].length() - 1) - 'a' ? 1 : 0))
+                        + w[i].length();
+            }
+            return f[i][s][e];
+        }
+    }
+
+    // 2747. Count Zero Request Servers - HARD
+    class Solution2747a {
+        public int[] countServers(int n, int[][] logs, int x, int[] queries) {
+            Arrays.sort(logs, (o, p) -> o[1] - p[1]);
+            Integer[] index = new Integer[queries.length];
+            for (int i = 0; i < queries.length; i++) {
+                index[i] = i;
+            }
+            Arrays.sort(index, (o, p) -> queries[o] - queries[p]);
+            int result[] = new int[queries.length], mp[] = new int[n + 1], count = n;
+            for (int i = 0, j = 0, k = 0; i < queries.length; i++) {
+                for (; k < logs.length && logs[k][1] <= queries[index[i]]; k++) {
+                    count -= mp[logs[k][0]]++ == 0 ? 1 : 0;
+                }
+                for (; j < logs.length && logs[j][1] < queries[index[i]] - x; j++) {
+                    count += --mp[logs[j][0]] == 0 ? 1 : 0;
+                }
+                result[index[i]] = count;
+            }
+            return result;
+        }
+    }
+
 }
