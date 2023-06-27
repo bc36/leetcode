@@ -2181,6 +2181,7 @@ class Solution:
         robot.sort()
         n = len(factory)
         m = len(robot)
+
         # [j, n - j] 个工厂修理 [i, m - 1] 个机器人
         @functools.lru_cache(None)
         def dfs(i: int, j: int) -> int:
@@ -2245,6 +2246,7 @@ class Solution:
     def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
         robot.sort()
         factory.sort()
+
         # to fix robot[i] and its following roberts with factory[j] already fix k robert
         @functools.lru_cache(None)
         def dfs(i: int, j: int, k: int) -> int:
@@ -2369,6 +2371,37 @@ class Solution:
 class Solution:
     def convertTemperature(self, celsius: float) -> List[float]:
         return [celsius + 273.15, celsius * 1.8 + 32]
+
+
+# 2481 - Minimum Cuts to Divide a Circle - EASY
+class Solution:
+    def numberOfCuts(self, n: int) -> int:
+        return n if n & 1 and n > 1 else n // 2
+
+
+# 2485 - Find the Pivot Integer - EASY
+class Solution:
+    def pivotInteger(self, n: int) -> int:
+        l, r = 0, (1 + n) * n // 2
+        for i in range(1, n + 1):
+            l += i
+            if l == r:
+                return i
+            r -= i
+        return -1
+
+    # 元素和(1 到 x) = 元素和(x - n) - 元素和(1 到 x - 1), 化简得 x = sqrt(n * (n + 1) // 2)
+    # 计算平方根有专门的 CPU 指令, 可以视作是 O(1) 时间
+    def pivotInteger(self, n: int) -> int:
+        m = n * (n + 1) // 2
+        x = math.isqrt(m)
+        return x if x * x == m else -1
+
+    # https://oeis.org/A001108
+    # https://oeis.org/A001109
+    def pivotInteger(self, n: int) -> int:
+        ans = {1: 1, 8: 6, 49: 35, 288: 204}
+        return ans.get(n, -1)
 
 
 # 2488 - Count Subarrays With Median K - HARD

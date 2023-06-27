@@ -90,6 +90,15 @@ public class Lc2400_2499 {
         }
     }
 
+    // 2485. Find the Pivot Integer - EASY
+    class Solution {
+        public int pivotInteger(int n) {
+            int m = n * (n + 1) / 2;
+            int x = (int) Math.sqrt(m);
+            return x * x == m ? x : -1;
+        }
+    }
+
     // 2488. Count Subarrays With Median K - HARD
     class Solution2488a {
         // 12ms
