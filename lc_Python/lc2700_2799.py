@@ -571,3 +571,135 @@ class Solution:
                 l += 1
             ans[qi] = outOfRange
         return ans
+
+
+# 2748 - Number of Beautiful Pairs - EASY
+class Solution:
+    # O(n^2 * logU) / O(1), U = max(nums)
+    def countBeautifulPairs(self, nums: List[int]) -> int:
+        ans = 0
+        for i in range(len(nums) - 1):
+            for j in range(i + 1, len(nums)):
+                while nums[i] >= 10:
+                    nums[i] //= 10
+                if math.gcd(nums[i], nums[j] % 10) == 1:
+                    ans += 1
+        return ans
+
+    # O(n * (10 + logU)) / O(10)
+    def countBeautifulPairs(self, nums: List[int]) -> int:
+        ans = 0
+        cnt = [0] * 10
+        for x in nums:
+            for y in range(1, 10):
+                if cnt[y] and math.gcd(x % 10, y) == 1:
+                    ans += cnt[y]
+            while x >= 10:
+                x //= 10
+            cnt[x] += 1
+        return ans
+
+
+# 2749 - Minimum Operations to Make the Integer Zero - MEDIUM
+class Solution:
+    # 难点: 2^i + num2 有正有负
+    # 问题转换: 操作 k 次后, num1 = k (2^i + num2)
+    # 即 x = num1 - num2 * k 能否拆分成 k 个 2^i ?
+    # k 的范围 [x.bit_count(), x], 仔细计算会发现 k 不会超过 36
+    def makeTheIntegerZero(self, num1: int, num2: int) -> int:
+        # for k in range(1, 64):
+        for k in itertools.count(1):
+            x = num1 - num2 * k
+            if x < k:
+                return -1
+            if k >= x.bit_count():
+                return k
+
+
+# 2750 - Ways to Split Array Into Good Subarrays - MEDIUM
+class Solution:
+    def numberOfGoodSubarraySplits(self, nums: List[int]) -> int:
+        mod = 10**9 + 7
+        ans = 1
+        pre = -1
+        for i, x in enumerate(nums):
+            if x == 0:
+                continue
+            if pre >= 0:
+                ans = ans * (i - pre) % mod
+            pre = i
+        return 0 if pre < 0 else ans
+
+    def numberOfGoodSubarraySplits(self, nums: List[int]) -> int:
+        mod = 10**9 + 7
+        indexs = []
+        for i in range(len(nums)):
+            if nums[i] == 1:
+                indexs.append(i)
+        if len(indexs) == 0:
+            return 0
+        ans = 1
+        for i in range(1, len(indexs)):
+            ans *= indexs[i] - indexs[i - 1]
+            ans %= mod
+        return ans
+
+
+# 2751 - Robot Collisions - HARD
+class Solution:
+    def survivedRobotsHealths(
+        self, positions: List[int], healths: List[int], directions: str
+    ) -> List[int]:
+        st = []
+        arr = sorted(zip(positions, healths, directions))
+        toLeft = []
+        for p, h, d in arr:
+            if d == "R":
+                st.append((p, h))
+            else:
+                while st and h:
+                    if st[-1][1] < h:
+                        st.pop()
+                        h -= 1
+                    elif st[-1][1] == h:
+                        st.pop()
+                        h = 0
+                    else:
+                        p, r = st.pop()
+                        r -= 1
+                        if r:
+                            st.append((p, r))
+                        h = 0
+                if h:
+                    toLeft.append((p, h))
+        idx = {v: i for i, v in enumerate(positions)}
+        return list(h for _, h in sorted(toLeft + st, key=lambda x: idx[x[0]]))
+
+    def survivedRobotsHealths(
+        self, positions: List[int], healths: List[int], directions: str
+    ) -> List[int]:
+        st = []
+        arr = sorted(
+            zip(range(len(positions)), positions, healths, directions),
+            key=lambda p: p[1],
+        )
+        toLeft = []
+        for i, _, h, d in arr:
+            if d == "R":
+                st.append([i, h])
+                continue
+            while st:
+                top = st[-1]
+                if top[1] > h:
+                    top[1] -= 1
+                    break
+                if top[1] == h:
+                    st.pop()
+                    break
+                h -= 1
+                st.pop()
+            else:  # while 循环没有 break，说明当前机器人把栈中的全部撞掉
+                toLeft.append([i, h])
+        toLeft += st
+        toLeft.sort(key=lambda p: p[0])
+        return [h for _, h in toLeft]

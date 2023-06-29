@@ -1254,3 +1254,8 @@ T4: 1496 pass
 # 状态压缩 状压 dp
 # 253 / https://leetcode.cn/contest/weekly-contest-350/problems/painting-the-walls/
 # dp, 0/1 背包
+
+
+# https://leetcode.cn/contest/weekly-contest-351/
+# 485 / https://leetcode.cn/contest/weekly-contest-351/problems/minimum-operations-to-make-the-integer-zero/
+# 位运算, 数学

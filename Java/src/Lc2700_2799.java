@@ -1,5 +1,6 @@
 package src;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -333,4 +334,91 @@ public class Lc2700_2799 {
         }
     }
 
+    // 2748. Number of Beautiful Pairs - EASY
+    class Solution2748a {
+        public int countBeautifulPairs(int[] nums) {
+            int count = 0;
+            for (int i = 0; i < nums.length; i++) {
+                for (int j = i + 1; j < nums.length; j++) {
+                    count += new BigInteger(("" + nums[i]).substring(0, 1)).gcd(BigInteger.valueOf(nums[j] % 10))
+                            .equals(BigInteger.ONE) ? 1 : 0;
+                }
+            }
+            return count;
+        }
+    }
+
+    // 2749. Minimum Operations to Make the Integer Zero - MEDIUM
+    class Solution2749a {
+        public int makeTheIntegerZero(int num1, long num2) {
+            for (int i = 1; i < 40; i++) {
+                if (num1 - i * num2 >= i && Long.bitCount(num1 - i * num2) <= i) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+
+    class Solution2749b {
+        public int makeTheIntegerZero(int num1, int num2) {
+            for (long k = 1; k <= num1 - num2 * k; k++)
+                if (k >= Long.bitCount(num1 - num2 * k))
+                    return (int) k;
+            return -1;
+        }
+    }
+
+    // 2750. Ways to Split Array Into Good Subarrays - MEDIUM
+    class Solution2750a {
+        public int numberOfGoodSubarraySplits(int[] nums) {
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] == 1) {
+                    list.add(i);
+                }
+            }
+            long prod = 1;
+            for (int i = 1; i < list.size(); i++) {
+                prod = (prod * (list.get(i) - list.get(i - 1))) % 1000000007;
+            }
+            return list.isEmpty() ? 0 : (int) prod;
+        }
+    }
+
+    // 2751. Robot Collisions - HARD
+    class Solution {
+        public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
+            Integer[] index = new Integer[positions.length];
+            for (int i = 0; i < positions.length; i++) {
+                index[i] = i;
+            }
+            Arrays.sort(index, (o, p) -> positions[o] - positions[p]);
+            ArrayDeque<Integer> deque = new ArrayDeque<>();
+            for (int i = 0; i < positions.length; i++) {
+                if (directions.charAt(index[i]) == 'L') {
+                    while (!deque.isEmpty() && healths[index[i]] > 0) {
+                        if (healths[deque.peek()] > healths[index[i]]) {
+                            healths[index[i]] = 0;
+                            healths[deque.peek()]--;
+                        } else if (healths[deque.peek()] < healths[index[i]]) {
+                            healths[index[i]]--;
+                            healths[deque.pop()] = 0;
+                        } else {
+                            healths[index[i]] = healths[deque.pop()] = 0;
+                        }
+                    }
+                } else {
+                    deque.push(index[i]);
+                }
+            }
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int health : healths) {
+                if (health > 0) {
+                    list.add(health);
+                }
+            }
+            return list;
+        }
+    }
 }
