@@ -930,6 +930,30 @@ class Solution:
         return sum((r + c) % 2 for r in rows for c in cols)
 
 
+# 1253 - Reconstruct a 2-Row Binary Matrix - MEDIUM
+class Solution:
+    # O(n) / O(1)
+    def reconstructMatrix(
+        self, upper: int, lower: int, colsum: List[int]
+    ) -> List[List[int]]:
+        ans = [[0] * len(colsum) for _ in range(2)]
+        for j, v in enumerate(colsum):
+            if v == 2:
+                ans[0][j] = ans[1][j] = 1
+                upper -= 1
+                lower -= 1
+            if v == 1:
+                if upper > lower:
+                    upper -= 1
+                    ans[0][j] = 1
+                else:
+                    lower -= 1
+                    ans[1][j] = 1
+            if upper < 0 or lower < 0:
+                return []
+        return ans if lower == upper == 0 else []
+
+
 # 1254 - Number of Closed Islands - MEDIUM
 class Solution:
     # O(mn) / O(mn)

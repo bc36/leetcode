@@ -1,8 +1,83 @@
 package src;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Lc1200_1299 {
+    // 1253. Reconstruct a 2-Row Binary Matrix - MEDIUM
+    class Solution1253a {
+        public List<List<Integer>> reconstructMatrix(int upper, int lower, int[] colsum) {
+            List ans = new ArrayList<>();
+            // List<List<Integer>> ans = new ArrayList<>();
+            int[] a = new int[colsum.length];
+            int[] b = new int[colsum.length];
+            for (int i = 0; i < colsum.length; i++) {
+                if (colsum[i] > 1) {
+                    upper--;
+                    lower--;
+                    a[i] = 1;
+                    b[i] = 1;
+                }
+            }
+            if (upper < 0) {
+                return ans;
+            }
+            for (int i = 0; i < colsum.length; i++) {
+                if (colsum[i] == 1) {
+                    if (upper > 0) {
+                        upper--;
+                        a[i] = 1;
+                    } else {
+                        lower--;
+                        b[i] = 1;
+                    }
+                }
+            }
+            if (lower == 0) {
+                // 4ms
+                // ans.add(a);
+                // ans.add(b);
+                // 11ms
+                ans.add(IntStream.of(a).boxed().toList());
+                ans.add(IntStream.of(b).boxed().toList());
+                // 14ms
+                // ans.add(Arrays.stream(a).boxed().toList());
+                // ans.add(Arrays.stream(b).boxed().toList());
+            }
+            return ans;
+        }
+    }
+
+    class Solution1253b {
+        // 13ms
+        public List<List<Integer>> reconstructMatrix(int upper, int lower, int[] colsum) {
+            List<Integer> a = new ArrayList<>();
+            List<Integer> b = new ArrayList<>();
+            for (int j = 0; j < colsum.length; ++j) {
+                int x = 0, y = 0;
+                if (colsum[j] == 2) {
+                    x = y = 1;
+                    upper--;
+                    lower--;
+                } else if (colsum[j] == 1) {
+                    if (upper > lower) {
+                        upper--;
+                        x = 1;
+                    } else {
+                        lower--;
+                        y = 1;
+                    }
+                }
+                if (upper < 0 || lower < 0) {
+                    break;
+                }
+                a.add(x);
+                b.add(y);
+            }
+            return upper == 0 && lower == 0 ? List.of(a, b) : List.of();
+        }
+    }
+
     // 1254. Number of Closed Islands - MEDIUM
     class Solution1254a {
         // 1. dfs 标记 第/最后 一 行/列 格子为 1
