@@ -697,25 +697,39 @@ class Solution:
 class Solution:
     def minFallingPathSum(self, matrix: List[List[int]]) -> int:
         n = len(matrix)
-        dp = [[i for i in matrix[0]]] + [[0] * n for _ in range(n - 1)]
+        f = [[math.inf] * n for _ in range(n)]
+        for j in range(n):
+            f[0][j] = matrix[0][j]
         for i in range(1, n):
-            dp[i][0] = min(dp[i - 1][0], dp[i - 1][1]) + matrix[i][0]
+            f[i][0] = min(f[i - 1][0], f[i - 1][1]) + matrix[i][0]
             for j in range(1, n - 1):
-                dp[i][j] = (
-                    min(dp[i - 1][j - 1], dp[i - 1][j], dp[i - 1][j + 1]) + matrix[i][j]
+                f[i][j] = (
+                    min(f[i - 1][j - 1], f[i - 1][j], f[i - 1][j + 1]) + matrix[i][j]
                 )
-            dp[i][-1] = min(dp[i - 1][-1], dp[i - 1][-2]) + matrix[i][-1]
-        return min(dp[-1])
+            f[i][n - 1] = min(f[i - 1][n - 2], f[i - 1][n - 1]) + matrix[i][n - 1]
+        return min(f[n - 1])
 
     def minFallingPathSum(self, matrix: List[List[int]]) -> int:
         n = len(matrix)
-        dp = [[float("inf")] + matrix[i] + [float("inf")] for i in range(n)]
+        f = [[math.inf] * n for _ in range(n)]
+        for j in range(n):
+            f[0][j] = matrix[0][j]
+        for i in range(1, n):
+            for j in range(n):
+                f[i][j] = f[i - 1][j] + matrix[i][j]
+                if j > 0:
+                    f[i][j] = min(f[i][j], f[i - 1][j - 1] + matrix[i][j])
+                if j < n - 1:
+                    f[i][j] = min(f[i][j], f[i - 1][j + 1] + matrix[i][j])
+        return min(f[n - 1])
+
+    def minFallingPathSum(self, matrix: List[List[int]]) -> int:
+        n = len(matrix)
+        f = [[float("inf")] + matrix[i] + [float("inf")] for i in range(n)]
         for i in range(1, n):
             for j in range(1, n + 1):
-                dp[i][j] = dp[i][j] + min(
-                    dp[i - 1][j - 1], dp[i - 1][j], dp[i - 1][j + 1]
-                )
-        return min(dp[-1])
+                f[i][j] = f[i][j] + min(f[i - 1][j - 1], f[i - 1][j], f[i - 1][j + 1])
+        return min(f[-1])
 
 
 # 933 - Number of Recent Calls - EASY
