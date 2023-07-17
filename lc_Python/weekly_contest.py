@@ -1259,3 +1259,8 @@ T4: 1496 pass
 # https://leetcode.cn/contest/weekly-contest-351/
 # 485 / https://leetcode.cn/contest/weekly-contest-351/problems/minimum-operations-to-make-the-integer-zero/
 # 位运算, 数学
+
+
+# https://leetcode.cn/contest/weekly-contest-354/
+# 557 / https://leetcode.cn/contest/weekly-contest-354/problems/length-of-the-longest-valid-substring/
+# 双指针 / 字典树

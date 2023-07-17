@@ -1238,6 +1238,14 @@ def transpose(matrix: List[List[int]]) -> List[List[int]]:
 """trie"""
 
 
+def build_trie(words: List[str]) -> None:
+    TRIE = lambda: collections.defaultdict(TRIE)
+    trie = TRIE()
+    for w in words:
+        functools.reduce(dict.__getitem__, w, trie)["#"] = True
+    return
+
+
 def build_trie(words: List[List[int]]) -> None:
     trie = {}
     for w in words:

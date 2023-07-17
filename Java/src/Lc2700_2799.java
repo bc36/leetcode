@@ -387,7 +387,7 @@ public class Lc2700_2799 {
     }
 
     // 2751. Robot Collisions - HARD
-    class Solution {
+    class Solution2751a {
         public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
             Integer[] index = new Integer[positions.length];
             for (int i = 0; i < positions.length; i++) {
@@ -419,6 +419,72 @@ public class Lc2700_2799 {
                 }
             }
             return list;
+        }
+    }
+
+    // 2778. Sum of Squares of Special Elements - EASY
+    class Solution2778a {
+        public int sumOfSquares(int[] nums) {
+            int ans = 0;
+            for (int i = 0; i < nums.length; i++) {
+                ans += nums.length % (i + 1) > 0 ? 0 : nums[i] * nums[i];
+            }
+            return ans;
+        }
+    }
+
+    // 2779. Maximum Beauty of an Array After Applying Operation - MEDIUM
+    class Solution2779a {
+        public int maximumBeauty(int[] nums, int k) {
+            Arrays.sort(nums);
+            int ans = 0;
+            for (int i = 0, j = 0; i < nums.length; i++) {
+                for (; j < nums.length && nums[j] - nums[i] <= 2 * k; j++) {
+                }
+                ans = Math.max(ans, j - i);
+            }
+            return ans;
+        }
+    }
+
+    // 2780. Minimum Index of a Valid Split - MEDIUM
+    class Solution2780a {
+        public int minimumIndex(List<Integer> nums) {
+            HashMap<Integer, Integer> mp = new HashMap<>();
+            for (int num : nums) {
+                mp.put(num, mp.getOrDefault(num, 0) + 1);
+            }
+            int mx = nums.get(0), count = 0;
+            for (Map.Entry<Integer, Integer> e : mp.entrySet()) {
+                if (e.getValue() > mp.get(mx)) {
+                    mx = e.getKey();
+                }
+            }
+            for (int i = 0; i < nums.size() - 1; i++) {
+                count += nums.get(i) == mx ? 1 : 0;
+                if (count * 2 > i + 1 && (mp.get(mx) - count) * 2 >= nums.size() - i) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+
+    // 2781. Length of the Longest Valid Substring - HARD
+    class Solution2781a {
+        public int longestValidSubstring(String word, List<String> forbidden) {
+            int ans = 0;
+            HashSet<String> s = new HashSet<>(forbidden);
+            for (int i = 0, j = 0, k; i < word.length(); ans = Math.max(ans, j - i++)) {
+                for (; j < word.length(); j++) {
+                    for (k = Math.max(i, j - 9); k <= j && !s.contains(word.substring(k, j + 1)); k++) {
+                    }
+                    if (k <= j) {
+                        break;
+                    }
+                }
+            }
+            return ans;
         }
     }
 }

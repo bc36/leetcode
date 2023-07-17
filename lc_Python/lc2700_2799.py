@@ -703,3 +703,118 @@ class Solution:
         toLeft += st
         toLeft.sort(key=lambda p: p[0])
         return [h for _, h in toLeft]
+
+
+# 2778 - Sum of Squares of Special Elements - EASY
+class Solution:
+    def sumOfSquares(self, nums: List[int]) -> int:
+        return sum(v * v for i, v in enumerate(nums, start=1) if len(nums) % i == 0)
+
+
+# 2779 - Maximum Beauty of an Array After Applying Operation - MEDIUM
+class Solution:
+    # O(nlogn) / O(1), 排序, 双指针
+    def maximumBeauty(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        mx = l = r = 0
+        while r < len(nums):
+            while nums[l] + k < nums[r] - k:
+                l += 1
+            mx = max(mx, r - l + 1)
+            r += 1
+        return mx
+
+    def maximumBeauty(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        mx = l = 0
+        for r, x in enumerate(nums):
+            while x - nums[l] > k * 2:
+                l += 1
+            mx = max(mx, r - l + 1)
+        return mx
+
+    # O(n + U) / O(U), U = max(nums) + k + 2, 离散化差分, 注意值域不要开太大, 以免 TLE
+    def maximumBeauty(self, nums: List[int], k: int) -> int:
+        cap = max(nums) + k + 2
+        d = [0] * cap
+        for x in nums:
+            d[max(x - k, 0)] += 1
+            d[min(x + k, cap) + 1] -= 1
+        return max(itertools.accumulate(d))
+
+
+# 2780 - Minimum Index of a Valid Split - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def minimumIndex(self, nums: List[int]) -> int:
+        most, val = collections.Counter(nums).most_common(1)[0]
+        freq = 0
+        for i, x in enumerate(nums):
+            freq += x == most
+            if freq * 2 > i + 1 and (val - freq) * 2 > len(nums) - i - 1:
+                return i
+        return -1
+
+    def minimumIndex(self, nums: List[int]) -> int:
+        cnt = collections.Counter(nums)
+        max_freq = max(cnt.values())
+        for x in nums:
+            if cnt[x] == max_freq:
+                most = x
+        c1, c2 = 0, cnt[most]
+        for i in range(len(nums) - 1):
+            if nums[i] == most:
+                c1 += 1
+                c2 -= 1
+            if c1 * 2 > i + 1 and c2 * 2 > len(nums) - 1 - i:
+                return i
+        return -1
+
+
+# 2781 - Length of the Longest Valid Substring - HARD
+class Solution:
+    # O(m + 100n) / O(m), n = len(word), m = len(forbidden), 双指针, 每次尝试向右移动右指针
+    def longestValidSubstring(self, word: str, forbidden: List[str]) -> int:
+        s = set(forbidden)
+        ans = l = 0
+        for r in range(len(word)):
+            # for k in range(10):
+            #     if r - k < 0 or r - k < l:
+            #         break
+            for k in range(min(10, r + 1, r - l + 1)):
+                if word[r - k : r + 1] in s:
+                    l = r - k + 1
+                    break
+            ans = max(ans, r - l + 1)
+        return ans
+
+    def longestValidSubstring(self, word: str, forbidden: List[str]) -> int:
+        s = set(forbidden)
+        ans = l = 0
+        for r in range(len(word)):
+            for i in range(r, max(r - 10, l - 1), -1):
+                if word[i : r + 1] in s:
+                    l = i + 1
+                    break
+            ans = max(ans, r - l + 1)
+        return ans
+
+    # 字典树预处理, 可以优化查询的过程. 外层从右到左枚举, 内层从左到右(即字典树内顺序)
+    def longestValidSubstring(self, word: str, forbidden: List[str]) -> int:
+        TRIE = lambda: collections.defaultdict(TRIE)
+        trie = TRIE()
+        for w in forbidden:
+            functools.reduce(dict.__getitem__, w, trie)["#"] = True
+        r = len(word)
+        ans = 0
+        for l in range(len(word) - 1, -1, -1):
+            t = trie
+            for i in range(l, min(l + 10, r)):
+                if word[i] not in t:
+                    break
+                t = t[word[i]]
+                if "#" in t:
+                    r = i
+                    break
+            ans = max(ans, r - l)
+        return ans
