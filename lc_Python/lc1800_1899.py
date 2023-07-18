@@ -2,6 +2,7 @@ import bisect, collections, functools, heapq, itertools, math, operator, string,
 from typing import List, Optional, Tuple
 import sortedcontainers
 
+
 # 1800 - Maximum Ascending Subarray Sum - EASY
 class Solution:
     def maxAscendingSum(self, nums: List[int]) -> int:
@@ -597,3 +598,24 @@ class Solution:
         for i in range(1, len(arr), 2):
             arr[i] = chr(ord(arr[i - 1]) + int(arr[i]))
         return "".join(arr)
+
+
+# 1851 - Minimum Interval to Include Each Query - HARD
+class Solution:
+    # O(nlogn + qlogq + logn) / O(n + m)
+    def minInterval(self, intervals: List[List[int]], queries: List[int]) -> List[int]:
+        intervals.sort()
+        i = 0
+        ans = [-1] * len(queries)
+        h = []
+        for j, q in sorted(enumerate(queries), key=lambda x: x[1]):
+            while i < len(intervals) and intervals[i][0] <= q:
+                heapq.heappush(
+                    h, (intervals[i][1] - intervals[i][0] + 1, intervals[i][1])
+                )
+                i += 1
+            while h and h[0][1] < q:
+                heapq.heappop(h)
+            if h:
+                ans[j] = h[0][0]
+        return ans

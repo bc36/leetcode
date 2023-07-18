@@ -128,16 +128,16 @@ class Solution:
 # 415 - Add Strings - EASY
 class Solution:
     def addStrings(self, num1: str, num2: str) -> str:
-        ans = ""
+        ans = []
         i, j, carry = len(num1) - 1, len(num2) - 1, 0
-        while i >= 0 or j >= 0 or carry != 0:
-            n1 = int(num1[i]) if i >= 0 else 0
-            n2 = int(num2[j]) if j >= 0 else 0
-            tmp = n1 + n2 + carry
-            carry = tmp // 10
-            ans = str(tmp % 10) + ans
+        while i >= 0 or j >= 0 or carry:
+            t = carry
+            t += int(num1[i]) if i >= 0 else 0
+            t += int(num2[j]) if j >= 0 else 0
+            carry, d = divmod(t, 10)
+            ans.append(d)
             i, j = i - 1, j - 1
-        return ans
+        return "".join(map(str, ans[::-1]))
 
 
 # 417 - Pacific Atlantic Water Flow - MEDIUM

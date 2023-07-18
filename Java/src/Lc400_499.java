@@ -37,8 +37,19 @@ public class Lc400_499 {
     }
 
     // 415. Add Strings - EASY
-    public String addStrings(String num1, String num2) {
-        return "";
+    class Solution415a {
+        public String addStrings(String num1, String num2) {
+            StringBuilder ans = new StringBuilder();
+            int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
+            while (i >= 0 || j >= 0 || carry > 0) {
+                int t = carry;
+                t += i >= 0 ? num1.charAt(i--) - '0' : 0;
+                t += j >= 0 ? num2.charAt(j--) - '0' : 0;
+                carry = t / 10;
+                ans.append(t % 10);
+            }
+            return ans.reverse().toString();
+        }
     }
 
     // 438. Find All Anagrams in a String - MEDIUM

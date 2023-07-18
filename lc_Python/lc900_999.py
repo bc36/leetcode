@@ -1572,6 +1572,25 @@ class Solution:
         return ans
 
 
+# 979 - Distribute Coins in Binary Tree - MEDIUM
+class Solution:
+    def distributeCoins(self, root: Optional[TreeNode]) -> int:
+        def dfs(node: Optional[TreeNode]) -> int:
+            """
+            1. 多了问父节点要, 少了给父节点
+            2. 给和拿其实没区别, 路径必定经过, 所以需要考虑有多少点会经过这条边
+            3. 每个节点的值 = 其子节点个数 + 1"""
+            if node is None:
+                return 0
+            d = dfs(node.left) + dfs(node.right) + node.val - 1
+            ans[0] += abs(d)
+            return d
+
+        ans = [0]
+        dfs(root)
+        return ans[0]
+
+
 # 981 - Time Based Key-Value Store - MEDIUM
 class TimeMap:
     def __init__(self):

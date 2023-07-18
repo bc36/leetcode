@@ -2,6 +2,7 @@ import bisect, collections, functools, heapq, itertools, math, operator, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
+
 # 1903 - Largest Odd Number in String - EASY
 class Solution:
     # 170 ms, map 有点慢
@@ -45,6 +46,26 @@ class Solution:
         # a = (a - 1) // 15 + 1
         # b //= 15
         return max(0, b - a)
+
+
+# 1911 - Maximum Alternating Subsequence Sum - MEDIUM
+class Solution:
+    # f[i] 表示从前 i 个元素中选出的子序列, 且最后一个元素为奇数下标时的最大交替和
+    # g[i] 表示从前 i 个元素中选出的子序列, 且最后一个元素为偶数下标时的最大交替和
+    def maxAlternatingSum(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [0] * (n + 1)
+        g = [0] * (n + 1)
+        for i, x in enumerate(nums):
+            f[i + 1] = max(g[i] - x, f[i])
+            g[i + 1] = max(f[i] + x, g[i])
+        return max(f[n], g[n])
+
+    def maxAlternatingSum(self, nums: List[int]) -> int:
+        f = g = 0
+        for x in nums:
+            f, g = max(g - x, f), max(f + x, g)
+        return max(f, g)
 
 
 # 1920 - Build Array from Permutation - EASY
