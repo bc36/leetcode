@@ -1383,6 +1383,45 @@ class Solution:
         return 0 if ans == 2 else ans
 
 
+# 874 - Walking Robot Simulation - MEDIUM
+class Solution:
+    def robotSim(self, commands: List[int], obstacles: List[List[int]]) -> int:
+        obs = {(x, y) for x, y in obstacles}
+        ans = x = y = d = 0  # 0: up, 1: right, 2: down, 3: left
+        for c in commands:
+            if c == -1:
+                d = (d + 1) % 4
+            elif c == -2:
+                d = (d - 1) % 4
+            else:
+                for _ in range(c):
+                    nx, ny = x + (d % 2) * (2 - d), y + (d % 2 == 0) * (1 - d)
+                    if (nx, ny) in obs:
+                        break
+                    x, y = nx, ny
+                if x * x + y * y > ans:
+                    ans = x * x + y * y
+        return ans
+
+    def robotSim(self, commands: List[int], obstacles: List[List[int]]) -> int:
+        obs = set(map(tuple, obstacles))
+        d = (0, 1, 0, -1, 0)
+        ans = x = y = i = 0
+        for c in commands:
+            if c == -2:
+                i = (i + 3) % 4
+            elif c == -1:
+                i = (i + 1) % 4
+            else:
+                for _ in range(c):
+                    nx, ny = x + d[i], y + d[i + 1]
+                    if (nx, ny) in obs:
+                        break
+                    x, y = nx, ny
+                    ans = max(ans, x * x + y * y)
+        return ans
+
+
 # 875 - Koko Eating Bananas - MEDIUM
 class Solution:
     # O(n * logm), O(1)
