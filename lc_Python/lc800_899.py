@@ -1158,6 +1158,26 @@ class Solution:
         return len(diff) == 2 and diff[0] == diff[1][::-1]
 
 
+# 860 - Lemonade Change - EASY
+class Solution:
+    def lemonadeChange(self, bills: List[int]) -> bool:
+        a = b = 0
+        for x in bills:
+            if x == 5:
+                a += 1
+            elif x == 10:
+                a -= 1
+                b += 1
+            elif b:
+                a -= 1
+                b -= 1
+            else:
+                a -= 3
+            if a < 0:
+                return False
+        return True
+
+
 # 863 - All Nodes Distance K in Binary Tree - MEDIUM
 class Solution:
     # find parent of each node, then dfs
