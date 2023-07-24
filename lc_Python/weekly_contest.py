@@ -1261,6 +1261,11 @@ T4: 1496 pass
 # 位运算, 数学
 
 
+# https://leetcode.cn/contest/weekly-contest-353/
+# https://leetcode.cn/contest/weekly-contest-353/problems/apply-operations-to-make-all-array-elements-equal-to-zero/
+# 差分数组
+
+
 # https://leetcode.cn/contest/weekly-contest-354/
 # 557 / https://leetcode.cn/contest/weekly-contest-354/problems/length-of-the-longest-valid-substring/
 # 双指针 / 字典树

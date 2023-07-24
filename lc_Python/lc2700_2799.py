@@ -705,6 +705,103 @@ class Solution:
         return [h for _, h in toLeft]
 
 
+# 2769 - Find the Maximum Achievable Number - EASY
+class Solution:
+    def theMaximumAchievableX(self, num: int, t: int) -> int:
+        return num + 2 * t
+
+
+# 2770 - Maximum Number of Jumps to Reach the Last Index - MEDIUM
+class Solution:
+    # O(n^2) / O(n)
+    def maximumJumps(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        f = [-1] * n
+        f[0] = 0
+        for j in range(1, n):
+            for i in range(j):
+                if f[i] >= 0 and -target <= nums[j] - nums[i] <= target:
+                    f[j] = max(f[j], f[i] + 1)
+        return f[-1]
+
+    def maximumJumps(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        f = [-math.inf] * n
+        f[0] = 0
+        for j in range(1, n):
+            for i in range(j):
+                if -target <= nums[j] - nums[i] <= target:
+                    f[j] = max(f[j], f[i] + 1)
+        return -1 if f[-1] < 0 else f[-1]
+
+
+# 2771 - Longest Non-decreasing Subarray From Two Arrays - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def maxNonDecreasingLength(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums1)
+        # f[i][0] 表示以 nums1[i] 结尾的最长非递减子数组长度
+        # f[i][1] 表示以 nums2[i] 结尾的最长非递减子数组长度
+        f = [[1] * 2 for _ in range(n)]
+        for i in range(1, n):
+            if nums1[i - 1] <= nums1[i]:
+                f[i][0] = max(f[i][0], f[i - 1][0] + 1)
+            if nums1[i - 1] <= nums2[i]:
+                f[i][1] = max(f[i][1], f[i - 1][0] + 1)
+            if nums2[i - 1] <= nums1[i]:
+                f[i][0] = max(f[i][0], f[i - 1][1] + 1)
+            if nums2[i - 1] <= nums2[i]:
+                f[i][1] = max(f[i][1], f[i - 1][1] + 1)
+        return max(max(x) for x in f)
+
+    # O(n) / O(1)
+    def maxNonDecreasingLength(self, nums1: List[int], nums2: List[int]) -> int:
+        ans = f0 = f1 = 1
+        for (x0, y0), (x1, y1) in pairwise(zip(nums1, nums2)):
+            g0 = g1 = 1
+            if x0 <= x1:
+                g0 = f0 + 1
+            if y0 <= x1:
+                g0 = max(g0, f1 + 1)
+            if x0 <= y1:
+                g1 = f0 + 1
+            if y0 <= y1:
+                g1 = max(g1, f1 + 1)
+            f0, f1 = g0, g1
+            ans = max(ans, f0, f1)
+        return ans
+
+
+# 2772 - Apply Operations to Make All Array Elements Equal to Zero - MEDIUM
+class Solution:
+    # 一边遍历原数组, 一边累加标记
+    # O(n) / O(n)
+    def checkArray(self, nums: List[int], k: int) -> bool:
+        d = [0] * (len(nums) + 1)
+        cur = 0
+        for i, v in enumerate(nums):
+            cur += d[i]
+            v += cur
+            if v == 0:
+                continue
+            if v < 0 or i + k > len(nums):
+                return False
+            cur -= v
+            d[i + k] = v
+        return True
+
+    def checkArray(self, nums: List[int], k: int) -> bool:
+        d = [0] * (len(nums) + 1)
+        for i, v in enumerate(nums):
+            d[i] += d[i - 1]
+            v += d[i]
+            if v < 0 or v > 0 and i + k > len(nums):
+                return False
+            d[i] -= v
+            d[min(i + k, len(nums))] += v
+        return True
+
+
 # 2778 - Sum of Squares of Special Elements - EASY
 class Solution:
     def sumOfSquares(self, nums: List[int]) -> int:

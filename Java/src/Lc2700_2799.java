@@ -422,6 +422,63 @@ public class Lc2700_2799 {
         }
     }
 
+    // 2769. Find the Maximum Achievable Number - EASY
+    class Solution2769a {
+        public int theMaximumAchievableX(int num, int t) {
+            return num + t * 2;
+        }
+    }
+
+    // 2770. Maximum Number of Jumps to Reach the Last Index - MEDIUM
+    class Solution2770a {
+        public int maximumJumps(int[] nums, int target) {
+            int[] f = new int[nums.length];
+            for (int i = 1; i < nums.length; i++) {
+                f[i] = -1;
+                for (int j = 0; j < i; j++) {
+                    f[i] = Math.max(f[i], f[j] < 0 || Math.abs(nums[i] - nums[j]) > target ? -1 : f[j] + 1);
+                }
+            }
+            return f[nums.length - 1];
+        }
+    }
+
+    // 2771. Longest Non-decreasing Subarray From Two Arrays - MEDIUM
+    class Solution2771a {
+        // 4ms
+        public int maxNonDecreasingLength(int[] nums1, int[] nums2) {
+            int f1[] = new int[nums1.length], f2[] = new int[nums1.length], mx = 1;
+            f1[0] = f2[0] = 1;
+            for (int i = 1; i < nums1.length; i++) {
+                mx = Math.max(mx,
+                        Math.max(
+                                f1[i] = Math.max(nums1[i] < nums1[i - 1] ? 1 : f1[i - 1] + 1,
+                                        nums1[i] < nums2[i - 1] ? 1 : f2[i - 1] + 1),
+                                f2[i] = Math.max(nums2[i] < nums1[i - 1] ? 1 : f1[i - 1] + 1,
+                                        nums2[i] < nums2[i - 1] ? 1 : f2[i - 1] + 1)));
+            }
+            return mx;
+        }
+    }
+
+    // 2772. Apply Operations to Make All Array Elements Equal to Zero - MEDIUM
+    class Solution2772a {
+        // 2ms
+        public boolean checkArray(int[] nums, int k) {
+            int curr = 0, count[] = new int[nums.length + k];
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] < (curr -= count[i]) || nums[i] > curr && i + k > nums.length) {
+                    return false;
+                }
+                // a += b = c
+                // 1. b = c
+                // 2. a += b (which is the same as c)
+                curr += count[i + k] = nums[i] - curr;
+            }
+            return true;
+        }
+    }
+
     // 2778. Sum of Squares of Special Elements - EASY
     class Solution2778a {
         public int sumOfSquares(int[] nums) {
