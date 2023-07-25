@@ -210,16 +210,26 @@ class Solution:
 class Solution:
     # O(nlogn + m * logn) / O(n), where m is the number of operations
     def halveArray(self, nums: List[int]) -> int:
-        t = sum(nums)
-        half = t / 2
-        hp = [-n for n in nums]
-        heapq.heapify(hp)  # nlogn
+        s = sum(nums)
+        half = s / 2
+        h = sorted(-x for x in nums)
         ans = 0
-        while t > half:
-            n = -heapq.heappop(hp) / 2
-            t -= n
-            heapq.heappush(hp, -n)
+        while s > half:
             ans += 1
+            x = -heapq.heappop(h) / 2
+            s -= x
+            heapq.heappush(h, -x)
+        return ans
+
+    def halveArray(self, nums: List[int]) -> int:
+        s = sum(nums)
+        heapq._heapify_max(nums)
+        ans = cur = 0
+        while cur * 2 < s:
+            ans += 1
+            tmp = nums[0] / 2
+            cur += tmp
+            heapq._heapreplace_max(nums, tmp)
         return ans
 
 
