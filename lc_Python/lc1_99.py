@@ -627,7 +627,7 @@ class Solution:
         return len(stack) == 0
 
 
-# 21. Merge Two Sorted Lists - EASY
+# 21 - Merge Two Sorted Lists - EASY
 class Solution:
     # iterative
     def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
@@ -1226,20 +1226,20 @@ class Solution:
     def trap(self, height: List[int]) -> int:
         n = len(height)
         l = [0] * n
-        p = 0
+        mx = 0
         for i in range(n):
-            if p > height[i]:
-                l[i] = p - height[i]
+            if mx > height[i]:
+                l[i] = mx - height[i]
             else:
-                p = height[i]
+                mx = height[i]
         r = [0] * n
-        p = 0
+        mx = 0
         for i in range(n - 1, -1, -1):
-            if height[i] < p:
-                r[i] = p - height[i]
+            if mx > height[i]:
+                r[i] = mx - height[i]
             else:
-                p = height[i]
-        return sum(min(a, b) for a, b in zip(l, r))
+                mx = height[i]
+        return sum(min(x, y) for x, y in zip(l, r))
 
     def trap(self, height: List[int]) -> int:
         n = len(height)
@@ -2566,6 +2566,7 @@ class Solution:
 
 # 85 - Maximal Rectangle - HARD
 # TODO
+
 
 # 86 - Partition List - MEDIUM
 class Solution:
