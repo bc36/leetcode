@@ -640,6 +640,51 @@ class Solution:
         return cnt
 
 
+# 2050 - Parallel Courses III - HARD
+class Solution:
+    # O(n + m) / O(n + m), m = len(relations)
+    def minimumTime(self, n: int, relations: List[List[int]], time: List[int]) -> int:
+        g = collections.defaultdict(list)
+        ind = [0] * n
+        for x, y in relations:
+            g[x - 1].append(y - 1)
+            ind[y - 1] += 1
+        q = collections.deque()
+        ans = 0
+        f = [0] * n
+        for i, (v, t) in enumerate(zip(ind, time)):
+            if v == 0:
+                q.append(i)
+                f[i] = t
+                ans = max(ans, t)
+        while q:
+            x = q.popleft()
+            for y in g[x]:
+                f[y] = max(f[y], f[x] + time[y])
+                ans = max(ans, f[y])
+                ind[y] -= 1
+                if ind[y] == 0:
+                    q.append(y)
+        return ans
+
+    def minimumTime(self, n: int, relations: List[List[int]], time: List[int]) -> int:
+        """dp的做法"""
+        g = [[] for _ in range(n)]
+        end = set(i for i in range(n))
+        for i, o in relations:
+            g[o - 1].append(i - 1)
+            if i - 1 in end:
+                end.remove(i - 1)
+
+        @functools.cache
+        def dfs(x: int) -> int:
+            if not g[x]:
+                return time[x]
+            return max(dfs(i) for i in g[x]) + time[x]
+
+        return max(dfs(i) for i in end)
+
+
 # 2055 - Plates Between Candles - MEDIUM
 class Solution:
     def platesBetweenCandles(self, s: str, queries: List[List[int]]) -> List[int]:
