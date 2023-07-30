@@ -1269,3 +1269,10 @@ T4: 1496 pass
 # https://leetcode.cn/contest/weekly-contest-354/
 # 557 / https://leetcode.cn/contest/weekly-contest-354/problems/length-of-the-longest-valid-substring/
 # 双指针 / 字典树
+
+
+# https://leetcode.cn/contest/weekly-contest-356/
+# 1146 / https://leetcode.cn/contest/weekly-contest-356/problems/shortest-string-that-contains-three-strings/
+# 枚举
+# 387 / https://leetcode.cn/contest/weekly-contest-356/problems/count-stepping-numbers-in-range/
+# 数位dp

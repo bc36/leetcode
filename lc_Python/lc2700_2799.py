@@ -317,13 +317,13 @@ class Solution:
                 s[j - i] += mi  # 累加操作 j-i 次的成本
         return min(s)
 
-    # 或者 预处理 f[i][j] 表示进行 j 次类型修改操作后，类型为 i 的巧克力的最小代价
+    # 或者 预处理 f[i][j] 表示进行 j 次类型修改操作后, 类型为 i 的巧克力的最小代价
 
 
 # 2736. Maximum Sum Queries - HARD
 class Solution:
     # 先把 nums1 和 询问 queries 按照 xi 排序
-    # 可以按照 x 从大到小, nums1[j] 从大到小的顺序处理，同时增量地维护满足 nums1[j] >= xi 的 nums2[j]
+    # 可以按照 x 从大到小, nums1[j] 从大到小的顺序处理, 同时增量地维护满足 nums1[j] >= xi 的 nums2[j]
     # 分类讨论 nums2[j] 和之前遍历过的 nums2[k] 的大小关系, 注意 nums1 是从大到小遍历的
     # O(n + qlogn) / O(n)
     def maximumSumQueries(
@@ -698,7 +698,7 @@ class Solution:
                     break
                 h -= 1
                 st.pop()
-            else:  # while 循环没有 break，说明当前机器人把栈中的全部撞掉
+            else:  # while 循环没有 break, 说明当前机器人把栈中的全部撞掉
                 toLeft.append([i, h])
         toLeft += st
         toLeft.sort(key=lambda p: p[0])
@@ -914,4 +914,54 @@ class Solution:
                     r = i
                     break
             ans = max(ans, r - l)
+        return ans
+
+
+# 2798 - Number of Employees Who Met the Target - EASY
+class Solution:
+    def numberOfEmployeesWhoMetTarget(self, hours: List[int], target: int) -> int:
+        return sum(v >= target for v in hours)
+
+
+# 2799 - Count Complete Subarrays in an Array - MEDIUM
+class Solution:
+    # O(n^2) / O(n)
+    def countCompleteSubarrays(self, nums: List[int]) -> int:
+        m = len(set(nums))
+        ans = 0
+        for i in range(len(nums)):
+            vis = set()
+            for j in range(i, len(nums)):
+                vis.add(nums[j])
+                if len(vis) == m:
+                    ans += len(nums) - j
+                    break
+        return ans
+
+    def countCompleteSubarrays(self, nums: List[int]) -> int:
+        m = len(set(nums))
+        ans = 0
+        for i in range(len(nums)):
+            vis = set()
+            for x in nums[i:]:
+                vis.add(x)
+                ans += len(vis) // m
+        return ans
+
+    # 子数组中 不同 元素的数目恰好等于 m 的数目
+    # 当右端点固定时, 不断循环直到 [left, right] 不满足要求
+    # 合法左端点个数即 left
+    # O(n) / O(n)
+    def countCompleteSubarrays(self, nums: List[int]) -> int:
+        m = len(set(nums))
+        cnt = dict()
+        ans = l = 0
+        for v in nums:
+            cnt[v] = cnt.get(v, 0) + 1
+            while len(cnt) == m:
+                cnt[nums[l]] -= 1
+                if cnt[nums[l]] == 0:
+                    del cnt[nums[l]]
+                l += 1
+            ans += l
         return ans

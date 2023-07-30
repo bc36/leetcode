@@ -544,4 +544,30 @@ public class Lc2700_2799 {
             return ans;
         }
     }
+
+    // 2798. Number of Employees Who Met the Target - EAST
+    class Solution2798a {
+        public int numberOfEmployeesWhoMetTarget(int[] hours, int target) {
+            return (int) IntStream.of(hours).filter(v -> v >= target).count();
+        }
+    }
+
+    // 2799. Count Complete Subarrays in an Array - MEDIUM
+    class Solution2799a {
+        public int countCompleteSubarrays(int[] nums) {
+            HashSet<Integer> s = new HashSet<>();
+            for (int num : nums) {
+                s.add(num);
+            }
+            int ans = 0;
+            for (int i = 0; i < nums.length; i++) {
+                HashSet<Integer> curr = new HashSet<>();
+                for (int j = i; j < nums.length; j++) {
+                    curr.add(nums[j]);
+                    ans += curr.size() / s.size(); // wow!
+                }
+            }
+            return ans;
+        }
+    }
 }
