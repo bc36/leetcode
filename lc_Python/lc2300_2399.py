@@ -895,7 +895,7 @@ class Solution:
             return r
 
         def dfs2(x: int, fa: int, ban: int) -> int:
-            """以 x 为根，不含 ban 的子树中枚举第二条被删除的边"""
+            """以 x 为根, 不含 ban 的子树中枚举第二条被删除的边"""
             nonlocal ans
             r = nums[x]
             # 枚举连通块 D 的根 y
@@ -2658,24 +2658,26 @@ class Solution:
 
 # 2376 - Count Special Integers - HARD
 class Solution:
-    # digit dp
+    # digit dp, 数位dp
     def countSpecialNumbers(self, n: int) -> int:
         s = str(n)
 
         @functools.lru_cache(None)
-        def fn(i: int, mask: int, is_limit: bool, is_num: bool) -> int:
+        def f(i: int, mask: int, isLimit: bool, isNum: bool) -> int:
             if i == len(s):
-                return int(is_num)
+                return int(isNum)  # isNum 为 True 表示得到了一个合法数字
             ans = 0
-            if not is_num:
-                ans = fn(i + 1, mask, False, False)
-            up = int(s[i]) if is_limit else 9
-            for d in range(0 if is_num else 1, up + 1):
-                if mask >> d & 1 == 0:
-                    ans += fn(i + 1, mask | (1 << d), is_limit and d == up, True)
+            if not isNum:  # 可以跳过当前数位
+                ans = f(i + 1, mask, False, False)
+            low = 0 if isNum else 1  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
+            # 如果前面填的数字都和 n 的一样, 那么这一位至多填 s[i], 否则就超过 n 了
+            up = int(s[i]) if isLimit else 9
+            for d in range(low, up + 1):  # 枚举要填入的数字 d
+                if (mask >> d & 1) == 0:  # d 不在 mask 中
+                    ans += f(i + 1, mask | (1 << d), isLimit and d == up, True)
             return ans
 
-        return fn(0, 0, True, False)
+        return f(0, 0, True, False)
 
     def countSpecialNumbers(self, n: int) -> int:
         # all numbers
@@ -2857,7 +2859,7 @@ class Solution:
     # O(n) / O(n)
     def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
         n = len(nums)
-        # left[i] 为位置 i 对应连续子段的左端点，right[i] 为位置 i 对应连续子段的右端点
+        # left[i] 为位置 i 对应连续子段的左端点, right[i] 为位置 i 对应连续子段的右端点
         left = list(range(n))
         right = list(range(n))
         vis = [False] * n
@@ -3525,7 +3527,7 @@ class Solution:
         mask = [sum(v << j for j, v in enumerate(r)) for r in mat]
         s = (1 << cols) - 1
         while s < 1 << len(mat[0]):
-            # r & s = r 表示 r 是 s 的子集，所有 1 都被覆盖
+            # r & s = r 表示 r 是 s 的子集, 所有 1 都被覆盖
             ans = max(ans, sum(r & s == r for r in mask))
             lb = s & -s  # low bit
             x = s + lb
@@ -3625,7 +3627,7 @@ class Solution:
             heapq.heappush(hp, -c)
             summ += c
             while hp and t + len(hp) * summ > budget:
-                # 弹出一个最大花费, 即使弹出的是当前的 c 也没关系，这不会得到更大的 ans
+                # 弹出一个最大花费, 即使弹出的是当前的 c 也没关系, 这不会得到更大的 ans
                 summ += heapq.heappop(hp)
             ans = max(ans, len(hp))
         return ans
