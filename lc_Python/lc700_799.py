@@ -1,4 +1,4 @@
-import bisect, collections, functools, heapq, itertools, math, operator, string
+import bisect, collections, functools, heapq, itertools, math, operator, re, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -519,6 +519,17 @@ class Solution:
         for emails in indexToEmails.values():
             ans.append([emailToName[emails[0]]] + sorted(emails))
         return ans
+
+
+# 722 - Remove Comments - MEDIUM
+class Solution:
+    def removeComments(self, source: List[str]) -> List[str]:
+        # 匹配所有 // 和 /* */, 后者用非贪婪模式, 将所有匹配结果替换成空串, 最后移除多余空行,
+        return list(
+            filter(
+                None, re.sub("//.*|/\*(.|\n)*?\*/", "", "\n".join(source)).split("\n")
+            )
+        )
 
 
 # 729 - My Calendar I - MEDIUM
@@ -2044,6 +2055,7 @@ class Solution:
 
 # 787
 
+
 # 788 - Rotated Digits - MEDIUM
 class Solution:
     # O(nlogn) / O(logn)
@@ -2082,9 +2094,10 @@ class Solution:
 
 # 789
 
+
 # 790 - Domino and Tromino Tiling - MEDIUM
 class Solution:
-    # 需要考虑每列上下两个块分别的状态, f[i][s]: 表示平铺到第 i 列时，各个状态 s 对应的平铺方法数量
+    # 需要考虑每列上下两个块分别的状态, f[i][s]: 表示平铺到第 i 列时, 各个状态 s 对应的平铺方法数量
     # f[i][0]: 都不覆盖, f[i][1]: 上块被覆盖, f[i][2]: 下块被覆盖, f[i][3]: 都被覆盖
     def numTilings(self, n: int) -> int:
         f = [[0] * 4 for _ in range(n + 1)]
@@ -2201,8 +2214,32 @@ class Solution:
 # 794 - Valid Tic-Tac-Toe State - MEDIUM
 class Solution:
     def validTicTacToe(self, board: List[str]) -> bool:
-
         return
+
+
+# 795 - Number of Subarrays with Bounded Maximum - MEDIUM
+class Solution:
+    # 最大元素满足大于等于 L 小于等于 R 的子数组个数 = 最大元素小于等于 R 的子数组个数 - 最大元素小于 L 的子数组个数
+    def numSubarrayBoundedMax(self, nums: List[int], left: int, right: int) -> int:
+        def calc(x: int) -> int:
+            ans = l = 0
+            for r, v in enumerate(nums):
+                if v > x:
+                    l = r + 1
+                ans += r - l + 1
+            return ans
+
+        return calc(right) - calc(left - 1)
+
+    def numSubarrayBoundedMax(self, nums: List[int], left: int, right: int) -> int:
+        ans = l = tmp = 0
+        for r, v in enumerate(nums):
+            if v > right:
+                l = r + 1
+            if v > left - 1:
+                tmp = r - l + 1
+            ans += tmp
+        return ans
 
 
 # 796 - Rotate String - EASY
