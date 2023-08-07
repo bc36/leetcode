@@ -422,6 +422,152 @@ public class Lc2700_2799 {
         }
     }
 
+    // 2760. Longest Even Odd Subarray With Threshold - EASY
+    class Solution2760a {
+        public int longestAlternatingSubarray(int[] nums, int threshold) {
+            int ans = 0;
+            for (int i = 0; i < nums.length; i++) {
+                for (int j = i; nums[i] % 2 == 0 && j < nums.length && nums[j] <= threshold
+                        && (j == i || nums[j] % 2 != nums[j - 1] % 2); j++) {
+                    ans = Math.max(ans, j - i + 1);
+                }
+            }
+            return ans;
+        }
+    }
+
+    // 2761. Prime Pairs With Target Sum - MEDIUM
+    class Solution2761a {
+        // 331ms
+        private static HashSet<Integer> primes = new HashSet<>() {
+            {
+                boolean[] flag = new boolean[1000000];
+                for (int i = 2; i < flag.length; i++) {
+                    if (!flag[i]) {
+                        add(i);
+                        for (int j = i; j < flag.length; j += i) {
+                            flag[j] = true;
+                        }
+                    }
+                }
+            }
+        };
+
+        public List<List<Integer>> findPrimePairs(int n) {
+            ArrayList<List<Integer>> list = new ArrayList<>();
+            for (int i = 2; i <= n / 2; i++) { // 可以只枚举质数加速
+                if (primes.contains(i) && primes.contains(n - i)) {
+                    list.add(List.of(i, n - i));
+                }
+            }
+            return list;
+        }
+    }
+
+    class Solution2761b {
+        // 30ms
+        private final static int MX = (int) 1e6;
+        private final static int[] primes = new int[78498];
+        private final static boolean[] np = new boolean[MX + 1];
+
+        static {
+            var pi = 0;
+            for (var i = 2; i <= MX; ++i) {
+                if (!np[i]) {
+                    primes[pi++] = i;
+                    for (var j = i; j <= MX / i; ++j) // 避免溢出的写法
+                        np[i * j] = true;
+                }
+            }
+        }
+
+        public List<List<Integer>> findPrimePairs(int n) {
+            if (n % 2 > 0)
+                return n > 4 && !np[n - 2] ? List.of(List.of(2, n - 2)) : List.of();
+            var ans = new ArrayList<List<Integer>>();
+            for (int x : primes) {
+                int y = n - x;
+                if (y < x)
+                    break;
+                if (!np[y])
+                    ans.add(List.of(x, y));
+            }
+            return ans;
+        }
+    }
+
+    class Solution2761c {
+        // 11ms
+        private static int primeLen = 0;
+        private static final int N = 1000001;
+        private static final boolean[] PRIMES = new boolean[N];
+        private static final int[] NP = new int[78498];
+
+        static {
+            boolean[] isVisited = new boolean[N];
+            for (int i = 2; i < N; i++) {
+                if (isVisited[i])
+                    continue;
+                PRIMES[i] = true;
+                NP[primeLen++] = i;
+                if (i > 1000)
+                    continue;
+                for (int j = i * i; j < N; j += i) {
+                    isVisited[j] = true;
+                }
+            }
+        }
+
+        public List<List<Integer>> findPrimePairs(int n) {
+            List<List<Integer>> ans = new ArrayList<>();
+            if ((n & 1) == 1) {
+                if (n > 1 && PRIMES[n - NP[0]])
+                    ans.add(List.of(2, n - 2));
+                return ans;
+            }
+            int half = n >> 1;
+            for (int i = 0; i < primeLen && NP[i] <= half; i++) {
+                if (PRIMES[n - NP[i]])
+                    ans.add(List.of(NP[i], n - NP[i]));
+            }
+            return ans;
+        }
+    }
+
+    // 2762. Continuous Subarrays - MEDIUM
+    class Solution2762a {
+        public long continuousSubarrays(int[] nums) {
+            long count = 0;
+            TreeMap<Integer, Integer> map = new TreeMap<>();
+            for (int i = 0, j = 0; j < nums.length; j++) {
+                map.put(nums[j], map.getOrDefault(nums[j], 0) + 1);
+                for (; map.lastKey() - map.firstKey() > 2; i++) {
+                    map.put(nums[i], map.get(nums[i]) - 1);
+                    if (map.get(nums[i]) == 0) {
+                        map.remove(nums[i]);
+                    }
+                }
+                count += j - i + 1;
+            }
+            return count;
+        }
+    }
+
+    // 2763. Sum of Imbalance Numbers of All Subarrays - HARD
+    class Solution2763a {
+        public int sumImbalanceNumbers(int[] nums) {
+            int sum = 0;
+            for (int i = 0; i < nums.length; i++) {
+                HashSet<Integer> set = new HashSet<>(Set.of(nums[i]));
+                for (int j = i + 1, count = 0; j < nums.length; j++) {
+                    sum += count += set.add(nums[j]) ? set.contains(nums[j] - 1) && set.contains(nums[j] + 1) ? -1
+                            : !set.contains(nums[j] - 1) && !set.contains(nums[j] + 1) ? 1 : 0 : 0;
+                }
+            }
+            return sum;
+        }
+    }
+
     // 2769. Find the Maximum Achievable Number - EASY
     class Solution2769a {
         public int theMaximumAchievableX(int num, int t) {

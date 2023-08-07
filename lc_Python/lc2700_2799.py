@@ -705,6 +705,201 @@ class Solution:
         return [h for _, h in toLeft]
 
 
+# 2760 - Longest Even Odd Subarray With Threshold - EASY
+class Solution:
+    # O(n^3) / O(1)
+    def longestAlternatingSubarray(self, nums: List[int], threshold: int) -> int:
+        n = len(nums)
+        for l in range(n, 0, -1):  # l: length
+            for i in range(n - l + 1):
+                if (
+                    nums[i] % 2 == 0
+                    and all(nums[j] % 2 != nums[j + 1] % 2 for j in range(i, i + l - 1))
+                    and all(nums[j] <= threshold for j in range(i, i + l))
+                ):
+                    return l
+
+        return 0
+
+    # O(n) / O(1), 题目的约束实际上把数组划分成了若干段, 每段都满足要求, 且互不相交
+    def longestAlternatingSubarray(self, nums: List[int], threshold: int) -> int:
+        n = len(nums)
+        ans = j = 0
+        while j < n:
+            if nums[j] % 2 or nums[j] > threshold:
+                j += 1
+            else:
+                i = j
+                j += 1
+                while j < n and nums[j] <= threshold and nums[j] % 2 != nums[j - 1] % 2:
+                    j += 1
+                ans = max(ans, j - i)
+        return ans
+
+
+# 2761 - Prime Pairs With Target Sum - MEDIUM
+def eratosthenes(n: int) -> List[int]:
+    """[2, x] 内的质数"""
+    primes = []
+    isPrime = [True] * (n + 1)
+    for i in range(2, n + 1):
+        if isPrime[i]:
+            primes.append(i)
+            for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+                isPrime[j] = False
+    return primes
+
+
+primes = eratosthenes(10**6)
+sp = set(primes)
+
+
+class Solution:
+    def findPrimePairs(self, n: int) -> List[List[int]]:
+        ans = []
+        for i in range(len(primes)):
+            x = primes[i]
+            if x > n // 2:
+                break
+            if n - x in sp:
+                ans.append([x, n - x])
+        return ans
+
+
+# 2762 - Continuous Subarrays - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def continuousSubarrays(self, nums: List[int]) -> int:
+        sl = sortedcontainers.SortedList()
+        ans = l = 0
+        for r, v in enumerate(nums):
+            sl.add(v)
+            while sl and sl[-1] - sl[0] > 2:
+                sl.remove(nums[l])
+                l += 1
+            ans += r - l + 1
+        return ans
+
+    # O(n) / O(n)
+    def continuousSubarrays(self, nums: List[int]) -> int:
+        ans = l = 0
+        cnt = collections.Counter()
+        for r, x in enumerate(nums):
+            cnt[x] += 1
+            while max(cnt) - min(cnt) > 2:
+                y = nums[l]
+                cnt[y] -= 1
+                if cnt[y] == 0:
+                    del cnt[y]
+                l += 1
+            ans += r - l + 1
+        return ans
+
+
+# 2763 - Sum of Imbalance Numbers of All Subarrays - HARD
+class Solution:
+    # O(n^2 * logn) / O(n)
+    def sumImbalanceNumbers(self, nums: List[int]) -> int:
+        ans = 0
+        for r, x in enumerate(nums):
+            sl = sortedcontainers.SortedList([x])
+            cnt = 0
+            for l in range(r - 1, -1, -1):
+                p = sl.bisect_left(nums[l])
+                if p > 0:
+                    cnt += nums[l] - sl[p - 1] > 1
+                if p < len(sl):
+                    cnt += sl[p] - nums[l] > 1
+                if 0 < p < len(sl):
+                    cnt -= sl[p] - sl[p - 1] > 1
+                sl.add(nums[l])
+                ans += cnt
+        return ans
+
+    # O(n^2) / O(n)
+    def sumImbalanceNumbers(self, nums: List[int]) -> int:
+        ans = 0
+        for i, x in enumerate(nums):
+            vis = [False] * (len(nums) + 2)
+            vis[x] = True
+            cnt = 0
+            for j in range(i + 1, len(nums)):
+                x = nums[j]
+                if not vis[x]:
+                    cnt += 1 - vis[x - 1] - vis[x + 1]
+                    vis[x] = True
+                ans += cnt
+        return ans
+
+    def sumImbalanceNumbers(self, nums: List[int]) -> int:
+        ans = 0
+        vis = [-1] * (len(nums) + 2)  # 避免反复创建 vis 数组
+        for i, x in enumerate(nums):
+            vis[x] = i
+            cnt = 0
+            for j in range(i + 1, len(nums)):
+                x = nums[j]
+                if vis[x] != i:
+                    cnt += 1 - (vis[x - 1] == i) - (vis[x + 1] == i)
+                    vis[x] = i
+                ans += cnt
+        return ans
+
+    # O(n) / O(n), 左边可以有 x, 右边没有 x, 且整个子数组都不包含 x - 1 的子数组的个数
+    def sumImbalanceNumbers(self, nums: List[int]) -> int:
+        n = len(nums)
+        right = [0] * n  # right[i] 表示 x = nums[i] 右侧最近的 x 或 x - 1 的位置的最小值
+        idx = [n] * (n + 1)
+        for i in range(n - 1, -1, -1):
+            x = nums[i]
+            right[i] = min(idx[x], idx[x - 1])
+            idx[x] = i
+        ans = 0
+        idx = [-1] * (n + 1)
+        for i in range(n):
+            left = idx[nums[i] - 1]
+            ans += (i - left) * (right[i] - i)
+            idx[nums[i]] = i
+        return ans - n * (n + 1) // 2
+
+    def sumImbalanceNumbers(self, nums: List[int]) -> int:
+        n = len(nums)
+        right = [0] * n  # nums[i] 右侧的 x 和 x-1 的最近下标(不存在时为 n)
+        idx = [n] * (n + 1)
+        for i in range(n - 1, -1, -1):
+            x = nums[i]
+            right[i] = min(idx[x], idx[x - 1])
+            idx[x] = i
+        ans = 0
+        idx = [-1] * (n + 1)
+        for i, (x, r) in enumerate(zip(nums, right)):
+            ans += (i - idx[x - 1]) * (r - i)  # 子数组左端点个数 * 子数组右端点个数
+            idx[x] = i
+        # 上面计算的时候, 每个子数组的最小值必然可以作为贡献, 而这是不合法的
+        # 所以每个子数组都多算了 1 个不合法的贡献
+        return ans - n * (n + 1) // 2
+
+    def sumImbalanceNumbers(self, nums: List[int]) -> int:
+        n = len(nums)
+        # 默认固定 x 在没有 x + 1 的时候有一个贡献, 如果存在 x 的时候不重复算贡献
+        left = [0] * n
+        idx = [-1] * (n + 2)
+        for i in range(n):
+            x = nums[i]
+            left[i] = idx[x + 1]
+            idx[x] = i
+        right = [n] * n
+        idx = [n] * (n + 2)
+        for i in range(n - 1, -1, -1):
+            x = nums[i]
+            right[i] = min(idx[x + 1], idx[x])
+            idx[x] = i
+        ans = 0
+        for i in range(n):
+            ans += (i - left[i]) * (right[i] - i)
+        return ans - n * (n + 1) // 2
+
+
 # 2769 - Find the Maximum Achievable Number - EASY
 class Solution:
     def theMaximumAchievableX(self, num: int, t: int) -> int:
