@@ -403,14 +403,14 @@ class Solution:
     # 子数组和最小 -> 某两个位置(i, j)的前缀和的差值 最小 (i <= j)
     # 子数组和的 abs 最大 -> 某两个位置(i, j)的前缀和的差距 最大, i 和 j 相对位置随意
     def maxAbsoluteSum(self, nums: List[int]) -> int:
-        mx = mi = p = 0
-        for i in range(1, len(nums) + 1):
-            p += nums[i - 1]
-            if mx < p:
-                mx = p
-            if mi > p:
-                mi = p
-        return mx - mi
+        summ = mx = mn = 0
+        for v in nums:
+            summ += v
+            if summ > mx:
+                mx = summ
+            if summ < mn:
+                mn = summ
+        return mx - mn
 
 
 # 1750 - Minimum Length of String After Deleting Similar Ends - MEDIUM
