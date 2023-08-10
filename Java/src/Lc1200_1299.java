@@ -201,4 +201,17 @@ public class Lc1200_1299 {
             return -1;
         }
     }
+
+    // 1281. Subtract the Product and Sum of Digits of an Integer - EASY
+    class Solution1281a {
+        public int subtractProductAndSum(int n) {
+            int p = 1, s = 0;
+            while (n > 0) {
+                p *= n % 10;
+                s += n % 10;
+                n /= 10;
+            }
+            return p - s;
+        }
+    }
 }

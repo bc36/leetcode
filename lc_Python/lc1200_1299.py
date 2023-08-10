@@ -1206,7 +1206,10 @@ class Solution:
             n //= 10
         return p - s
 
-
+    def subtractProductAndSum(self, n: int) -> int:
+        f = lambda func: functools.reduce(func, map(int, list(str(n))))
+        return f(operator.mul) - f(operator.add)
+    
 # 1282 - Group the People Given the Group Size They Belong To - MEDIUM
 class Solution:
     def groupThePeople(self, groupSizes: List[int]) -> List[List[int]]:
