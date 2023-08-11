@@ -860,11 +860,8 @@ class TreeAncestor:
 class Solution:
     # O(n) / O(n)
     def xorOperation(self, n: int, start: int) -> int:
-        nums = [start + 2 * i for i in range(n)]
-        ans = 0
-        for v in nums:
-            ans ^= v
-        return ans
+        return functools.reduce(operator.xor, [start + 2 * i for i in range(n)])
+        return functools.reduce(operator.xor, range(start, start + (n << 1) - 1, 2))
 
     # O(n) / O(1)
     def xorOperation(self, n: int, start: int) -> int:
