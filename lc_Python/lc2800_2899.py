@@ -53,6 +53,7 @@ class Solution:
     # 时间复杂度 = O(状态个数) * O(单个状态需要的时间)
     #          = O(10n) * O(10)
     #          = O(100n)
+    # https://leetcode.cn/problems/count-stepping-numbers-in-range/solution/shu-wei-dp-tong-yong-mo-ban-by-endlessch-h8fj/
 
     # 620ms
     def countSteppingNumbers(self, low: str, high: str) -> int:
@@ -60,18 +61,19 @@ class Solution:
 
         def calc(s: str) -> int:
             @functools.cache
-            def f(i: int, pre: int, is_limit: bool, is_num: bool) -> int:
+            def f(i: int, pre: int, isLimit: bool, isNum: bool) -> int:
+                """表示构造第 i 位及其之后数位的合法方案数"""
                 if i == len(s):
-                    return int(is_num)  # is_num 为 True 表示得到了一个合法数字
+                    return int(isNum)  # isNum 为 True 表示得到了一个合法数字
                 res = 0
-                if not is_num:  # 可以跳过当前数位
+                if not isNum:  # 可以跳过当前数位
                     res = f(i + 1, pre, False, False)
-                down = 0 if is_num else 1  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
+                down = 0 if isNum else 1  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
                 # 如果前面填的数字都和 s 的一样, 那么这一位至多填 s[i], 否则就超过 s 了
-                up = int(s[i]) if is_limit else 9
+                up = int(s[i]) if isLimit else 9
                 for d in range(down, up + 1):  # 枚举要填入的数字 d
-                    if not is_num or abs(d - pre) == 1:  # 第一位数字随便填, 其余必须相差 1
-                        res += f(i + 1, d, is_limit and d == up, True)
+                    if not isNum or abs(d - pre) == 1:  # 第一位数字随便填, 其余必须相差 1
+                        res += f(i + 1, d, isLimit and d == up, True)
                 return res % mod
 
             return f(0, 0, True, False)
@@ -83,18 +85,18 @@ class Solution:
 
         def calc(s: str) -> int:
             @functools.cache
-            def f(i: int, pre: int, is_limit: bool, is_num: bool) -> int:
+            def f(i: int, pre: int, isLimit: bool, isNum: bool) -> int:
                 if i == len(s):
-                    return int(is_num)
+                    return int(isNum)
                 res = 0
-                if not is_num:
+                if not isNum:
                     res = f(i + 1, -1, False, False)
-                down = 0 if is_num else 1
-                up = int(s[i]) if is_limit else 9
+                down = 0 if isNum else 1
+                up = int(s[i]) if isLimit else 9
                 for d in range(down, up + 1):
                     if pre != -1 and abs(d - pre) != 1:
                         continue
-                    res += f(i + 1, d, is_limit and d == up, True)
+                    res += f(i + 1, d, isLimit and d == up, True)
                 return res % mod
 
             return f(0, -1, True, False)
@@ -108,20 +110,20 @@ class Solution:
         low = "0" * (len(high) - len(low)) + low
 
         @functools.cache
-        def f(i: int, pre: int, is_up_limit: bool, is_down_limit, is_num: bool) -> int:
+        def f(i: int, pre: int, isUpLimit: bool, isDownLimit: bool, isNum: bool) -> int:
             if i == len(high):
-                return is_num
+                return isNum
             res = 0
-            down = int(low[i]) if is_down_limit else 0
-            up = int(high[i]) if is_up_limit else 9
+            down = int(low[i]) if isDownLimit else 0
+            up = int(high[i]) if isUpLimit else 9
             for d in range(down, up + 1):  # 枚举要填入的数字 d
-                if not is_num or d - pre in (-1, 1):
+                if not isNum or d - pre in (-1, 1):
                     res += f(
                         i + 1,
                         d,
-                        is_up_limit and d == up,
-                        is_down_limit and d == down,
-                        is_num or d > 0,
+                        isUpLimit and d == up,
+                        isDownLimit and d == down,
+                        isNum or d > 0,
                     )
             return res % mod
 
