@@ -1,4 +1,4 @@
-import bisect, collections, functools, heapq, itertools, math, operator, string
+import bisect, collections, functools, heapq, itertools, math, operator, string, sys
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -8,6 +8,12 @@ def pairwise(iterable):
     a, b = itertools.tee(iterable)
     next(b, None)
     return zip(a, b)
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
 
 class TreeNode:
@@ -128,3 +134,201 @@ class Solution:
             return res % mod
 
         return f(0, 0, True, True, False)
+
+
+# 2815 - Max Pair Sum in an Array - EASY
+class Solution:
+    def maxSum(self, nums: List[int]) -> int:
+        ans = -1
+        d = dict()
+        for v in nums:
+            mx = max(str(v))
+            if mx in d:
+                ans = max(ans, d[mx] + v)
+            d[mx] = max(d.get(mx, 0), v)
+        return ans
+
+
+# 2816 - Double a Number Represented as a Linked List - MEDIUM
+class Solution:
+    # ValueError: Exceeds the limit (4300) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit
+    sys.set_int_max_str_digits(0)
+
+    def doubleIt(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        x = 0
+        while head:
+            x *= 10
+            x += head.val
+            head = head.next
+        x *= 2
+        dummy = tmp = ListNode(-1)
+        for w in str(x):
+            tmp.next = ListNode(int(w))
+            tmp = tmp.next
+        return dummy.next
+
+    # 本题因为乘数为2, 故低一位的数字可以影响到该位的结果只有0, 1 不会再影响更高一位, 所以可以从前至后遍历
+    def doubleIt(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        cur = dummy = ListNode(val=0, next=head)
+        while cur.next:
+            cur.val = (cur.val * 2 + (cur.next.val >= 5)) % 10
+            cur = cur.next
+        cur.val = cur.val * 2 % 10
+        return dummy if dummy.val else dummy.next
+
+    def doubleIt(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head.val >= 5:
+            head = ListNode(0, head)
+        cur = head
+        while cur:
+            cur.val = cur.val * 2 % 10
+            if cur.next and cur.next.val >= 5:
+                cur.val += 1
+            cur = cur.next
+        return head
+
+
+# 2817 - Minimum Absolute Difference Between Elements With Constraint - MEDIUM
+class Solution:
+    def minAbsoluteDifference(self, nums: List[int], x: int) -> int:
+        sl = sortedcontainers.SortedList()
+        ans = math.inf
+        for i in range(x, len(nums)):
+            sl.add(nums[i - x])
+            # p = sl.bisect_left(nums[i])
+            p = sl.bisect_right(nums[i])
+            if p == len(sl):
+                ans = min(ans, nums[i] - sl[-1])
+            else:
+                ans = min(
+                    ans,
+                    sl[p] - nums[i],
+                    math.inf if p == 0 else nums[i] - sl[p - 1],
+                )
+            if ans == 0:
+                return 0
+        return ans
+
+    def minAbsoluteDifference(self, nums: List[int], x: int) -> int:
+        ans = math.inf
+        sl = sortedcontainers.SortedList([-math.inf, math.inf])  # 哨兵
+        for i in range(x, len(nums)):
+            sl.add(nums[i - x])
+            p = sl.bisect_left(nums[i])
+            # p = sl.bisect_right(nums[i])
+            ans = min(ans, sl[p] - nums[i], nums[i] - sl[p - 1])
+        return ans
+
+
+# 2818 - Apply Operations to Maximize Score - HARD
+def eratosthenes(n: int) -> List[int]:
+    diffPrime = [0] * (n + 1)
+    for i in range(2, n + 1):
+        if diffPrime[i] == 0:
+            for j in range(i, n + 1, i):
+                diffPrime[j] += 1
+    return diffPrime
+
+
+diffPrime = eratosthenes(10**5)
+
+
+class Solution:
+    # O(nlogn) / O(n), 单调栈, 计算贡献
+    def maximumScore(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        ps = [diffPrime[v] for v in nums]
+        right = [n] * n
+        left = [-1] * n
+        # 如何确定栈内是递增还是递减? 思考什么时候栈会被清空.
+        # 往左看, 如果遇到一个 ps 极大值, 则会停止, 所以此时栈内是(从头到尾/从底到顶)递减的
+        st = []
+        for i in range(n):
+            while st and ps[st[-1]] < ps[i]:
+                st.pop()
+            if st:
+                left[i] = st[-1]
+            st.append(i)
+        # 往右看, 如果遇到一个 ps 极大值, 则会停止x
+        st = []
+        for i in range(n)[::-1]:
+            while st and ps[st[-1]] <= ps[i]:  # 根据题意, 注意 '=' 时的处理
+                st.pop()
+            if st:
+                right[i] = st[-1]
+            st.append(i)
+        ans = 1
+        for v, i in sorted(zip(nums, range(n)), reverse=True):
+            t = (right[i] - i) * (i - left[i])
+            if t >= k:
+                ans = ans * pow(v, k, 1000000007) % 1000000007
+                break
+            ans = ans * pow(v, t, 1000000007) % 1000000007
+            k -= t
+        return ans
+
+    def maximumScore(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        left = [-1] * n  # 质数分数 >= diffPrime[nums[i]] 的左侧最近元素下标
+        right = [n] * n  # 质数分数 >  diffPrime[nums[i]] 的右侧最近元素下标
+        st = []
+        for i, v in enumerate(nums):
+            while st and diffPrime[nums[st[-1]]] < diffPrime[v]:
+                right[st.pop()] = i  # 此时该 i 也是栈顶元素的右边界
+            if st:
+                left[i] = st[-1]
+            st.append(i)
+        ans = 1
+        for i, v, l, r in sorted(zip(range(n), nums, left, right), key=lambda z: -z[1]):
+            t = (i - l) * (r - i)
+            if t >= k:
+                ans = ans * pow(v, k, 1000000007) % 1000000007
+                break
+            ans = ans * pow(v, t, 1000000007) % 1000000007
+            k -= t
+        return ans
+
+
+def eratosthenes(n: int) -> List[int]:
+    """[2, x] 内的质数"""
+    primes = []
+    isPrime = [True] * (n + 1)
+    for i in range(2, n + 1):
+        if isPrime[i]:
+            primes.append(i)
+            for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+                isPrime[j] = False
+    return primes
+
+
+primes = eratosthenes(10**5)
+
+
+# wrong
+def primeScore(x: int) -> int:
+    """这样计算会 TLE, 原因是如果遇到一个大质数, 会一直枚举到它为止, 10**5 内最多9592个质数"""
+    if x == 1:
+        return 0
+    s = 0
+    for p in primes:
+        if x % p == 0:
+            s += 1
+            while x % p == 0:
+                x //= p
+    return s
+
+
+# right
+def primeScore(x: int) -> int:
+    """此时则只会枚举到 sqrt(10**5) 内的最大质数, 最多 65 个, 最大为 313"""
+    s = 0
+    for p in primes:
+        if p * p > x:
+            break
+        if x % p == 0:
+            s += 1
+            while x % p == 0:
+                x //= p
+    if x > 1:
+        s += 1
+    return s

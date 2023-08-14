@@ -75,4 +75,84 @@ public class Lc2800_2899 {
             return dp[index][prev][flag ? 1 : 0];
         }
     }
+
+    // 2815. Max Pair Sum in an Array - EASY
+    class Solution2815a {
+        public int maxSum(int[] nums) {
+            int ans = -1;
+            for (int i = 0; i < nums.length; i++) {
+                for (int j = i + 1; j < nums.length; j++) {
+                    if (("" + nums[i]).chars().max().getAsInt() == ("" + nums[j]).chars().max().getAsInt()) {
+                        ans = Math.max(ans, nums[i] + nums[j]);
+                    }
+                }
+            }
+            return ans;
+        }
+    }
+
+    // 2816. Double a Number Represented as a Linked List - MEDIUM
+    class Solution2816a {
+        public ListNode doubleIt(ListNode head) {
+            int result = doubleIt2(head);
+            return result > 0 ? new ListNode(1, head) : head;
+        }
+
+        private int doubleIt2(ListNode head) {
+            if (head == null) {
+                return 0;
+            } else {
+                int result = head.val = 2 * head.val + doubleIt2(head.next);
+                head.val %= 10;
+                return result / 10;
+            }
+        }
+    }
+
+    // 2817. Minimum Absolute Difference Between Elements With Constraint - MEDIUM
+    class Solution2817a {
+        public int minAbsoluteDifference(List<Integer> nums, int x) {
+            TreeSet<Integer> treeSet = new TreeSet<>(Set.of(-1000000000, Integer.MAX_VALUE));
+            int ans = Integer.MAX_VALUE;
+            for (int i = x; i < nums.size(); i++) {
+                treeSet.add(nums.get(i - x));
+                ans = Math.min(ans,
+                        Math.min(nums.get(i) - treeSet.floor(nums.get(i)), treeSet.ceiling(nums.get(i)) - nums.get(i)));
+            }
+            return ans;
+        }
+    }
+
+    // 2818. Apply Operations to Maximize Score - HARD
+    class Solution2818a {
+        public int maximumScore(List<Integer> nums, int k) {
+            ArrayDeque<Integer> deque = new ArrayDeque<>(List.of(-1));
+            TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+            long score[] = new long[nums.size()], prod = 1;
+            for (int i = 0; i <= nums.size(); deque.push(i++)) {
+                if (i < nums.size()) {
+                    int num = nums.get(i);
+                    for (int j = 2; j * j < num; j++) {
+                        for (score[i] += num % j > 0 ? 0 : 1; num % j == 0; num /= j) {
+                        }
+                    }
+                    score[i] += num > 1 ? 1 : 0;
+                }
+                while (deque.size() > 1 && (i == nums.size() || score[deque.peek()] < score[i])) {
+                    int pop = deque.pop();
+                    treeMap.put(-nums.get(pop),
+                            treeMap.getOrDefault(-nums.get(pop), 0) + (pop - deque.peek()) * (i - pop));
+                }
+            }
+            for (Map.Entry<Integer, Integer> entry : treeMap.entrySet()) {
+                prod = prod * BigInteger.valueOf(-entry.getKey())
+                        .modPow(BigInteger.valueOf(Math.min(k, entry.getValue())), BigInteger.valueOf(1000000007))
+                        .intValue() % 1000000007;
+                if ((k -= entry.getValue()) <= 0) {
+                    break;
+                }
+            }
+            return (int) prod;
+        }
+    }
 }
