@@ -690,6 +690,29 @@ class Solution:
         return sum(all(abs(x - y) > d for y in arr2) for x in arr1)
 
 
+# 1388 - Pizza With 3n Slices - HARD
+class Solution:
+    # 转化成: 给一个长度为 3n 的环状序列, 你可以在其中选择 n 个数, 并且任意两个数不能相邻, 求这 n 个数的最大值
+    # dp[i][j] 前 i 个数中选择了 j 个不相邻的数的最大和
+    # 动态规划的解决方法和 213. 打家劫舍 II 较为相似
+    # 首先考虑该序列不是环状时的解决方法
+    # 当该序列是环状序列时, 普通序列中的第一个和最后一个数不能同时选, 需要对普通序列进行两遍动态
+    # O(n^2) / O(n^2)
+    def maxSizeSlices(self, slices: List[int]) -> int:
+        def calc(nums: List[int]) -> int:
+            m = len(nums)
+            f = [[0] * (n + 1) for _ in range(m + 1)]
+            for i in range(1, m + 1):
+                for j in range(1, n + 1):
+                    f[i][j] = max(
+                        f[i - 1][j], (f[i - 2][j - 1] if i >= 2 else 0) + nums[i - 1]
+                    )
+            return f[m][n]
+
+        n = len(slices) // 3
+        return max(calc(slices[:-1]), calc(slices[1:]))
+
+
 # 1396 - Design Underground System - MEDIUM
 class UndergroundSystem:
     def __init__(self):

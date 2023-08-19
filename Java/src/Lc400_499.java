@@ -121,4 +121,18 @@ public class Lc400_499 {
             return ans;
         }
     }
+
+    // 455. Assign Cookies - EASY
+    class Solution455a {
+        public int findContentChildren(int[] g, int[] s) {
+            Arrays.sort(s);
+            Arrays.sort(g);
+            int j = 0;
+            for (int i = 0; i < s.length && j < g.length; i++)
+                if (s[i] >= g[j]) {
+                    j++;
+                }
+            return j;
+        }
+    }
 }

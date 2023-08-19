@@ -1073,6 +1073,20 @@ class Solution:
         return sum(ab[-c - d] for c in nums3 for d in nums4)
 
 
+# 455 - Assign Cookies - EASY
+class Solution:
+    def findContentChildren(self, g: List[int], s: List[int]) -> int:
+        s.sort()
+        g.sort()
+        i = 0
+        for v in s:
+            if v >= g[i]:
+                i += 1
+                if i == len(g):
+                    break
+        return i
+
+
 # 461 - Hamming Distance - EASY
 class Solution:
     def hammingDistance(self, x: int, y: int) -> int:
