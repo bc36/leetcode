@@ -155,4 +155,64 @@ public class Lc2800_2899 {
             return (int) prod;
         }
     }
+
+    // 2824. Count Pairs Whose Sum is Less than Target - EASY
+    class Solution2824a {
+        public int countPairs(List<Integer> nums, int target) {
+            int count = 0;
+            for (int i = 0; i < nums.size(); i++) {
+                for (int j = i + 1; j < nums.size(); j++) {
+                    count += nums.get(i) + nums.get(j) < target ? 1 : 0;
+                }
+            }
+            return count;
+        }
+    }
+
+    // 2825. Make String a Subsequence Using Cyclic Increments - MEDIUM
+    class Solution2825a {
+        public boolean canMakeSubsequence(String str1, String str2) {
+            int j = 0;
+            for (int i = 0; i < str1.length() && j < str2.length(); i++) {
+                j += str1.charAt(i) == str2.charAt(j) || (str1.charAt(i) - 'a' + 1) % 26 == str2.charAt(j) - 'a' ? 1
+                        : 0;
+            }
+            return j == str2.length();
+        }
+    }
+
+    // 2826. Sorting Three Groups - MEDIUM
+    class Solution2826a {
+        public int minimumOperations(List<Integer> nums) {
+            int[] dp = { Integer.MAX_VALUE, 0, 0, 0 };
+            for (int num : nums) {
+                for (int i = 1; i <= 3; i++) {
+                    dp[i] = Math.min(dp[i - 1], dp[i] + (num == i ? 0 : 1));
+                }
+            }
+            return dp[3];
+        }
+    }
+
+    // 2827. Number of Beautiful Integers in the Range - HARD
+    class Solution2827a {
+        public int numberOfBeautifulIntegers(int low, int high, int k) {
+            return calc(0, 0, 0, 0, 1, 1, high + "", k, new Integer[10][10][10][k][2][2])
+                    - calc(0, 0, 0, 0, 1, 1, low - 1 + "", k, new Integer[10][10][10][k][2][2]);
+        }
+
+        private int calc(int index, int odd, int even, int mod, int start, int flag, String s, int k,
+                Integer[][][][][][] dp) {
+            if (index == s.length()) {
+                return odd == even && mod == 0 ? 1 : 0;
+            } else if (dp[index][odd][even][mod][start][flag] == null) {
+                dp[index][odd][even][mod][start][flag] = start == 0 ? 0 : calc(index + 1, 0, 0, 0, 1, 0, s, k, dp);
+                for (int i = start; i <= (flag == 1 ? s.charAt(index) - '0' : 9); i++) {
+                    dp[index][odd][even][mod][start][flag] += calc(index + 1, odd + i % 2, even + 1 - i % 2,
+                            (mod * 10 + i) % k, 0, i == (flag == 1 ? s.charAt(index) - '0' : 9) ? flag : 0, s, k, dp);
+                }
+            }
+            return dp[index][odd][even][mod][start][flag];
+        }
+    }
 }

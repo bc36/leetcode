@@ -332,3 +332,112 @@ def primeScore(x: int) -> int:
     if x > 1:
         s += 1
     return s
+
+
+# 2824 - Count Pairs Whose Sum is Less than Target - EASY
+class Solution:
+    def countPairs(self, nums: List[int], target: int) -> int:
+        ans = 0
+        for j in range(1, len(nums)):
+            for i in range(j):
+                ans += nums[i] + nums[j] < target
+        return ans
+
+
+# 2825 - Make String a Subsequence Using Cyclic Increments - MEDIUM
+d = {string.ascii_lowercase[i]: string.ascii_lowercase[(i + 1) % 26] for i in range(26)}
+
+
+class Solution:
+    def canMakeSubsequence(self, str1: str, str2: str) -> bool:
+        j = 0
+        for c in str1:
+            # if c == str2[j] or chr((ord(c) - 97 + 1) % 26 + 97) == str2[j]:
+            if c == str2[j] or d[c] == str2[j]:
+                j += 1
+                if j == len(str2):
+                    return True
+        return False
+
+
+# 2826 - Sorting Three Groups - MEDIUM
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [1] * n
+        for i in range(1, n):
+            for j in range(i):
+                if nums[i] >= nums[j]:
+                    f[i] = max(f[i], f[j] + 1)
+        return n - max(f)
+
+    def minimumOperations(self, nums: List[int]) -> int:
+        a = b = c = 0
+        for x in nums:
+            match x:
+                case 1:
+                    a, b, c = a, min(a, b) + 1, min(a, b, c) + 1
+                case 2:
+                    a, b, c = a + 1, min(a, b), min(a, b, c) + 1
+                case 3:
+                    a, b, c = a + 1, min(a, b) + 1, min(a, b, c)
+        return min(a, b, c)
+
+    def minimumOperations(self, nums: List[int]) -> int:
+        a = b = c = 0
+        for x in nums:
+            if x == 1:
+                a, b, c = a, b + 1, c + 1
+            elif x == 2:
+                a, b, c = a + 1, b, c + 1
+            else:
+                a, b, c = a + 1, b + 1, c
+            b = min(a, b)
+            c = min(b, c)
+        return c
+
+    def minimumOperations(self, nums: List[int]) -> int:
+        f = [math.inf, 0, 0, 0]
+        for x in nums:
+            for i in (1, 2, 3):
+                f[i] = min(f[i - 1], f[i] + (x == i))
+        return f[3]
+
+    def minimumOperations(self, nums: List[int]) -> int:
+        from algo.lis import LongestIncreasingSubsequence
+
+        n = len(nums)
+        return n - LongestIncreasingSubsequence().definitely_not_reduce(nums)
+
+
+# 2827 - Number of Beautiful Integers in the Range - HARD
+class Solution:
+    # 数位dp
+    def numberOfBeautifulIntegers(self, low: int, high: int, k: int) -> int:
+        def calc(s: str) -> int:
+            @functools.cache
+            def f(i: int, pre: int, isLimit: bool, isNum: bool, e: int, o: int) -> int:
+                """表示构造第 i 位及其之后数位的合法方案数"""
+                if i == len(s):
+                    # isNum 为 True 表示得到了一个合法数字
+                    return int(isNum and e == o and pre == 0)
+                res = 0
+                if not isNum:  # 可以跳过当前数位
+                    res = f(i + 1, pre, False, False, e, o)
+                down = 0 if isNum else 1  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
+                # 如果前面填的数字都和 s 的一样, 那么这一位至多填 s[i], 否则就超过 s 了
+                up = int(s[i]) if isLimit else 9
+                for d in range(down, up + 1):  # 枚举要填入的数字 d
+                    res += f(
+                        i + 1,
+                        (pre * 10 + d) % k,
+                        isLimit and d == up,
+                        True,
+                        e + (d & 1),
+                        o + (1 - d & 1),
+                    )
+                return res
+
+            return f(0, 0, True, False, 0, 0)
+
+        return calc(str(high)) - calc(str(low - 1))
