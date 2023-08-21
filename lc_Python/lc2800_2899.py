@@ -67,22 +67,22 @@ class Solution:
 
         def calc(s: str) -> int:
             @functools.cache
-            def f(i: int, pre: int, isLimit: bool, isNum: bool) -> int:
+            def dfs(i: int, pre: int, isLimit: bool, isNum: bool) -> int:
                 """表示构造第 i 位及其之后数位的合法方案数"""
                 if i == len(s):
                     return int(isNum)  # isNum 为 True 表示得到了一个合法数字
                 res = 0
                 if not isNum:  # 可以跳过当前数位
-                    res = f(i + 1, pre, False, False)
+                    res = dfs(i + 1, pre, False, False)
                 down = 0 if isNum else 1  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
                 # 如果前面填的数字都和 s 的一样, 那么这一位至多填 s[i], 否则就超过 s 了
                 up = int(s[i]) if isLimit else 9
                 for d in range(down, up + 1):  # 枚举要填入的数字 d
                     if not isNum or abs(d - pre) == 1:  # 第一位数字随便填, 其余必须相差 1
-                        res += f(i + 1, d, isLimit and d == up, True)
+                        res += dfs(i + 1, d, isLimit and d == up, True)
                 return res % mod
 
-            return f(0, 0, True, False)
+            return dfs(0, 0, True, False)
 
         return (calc(high) - calc(str(int(low) - 1))) % mod
 
@@ -91,21 +91,21 @@ class Solution:
 
         def calc(s: str) -> int:
             @functools.cache
-            def f(i: int, pre: int, isLimit: bool, isNum: bool) -> int:
+            def dfs(i: int, pre: int, isLimit: bool, isNum: bool) -> int:
                 if i == len(s):
                     return int(isNum)
                 res = 0
                 if not isNum:
-                    res = f(i + 1, -1, False, False)
+                    res = dfs(i + 1, -1, False, False)
                 down = 0 if isNum else 1
                 up = int(s[i]) if isLimit else 9
                 for d in range(down, up + 1):
                     if pre != -1 and abs(d - pre) != 1:
                         continue
-                    res += f(i + 1, d, isLimit and d == up, True)
+                    res += dfs(i + 1, d, isLimit and d == up, True)
                 return res % mod
 
-            return f(0, -1, True, False)
+            return dfs(0, -1, True, False)
 
         return (calc(high) - calc(str(int(low) - 1))) % mod
 
@@ -116,7 +116,9 @@ class Solution:
         low = "0" * (len(high) - len(low)) + low
 
         @functools.cache
-        def f(i: int, pre: int, isUpLimit: bool, isDownLimit: bool, isNum: bool) -> int:
+        def dfs(
+            i: int, pre: int, isUpLimit: bool, isDownLimit: bool, isNum: bool
+        ) -> int:
             if i == len(high):
                 return isNum
             res = 0
@@ -124,7 +126,7 @@ class Solution:
             up = int(high[i]) if isUpLimit else 9
             for d in range(down, up + 1):  # 枚举要填入的数字 d
                 if not isNum or d - pre in (-1, 1):
-                    res += f(
+                    res += dfs(
                         i + 1,
                         d,
                         isUpLimit and d == up,
@@ -133,7 +135,7 @@ class Solution:
                     )
             return res % mod
 
-        return f(0, 0, True, True, False)
+        return dfs(0, 0, True, True, False)
 
 
 # 2815 - Max Pair Sum in an Array - EASY
@@ -343,6 +345,24 @@ class Solution:
                 ans += nums[i] + nums[j] < target
         return ans
 
+    def countPairs(self, nums: List[int], target: int) -> int:
+        return sum(
+            nums[i] + nums[j] < target
+            for i, j in itertools.combinations(range(len(nums)), 2)
+        )
+
+    def countPairs(self, nums: List[int], target: int) -> int:
+        nums.sort()
+        ans = l = 0
+        r = len(nums) - 1
+        while l < r:
+            if nums[l] + nums[r] < target:
+                ans += r - l
+                l += 1
+            else:
+                r -= 1
+        return ans
+
 
 # 2825 - Make String a Subsequence Using Cyclic Increments - MEDIUM
 d = {string.ascii_lowercase[i]: string.ascii_lowercase[(i + 1) % 26] for i in range(26)}
@@ -353,7 +373,8 @@ class Solution:
         j = 0
         for c in str1:
             # if c == str2[j] or chr((ord(c) - 97 + 1) % 26 + 97) == str2[j]:
-            if c == str2[j] or d[c] == str2[j]:
+            # if c == str2[j] or d[c] == str2[j]:
+            if c == str2[j] or (chr(ord(c) + 1) if c != "z" else "a") == str2[j]:
                 j += 1
                 if j == len(str2):
                     return True
@@ -362,6 +383,19 @@ class Solution:
 
 # 2826 - Sorting Three Groups - MEDIUM
 class Solution:
+    # O(n^3) / O(1)
+    def minimumOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        ans = math.inf
+        for i in range(n + 1):
+            one = nums[:i].count(1)
+            for j in range(i, n + 1):
+                two = nums[i:j].count(2)
+                three = nums[j:].count(3)
+                ans = min(i - one + j - i - two + n - j - three, ans)
+        return ans
+
+    # O(n^2) / O(1)
     def minimumOperations(self, nums: List[int]) -> int:
         n = len(nums)
         f = [1] * n
@@ -371,6 +405,7 @@ class Solution:
                     f[i] = max(f[i], f[j] + 1)
         return n - max(f)
 
+    # O(n) / O(1)
     def minimumOperations(self, nums: List[int]) -> int:
         a = b = c = 0
         for x in nums:
@@ -383,6 +418,7 @@ class Solution:
                     a, b, c = a + 1, min(a, b) + 1, min(a, b, c)
         return min(a, b, c)
 
+    # O(n) / O(1)
     def minimumOperations(self, nums: List[int]) -> int:
         a = b = c = 0
         for x in nums:
@@ -396,13 +432,23 @@ class Solution:
             c = min(b, c)
         return c
 
+    # O(n) / O(1)
     def minimumOperations(self, nums: List[int]) -> int:
         f = [math.inf, 0, 0, 0]
         for x in nums:
             for i in (1, 2, 3):
-                f[i] = min(f[i - 1], f[i] + (x == i))
+                f[i] = min(f[i - 1], f[i] + (x != i))
         return f[3]
 
+    # O(n) / O(1)
+    def minimumOperations(self, nums: List[int]) -> int:
+        f = [0] * 4
+        for x in nums:
+            for j in range(3, 0, -1):
+                f[j] = min(f[k] for k in range(1, j + 1)) + (j != x)
+        return min(f[1:])
+
+    # O(nlogn) / O(n)
     def minimumOperations(self, nums: List[int]) -> int:
         from algo.lis import LongestIncreasingSubsequence
 
@@ -416,19 +462,21 @@ class Solution:
     def numberOfBeautifulIntegers(self, low: int, high: int, k: int) -> int:
         def calc(s: str) -> int:
             @functools.cache
-            def f(i: int, pre: int, isLimit: bool, isNum: bool, e: int, o: int) -> int:
+            def dfs(
+                i: int, pre: int, isLimit: bool, isNum: bool, e: int, o: int
+            ) -> int:
                 """表示构造第 i 位及其之后数位的合法方案数"""
                 if i == len(s):
                     # isNum 为 True 表示得到了一个合法数字
                     return int(isNum and e == o and pre == 0)
                 res = 0
                 if not isNum:  # 可以跳过当前数位
-                    res = f(i + 1, pre, False, False, e, o)
+                    res = dfs(i + 1, pre, False, False, e, o)
                 down = 0 if isNum else 1  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
                 # 如果前面填的数字都和 s 的一样, 那么这一位至多填 s[i], 否则就超过 s 了
                 up = int(s[i]) if isLimit else 9
                 for d in range(down, up + 1):  # 枚举要填入的数字 d
-                    res += f(
+                    res += dfs(
                         i + 1,
                         (pre * 10 + d) % k,
                         isLimit and d == up,
@@ -438,6 +486,33 @@ class Solution:
                     )
                 return res
 
-            return f(0, 0, True, False, 0, 0)
+            return dfs(0, 0, True, False, 0, 0)
 
         return calc(str(high)) - calc(str(low - 1))
+
+    def numberOfBeautifulIntegers(self, low: int, high: int, k: int) -> int:
+        def calc(high: int) -> int:
+            s = str(high)
+
+            @functools.cache
+            def dfs(i: int, val: int, diff: int, isLimit: bool, isNum: bool) -> int:
+                if i == len(s):
+                    return int(isNum and val == 0 and diff == 0)
+                res = 0
+                if not isNum:
+                    res = dfs(i + 1, val, diff, False, False)
+                d0 = 0 if isNum else 1
+                up = int(s[i]) if isLimit else 9
+                for d in range(d0, up + 1):
+                    res += dfs(
+                        i + 1,
+                        (val * 10 + d) % k,
+                        diff + d % 2 * 2 - 1,
+                        isLimit and d == up,
+                        True,
+                    )
+                return res
+
+            return dfs(0, 0, 0, True, False)
+
+        return calc(high) - calc(low - 1)

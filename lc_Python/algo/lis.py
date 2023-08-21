@@ -14,10 +14,10 @@ class LongestIncreasingSubsequence:
         dp = []
         for x in nums:
             i = bisect.bisect_left(dp, x)
-            if 0 <= i < len(dp):
-                dp[i] = x
-            else:
+            if i == len(dp):
                 dp.append(x)
+            else:
+                dp[i] = x
         return len(dp)
 
     @staticmethod
@@ -26,10 +26,10 @@ class LongestIncreasingSubsequence:
         dp = []
         for x in nums:
             i = bisect.bisect_right(dp, x)
-            if 0 <= i < len(dp):
-                dp[i] = x
-            else:
+            if i == len(dp):
                 dp.append(x)
+            else:
+                dp[i] = x
         return len(dp)
 
     def definitely_reduce(self, nums: List[int]):

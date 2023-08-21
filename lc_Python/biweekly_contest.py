@@ -586,6 +586,6 @@ T4: 442 pass
 
 # https://leetcode.cn/contest/biweekly-contest-111/
 # 1041 / https://leetcode.cn/contest/biweekly-contest-111/problems/sorting-three-groups/
-# dp
+# 状态机dp
 # 326 / https://leetcode.cn/contest/biweekly-contest-111/problems/number-of-beautiful-integers-in-the-range/
 # 数位dp

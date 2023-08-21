@@ -23,6 +23,80 @@ public class Lc2300_2399 {
         }
     }
 
+    // 2337. Move Pieces to Obtain a String - MEDIUM
+    class Solution2337a {
+        // 47ms
+        public boolean canChange(String start, String target) {
+            if (!start.replace("_", "").equals(target.replace("_", ""))) {
+                return false;
+            }
+            int j = 0;
+            for (int i = 0; i < target.length(); i++) {
+                if (target.charAt(i) == 'R') {
+                    while (j < i && start.charAt(j) != 'R') {
+                        j++;
+                    }
+                    if (start.charAt(j++) != 'R') {
+                        return false;
+                    }
+                }
+            }
+            j = start.length() - 1;
+            for (int i = target.length() - 1; i >= 0; i--) {
+                if (target.charAt(i) == 'L') {
+                    while (j > i && start.charAt(j) != 'L') {
+                        j--;
+                    }
+                    if (start.charAt(j--) != 'L') {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    class Solution2337b {
+        // 17ms
+        public boolean canChange(String start, String target) {
+            for (int i = 0, j = 0;; i++, j++) {
+                for (; i < start.length() && start.charAt(i) == '_'; i++) {
+                }
+                for (; j < target.length() && target.charAt(j) == '_'; j++) {
+                }
+                if (i == start.length() && j == target.length()) {
+                    return true;
+                } else if (i == start.length() || j == target.length() || start.charAt(i) != target.charAt(j)
+                        || (start.charAt(i) == 'L' ? i < j : i > j)) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    class Solution2337c {
+        // 12ms
+        public boolean canChange(String start, String target) {
+            char[] sc = start.toCharArray(), tc = target.toCharArray();
+            int n = sc.length, i = 0, j = 0;
+            while (i < n || j < n) {
+                while (i < n && sc[i] == '_')
+                    ++i;
+                while (j < n && tc[j] == '_')
+                    ++j;
+                if (i == n || j == n) {
+                    return i == n && j == n;
+                }
+                if (sc[i] != tc[j] || (sc[i] == 'L' && i < j)
+                        || (sc[i] == 'R' && i > j))
+                    return false;
+                ++i;
+                ++j;
+            }
+            return true;
+        }
+    }
+
     // 2357. Make Array Zero by Subtracting Equal Amounts - EASY
     class Solution2357a {
         public int minimumOperations(int[] nums) {

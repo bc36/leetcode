@@ -1573,6 +1573,29 @@ class Solution:
                 return False
         return True
 
+    def canChange(self, start: str, target: str) -> bool:
+        if start.replace("_", "") != target.replace("_", ""):
+            return False
+        j = 0
+        for i in range(len(target)):
+            if target[i] == "R":
+                while j < i and start[j] != "R":
+                    j += 1
+                if start[j] == "R":
+                    j += 1
+                else:
+                    return False
+        j = len(start) - 1
+        for i in range(len(target))[::-1]:
+            if target[i] == "L":
+                while j > i and start[j] != "L":
+                    j -= 1
+                if start[j] == "L":
+                    j -= 1
+                else:
+                    return False
+        return True
+
 
 # 2338 - Count the Number of Ideal Arrays - HARD
 
