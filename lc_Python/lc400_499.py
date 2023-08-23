@@ -1087,6 +1087,29 @@ class Solution:
         return i
 
 
+# 459 - Repeated Substring Pattern - EASY
+class Solution:
+    def repeatedSubstringPattern(self, s: str) -> bool:
+        if len(s) == 1:
+            return False
+        for l in range(1, len(s) // 2 + 1):
+            if len(s) % l == 0:
+                t = s[:l]
+                if all(s[i : i + l] == t for i in range(l, len(s), l)):
+                    return True
+        return False
+
+    def repeatedSubstringPattern(self, s: str) -> bool:
+        for l in range(1, len(s) // 2 + 1):
+            if len(s) % l == 0:
+                if all(s[i] == s[i - l] for i in range(l, len(s))):
+                    return True
+        return False
+
+    def repeatedSubstringPattern(self, s: str) -> bool:
+        return (s + s).find(s, 1) != len(s)
+
+
 # 461 - Hamming Distance - EASY
 class Solution:
     def hammingDistance(self, x: int, y: int) -> int:
