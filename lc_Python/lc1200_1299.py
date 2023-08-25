@@ -1195,6 +1195,39 @@ class Solution:
         return ans
 
 
+# 1267 - Count Servers that Communicate - MEDIUM
+class Solution:
+    def countServers(self, grid: List[List[int]]) -> int:
+        vis = dict()
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 1:
+                    if i in vis:
+                        grid[vis[i][0]][vis[i][1]] = 2
+                        grid[i][j] = 2
+                    jj = 250 + j
+                    if jj in vis:
+                        grid[vis[jj][0]][vis[jj][1]] = 2
+                        grid[i][j] = 2
+                    vis[i] = (i, j)
+                    vis[jj] = (i, j)
+        return sum(v == 2 for row in grid for v in row)
+
+    def countServers(self, grid: List[List[int]]) -> int:
+        rows = collections.defaultdict(int)
+        cols = collections.defaultdict(int)
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 1:
+                    rows[i] += 1
+                    cols[j] += 1
+        return sum(
+            v == 1 and (rows[i] > 1 or cols[j] > 1)
+            for i, row in enumerate(grid)
+            for j, v in enumerate(row)
+        )
+
+
 # 1281 - Subtract the Product and Sum of Digits of an Integer - EASY
 class Solution:
     def subtractProductAndSum(self, n: int) -> int:
@@ -1209,7 +1242,8 @@ class Solution:
     def subtractProductAndSum(self, n: int) -> int:
         f = lambda func: functools.reduce(func, map(int, list(str(n))))
         return f(operator.mul) - f(operator.add)
-    
+
+
 # 1282 - Group the People Given the Group Size They Belong To - MEDIUM
 class Solution:
     def groupThePeople(self, groupSizes: List[int]) -> List[List[int]]:

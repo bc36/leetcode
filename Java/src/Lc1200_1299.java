@@ -202,6 +202,66 @@ public class Lc1200_1299 {
         }
     }
 
+    // 1267. Count Servers that Communicate - MEDIUM
+    class Solution1267a {
+        // 2ms
+        public int countServers(int[][] grid) {
+            int ans = 0, r[] = new int[251], c[] = new int[251];
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[0].length; j++) {
+                    if (grid[i][j] == 1) {
+                        r[i]++;
+                        c[j]++;
+                    }
+                }
+            }
+
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[0].length; j++) {
+                    if (grid[i][j] == 1 && (r[i] > 1 || c[j] > 1)) {
+                        ans++;
+                    }
+                }
+            }
+            return ans;
+
+        }
+    }
+
+    class Solution1267b {
+        // 1ms
+        public int countServers(int[][] grid) {
+            // 先计算总共有多少服务器 allCount
+            // 再计算不能通信的服务器数量 badCount
+            // 能够通信的服务器 goodCount = allCount - badCount
+            // 不能通信的服务器: 某一行只有一个服务器并且该服务器对应的列也只有一台服务器
+            // 如何利用这个性质?
+            int allCount = 0, badCount = 0;
+            for (int i = 0; i < grid.length; i++) {
+                int rowSum = 0, colSum = 0, lastJ = 0;
+                for (int j = 0; j < grid[i].length; j++) {
+                    if (grid[i][j] == 1) {
+                        allCount++;
+                        rowSum++;
+                        lastJ = j;
+                    }
+                }
+                if (rowSum == 1) {
+                    // 行和 为 1, 再扫一遍 lastJ 列, 确定是否 列和 也为 1
+                    for (int k = 0; k < grid.length; k++) {
+                        if (grid[k][lastJ] == 1) {
+                            colSum++;
+                        }
+                    }
+                    if (colSum == 1) {
+                        badCount++;
+                    }
+                }
+            }
+            return allCount - badCount;
+        }
+    }
+
     // 1281. Subtract the Product and Sum of Digits of an Integer - EASY
     class Solution1281a {
         public int subtractProductAndSum(int n) {
