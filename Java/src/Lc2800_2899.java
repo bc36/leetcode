@@ -215,4 +215,64 @@ public class Lc2800_2899 {
             return dp[index][odd][even][mod][start][flag];
         }
     }
+
+    // 2828. Check if a String Is an Acronym of Words - EASY
+    class Solution2828a {
+        public boolean isAcronym(List<String> words, String s) {
+            String t = "";
+            for (String word : words) {
+                t += word.charAt(0);
+            }
+            return t.equals(s);
+        }
+    }
+
+    // 2829. Determine the Minimum Sum of a k-avoiding Array - MEDIUM
+    class Solution2829a {
+        public int minimumSum(int n, int k) {
+            HashSet<Integer> set = new HashSet<>();
+            int sum = 0;
+            for (int i = 1; set.size() < n; i++) {
+                if (!set.contains(k - i)) {
+                    set.add(i);
+                    sum += i;
+                }
+            }
+            return sum;
+        }
+    }
+
+    // 2830. Maximize the Profit as the Salesman - MEDIUM
+    class Solution2830a {
+        public int maximizeTheProfit(int n, List<List<Integer>> offers) {
+            offers.sort((o, p) -> o.get(1) - p.get(1));
+            int[] dp = new int[n + 1];
+            for (int i = 0, j = 0; i < n; i++) {
+                dp[i + 1] = dp[i];
+                for (; j < offers.size() && offers.get(j).get(1) == i; j++) {
+                    dp[i + 1] = Math.max(dp[i + 1], offers.get(j).get(2) + dp[offers.get(j).get(0)]);
+                }
+            }
+            return dp[n];
+        }
+    }
+
+    // 2831. Find the Longest Equal Subarray - MEDIUM
+    class Solution2831a {
+        public int longestEqualSubarray(List<Integer> nums, int k) {
+            HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
+            for (int i = 0; i < nums.size(); i++) {
+                map.computeIfAbsent(nums.get(i), t -> new ArrayList<>()).add(i);
+            }
+            int ans = 0;
+            for (ArrayList<Integer> list : map.values()) {
+                for (int i = 0, j = 0; i < list.size(); i++) {
+                    for (; list.get(i) - list.get(j) - i + j > k; j++) {
+                    }
+                    ans = Math.max(ans, i - j + 1);
+                }
+            }
+            return ans;
+        }
+    }
 }

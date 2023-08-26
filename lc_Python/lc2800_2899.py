@@ -516,3 +516,99 @@ class Solution:
             return dfs(0, 0, 0, True, False)
 
         return calc(high) - calc(low - 1)
+
+
+# 2828 - Check if a String Is an Acronym of Words - EASY
+class Solution:
+    def isAcronym(self, words: List[str], s: str) -> bool:
+        # return "".join(w[0] for w in words) == s
+        return len(s) == len(words) and all(w[0] == c for w, c in zip(words, s))
+
+
+# 2829 - Determine the Minimum Sum of a k-avoiding Array - MEDIUM
+class Solution:
+    def minimumSum(self, n: int, k: int) -> int:
+        s = set()
+        i = 1
+        for _ in range(n):
+            while k - i in s:
+                i += 1
+            s.add(i)
+            i += 1
+        return sum(s)
+
+    def minimumSum(self, n: int, k: int) -> int:
+        m = min(k // 2, n)
+        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) // 2
+
+
+# 2830 - Maximize the Profit as the Salesman - MEDIUM
+class Solution:
+    def maximizeTheProfit(self, n: int, offers: List[List[int]]) -> int:
+        offers.sort(key=lambda x: x[1])
+        f = [0] * (n + 1)
+        j = 0
+        for i in range(n):
+            f[i + 1] = f[i]
+            while j < len(offers) and offers[j][1] == i:
+                f[i + 1] = max(f[i + 1], f[offers[j][0]] + offers[j][2])
+                j += 1
+        return f[n]
+
+    def maximizeTheProfit(self, n: int, offers: List[List[int]]) -> int:
+        d = collections.defaultdict(list)
+        for s, e, g in offers:
+            d[e].append((s, g))
+        f = [0] * (n + 1)
+        for i in range(n):
+            f[i + 1] = f[i]
+            for s, g in d[i]:
+                f[i + 1] = max(f[i + 1], g + f[s])
+        return f[n]
+
+
+# 2831 - Find the Longest Equal Subarray - MEDIUM
+class Solution:
+    def longestEqualSubarray(self, nums: List[int], k: int) -> int:
+        ans = 1
+        d = collections.defaultdict(list)
+        for i, v in enumerate(nums):
+            d[v].append(i)
+        for arr in d.values():
+            l = cur = 0
+            for r in range(1, len(arr)):
+                cur += arr[r] - arr[r - 1] - 1
+                while cur > k:  # 删太多了
+                    cur -= arr[l + 1] - arr[l] - 1
+                    l += 1
+                ans = max(ans, r - l + 1)
+        return ans
+
+    def longestEqualSubarray(self, nums: List[int], k: int) -> int:
+        pos = [[] for _ in range(len(nums) + 1)]
+        for i, x in enumerate(nums):
+            pos[x].append(i - len(pos[x]))
+        ans = 0
+        for arr in pos:
+            if len(arr) <= ans:
+                continue
+            l = 0
+            for r, p in enumerate(arr):
+                while p - arr[l] > k:
+                    l += 1
+                ans = max(ans, r - l + 1)
+        return ans
+
+    def longestEqualSubarray(self, nums: List[int], k: int) -> int:
+        pos = [[] for _ in range(len(nums) + 1)]
+        for i in range(len(nums)):
+            pos[nums[i]].append(i)
+        ans = 0
+        for pi in pos:
+            if len(pi) > ans:
+                j = 0
+                for i in range(len(pi)):
+                    while j < len(pi) and pi[j] - pi[i] - (j - i) <= k:
+                        j += 1
+                    ans = max(ans, j - i)
+        return ans
