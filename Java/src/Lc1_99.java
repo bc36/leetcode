@@ -147,33 +147,40 @@ public class Lc1_99 {
     }
 
     // 56. Merge Intervals - MEDIUM
-    class Solution56a {
+    class Solution56a { // 6ms
         public int[][] merge(int[][] intervals) {
+            Arrays.sort(intervals, (i1, i2) -> Integer.compare(i1[0], i2[0]));
             List<int[]> ans = new ArrayList<>();
-            Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
-            // int left = intervals[0][0];
-            // int right = intervals[0][1];
-            // for (int i = 1; i < intervals.length; i++) {
-            // if (intervals[i][0] <= right) {
-            // right = Math.max(right, intervals[i][1]);
-            // } else {
-            // ans.add(new int[] { left, right });
-            // left = intervals[i][0];
-            // right = intervals[i][1];
-            // }
-            // }
-            // ans.add(new int[] { left, right });
-
-            int[] newInterval = intervals[0];
-            ans.add(newInterval);
-            for (int[] interval : intervals) {
-                if (interval[0] <= newInterval[1]) {
-                    newInterval[1] = Math.max(newInterval[1], interval[1]);
+            int[] temp = intervals[0];
+            ans.add(temp);
+            for (int[] i : intervals) {
+                if (i[0] <= temp[1]) {
+                    temp[1] = Math.max(temp[1], i[1]);
                 } else {
-                    newInterval = interval;
-                    ans.add(newInterval);
+                    temp = i;
+                    ans.add(temp);
                 }
             }
+            return ans.toArray(new int[ans.size()][]);
+        }
+    }
+
+    class Solution56b { // 6ms
+        public int[][] merge(int[][] intervals) {
+            Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+            List<int[]> ans = new ArrayList<>();
+            int left = intervals[0][0];
+            int right = intervals[0][1];
+            for (int i = 1; i < intervals.length; i++) {
+                if (intervals[i][0] <= right) {
+                    right = Math.max(right, intervals[i][1]);
+                } else {
+                    ans.add(new int[] { left, right });
+                    left = intervals[i][0];
+                    right = intervals[i][1];
+                }
+            }
+            ans.add(new int[] { left, right });
             return ans.toArray(new int[0][]);
         }
     }

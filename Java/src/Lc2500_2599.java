@@ -43,8 +43,7 @@ public class Lc2500_2599 {
     }
 
     // 2588. Count the Number of Beautiful Subarrays - MEDIUM
-    class Solution2588a {
-        // 7ms
+    class Solution2588a { // 7ms
         public long beautifulSubarrays(int[] nums) {
             int bits = 0, max = 0;
             for (int x : nums)
@@ -69,8 +68,7 @@ public class Lc2500_2599 {
     }
 
     // 2589. Minimum Time to Complete All Tasks - HARD
-    class Solution2589a {
-        // O(nU) / O(U), U = max(end), 38ms
+    class Solution2589a { // O(nU) / O(U), U = max(end), 38ms
         public int findMinimumTime(int[][] tasks) {
             Arrays.sort(tasks, (o, p) -> o[1] - p[1]);
             int ans = 0, vis[] = new int[2001];

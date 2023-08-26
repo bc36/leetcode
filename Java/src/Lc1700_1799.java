@@ -2,8 +2,7 @@ package src;
 
 public class Lc1700_1799 {
     // 1749. Maximum Absolute Sum of Any Subarray - MEDIUM
-    class Solution1749a {
-        // 3ms
+    class Solution1749a { // 3ms
         public int maxAbsoluteSum(int[] nums) {
             int ans = 0, p = 0, n = 0;
             for (int v : nums) {
@@ -21,8 +20,7 @@ public class Lc1700_1799 {
         }
     }
 
-    class Solution1749b {
-        // 2ms
+    class Solution1749b { // 2ms
         public int maxAbsoluteSum(int[] nums) {
             int ans = 0, p = 0, n = 0;
             for (int v : nums) {
@@ -34,8 +32,7 @@ public class Lc1700_1799 {
         }
     }
 
-    class Solution1749c {
-        // 1ms
+    class Solution1749c { // 1ms
         public int maxAbsoluteSum(int[] nums) {
             int sum = 0, mx = 0, mn = 0;
             for (int x : nums) {

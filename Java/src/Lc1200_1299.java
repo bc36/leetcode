@@ -48,8 +48,7 @@ public class Lc1200_1299 {
         }
     }
 
-    class Solution1253b {
-        // 13ms
+    class Solution1253b { // 13ms
         public List<List<Integer>> reconstructMatrix(int upper, int lower, int[] colsum) {
             List<Integer> a = new ArrayList<>();
             List<Integer> b = new ArrayList<>();
@@ -115,8 +114,7 @@ public class Lc1200_1299 {
     }
 
     // 1262. Greatest Sum Divisible by Three - MEDIUM
-    class Solution1262a {
-        // 5ms
+    class Solution1262a { // 5ms
         public int maxSumDivThree(int[] nums) {
             int[] f = new int[3];
             for (int x : nums) {
@@ -203,8 +201,7 @@ public class Lc1200_1299 {
     }
 
     // 1267. Count Servers that Communicate - MEDIUM
-    class Solution1267a {
-        // 2ms
+    class Solution1267a { // 2ms
         public int countServers(int[][] grid) {
             int ans = 0, r[] = new int[251], c[] = new int[251];
             for (int i = 0; i < grid.length; i++) {
@@ -228,8 +225,7 @@ public class Lc1200_1299 {
         }
     }
 
-    class Solution1267b {
-        // 1ms
+    class Solution1267b { // 1ms
         public int countServers(int[][] grid) {
             // 先计算总共有多少服务器 allCount
             // 再计算不能通信的服务器数量 badCount

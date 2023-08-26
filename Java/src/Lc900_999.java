@@ -4,8 +4,7 @@ import java.util.*;
 
 public class Lc900_999 {
     // 970. Powerful Integers - MEDIUM
-    class Solution970a {
-        // 1ms
+    class Solution970a { // 1ms
         public List<Integer> powerfulIntegers(int x, int y, int bound) {
             Set<Integer> ans = new HashSet<>();
             int ix = 1;
@@ -62,8 +61,7 @@ public class Lc900_999 {
     }
 
     // 989. Add to Array-Form of Integer - EASY
-    class Solution989a {
-        // 3ms
+    class Solution989a { // 3ms
         public List<Integer> addToArrayForm(int[] num, int k) {
             List<Integer> ans = new ArrayList<>();
             for (int i = num.length - 1, carry = 0; i >= 0 || k > 0 || carry > 0; --i) {
@@ -83,8 +81,7 @@ public class Lc900_999 {
         }
     }
 
-    class Solution989b {
-        // 2ms
+    class Solution989b { // 2ms
         public List<Integer> addToArrayForm(int[] num, int k) {
             LinkedList<Integer> ans = new LinkedList<>();
             for (int i = num.length - 1, carry = 0; i >= 0 || k > 0 || carry > 0; --i) {
@@ -103,8 +100,7 @@ public class Lc900_999 {
         }
     }
 
-    class Solution989c {
-        // 2ms
+    class Solution989c { // 2ms
         public List<Integer> addToArrayForm(int[] num, int k) {
             LinkedList<Integer> ans = new LinkedList<>();
             // List<Integer> ans = new ArrayList<>();

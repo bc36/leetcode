@@ -4,8 +4,7 @@ import java.util.*;
 
 public class Lc1500_1599 {
     // 1574. Shortest Subarray to be Removed to Make Array Sorted - MEDIUM
-    class Solution1574a {
-        // 1ms
+    class Solution1574a { // 1ms
         public int findLengthOfShortestSubarray(int[] arr) {
             int l = 0, n = arr.length, r = n - 1;
             while (l < n - 1 && arr[l] <= arr[l + 1])
@@ -26,8 +25,7 @@ public class Lc1500_1599 {
         }
     }
 
-    class Solution1574b {
-        // 1ms
+    class Solution1574b { // 1ms
         public int findLengthOfShortestSubarray(int[] arr) {
             int n = arr.length, l = 0, r = n - 1;
             while (l < n - 1 && arr[l] <= arr[l + 1])

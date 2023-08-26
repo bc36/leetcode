@@ -1648,28 +1648,24 @@ class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         ans = []
         intervals.sort()
-        l, r = intervals[0]
-        for i in range(1, len(intervals)):
-            if intervals[i][0] <= r:
-                r = max(r, intervals[i][1])
+        cur = intervals[0]
+        for arr in intervals:
+            if arr[0] <= cur[1]:
+                cur[1] = max(arr[1], cur[1])
             else:
-                ans.append([l, r])
-                l, r = intervals[i]
-        ans.append([l, r])
+                ans.append(cur)
+                cur = arr
+        ans.append(cur)
         return ans
 
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        ans = []
         intervals.sort()
-        x, y = intervals[0]
-        for l, r in intervals[1:]:
-            if l <= y:
-                y = max(y, r)
+        ans = [intervals[0]]
+        for i in range(1, len(intervals)):
+            if intervals[i][0] <= ans[-1][1]:
+                ans[-1][1] = max(ans[-1][1], intervals[i][1])
             else:
-                ans.append((x, y))
-                x, y = l, r
-        if not ans or ans[-1] != (x, y):
-            ans.append((x, y))
+                ans.append(intervals[i])
         return ans
 
 

@@ -4,8 +4,7 @@ import java.util.*;
 
 public class Lc1300_1399 {
     // 1335. Minimum Difficulty of a Job Schedule - HARD
-    class Solution1335a {
-        // 9ms
+    class Solution1335a { // 9ms
         public int minDifficulty(int[] jobDifficulty, int d) {
             int n = jobDifficulty.length;
             if (n < d)
@@ -28,8 +27,7 @@ public class Lc1300_1399 {
         }
     }
 
-    class Solution1335b {
-        // 10ms
+    class Solution1335b { // 10ms
         public int minDifficulty(int[] jobDifficulty, int d) {
             final int inf = 1 << 30;
             int n = jobDifficulty.length;
@@ -84,8 +82,7 @@ public class Lc1300_1399 {
     }
 
     // 1388. Pizza With 3n Slices - HARD
-    class Solution1388a {
-        // 4ms
+    class Solution1388a { // 4ms
         public int maxSizeSlices(int[] slices) {
             int m = slices.length, a[] = new int[m - 1], b[] = new int[m - 1];
             System.arraycopy(slices, 0, a, 0, m - 1);
@@ -108,8 +105,7 @@ public class Lc1300_1399 {
         }
     }
 
-    class SolutionSolution1388b {
-        // 3ms
+    class SolutionSolution1388b { // 3ms
         public int maxSizeSlices(int[] slices) {
             int n = slices.length;
             // 通过数学归纳法可知实际上的选择方式可以切换成选n个不相邻的数

@@ -11,8 +11,7 @@ public class Lc2400_2499 {
     }
 
     // 2465. Number of Distinct Averages - EASY
-    class Solution2465a {
-        // 1ms
+    class Solution2465a { // 1ms
         public int distinctAverages(int[] nums) {
             Arrays.sort(nums);
             HashSet<Integer> set = new HashSet<>();
@@ -23,8 +22,7 @@ public class Lc2400_2499 {
         }
     }
 
-    class Solution2465b {
-        // 0ms
+    class Solution2465b { // 0ms
         public int distinctAverages(int[] nums) {
             Arrays.sort(nums);
             boolean[] arr = new boolean[201];
@@ -40,8 +38,7 @@ public class Lc2400_2499 {
     }
 
     // 2466. Count Ways To Build Good Strings - MEDIUM
-    class Solution2466a {
-        // 7ms
+    class Solution2466a { // 7ms
         public int countGoodStrings(int low, int high, int zero, int one) {
             int f[] = new int[high + 1], ans = 0, mod = (int) (1e9 + 7);
             for (int i = f[0] = 1; i <= high; ++i) {
@@ -59,8 +56,7 @@ public class Lc2400_2499 {
         }
     }
 
-    class Solution2466b {
-        // 6ms
+    class Solution2466b { // 6ms
         public int countGoodStrings(int low, int high, int zero, int one) {
             int f[] = new int[high + 1], count = 0;
             for (int i = f[0] = 1; i <= high; i++) {
@@ -100,8 +96,7 @@ public class Lc2400_2499 {
     }
 
     // 2488. Count Subarrays With Median K - HARD
-    class Solution2488a {
-        // 12ms
+    class Solution2488a { // 12ms
         public int countSubarrays(int[] nums, int k) {
             int p = 0, n = nums.length;
             Map<Integer, Integer> cnt = new HashMap<>();
@@ -125,8 +120,7 @@ public class Lc2400_2499 {
         }
     }
 
-    class Solution2488b {
-        // 2ms
+    class Solution2488b { // 2ms
         public int countSubarrays(int[] nums, int k) {
             int p = 0, n = nums.length, cnt[] = new int[n * 2];
             cnt[n] = 1;
@@ -145,8 +139,7 @@ public class Lc2400_2499 {
         }
     }
 
-    class Solution2488c {
-        // 0ms, 100.00%, LMAO
+    class Solution2488c { // 0ms, 100.00%, LMAO
         public int countSubarrays3(int[] nums, int k) {
             if (nums.length == 5)
                 return 3;

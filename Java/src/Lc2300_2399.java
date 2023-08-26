@@ -24,8 +24,7 @@ public class Lc2300_2399 {
     }
 
     // 2337. Move Pieces to Obtain a String - MEDIUM
-    class Solution2337a {
-        // 47ms
+    class Solution2337a { // 47ms
         public boolean canChange(String start, String target) {
             if (!start.replace("_", "").equals(target.replace("_", ""))) {
                 return false;
@@ -56,8 +55,7 @@ public class Lc2300_2399 {
         }
     }
 
-    class Solution2337b {
-        // 17ms
+    class Solution2337b { // 17ms
         public boolean canChange(String start, String target) {
             for (int i = 0, j = 0;; i++, j++) {
                 for (; i < start.length() && start.charAt(i) == '_'; i++) {
@@ -74,8 +72,7 @@ public class Lc2300_2399 {
         }
     }
 
-    class Solution2337c {
-        // 12ms
+    class Solution2337c { // 12ms
         public boolean canChange(String start, String target) {
             char[] sc = start.toCharArray(), tc = target.toCharArray();
             int n = sc.length, i = 0, j = 0;
@@ -170,9 +167,8 @@ public class Lc2300_2399 {
         }
     }
 
-    class Solution2363b {
+    class Solution2363b { // 8ms
         public List<List<Integer>> mergeSimilarItems(int[][] items1, int[][] items2) {
-            // 8ms
             List<List<Integer>> ans = new ArrayList<List<Integer>>();
             Map<Integer, Integer> m = new HashMap<Integer, Integer>();
             for (int v[] : items1) {
@@ -197,9 +193,8 @@ public class Lc2300_2399 {
         }
     }
 
-    class Solution2363c {
+    class Solution2363c { // 9ms
         public List<List<Integer>> mergeSimilarItems(int[][] items1, int[][] items2) {
-            // 9ms
             List<List<Integer>> ans = new ArrayList<>();
             HashMap<Integer, Integer> m = new HashMap<>();
             for (int i = 0; i < items1.length; i++) {

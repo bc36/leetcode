@@ -45,8 +45,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2601b {
-        // 17ms
+    class Solution2601b { // 17ms
         public boolean primeSubOperation(int[] nums) {
             boolean[] primes = new boolean[1001];
             for (int i = 2; i <= 1000; ++i) {
@@ -74,8 +73,7 @@ public class Lc2600_2699 {
     }
 
     // 2602. Minimum Operations to Make All Array Elements Equal - MEDIUM
-    class Solution2602a {
-        // 122ms
+    class Solution2602a { // 122ms
         public List<Long> minOperations(int[] nums, int[] queries) {
             Arrays.sort(nums);
             long sum = 0;
@@ -94,8 +92,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2602b {
-        // 41ms
+    class Solution2602b { // 41ms
         public List<Long> minOperations(int[] nums, int[] queries) {
             Arrays.sort(nums);
             int n = nums.length;
@@ -114,8 +111,7 @@ public class Lc2600_2699 {
     }
 
     // 2603. Collect Coins in a Tree - HARD
-    class Solution2603a {
-        // 93ms
+    class Solution2603a { // 93ms
         @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             HashSet<Integer> sets[] = new HashSet[coins.length], set = new HashSet<>();
@@ -247,8 +243,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2603c {
-        // 35ms
+    class Solution2603c { // 35ms
         @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             int n = coins.length, ind[] = new int[n];
@@ -320,8 +315,7 @@ public class Lc2600_2699 {
     }
 
     // 2606. Find the Substring With Maximum Cost - MEDIUM
-    class Solution2606a {
-        // 14ms
+    class Solution2606a { // 14ms
         public int maximumCostSubstring(String s, String chars, int[] vals) {
             HashMap<Character, Integer> m = new HashMap<>();
             for (int i = 0; i < chars.length(); i++) {
@@ -335,8 +329,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2606b {
-        // 3ms
+    class Solution2606b { // 3ms
         public int maximumCostSubstring(String s, String chars, int[] vals) {
             int ans = 0, cur = 0;
             int[] m = new int[26];
@@ -371,8 +364,7 @@ public class Lc2600_2699 {
     }
 
     // 2608. Shortest Cycle in a Graph - HARD
-    class Solution2608a {
-        // 351ms
+    class Solution2608a { // 351ms
         public int findShortestCycle(int n, int[][] edges) {
             HashMap<Integer, ArrayList<Integer>> g = new HashMap<>();
             for (int[] e : edges) {
@@ -399,8 +391,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2608b {
-        // 226ms
+    class Solution2608b { // 226ms
         public int findShortestCycle(int n, int[][] edges) {
             List<List<Integer>> g = new ArrayList<>();
             for (int i = 0; i < n; ++i) {
@@ -435,8 +426,7 @@ public class Lc2600_2699 {
     }
 
     // 2609. Find the Longest Balanced Substring of a Binary String - EASY
-    class Solution2609a {
-        // 36ms
+    class Solution2609a { // 36ms
         public int findTheLongestBalancedSubstring(String s) {
             for (int i = s.length() / 2; i > 0; i--) {
                 if (s.matches(".*0{" + i + "}1{" + i + "}.*")) {
@@ -447,8 +437,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2609b {
-        // 1ms
+    class Solution2609b { // 1ms
         public int findTheLongestBalancedSubstring(String s) {
             int ans = 0, pre = 0, cur = 0, n = s.length();
             char[] cs = s.toCharArray();
@@ -467,8 +456,7 @@ public class Lc2600_2699 {
     }
 
     // 2610. Convert an Array Into a 2D Array With Conditions - MEDIUM
-    class Solution2610a {
-        // 1ms
+    class Solution2610a { // 1ms
         public List<List<Integer>> findMatrix(int[] nums) {
             ArrayList<List<Integer>> ans = new ArrayList<>();
             int[] count = new int[nums.length + 1];
@@ -482,8 +470,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2610b {
-        // 4ms
+    class Solution2610b { // 4ms
         public List<List<Integer>> findMatrix(int[] nums) {
             HashMap<Integer, Integer> cnt = new HashMap<>();
             for (int k : nums)
@@ -505,8 +492,7 @@ public class Lc2600_2699 {
     }
 
     // 2611. Mice and Cheese - MEDIUM
-    class Solution2611a {
-        // 11ms
+    class Solution2611a { // 11ms
         public int miceAndCheese(int[] reward1, int[] reward2, int k) {
             int ans = 0, n = reward1.length, diff[] = new int[n];
             for (int i = 0; i < n; ++i) {
@@ -521,8 +507,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2611b {
-        // 11ms
+    class Solution2611b { // 11ms
         public int miceAndCheese(int[] reward1, int[] reward2, int k) {
             int ans = 0, n = reward1.length;
             for (int i = 0; i < n; ++i) {
@@ -537,8 +522,7 @@ public class Lc2600_2699 {
     }
 
     // 2612. Minimum Reverse Operations - HARD
-    class Solution2612a {
-        // 420ms
+    class Solution2612a { // 420ms
         @SuppressWarnings("unchecked")
         public int[] minReverseOperations(int n, int p, int[] banned, int k) {
             int[] result = new int[n];
@@ -563,8 +547,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2612b {
-        // 170ms
+    class Solution2612b { // 170ms
         @SuppressWarnings("unchecked")
         public int[] minReverseOperations(int n, int p, int[] banned, int k) {
             var ban = new boolean[n];
@@ -629,8 +612,7 @@ public class Lc2600_2699 {
     }
 
     // 2615. Sum of Distances - MEDIUM
-    class Solution2615a {
-        // 18ms
+    class Solution2615a { // 18ms
         public long[] distance(int[] nums) {
             HashMap<Integer, ArrayList<Integer>> group = new HashMap<>();
             for (int i = 0; i < nums.length; i++) {
@@ -752,8 +734,7 @@ public class Lc2600_2699 {
 
     // 2639. Find the Width of Columns of a Grid - EASY
     // 2640. Find the Score of All Prefixes of an Array - MEDIUM
-    class Solution2640a {
-        // 3ms
+    class Solution2640a { // 3ms
         public long[] findPrefixScore(int[] nums) {
             long ans[] = new long[nums.length], sum = 0, mx = 0;
             for (int i = 0; i < nums.length; i++) {
@@ -764,8 +745,7 @@ public class Lc2600_2699 {
     }
 
     // 2641. Cousins in Binary Tree II - MEDIUM
-    class Solution2641a {
-        // 92ms
+    class Solution2641a { // 92ms
         public TreeNode replaceValueInTree(TreeNode root) {
             HashMap<TreeNode, Integer> map = new HashMap<>();
             HashMap<Integer, Integer> map2 = new HashMap<>();
@@ -829,8 +809,7 @@ public class Lc2600_2699 {
     // 2643. Row With Maximum Ones - EASY
     // 2644. Find the Maximum Divisibility Score - EASY
     // 2645. Minimum Additions to Make Valid String - MEDIUM
-    class Solution2645a {
-        // 1ms
+    class Solution2645a { // 1ms
         public int addMinimum(String word) {
             int count = 0, i = 0;
             for (int j = 0; j < word.length(); i++) {
@@ -845,8 +824,7 @@ public class Lc2600_2699 {
     }
 
     // 2646. Minimize the Total Price of the Trips - HARD
-    class Solution2646a {
-        // 11ms
+    class Solution2646a { // 11ms
         public int minimumTotalPrice(int n, int[][] edges, int[] price, int[][] trips) {
             HashMap<Integer, ArrayList<Integer>> g = new HashMap<>();
             for (int[] edge : edges) {
@@ -887,8 +865,7 @@ public class Lc2600_2699 {
         }
     }
 
-    class Solution2646b {
-        // 13ms
+    class Solution2646b { // 13ms
         List<Integer>[] g;
         int[] count;
         int[] prices;

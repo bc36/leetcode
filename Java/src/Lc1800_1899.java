@@ -4,8 +4,7 @@ import java.util.*;
 
 public class Lc1800_1899 {
     // 1851. Minimum Interval to Include Each Query - HARD
-    class Solution1851a {
-        // 120ms
+    class Solution1851a { // 120ms
         public int[] minInterval(int[][] intervals, int[] queries) {
             int[][] qidx = new int[queries.length][0];
             for (int i = 0; i < queries.length; ++i) {
@@ -31,8 +30,7 @@ public class Lc1800_1899 {
         }
     }
 
-    class Solution1851b {
-        // 95ms
+    class Solution1851b { // 95ms
         public int[] minInterval(int[][] intervals, int[] queries) {
             Map<Integer, Integer> qToAns = new HashMap<>();
             int[] sortedQueries = queries.clone();

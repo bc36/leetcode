@@ -289,8 +289,7 @@ public class Lc2700_2799 {
     }
 
     // 2746. Decremental String Concatenation - MEDIUM
-    class Solution2746a {
-        // 32ms
+    class Solution2746a { // 32ms
         public int minimizeConcatenatedLength(String[] words) {
             return words[0].length() + dfs(1, words[0].charAt(0) - 'a',
                     words[0].charAt(words[0].length() - 1) - 'a', words, new int[words.length][26][26]);
@@ -437,8 +436,7 @@ public class Lc2700_2799 {
     }
 
     // 2761. Prime Pairs With Target Sum - MEDIUM
-    class Solution2761a {
-        // 331ms
+    class Solution2761a { // 331ms
         private static HashSet<Integer> primes = new HashSet<>() {
             {
                 boolean[] flag = new boolean[1000000];
@@ -464,8 +462,7 @@ public class Lc2700_2799 {
         }
     }
 
-    class Solution2761b {
-        // 30ms
+    class Solution2761b { // 30ms
         private final static int MX = (int) 1e6;
         private final static int[] primes = new int[78498];
         private final static boolean[] np = new boolean[MX + 1];
@@ -496,8 +493,7 @@ public class Lc2700_2799 {
         }
     }
 
-    class Solution2761c {
-        // 11ms
+    class Solution2761c { // 11ms
         private static int primeLen = 0;
         private static final int N = 1000001;
         private static final boolean[] PRIMES = new boolean[N];
@@ -590,8 +586,7 @@ public class Lc2700_2799 {
     }
 
     // 2771. Longest Non-decreasing Subarray From Two Arrays - MEDIUM
-    class Solution2771a {
-        // 4ms
+    class Solution2771a { // 4ms
         public int maxNonDecreasingLength(int[] nums1, int[] nums2) {
             int f1[] = new int[nums1.length], f2[] = new int[nums1.length], mx = 1;
             f1[0] = f2[0] = 1;
@@ -608,8 +603,7 @@ public class Lc2700_2799 {
     }
 
     // 2772. Apply Operations to Make All Array Elements Equal to Zero - MEDIUM
-    class Solution2772a {
-        // 2ms
+    class Solution2772a { // 2ms
         public boolean checkArray(int[] nums, int k) {
             int curr = 0, count[] = new int[nums.length + k];
             for (int i = 0; i < nums.length; i++) {

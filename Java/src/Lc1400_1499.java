@@ -4,8 +4,7 @@ import java.util.*;
 
 public class Lc1400_1499 {
     // 1401. Circle and Rectangle Overlapping - MEDIUM
-    class Solution1401a {
-        // 0ms
+    class Solution1401a { // 0ms
         public boolean checkOverlap(int radius, int xCenter, int yCenter, int x1, int y1, int x2, int y2) {
             int dx = Math.max(0, Math.max(x1 - xCenter, xCenter - x2));
             int dy = Math.max(0, Math.max(y1 - yCenter, yCenter - y2));
@@ -13,8 +12,7 @@ public class Lc1400_1499 {
         }
     }
 
-    class Solution1401b {
-        // 0ms
+    class Solution1401b { // 0ms
         public boolean checkOverlap(int radius, int xCenter, int yCenter, int x1, int y1, int x2, int y2) {
             int dx = Collections.max(Arrays.asList(0, x1 - xCenter, xCenter - x2));
             int dy = Collections.max(Arrays.asList(0, y1 - yCenter, yCenter - y2));
@@ -108,8 +106,7 @@ public class Lc1400_1499 {
     }
 
     // 1483. Kth Ancestor of a Tree Node - HARD
-    class TreeAncestor {
-        // 66ms
+    class TreeAncestor { // 66ms
         // 构建 dfs 序
         int[] i2do;
         int[] do2i;

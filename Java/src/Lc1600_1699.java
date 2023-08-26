@@ -4,8 +4,7 @@ import java.util.*;
 
 public class Lc1600_1699 {
     // 1604. Alert Using Same Key-Card Three or More Times in a One Hour Period - MEDIUM
-    class Solution1604a {
-        // 45ms
+    class Solution1604a { // 45ms
         public List<String> alertNames(String[] keyName, String[] keyTime) {
             int n = keyName.length;
             Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
@@ -35,8 +34,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1604b {
-        // 39ms
+    class Solution1604b { // 39ms
         public List<String> alertNames(String[] keyName, String[] keyTime) {
             int n = keyName.length;
             Map<String, List<Integer>> map = new HashMap<>(n);
@@ -70,8 +68,7 @@ public class Lc1600_1699 {
     }
 
     // 1605. Find Valid Matrix Given Row and Column Sums - MEDIUM
-    class Solution1605a {
-        // 7ms
+    class Solution1605a { // 7ms
         public int[][] restoreMatrix(int[] rowSum, int[] colSum) {
             int[][] ans = new int[rowSum.length][colSum.length];
             for (int i = 0; i < rowSum.length; ++i) {
@@ -86,8 +83,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1605b {
-        // 1ms
+    class Solution1605b { // 1ms
         public int[][] restoreMatrix(int[] rowSum, int[] colSum) {
             int n = rowSum.length, m = colSum.length, i = 0, j = 0;
             int[][] ans = new int[n][m];
@@ -109,8 +105,7 @@ public class Lc1600_1699 {
     }
 
     // 1608. Special Array With X Elements Greater Than or Equal X - EASY
-    class Solution1608a {
-        // 0ms
+    class Solution1608a { // 0ms
         public int specialArray(int[] nums) {
             int cnt = 0, l = 0;
             for (int v : nums) {
@@ -130,8 +125,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1608b {
-        // 2ms
+    class Solution1608b { // 2ms
         public int specialArray(int[] nums) {
             int cnt = 0, l = Arrays.stream(nums).max().orElse(0), arr[] = new int[l + 1];
             for (int v : nums) {
@@ -147,8 +141,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1608c {
-        // 0ms
+    class Solution1608c { // 0ms
         public int specialArray(int[] nums) {
             int l = 1, r = nums.length, cnt = 0;
             while (l <= r) {
@@ -172,8 +165,7 @@ public class Lc1600_1699 {
     }
 
     // 1615. Maximal Network Rank - MEDIUM
-    class Solution1615a {
-        // 4ms
+    class Solution1615a { // 4ms
         public int maximalNetworkRank(int n, int[][] roads) {
             int[][] conn = new int[n][n];
             int[] deg = new int[n];
@@ -194,8 +186,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1615b {
-        // 2ms
+    class Solution1615b { // 2ms
         public int maximalNetworkRank(int n, int[][] roads) {
             int[][] conn = new int[n][n];
             int[] deg = new int[n];
@@ -273,8 +264,7 @@ public class Lc1600_1699 {
     }
 
     // 1626. Best Team With No Conflicts - MEDIUM
-    class Solution1626a {
-        // O(n^2) / O(n), 48ms
+    class Solution1626a { // O(n^2) / O(n), 48ms
         public int bestTeamScore(int[] scores, int[] ages) {
             int n = scores.length, ans = 0, f[] = new int[n + 1];
             Integer[] order = new Integer[n];
@@ -312,8 +302,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1626c {
-        // O(nlogn + nU) / O(n + U), U = max(ages), 48ms
+    class Solution1626c { // O(nlogn + nU) / O(n + U), U = max(ages), 48ms
         public int bestTeamScore(int[] scores, int[] ages) {
             int n = scores.length, u = 0, ans = 0;
             Integer[] order = new Integer[n];
@@ -334,8 +323,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1626d {
-        // 10ms
+    class Solution1626d { // 10ms
         public int bestTeamScore(int[] scores, int[] ages) {
             int n = scores.length;
             Integer[] ids = new Integer[n];
@@ -366,8 +354,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 11ms, BIT TODO
-    class Solution1626e {
+    class Solution1626e { // 11ms, BIT TODO
         private int[] tree;
         private int maxAge;
 
@@ -464,8 +451,7 @@ public class Lc1600_1699 {
         }
     }
 
-    // 10ms
-    class BinaryIndexedTree {
+    class BinaryIndexedTree { // 10ms
         private int n;
         private int[] c;
 
@@ -512,8 +498,7 @@ public class Lc1600_1699 {
     }
 
     // 1630. Arithmetic Subarrays - MEDIUM
-    class Solution1630a {
-        // O(nlogn * n * m) / O(), 21ms, 暴力排序
+    class Solution1630a { // O(nlogn * n * m) / O(), 21ms, 暴力排序
         public List<Boolean> checkArithmeticSubarrays(int[] nums, int[] l, int[] r) {
             Helper h = new Helper() {
                 public boolean check(int[] arr) {
@@ -539,8 +524,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1630b {
-        // O(nm) / O(n), 3ms, 无排序 + 数组
+    class Solution1630b { // O(nm) / O(n), 3ms, 无排序 + 数组
         public List<Boolean> checkArithmeticSubarrays(int[] nums, int[] l, int[] r) {
             List<Boolean> result = new ArrayList<>();
             for (int i = 0; i < l.length; ++i) {
@@ -574,8 +558,7 @@ public class Lc1600_1699 {
     }
 
     // 1637. Widest Vertical Area Between Two Points Containing No Points - MEDIUM
-    class Solution1637a {
-        // 13ms
+    class Solution1637a { // 13ms
         public int maxWidthOfVerticalArea(int[][] points) {
             int n = points.length, arr[] = new int[n], ans = 0;
             for (int i = 0; i < n; ++i) {
@@ -611,8 +594,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1638b {
-        // 3ms
+    class Solution1638b { // 3ms
         public int countSubstrings(String s, String t) {
             int n = s.length(), m = t.length(), ans = 0;
             for (int d = -(n - 1); d < m; ++d) {
@@ -631,8 +613,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1638c {
-        // 2ms, cs[i] versus s.charAt(i)
+    class Solution1638c { // 2ms, cs[i] versus s.charAt(i)
         public int countSubstrings(String s, String t) {
             char[] cs = s.toCharArray(), ct = t.toCharArray();
             int n = cs.length, m = ct.length, ans = 0;
@@ -652,8 +633,7 @@ public class Lc1600_1699 {
     }
 
     // 1641. Count Sorted Vowel Strings - MEDIUM
-    class Solution1641a {
-        // 1ms
+    class Solution1641a { // 1ms
         public int countVowelStrings(int n) {
             int[][] f = new int[n][5];
             for (int i = 0; i < 5; ++i)
@@ -669,8 +649,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1641b {
-        // 0ms
+    class Solution1641b { // 0ms
         public int countVowelStrings(int n) {
             int a = 1, e = 1, i = 1, o = 1, u = 1;
             for (int j = 1; j < n; ++j) {
@@ -684,8 +663,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1641c {
-        // 0ms
+    class Solution1641c { // 0ms
         public int countVowelStrings(int n) {
             return (n + 1) * (n + 2) * (n + 3) * (n + 4) / 24; // C(n + 4, 4)
         }
@@ -761,8 +739,7 @@ public class Lc1600_1699 {
     }
 
     // 1657. Determine if Two Strings Are Close - MEDIUM
-    class Solution1657a {
-        // 15ms
+    class Solution1657a { // 15ms
         public boolean closeStrings(String word1, String word2) {
             return Arrays.equals(count(word1), count(word2)) && state(word1) == state(word2);
         }
@@ -785,8 +762,7 @@ public class Lc1600_1699 {
         }
     }
 
-    class Solution1657b {
-        // 8ms
+    class Solution1657b { // 8ms
         public boolean closeStrings(String word1, String word2) {
             if (word1.length() != word2.length()) {
                 return false;

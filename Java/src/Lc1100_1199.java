@@ -3,23 +3,6 @@ package src;
 import java.util.*;
 
 public class Lc1100_1199 {
-    public class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode() {
-        }
-
-        ListNode(int val) {
-            this.val = val;
-        }
-
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
-    }
-
     // 1130. Minimum Cost Tree From Leaf Values - MEDIUM
     class Solution1130a {
         public int mctFromLeafValues(int[] arr) {
@@ -43,8 +26,7 @@ public class Lc1100_1199 {
     }
 
     // 1147. Longest Chunked Palindrome Decomposition - HARD
-    class Solution1147 {
-        // 1ms
+    class Solution1147 { // 1ms
         private long[] h;
         private long[] p;
 
@@ -84,8 +66,7 @@ public class Lc1100_1199 {
         }
     }
 
-    class Solution1147b {
-        // 0ms
+    class Solution1147b { // 0ms
         public int longestDecomposition(String text) {
             int ans = 0;
             for (int i = 0, j = text.length() - 1; i <= j;) {
@@ -117,8 +98,7 @@ public class Lc1100_1199 {
         }
     }
 
-    class Solution1147c {
-        // 0ms
+    class Solution1147c { // 0ms
         public int longestDecomposition(String text) {
             int ans = 0, n = text.length(), i = 0, j = n - 1, end = n;
             while (j - i >= end - j) {
@@ -172,8 +152,7 @@ public class Lc1100_1199 {
     }
 
     // 1171. Remove Zero Sum Consecutive Nodes from Linked List - MEDIUM
-    class Solution1171a {
-        // 2ms
+    class Solution1171a { // 2ms
         public ListNode removeZeroSumSublists(ListNode head) {
             ListNode dummy = new ListNode(0, head);
             int pre = 0;
@@ -191,8 +170,7 @@ public class Lc1100_1199 {
         }
     }
 
-    class Solution {
-        // 1ms
+    class Solution { // 1ms
         public ListNode removeZeroSumSublists(ListNode head) {
             if (head == null)
                 return null;

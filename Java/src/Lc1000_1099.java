@@ -3,23 +3,6 @@ package src;
 import java.util.*;
 
 public class Lc1000_1099 {
-    public class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode() {
-        }
-
-        ListNode(int val) {
-            this.val = val;
-        }
-
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
-    }
-
     // 1000. Minimum Cost to Merge Stones - HARD
     class Solution1000a {
         private int k, pre[], memo[][][];
@@ -67,8 +50,7 @@ public class Lc1000_1099 {
     }
 
     // 1003. Check If Word Is Valid After Substitutions - MEDIUM
-    class Solution1003a {
-        // 6ms
+    class Solution1003a { // 6ms
         public boolean isValid(String s) {
             String t = "abc";
             while (s.length() > 0) {
@@ -81,8 +63,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1003b {
-        // 6ms
+    class Solution1003b { // 6ms
         public boolean isValid(String s) {
             Deque<Character> st = new ArrayDeque<>();
             for (char c : s.toCharArray()) {
@@ -101,8 +82,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1003c {
-        // 2ms
+    class Solution1003c { // 2ms
         public boolean isValid(String S) {
             char[] s = S.toCharArray();
             int i = 0; // 
@@ -116,8 +96,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1003d {
-        // 7ms
+    class Solution1003d { // 7ms
         public boolean isValid(String S) {
             char[] s = S.toCharArray();
             Deque<Character> st = new ArrayDeque<>();
@@ -131,8 +110,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1003e {
-        // 3ms
+    class Solution1003e { // 3ms
         public boolean isValid(String s) {
             char[] st = new char[s.length()];
             int i = 0;
@@ -147,8 +125,7 @@ public class Lc1000_1099 {
     }
 
     // 1010. Pairs of Songs With Total Durations Divisible by 60 - MEDIUM
-    class Solution1010a {
-        // 18ms
+    class Solution1010a { // 18ms
         public int numPairsDivisibleBy60(int[] time) {
             int ans = 0;
             Map<Integer, Integer> cnt = new HashMap<>();
@@ -161,8 +138,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1010b {
-        // 2ms
+    class Solution1010b { // 2ms
         public int numPairsDivisibleBy60(int[] time) {
             int ans = 0, cnt[] = new int[60];
             for (int t : time) {
@@ -210,8 +186,7 @@ public class Lc1000_1099 {
     }
 
     // 1016. Binary String With Substrings Representing 1 To N - MEDIUM
-    class Solution1016a {
-        // 0ms
+    class Solution1016a { // 0ms
         public boolean queryString(String s, int n) {
             for (int i = 1; i <= n; i++)
                 if (!s.contains(Integer.toBinaryString(i)))
@@ -220,8 +195,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1016b {
-        // 2ms
+    class Solution1016b { // 2ms
         public boolean queryString(String S, int n) {
             Set<Integer> seen = new HashSet<Integer>();
             char[] s = S.toCharArray();
@@ -257,8 +231,7 @@ public class Lc1000_1099 {
     }
 
     // 1019. Next Greater Node In Linked List - MEDIUM
-    class Solution1019a {
-        // 15ms
+    class Solution1019a { // 15ms
         public int[] nextLargerNodes(ListNode head) {
             List<Integer> arr = new ArrayList<>();
             while (head != null) {
@@ -279,8 +252,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1019b {
-        // 4ms
+    class Solution1019b { // 4ms
         public int[] nextLargerNodes(ListNode head) {
             int n = 0;
             ListNode cur = head;
@@ -333,8 +305,7 @@ public class Lc1000_1099 {
     }
 
     // 1026. Maximum Difference Between Node and Ancestor - MEDIUM
-    class Solution1026a {
-        // 0ms
+    class Solution1026a { // 0ms
         public int maxAncestorDiff(TreeNode root) {
             return dfs(root, root.val, root.val);
         }
@@ -350,8 +321,7 @@ public class Lc1000_1099 {
     }
 
     // 1027. Longest Arithmetic Subsequence - MEDIUM
-    class Solution1027a {
-        // 24ms
+    class Solution1027a { // 24ms
         public int longestArithSeqLength(int[] nums) {
             int n = nums.length, ans = 0, f[][] = new int[n][1001];
             for (int i = 1; i < nums.length; i++) {
@@ -367,8 +337,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1027b {
-        // 35ms
+    class Solution1027b { // 35ms
         public int longestArithSeqLength(int[] nums) {
             int n = nums.length, ans = 0, f[][] = new int[n][1001];
             for (int i = 0; i < n; i++) {
@@ -383,8 +352,8 @@ public class Lc1000_1099 {
     }
 
     // 1032. Stream of Characters - HARD
-    // 倒序建树, 倒序查找, 52ms
-    class StreamChecker {
+    // 倒序建树, 倒序查找
+    class StreamChecker { // 52ms
         class Trie {
             Trie[] ch = new Trie[26];
             boolean isEnd = false;
@@ -441,8 +410,7 @@ public class Lc1000_1099 {
         }
     }
 
-    // 52ms
-    class StreamChecker2 {
+    class StreamChecker2 { // 52ms
         class Trie {
             Trie[] ch;
             boolean isEnd;
@@ -491,8 +459,7 @@ public class Lc1000_1099 {
         }
     }
 
-    // 49ms
-    class StreamChecker3 {
+    class StreamChecker3 { // 49ms
         class TrieNode {
             TrieNode[] ch;
             boolean isEnd = false;
@@ -570,8 +537,7 @@ public class Lc1000_1099 {
     }
 
     // 1039. Minimum Score Triangulation of Polygon - MEDIUM
-    class Solution1039a {
-        // 2ms
+    class Solution1039a { // 49ms
         private int[] v;
         private int[][] memo;
 
@@ -597,8 +563,7 @@ public class Lc1000_1099 {
     }
 
     // 1042. Flower Planting With No Adjacent - MEDIUM
-    class Solution1042a {
-        // 5ms
+    class Solution1042a { // 49ms
         public int[] gardenNoAdj(int n, int[][] paths) {
             int[] ans = new int[n];
             int[][] g = new int[n][4];
@@ -625,8 +590,7 @@ public class Lc1000_1099 {
     }
 
     // 1053. Previous Permutation With One Swap - MEDIUM
-    class Solution1053a {
-        // 0ms
+    class Solution1053a { // 49ms
         public int[] prevPermOpt1(int[] arr) {
             for (int i = arr.length - 1; i > 0; --i) {
                 if (arr[i - 1] > arr[i]) {
@@ -647,8 +611,7 @@ public class Lc1000_1099 {
     }
 
     // 1072. Flip Columns For Maximum Number of Equal Rows - MEDIUM
-    class Solution1072a {
-        // 7ms
+    class Solution1072a { // 49ms
         public int maxEqualRowsAfterFlips(int[][] matrix) {
             int ans = 0, n = matrix[0].length;
             var cnt = new HashMap<String, Integer>();
@@ -662,8 +625,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1072b {
-        // 7ms
+    class Solution1072b { // 49ms
         public int maxEqualRowsAfterFlips(int[][] matrix) {
             Map<String, Integer> cnt = new HashMap<>();
             int ans = 0, n = matrix[0].length;
@@ -719,8 +681,7 @@ public class Lc1000_1099 {
     }
 
     // 1090. Largest Values From Labels - MEDIUM
-    class Solution1090a {
-        // 18ms
+    class Solution1090a { // 49ms
         public int largestValsFromLabels(int[] values, int[] labels, int numWanted, int useLimit) {
             int n = values.length, pairs[][] = new int[n][2];
             for (int i = 0; i < n; ++i) {
@@ -742,10 +703,9 @@ public class Lc1000_1099 {
     }
 
     // 1092. Shortest Common Supersequence - HARD
-    class Solution1092a {
+    class Solution1092a { // 6ms
         // 最长公共子序列
         // f[i][j] 表示字符串 str1 的前 i 个字符和字符串 str2 的前 j 个字符的最长公共子序列的长度
-        // 6ms
         public String shortestCommonSupersequence(String str1, String str2) {
             char[] s = str1.toCharArray(), t = str2.toCharArray();
             int m = s.length, n = t.length, f[][] = new int[m + 1][n + 1];
@@ -781,9 +741,8 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1092b {
+    class Solution1092b { // 6ms
         // f[i + 1][j + 1] 表示 s 的前 i 个字母和 t 的前 j 个字母的最短公共超序列的长度
-        // 6ms
         public String shortestCommonSupersequence(String str1, String str2) {
             char[] s = str1.toCharArray(), t = str2.toCharArray();
             int n = s.length, m = t.length, f[][] = new int[n + 1][m + 1];
@@ -821,8 +780,7 @@ public class Lc1000_1099 {
         }
     }
 
-    class Solution1092c {
-        // 6ms
+    class Solution1092c { // 6ms
         public String shortestCommonSupersequence(String str1, String str2) {
             char[] s = str1.toCharArray(), t = str2.toCharArray();
             int n = s.length, m = t.length, f[][] = new int[n + 1][m + 1];
