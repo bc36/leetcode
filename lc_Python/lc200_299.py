@@ -1021,6 +1021,33 @@ class Solution:
                 length += 1
         return ans
 
+    def summaryRanges(self, nums: List[int]) -> List[str]:
+        if not nums:
+            return []
+        func = lambda x: str(x[0]) if x[0] == x[1] else "->".join(map(str, x))
+        ans = []
+        cur = [nums[0], nums[0]]
+        for x in nums[1:]:
+            if int(cur[-1]) + 1 == x:
+                cur[1] = x
+            else:
+                ans.append(func(cur))
+                cur = [x, x]
+        ans.append(func(cur))
+        return ans
+
+    def summaryRanges(self, nums: List[int]) -> List[str]:
+        func = lambda i, j: str(nums[i]) if i == j else f"{nums[i]}->{nums[j]}"
+        i = 0
+        ans = []
+        while i < len(nums):
+            j = i
+            while j + 1 < len(nums) and nums[j + 1] == nums[j] + 1:
+                j += 1
+            ans.append(func(i, j))
+            i = j + 1
+        return ans
+
 
 # 229 - Majority Element II - MEDIUM
 class Solution:
@@ -1036,7 +1063,6 @@ class Solution:
     # when the first 'num1' appears too many times,
     # the second 'num2' may not get enough votes
     def majorityElement(self, nums: List[int]) -> List[int]:
-
         time1, time2, num1, num2 = 0, 0, 0, 0
         for num in nums:
             if time1 > 0 and num == num1:

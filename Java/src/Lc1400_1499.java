@@ -92,6 +92,21 @@ public class Lc1400_1499 {
         }
     }
 
+    // 1448. Count Good Nodes in Binary Tree - MEDIUM
+    class Solution1448a {
+        public int goodNodes(TreeNode root) {
+            return inorder(root, root.val);
+        }
+
+        private int inorder(TreeNode root, int mx) {
+            if (root == null) {
+                return 0;
+            }
+            mx = Math.max(mx, root.val);
+            return (root.val >= mx ? 1 : 0) + inorder(root.left, mx) + inorder(root.right, mx);
+        }
+    }
+
     // 1483. Kth Ancestor of a Tree Node - HARD
     class TreeAncestor {
         // 66ms

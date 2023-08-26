@@ -584,16 +584,18 @@ class Solution:
             mx = max(root.val, mx)
             return (root.val >= mx) + inorder(root.left, mx) + inorder(root.right, mx)
 
+        return inorder(root, -1e4)
         return inorder(root, root.val)
 
     def goodNodes(self, root: TreeNode, mx=-(10**4)) -> int:
         if not root:
             return 0
-        ans = 0
-        if root.val >= mx:
-            mx = root.val
-            ans += 1
-        return ans + self.goodNodes(root.left, mx) + self.goodNodes(root.right, mx)
+        mx = max(mx, root.val)
+        return (
+            (root.val >= mx)
+            + self.goodNodes(root.left, mx)
+            + self.goodNodes(root.right, mx)
+        )
 
 
 # 1450 - Number of Students Doing Homework at a Given Time - EASY
