@@ -1,5 +1,7 @@
 package src;
 
+import java.util.*;
+
 public class Lc1700_1799 {
     // 1749. Maximum Absolute Sum of Any Subarray - MEDIUM
     class Solution1749a { // 3ms
@@ -45,6 +47,47 @@ public class Lc1700_1799 {
                 }
             }
             return mx - mn;
+        }
+    }
+
+    // 1782. Count Pairs Of Nodes - HARD
+    class Solution {
+        public int[] countPairs(int n, int[][] edges, int[] queries) {
+            int[] d = new int[n + 1];
+            var cntE = new HashMap<Integer, Integer>();
+            for (var e : edges) {
+                int x = e[0], y = e[1];
+                if (x > y) {
+                    int tmp = x;
+                    x = y;
+                    y = tmp;
+                }
+                d[x]++;
+                d[y]++;
+                cntE.merge(x << 16 | y, 1, Integer::sum);
+            }
+            int[] ans = new int[queries.length], sd = d.clone();
+            Arrays.sort(sd);
+            for (int j = 0; j < queries.length; j++) {
+                int q = queries[j];
+                int left = 1, right = n;
+                while (left < right) {
+                    if (sd[left] + sd[right] <= q) {
+                        left++;
+                    } else {
+                        ans[j] += right - left;
+                        right--;
+                    }
+                }
+                for (var e : cntE.entrySet()) {
+                    int k = e.getKey(), c = e.getValue();
+                    int s = d[k >> 16] + d[k & 0xffff];
+                    if (s > q && s - c <= q) {
+                        ans[j]--;
+                    }
+                }
+            }
+            return ans;
         }
     }
 }

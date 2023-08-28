@@ -940,6 +940,35 @@ class Solution:
         return ans
 
 
+# 1782 - Count Pairs Of Nodes - HARD
+class Solution:
+    def countPairs(
+        self, n: int, edges: List[List[int]], queries: List[int]
+    ) -> List[int]:
+        d = [0] * (n + 1)
+        for x, y in edges:
+            d[x] += 1
+            d[y] += 1
+        cnt = collections.Counter(tuple(sorted(e)) for e in edges)
+        # cnt = collections.Counter(x * (n + 1) + y if x < y else y * (n + 1) + x for x, y in edges)
+        ans = [0] * len(queries)
+        sd = sorted(d)
+        for i, q in enumerate(queries):
+            l = 1
+            r = n
+            while l < r:
+                if sd[l] + sd[r] <= q:
+                    l += 1
+                else:
+                    ans[i] += r - l
+                    r -= 1
+            for (x, y), v in cnt.items():
+                # if q < d[k // (n + 1)] + d[k % (n + 1)] <= q + v:
+                if q < d[x] + d[y] <= q + v:
+                    ans[i] -= 1
+        return ans
+
+
 # 1784 - Check if Binary String Has at Most One Segment of Ones - EASY
 class Solution:
     def checkOnesSegment(self, s: str) -> bool:
