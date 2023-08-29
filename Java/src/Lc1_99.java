@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.BitSet;
@@ -166,6 +167,32 @@ public class Lc1_99 {
     }
 
     class Solution56b { // 6ms
+        public int[][] merge(int[][] intervals) {
+            Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+            List<int[]> ans = new ArrayList<>();
+            int left = intervals[0][0];
+            int right = intervals[0][1];
+            for (int i = 1; i < intervals.length; i++) {
+                if (intervals[i][0] <= right) {
+                    right = Math.max(right, intervals[i][1]);
+                } else {
+                    ans.add(new int[] { left, right });
+                    left = intervals[i][0];
+                    right = intervals[i][1];
+                }
+            }
+            ans.add(new int[] { left, right });
+            return ans.toArray(new int[0][]);
+        }
+    }
+
+    // 57. Insert Interval - MEDIUM
+    class Solution { // 6ms
+        public int[][] insert(int[][] intervals, int[] newInterval) {
+            int[][] arr = Stream.concat(Arrays.stream(intervals), Stream.of(newInterval)).toArray(int[][]::new);
+            return merge(arr);
+        }
+
         public int[][] merge(int[][] intervals) {
             Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
             List<int[]> ans = new ArrayList<>();
