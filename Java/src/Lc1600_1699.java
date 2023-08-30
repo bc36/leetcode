@@ -738,6 +738,35 @@ public class Lc1600_1699 {
         }
     }
 
+    // 1654. Minimum Jumps to Reach Home - MEDIUM
+    class Solution1654a {
+        public int minimumJumps(int[] forbidden, int a, int b, int x) {
+            HashSet<Integer> set = new HashSet<>();
+            for (int i : forbidden) {
+                set.add(i);
+            }
+            HashSet<List<Integer>> visited = new HashSet<>();
+            ArrayDeque<List<Integer>> deque = new ArrayDeque<>();
+            deque.add(List.of(0, 1));
+            for (int i = 0; !deque.isEmpty(); i++) {
+                for (int j = deque.size(); j > 0; j--) {
+                    List<Integer> poll = deque.poll();
+                    if (poll.get(0) == x) {
+                        return i;
+                    } else if (poll.get(0) >= 0 && poll.get(0) < x << 4 && !set.contains(poll.get(0))
+                            && !visited.contains(poll)) {
+                        visited.add(poll);
+                        deque.add(List.of(poll.get(0) + a, 1));
+                        if (poll.get(1) != -1) {
+                            deque.add(List.of(poll.get(0) - b, -1));
+                        }
+                    }
+                }
+            }
+            return -1;
+        }
+    }
+
     // 1657. Determine if Two Strings Are Close - MEDIUM
     class Solution1657a { // 15ms
         public boolean closeStrings(String word1, String word2) {

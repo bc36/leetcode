@@ -729,6 +729,30 @@ class Solution:
         return ans
 
 
+# 1654 - Minimum Jumps to Reach Home - MEDIUM
+class Solution:
+    def minimumJumps(self, forbidden: List[int], a: int, b: int, x: int) -> int:
+        upper = max(max(forbidden) + a, x) + b
+        f = set(forbidden)
+        q = collections.deque([(0, 1)])
+        vis = {(0, 1)}
+        ans = 0
+        while q:
+            for _ in range(len(q)):
+                i, wentRight = q.popleft()
+                if i == x:
+                    return ans
+                nxt = [(i + a, 1)]
+                if wentRight & 1:
+                    nxt.append((i - b, 0))
+                for j, wentRight in nxt:
+                    if 0 <= j <= upper and j not in f and (j, wentRight) not in vis:
+                        q.append((j, wentRight))
+                        vis.add((j, wentRight))
+            ans += 1
+        return -1
+
+
 # 1656 - Design an Ordered Stream - EASY
 class OrderedStream:
     def __init__(self, n: int):
@@ -1014,6 +1038,7 @@ class Solution:
         return ans
 
 
+# 1685 - Sum of Absolute Differences in a Sorted Array - MEDIUM
 
 
 # 1688 - Count of Matches in Tournament - EASY
