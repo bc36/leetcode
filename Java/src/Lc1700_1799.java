@@ -50,6 +50,31 @@ public class Lc1700_1799 {
         }
     }
 
+    // 1761. Minimum Degree of a Connected Trio in a Graph - HARD
+    class Solution1761a {
+        public int minTrioDegree(int n, int[][] edges) {
+            HashSet<Integer>[] graph = new HashSet[n];
+            for (int i = 0; i < n; i++) {
+                graph[i] = new HashSet<>();
+            }
+            for (int[] edge : edges) {
+                graph[edge[0] - 1].add(edge[1] - 1);
+                graph[edge[1] - 1].add(edge[0] - 1);
+            }
+            int ans = Integer.MAX_VALUE;
+            for (int i = 0; i < n; i++) {
+                for (int j : graph[i]) {
+                    for (int k = j + 1; k < n; k++) {
+                        if (graph[i].contains(k) && graph[j].contains(k)) {
+                            ans = Math.min(ans, graph[i].size() + graph[j].size() + graph[k].size() - 6);
+                        }
+                    }
+                }
+            }
+            return ans == Integer.MAX_VALUE ? -1 : ans;
+        }
+    }
+
     // 1782. Count Pairs Of Nodes - HARD
     class Solution {
         public int[] countPairs(int n, int[][] edges, int[] queries) {

@@ -624,6 +624,74 @@ class Solution:
         )
 
 
+# 1761 - Minimum Degree of a Connected Trio in a Graph - HARD
+class Solution:
+    def minTrioDegree(self, n: int, edges: List[List[int]]) -> int:
+        d = [0] * (n + 1)
+        g = [[False] * (n + 1) for _ in range(n + 1)]
+        for x, y in edges:
+            d[x] += 1
+            d[y] += 1
+            g[x][y] = g[y][x] = True
+        return min(
+            (
+                d[x] + d[y] + d[z] - 6
+                for x in range(1, n + 1)
+                for y in range(x + 1, n + 1)
+                if g[x][y]
+                for z in range(y + 1)
+                if g[x][z] and g[y][z]
+            ),
+            default=-1,
+        )
+
+        # return min(
+        #     (
+        #         d[x] + d[y] + d[z] - 6
+        #         for x in range(1, n - 1)
+        #         for y in range(x + 1, n)
+        #         for z in range(y + 1, n + 1)
+        #         if g[x][y] and g[y][z] and g[z][x]
+        #     ),
+        #     default=-1,
+        # )
+
+    def minTrioDegree(self, n: int, edges: List[List[int]]) -> int:
+        d = collections.defaultdict(list)
+        for x, y in edges:
+            d[x].append(y)
+            d[y].append(x)
+        ans = math.inf
+        for i in range(1, n + 1):
+            if len(d[i]) < 2:
+                continue
+            # 对相邻节点的度数进行排序, 这样可以保证先遍历的元组组合的度数更小
+            conn = sorted(d[i], key=lambda x: len(d[x]))
+            q = [(0, 1)]
+            vis = set(q)
+            found = False
+            for l, r in q:
+                if found:
+                    # 找到一个有效三元组了, 其度数组合一定是包含节点i的三元组中最小的, 不再继续遍历其他的
+                    break
+                j, k = conn[l], conn[r]
+                if j in d[k]:
+                    found = True
+                    ans = min(ans, len(d[i]) + len(d[j]) + len(d[k]) - 6)
+                else:
+                    # 否则两个方向继续找下一个元组组合
+                    for nl, nr in ((l + 1, r), (l, r + 1)):
+                        if (
+                            0 <= nl < len(conn)
+                            and 0 <= nr < len(conn)
+                            and nl != nr
+                            and (nl, nr) not in vis
+                        ):
+                            vis.add((nl, nr))
+                            q.append((nl, nr))
+        return -1 if ans == math.inf else ans
+
+
 # 1762 - Buildings With an Ocean View - MEDIUM
 class Solution:
     def findBuildings(self, heights: List[int]) -> List[int]:
