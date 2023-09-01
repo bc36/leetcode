@@ -275,4 +275,89 @@ public class Lc2800_2899 {
             return ans;
         }
     }
+
+    // 2833. Furthest Point From Origin - EASY
+    class Solution2833a {
+        public int furthestDistanceFromOrigin(String moves) {
+            int dist = 0, count = 0;
+            for (char c : moves.toCharArray()) {
+                if (c == '_') {
+                    count++;
+                } else {
+                    dist += c == 'L' ? -1 : 1;
+                }
+            }
+            return Math.max(Math.abs(dist - count), Math.abs(dist + count));
+        }
+    }
+
+    // 2834. Find the Minimum Possible Sum of a Beautiful Array - MEDIUM
+    class Solution2834a {
+        public long minimumPossibleSum(int n, int target) {
+            HashSet<Integer> set = new HashSet<>();
+            long sum = 0;
+            for (int i = 1; set.size() < n; i++) {
+                if (!set.contains(target - i)) {
+                    set.add(i);
+                    sum += i;
+                }
+            }
+            return sum;
+        }
+    }
+
+    // 2835. Minimum Operations to Form Subsequence With Target Sum - HARD
+    class Solution2835a {
+        public int minOperations(List<Integer> nums, int target) {
+            int count[] = new int[32], result = 0;
+            for (int num : nums) {
+                for (int i = 0; i <= 30; i++) {
+                    count[i] += num >> i & 1;
+                }
+            }
+            for (int i = 0; i <= 30; i++) {
+                if ((target >> i & 1) > 0) {
+                    count[i]--;
+                    for (int j = i; count[j] < 0; j++) {
+                        if (j == 31) {
+                            return -1;
+                        }
+                        count[j] += 2;
+                        count[j + 1]--;
+                        result++;
+                    }
+                }
+                count[i + 1] += count[i] / 2;
+            }
+            return result;
+        }
+    }
+
+    // 2836. Maximize Value of Function in a Ball Passing Game - HARD
+    class Solution2836a {
+        public long getMaxFunctionValue(List<Integer> receiver, long k) {
+            int[][] dp = new int[35][receiver.size()];
+            long sum[][] = new long[35][receiver.size()], mx = 0;
+            for (int i = 0; i < dp[0].length; i++) {
+                dp[0][i] = receiver.get(i);
+                sum[0][i] = receiver.get(i);
+            }
+            for (int i = 1; i < dp.length; i++) {
+                for (int j = 0; j < dp[0].length; j++) {
+                    dp[i][j] = dp[i - 1][dp[i - 1][j]];
+                    sum[i][j] = sum[i - 1][j] + sum[i - 1][dp[i - 1][j]];
+                }
+            }
+            for (int i = 0; i < dp[0].length; i++) {
+                long curr = i;
+                for (int j = 0, l = i; j < dp.length; j++) {
+                    if ((k >> j & 1) > 0) {
+                        mx = Math.max(mx, curr += sum[j][l]);
+                        l = dp[j][l];
+                    }
+                }
+            }
+            return mx;
+        }
+    }
 }

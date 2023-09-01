@@ -34,7 +34,7 @@ class Solution:
             if s in t:
                 return t
             for i in range(min(len(s), len(t)), 0, -1):
-                # 枚举：s 的后 i 个字母和 t 的前 i 个字母是一样的
+                # 枚举: s 的后 i 个字母和 t 的前 i 个字母是一样的
                 if s[-i:] == t[:i]:
                     return s + t[i:]
             return s + t
@@ -612,3 +612,237 @@ class Solution:
                         j += 1
                     ans = max(ans, j - i)
         return ans
+
+
+# 2833 - Furthest Point From Origin - EASY
+class Solution:
+    def furthestDistanceFromOrigin(self, moves: str) -> int:
+        n = len(moves)
+        l = moves.count("L")
+        r = moves.count("R")
+        return n - l - r + abs(r - l)
+
+    def furthestDistanceFromOrigin(self, moves: str) -> int:
+        return abs(moves.count("R") - moves.count("L")) + moves.count("_")
+
+
+# 2834 - Find the Minimum Possible Sum of a Beautiful Array - MEDIUM
+class Solution:
+    # 和 2839 题意一样, 数据范围不同
+    def minimumPossibleSum(self, n: int, target: int) -> int:
+        s = set()
+        i = 1
+        while len(s) < n:
+            while i in s or target - i in s:
+                i += 1
+            s.add(i)
+        return sum(s)
+
+    def minimumPossibleSum(self, n: int, k: int) -> int:
+        m = min(k // 2, n)
+        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) // 2
+
+    # 那么我们可以发现, 我们可以使用不超过 k / 2 的所有数, 再使用不小于 k 的所有数.
+    # 这么做的原因是 i 和 k - i 不能同时出现在数组里, 因此我们都取小的那个, 对于这些数, 我们贪心地取即可
+    def minimumPossibleSum(self, n: int, k: int) -> int:
+        if n <= k // 2:
+            return n * (n + 1) // 2
+        return (k // 2) * (k // 2 + 1) // 2 + (2 * k + n - k // 2 - 1) * (
+            n - k // 2
+        ) // 2
+
+
+# 2835 - Minimum Operations to Form Subsequence With Target Sum - HARD
+class Solution:
+    # O(nlogn + log(target)) / O(n)
+    def minOperations(self, nums: List[int], target: int) -> int:
+        nums.sort()
+        total = sum(nums)
+        if total < target:
+            return -1
+        ans = 0
+        while target:
+            p = nums.pop()
+            # 去除之后总和依然大于等于 target, 直接去掉
+            if total - p >= target:
+                total -= p
+            elif p > target:
+                # 必须把 p 折半
+                ans += 1
+                nums.append(p // 2)
+                nums.append(p // 2)
+            else:
+                # 不需要折半, 直接减去
+                target -= p
+                total -= p
+        return ans
+
+    # 注意: 如果一系列的幂次小于 i 的和 大于等于 一个 2 的幂次, 那么这一系列的部分(子序列)一定可以表示这个 2 的幂次
+    # O(n + log(target)) / O(1)
+    def minOperations(self, nums: List[int], target: int) -> int:
+        if sum(nums) < target:
+            return -1
+        cnt = collections.Counter(nums)
+        ans = 0
+        # summ 记录所有更小的次幂的数的和
+        summ = 0
+        for i in range(31):
+            # 先加上当前次幂的数值
+            summ += cnt[1 << i] << i
+            # 注意: target 分解后, 每个 2 的幂次系数只有 1 或 0! 所以在后续寻找中, 找到一个更大的幂次分解一次即可, 不需要多次!
+            if target >> i & 1:
+                # 如果更小的数之和是大于当前要表示的比特位，那么不需要进行操作
+                if summ >= 1 << i:
+                    summ -= 1 << i
+                else:
+                    # 否则寻找最小的更大的 2 的次幂
+                    for j in range(i + 1, 31):
+                        if cnt[1 << j]:
+                            cnt[1 << j] -= 1
+                            summ += 1 << j
+                            summ -= 1 << i
+                            ans += j - i
+                            break
+        return ans
+
+    # O(n + log(target)) / O(1)
+    def minOperations(self, nums: List[int], target: int) -> int:
+        if sum(nums) < target:
+            return -1
+        cnt = collections.Counter(nums)
+        ans = summ = i = 0
+        while 1 << i <= target:
+            summ += cnt[1 << i] << i
+            mask = (1 << (i + 1)) - 1
+            i += 1
+            if summ >= (target & mask):  # sum 是否大于等于 所有小于 i 幂次的和. target 和 sum 可以都不做减法
+                continue
+            ans += 1  # 一定要找更大的数操作
+            while cnt[1 << i] == 0:
+                ans += 1  # 还没找到，继续找更大的数
+                i += 1
+        return ans
+
+
+# 2836 - Maximize Value of Function in a Ball Passing Game - HARD
+class Solution:
+    def getMaxFunctionValue(self, receiver: List[int], k: int) -> int:
+        n = len(receiver)
+        # 赋值: 初始位置以及起点的得分
+        ans = list(range(n))
+        pos = list(range(n))
+        # 赋值: 走 2 ^ 0 步时的结束位置和得分
+        ans2power = receiver
+        pos2power = receiver
+        for i in range(34):
+            if k >> i & 1:
+                # 继续往前走 2 ^ i 步
+                ans = [ans[i] + ans2power[pos[i]] for i in range(n)]
+                pos = [pos[pos2power[i]] for i in range(n)]
+            # 从 2 ^ i 步变成 2 ^ (i + 1) 步
+            ans2power = [ans2power[i] + ans2power[pos2power[i]] for i in range(n)]
+            pos2power = [pos2power[x] for x in pos2power]
+        return max(ans)
+
+    def getMaxFunctionValue(self, receiver: List[int], k: int) -> int:
+        n = len(receiver)
+        ans = list(range(n))
+        cur = list(range(n))
+        f = receiver.copy()
+        g = receiver.copy()
+        i = 0
+        while k:
+            if (k >> i) & 1:
+                for j in range(n):
+                    ans[j] += g[cur[j]]
+                cur = [f[cur[j]] for j in range(n)]
+                k -= 1 << i
+            g = [g[j] + g[f[j]] for j in range(n)]
+            f = [f[f[j]] for j in range(n)]
+            i += 1
+        return max(ans)
+
+    # O(nlogk) / O(nlogk), 树上倍增
+    def getMaxFunctionValue(self, receiver: List[int], k: int) -> int:
+        n = len(receiver)
+        m = k.bit_length() - 1
+        pa = [[(p, p)] + [None] * m for p in receiver]
+        for i in range(m):
+            for x in range(n):
+                p, s = pa[x][i]
+                pp, ss = pa[p][i]
+                pa[x][i + 1] = (pp, s + ss)  # 合并节点值之和
+        ans = 0
+        for i in range(n):
+            x = summ = i
+            for j in range(m + 1):
+                if (k >> j) & 1:  # k 的二进制从低到高第 j 位是 1
+                    x, s = pa[x][j]
+                    summ += s
+            ans = max(ans, summ)
+        return ans
+
+    # 内向基环树
+    # 如果将 receiver 看成每个点的出边, 那么就能得到基环树(森林), 即每个连通分量恰有一个环.
+    # 从每个点沿着唯一出边出发, 在有限次后会到环上, 而一个点在环上移动 k 次经过的点标号和在预处理前缀和后 即可 O(1) 求出.
+    # 剩下的问题就是怎么求出每个点需要多少步到环上, 以及 k 次后还没到环上的点的答案.
+    # 只要从每个环上的点开始 dfs, 并且用栈维护环上的点到当前的点的路径的点标号前缀和就能线性求出所有需要信息
+    # O(n) / O(n),
+    def getMaxFunctionValue(self, receiver: List[int], k: int) -> int:
+        n = len(receiver)
+        # 找环
+        cycles: List[List[int]] = []
+        vis = [False] * n
+        in_cycles = [False] * n
+        for i in range(n):
+            path = []
+            u = i
+            while not vis[u]:
+                vis[u] = True
+                path.append(u)
+                u = receiver[u]
+            if u in path:
+                cycles.append(path[path.index(u) :])
+                for root in cycles[-1]:
+                    in_cycles[root] = True
+        # 反向图
+        g = [[] for _ in range(n)]
+        for u in range(n):
+            g[receiver[u]].append(u)
+        # 通过 dfs 确定每个点到环后还需走多少次, 以及特判 k 次后不能到环的点的答案
+        tree: List[List[Tuple[int, int]]] = [[] for _ in range(n)]
+        ans = [0] * n
+        for cycle in cycles:
+            for root in cycle:
+                stack = []
+
+                # u: 结点, s: 到根点和
+                def dfs(u: int, s: int) -> None:
+                    s += u
+                    if len(stack) < k:
+                        tree[root].append((u, k - len(stack)))
+                        ans[u] += s
+                    else:
+                        ans[u] = s - stack[-k]
+                    stack.append(s - u)
+                    for v in g[u]:
+                        if not in_cycles[v]:
+                            dfs(v, s)
+                    stack.pop()
+                    return
+
+                dfs(root, 0)
+        # 枚举每个环, 使用前缀和统计环上的贡献
+        for cycle in cycles:
+            prefix = cycle.copy()
+            for i in range(1, len(prefix)):
+                prefix[i] += prefix[i - 1]
+            for i in range(len(cycle)):
+                for u, d in tree[cycle[i]]:
+                    ans[u] += d // len(cycle) * prefix[-1]
+                    d %= len(cycle)
+                    if i + d < len(cycle):
+                        ans[u] += prefix[i + d] - prefix[i]
+                    else:
+                        ans[u] += prefix[-1] - prefix[i] + prefix[i + d - len(cycle)]
+        return max(ans)

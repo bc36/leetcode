@@ -1295,3 +1295,10 @@ AK, 2023-08-19
 https://leetcode.cn/contest/weekly-contest-359/
 T4: 874 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-360/
+# 726 / https://leetcode.cn/contest/weekly-contest-360/problems/minimum-operations-to-form-subsequence-with-target-sum/
+# 贪心, 位运算
+# 99 / https://leetcode.cn/contest/weekly-contest-360/problems/maximize-value-of-function-in-a-ball-passing-game/
+# dp, 树上倍增, 内向基环树
