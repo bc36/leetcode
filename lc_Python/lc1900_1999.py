@@ -74,6 +74,15 @@ class Solution:
         return [nums[nums[i]] for i in range(len(nums))]
 
 
+# 1921 - Eliminate Maximum Number of Monsters - MEDIUM
+class Solution:
+    def eliminateMaximum(self, dist: List[int], speed: List[int]) -> int:
+        for i, t in enumerate(sorted(d / s for d, s in zip(dist, speed))):
+            if t <= i:
+                return i
+        return len(dist)
+
+
 # 1929 - Concatenation of Array - EASY
 class Solution:
     def getConcatenation(self, nums: List[int]) -> List[int]:
