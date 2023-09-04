@@ -846,3 +846,104 @@ class Solution:
                     else:
                         ans[u] += prefix[-1] - prefix[i] + prefix[i + d - len(cycle)]
         return max(ans)
+
+
+# 2839 - Check if Strings Can be Made Equal With Operations I - EASY
+class Solution:
+    def canBeEqual(self, s1: str, s2: str) -> bool:
+        return collections.Counter(s1[::2]) == collections.Counter(
+            s2[::2]
+        ) and collections.Counter(s1[1::2]) == collections.Counter(s2[1::2])
+
+        return sorted(s1[::2]) == sorted(s2[::2]) and sorted(s1[1::2]) == sorted(
+            s2[1::2]
+        )
+
+
+# 2840 - Check if Strings Can be Made Equal With Operations II - MEDIUM
+class Solution:
+    def checkStrings(self, s1: str, s2: str) -> bool:
+        return collections.Counter(s1[::2]) == collections.Counter(
+            s2[::2]
+        ) and collections.Counter(s1[1::2]) == collections.Counter(s2[1::2])
+
+        return sorted(s1[::2]) == sorted(s2[::2]) and sorted(s1[1::2]) == sorted(
+            s2[1::2]
+        )
+
+
+# 2841 - Maximum Sum of Almost Unique Subarray - MEDIUM
+class Solution:
+    def maxSum(self, nums: List[int], m: int, k: int) -> int:
+        d = {}
+        ans = summ = 0
+        for i, v in enumerate(nums):
+            d[v] = d.get(v, 0) + 1
+            summ += v
+            if i + 1 >= k and len(d) >= m:
+                ans = max(ans, summ)
+            if i + 1 >= k:
+                x = nums[i + 1 - k]
+                d[x] -= 1
+                summ -= x
+                if d[x] == 0:
+                    del d[x]
+        return ans
+
+    def maxSum(self, nums: List[int], m: int, k: int) -> int:
+        ans = 0
+        summ = sum(nums[: k - 1])
+        cnt = collections.Counter(nums[: k - 1])
+        for out, inn in zip(nums, nums[k - 1 :]):
+            summ += inn
+            cnt[inn] += 1
+            if len(cnt) >= m:
+                ans = max(ans, summ)
+            summ -= out
+            cnt[out] -= 1
+            if cnt[out] == 0:
+                del cnt[out]
+        return ans
+
+
+# 2842 - Count K-Subsequences of a String With Maximum Beauty - HARD
+class Solution:
+    def countKSubsequencesWithMaxBeauty(self, s: str, k: int) -> int:
+        mod = 10**9 + 7
+        ans = 1
+        cur = 0
+        d = collections.Counter(collections.Counter(s).values())
+        for freq, val in sorted(d.items(), key=lambda x: -x[0]):
+            if cur + val < k:
+                ans = ans * pow(freq, val, mod) % mod
+                cur += val
+            else:
+                ans = ans * pow(freq, k - cur, mod) * math.comb(val, k - cur) % mod
+                return ans
+        return 0
+
+    def countKSubsequencesWithMaxBeauty(self, s: str, k: int) -> int:
+        mod = 10**9 + 7
+        ans = 1
+        cnt = collections.Counter(collections.Counter(s).values())
+        for freq, val in sorted(cnt.items(), reverse=True):
+            if val >= k:
+                return ans * pow(freq, k, mod) * math.comb(val, k) % mod
+            ans *= pow(freq, val, mod)
+            k -= val
+        return 0
+
+    def countKSubsequencesWithMaxBeauty(self, s: str, k: int) -> int:
+        cnt = collections.Counter(s)
+        if len(cnt) < k:
+            return 0
+        mod = 10**9 + 7
+        vals = sorted(cnt.values(), reverse=True)
+        end = vals[k - 1]
+        ans = 1
+        for v in vals:
+            if v == end:
+                break
+            k -= 1
+            ans = ans * v % mod
+        return ans * math.comb(vals.count(end), k) * pow(end, k, mod) % mod

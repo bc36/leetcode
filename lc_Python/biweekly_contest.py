@@ -589,3 +589,8 @@ T4: 442 pass
 # 状态机dp
 # 326 / https://leetcode.cn/contest/biweekly-contest-111/problems/number-of-beautiful-integers-in-the-range/
 # 数位dp
+
+
+# https://leetcode.cn/contest/biweekly-contest-112/
+# 665 / https://leetcode.cn/contest/biweekly-contest-112/problems/count-k-subsequences-of-a-string-with-maximum-beauty/
+# 组合数学, 乘法原理, 贪心

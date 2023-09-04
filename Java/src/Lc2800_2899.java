@@ -360,4 +360,77 @@ public class Lc2800_2899 {
             return mx;
         }
     }
+
+    // 2839. Check if Strings Can be Made Equal With Operations I - EASY
+    class Solution2839a {
+        public boolean canBeEqual(String s1, String s2) {
+            char[][] c1 = new char[2][26], c2 = new char[2][26];
+            for (int i = 0; i < s1.length(); i++) {
+                c1[i % 2][s1.charAt(i) - 'a']++;
+                c2[i % 2][s2.charAt(i) - 'a']++;
+            }
+            return Arrays.deepEquals(c1, c2);
+        }
+    }
+
+    // 2840. Check if Strings Can be Made Equal With Operations II - MEDIUM
+    class Solution2840a {
+        public boolean checkStrings(String s1, String s2) {
+            char[][] c1 = new char[2][26], c2 = new char[2][26];
+            for (int i = 0; i < s1.length(); i++) {
+                c1[i % 2][s1.charAt(i) - 'a']++;
+                c2[i % 2][s2.charAt(i) - 'a']++;
+            }
+            return Arrays.deepEquals(c1, c2);
+        }
+    }
+
+    // 2841. Maximum Sum of Almost Unique Subarray - MEDIUM
+    class Solution2841a {
+        public long maxSum(List<Integer> nums, int m, int k) {
+            long ans = 0, curr = 0;
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int i = 0; i < nums.size(); i++) {
+                map.put(nums.get(i), map.getOrDefault(nums.get(i), 0) + 1);
+                curr += nums.get(i);
+                if (i >= k - 1) {
+                    if (map.size() >= m) {
+                        ans = Math.max(ans, curr);
+                    }
+                    map.put(nums.get(i - k + 1), map.get(nums.get(i - k + 1)) - 1);
+                    if (map.get(nums.get(i - k + 1)) == 0) {
+                        map.remove(nums.get(i - k + 1));
+                    }
+                    curr -= nums.get(i - k + 1);
+                }
+            }
+            return ans;
+        }
+    }
+
+    // 2842. Count K-Subsequences of a String With Maximum Beauty - HARD
+    class Solution2842a {
+        public int countKSubsequencesWithMaxBeauty(String s, int k) {
+            long count[] = new long[26], prod = 1;
+            for (char c : s.toCharArray()) {
+                count[c - 'a']++;
+            }
+            TreeMap<Long, Integer> map = new TreeMap<>();
+            for (long i : count) {
+                map.put(-i, map.getOrDefault(-i, 0) + 1);
+            }
+            for (Map.Entry<Long, Integer> entry : map.entrySet()) {
+                for (int i = 0; i < Math.min(k, entry.getValue()); i++) {
+                    prod = (prod * -entry.getKey()) % 1000000007;
+                }
+                for (int i = 0; k < entry.getValue() && i < k; i++) {
+                    prod = prod * (entry.getValue() - i) % 1000000007
+                            * BigInteger.valueOf(i + 1).modInverse(BigInteger.valueOf(1000000007)).intValue()
+                            % 1000000007;
+                }
+                k -= Math.min(k, entry.getValue());
+            }
+            return (int) prod;
+        }
+    }
 }
