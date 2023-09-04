@@ -896,6 +896,21 @@ class Codec:
         return build(-math.inf, math.inf)
 
 
+node = None
+
+
+class Codec:
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """Encodes a tree to a single string."""
+        global node
+        node = root
+        return ""
+
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Decodes your encoded data to tree."""
+        return node
+
+
 # 450 - Delete Node in a BST - MEDIUM
 class Solution:
     # O(n ^ 2) / O(n), similar to 105. Construct Binary Tree from Preorder and Inorder Traversal

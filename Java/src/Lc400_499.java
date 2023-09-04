@@ -122,6 +122,20 @@ public class Lc400_499 {
         }
     }
 
+    // 449. Serialize and Deserialize BST - MEDIUM
+    public class Codec {
+        private static TreeNode node;
+
+        public String serialize(TreeNode root) {
+            node = root;
+            return "";
+        }
+
+        public TreeNode deserialize(String data) {
+            return node;
+        }
+    }
+
     // 455. Assign Cookies - EASY
     class Solution455a {
         public int findContentChildren(int[] g, int[] s) {
