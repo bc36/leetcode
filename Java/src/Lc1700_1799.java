@@ -2,6 +2,7 @@ package src;
 
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class Lc1700_1799 {
     // 1749. Maximum Absolute Sum of Any Subarray - MEDIUM
     class Solution1749a { // 3ms

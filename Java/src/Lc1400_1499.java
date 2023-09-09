@@ -2,6 +2,7 @@ package src;
 
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class Lc1400_1499 {
     // 1401. Circle and Rectangle Overlapping - MEDIUM
     class Solution1401a { // 0ms

@@ -76,6 +76,7 @@ class MathTheory {
     }
 }
 
+@SuppressWarnings("unused")
 public class Common {
     void examples() {
         // 声明数组

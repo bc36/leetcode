@@ -1,11 +1,13 @@
 package src;
 
-import static java.math.BigInteger.valueOf;
-import java.math.BigInteger;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.function.*;
+import java.util.stream.*;
 
+import static java.math.BigInteger.valueOf;
+import java.math.*;
+
+@SuppressWarnings("unchecked")
 public class Lc2600_2699 {
     // 2600. K Items With the Maximum Sum - EASY
     class Solution2600a {
@@ -112,7 +114,6 @@ public class Lc2600_2699 {
 
     // 2603. Collect Coins in a Tree - HARD
     class Solution2603a { // 93ms
-        @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             HashSet<Integer> sets[] = new HashSet[coins.length], set = new HashSet<>();
             for (int i = 0; i < coins.length; i++) {
@@ -190,7 +191,6 @@ public class Lc2600_2699 {
             return false;
         }
 
-        @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             int n = coins.length;
             g = new List[n];
@@ -244,7 +244,6 @@ public class Lc2600_2699 {
     }
 
     class Solution2603c { // 35ms
-        @SuppressWarnings("unchecked")
         public int collectTheCoins(int[] coins, int[][] edges) {
             int n = coins.length, ind[] = new int[n];
             List<Integer> g[] = new ArrayList[n];
@@ -523,7 +522,6 @@ public class Lc2600_2699 {
 
     // 2612. Minimum Reverse Operations - HARD
     class Solution2612a { // 420ms
-        @SuppressWarnings("unchecked")
         public int[] minReverseOperations(int n, int p, int[] banned, int k) {
             int[] result = new int[n];
             TreeSet<Integer>[] set = new TreeSet[] { new TreeSet<>(), new TreeSet<>() };
@@ -548,7 +546,6 @@ public class Lc2600_2699 {
     }
 
     class Solution2612b { // 170ms
-        @SuppressWarnings("unchecked")
         public int[] minReverseOperations(int n, int p, int[] banned, int k) {
             var ban = new boolean[n];
             ban[p] = true;
@@ -666,7 +663,6 @@ public class Lc2600_2699 {
 
     // 2617. Minimum Number of Visited Cells in a Grid - HARD
     class Solution2617a {
-        @SuppressWarnings("unchecked")
         public int minimumVisitedCells(int[][] grid) {
             int n = grid.length;
             int m = grid[0].length;
@@ -870,7 +866,6 @@ public class Lc2600_2699 {
         int[] count;
         int[] prices;
 
-        @SuppressWarnings("unchecked")
         public int minimumTotalPrice(int n, int[][] edges, int[] price, int[][] trips) {
             g = new List[n];
             count = new int[n];
@@ -928,6 +923,12 @@ public class Lc2600_2699 {
     }
 
     // 2651. Calculate Delayed Arrival Time - EASY
+    class Solution2651a {
+        public int findDelayedArrivalTime(int arrivalTime, int delayedTime) {
+            return (arrivalTime + delayedTime) % 24;
+        }
+    }
+
     // 2652. Sum Multiples - EASY
     // 2653. Sliding Subarray Beauty - MEDIUM
     class Solution2653a {
@@ -1109,7 +1110,6 @@ public class Lc2600_2699 {
 
     // 2685. Count the Number of Complete Components - MEDIUM
     class Solution2685a {
-        @SuppressWarnings("unchecked")
         public int countCompleteComponents(int n, int[][] edges) {
             ArrayList<Integer>[] g = new ArrayList[n];
             for (int i = 0; i < n; i++) {

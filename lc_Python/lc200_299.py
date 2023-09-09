@@ -439,46 +439,64 @@ class Solution:
 
 # 210 - Course Schedule II - MEDIUM
 class Solution:
-    def findOrder(self, num: int, pre: List[List[int]]) -> List[int]:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
         g = collections.defaultdict(list)
-        ind = [0] * num
-        for a, b in pre:
+        ind = [0] * numCourses
+        for a, b in prerequisites:
             g[b].append(a)
             ind[a] += 1
-        dq = collections.deque()
+        dq = collections.deque(i for i, v in enumerate(ind) if not v)
         ans = []
-        for i in range(num):
-            if not ind[i]:
-                dq.append(i)
         while dq:
-            n = dq.popleft()
-            ans.append(n)
-            for j in g[n]:
-                ind[j] -= 1
-                if ind[j] == 0:
-                    dq.append(j)
-        return ans if len(ans) == num else []
+            x = dq.popleft()
+            ans.append(x)
+            for y in g[x]:
+                ind[y] -= 1
+                if ind[y] == 0:
+                    dq.append(y)
+        return ans if len(ans) == numCourses else []
 
-    def findOrder(self, num: int, prerequisites: List[List[int]]) -> List[int]:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        indegree = [0] * numCourses
+        g = [[] for _ in range(numCourses)]
+        for x, y in prerequisites:
+            indegree[x] += 1
+            g[y].append(x)
+        q = [i for i, v in enumerate(indegree) if not v]
+        ans = q.copy()
+        # ans = []
+        while q:
+            new = []
+            for x in q:
+                # ans.append(x)
+                for y in g[x]:
+                    indegree[y] -= 1
+                    if not indegree[y]:
+                        new.append(y)
+                        ans.append(y)
+            q = new
+        return ans if len(ans) == numCourses else []
+
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
         def dfs(v: int) -> bool:
-            if visited[v] == -1:
+            if vis[v] == 1:
                 return False  # cycle detected
-            if visited[v] == 1:
+            if vis[v] == 2:
                 return True  # finished, need added
-            visited[v] = -1  # mark as visited
+            vis[v] = 1  # mark as visited
             for x in g[v]:
                 if not dfs(x):
                     return False
-            visited[v] = 1  # mark as finished
+            vis[v] = 2  # mark as finished
             ans.append(v)
             return True
 
         g = collections.defaultdict(list)
-        visited = [0] * num
+        vis = [0] * numCourses
         ans = []
-        for p in prerequisites:
-            g[p[0]].append(p[1])  # save predecessor
-        for vertex in range(num):
+        for x, y in prerequisites:
+            g[x].append(y)  # save predecessor
+        for vertex in range(numCourses):
             if not dfs(vertex):
                 return []
         # if build 'g' with successor, return ans[::-1]
