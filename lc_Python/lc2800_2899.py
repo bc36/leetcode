@@ -691,7 +691,7 @@ class Solution:
             summ += cnt[1 << i] << i
             # 注意: target 分解后, 每个 2 的幂次系数只有 1 或 0! 所以在后续寻找中, 找到一个更大的幂次分解一次即可, 不需要多次!
             if target >> i & 1:
-                # 如果更小的数之和是大于当前要表示的比特位，那么不需要进行操作
+                # 如果更小的数之和是大于当前要表示的比特位, 那么不需要进行操作
                 if summ >= 1 << i:
                     summ -= 1 << i
                 else:
@@ -719,7 +719,7 @@ class Solution:
                 continue
             ans += 1  # 一定要找更大的数操作
             while cnt[1 << i] == 0:
-                ans += 1  # 还没找到，继续找更大的数
+                ans += 1  # 还没找到, 继续找更大的数
                 i += 1
         return ans
 
@@ -947,3 +947,335 @@ class Solution:
             k -= 1
             ans = ans * v % mod
         return ans * math.comb(vals.count(end), k) * pow(end, k, mod) % mod
+
+
+# 2843 - Count Symmetric Integers - EASY
+def calc(x: int) -> bool:
+    s = list(str(x))
+    if len(s) & 1:
+        return False
+    return sum(map(int, s[: len(s) // 2])) == sum(map(int, s[len(s) // 2 :]))
+
+
+s = set(i for i in range(1, 10001) if calc(i))
+
+
+class Solution:
+    def countSymmetricIntegers(self, low: int, high: int) -> int:
+        return sum(i in s for i in range(low, high + 1))
+
+    def countSymmetricIntegers(self, low: int, high: int) -> int:
+        ans = 0
+        for v in range(low, high + 1):
+            if v < 100 and v % 11 == 0:
+                ans += 1
+            elif v > 1000 and v // 1000 + (v % 1000) // 100 == (v % 100) // 10 + v % 10:
+                ans += 1
+        return ans
+
+
+# 2844 - Minimum Operations to Make a Special Number - MEDIUM
+class Solution:
+    def minimumOperations(self, num: str) -> int:
+        # last two digit is {00, 25, 50, 75}
+        pre = [-1, -1, -1, -1]  # position of 0, 2, 5, 7
+        for i in range(len(num))[::-1]:
+            if num[i] == "0":
+                if pre[0] == -1:
+                    pre[0] = i
+                elif pre[0] != -1:
+                    return len(num) - i - 2
+            elif num[i] == "2":
+                if pre[2] != -1:
+                    return len(num) - i - 2
+            elif num[i] == "5":
+                if pre[0] != -1:
+                    return len(num) - i - 2
+                pre[2] = i
+            elif num[i] == "7":
+                if pre[2] != -1:
+                    return len(num) - i - 2
+        return len(num) - ("0" in num)
+
+        # 不需要减去全部 0, 只需要考虑类似 "10" -> "0", "210" -> "0" 情况, 所以可以少减去一个 0
+        # 如果有多个 0 (即 num.count("0") > 1), 那么在上述的过程中, 一定会先遇到 "00" 的情况
+        # 所以如果能运行到下面再 return, num.count("0") 总是等于 0 或 1, 与 "0" in num = True / False 等效
+        return len(num) - num.count("0")
+
+    def minimumOperations(self, num: str) -> int:
+        n = len(num)
+
+        def f(tail: str) -> int:
+            i = num.rfind(tail[1])
+            if i == -1:
+                return n
+            i = num.rfind(tail[0], 0, i)
+            if i == -1:
+                return n
+            return n - i - 2
+
+        return min(n - ("0" in num), f("00"), f("25"), f("50"), f("75"))
+
+    def minimumOperations(self, num: str) -> int:
+        f = [-1] * 25
+        f[0] = 0
+        for c in num:
+            d = ord(c) - ord("0")
+            g = [-1] * 25
+            for i in range(25):
+                if f[i] != -1:
+                    g[i] = max(f[i], g[i])
+                    g[(i * 10 + d) % 25] = max(f[i] + 1, g[(i * 10 + d) % 25])
+            f = g
+        return len(num) - f[0]
+
+
+# 2845 - Count of Interesting Subarrays - MEDIUM
+class Solution:
+    # O(n) / O(n + mod)
+    def countInterestingSubarrays(self, nums: List[int], modulo: int, k: int) -> int:
+        pre = list(itertools.accumulate(v % modulo == k for v in nums))
+        cnt = collections.defaultdict(int)
+        ans = 0
+        for i in range(len(nums)):
+            mod = pre[i] % modulo
+            ans += mod == k
+            ans += cnt[(mod - k + modulo) % modulo]
+            cnt[mod] += 1
+        return ans
+
+    # O(n) / O(mod)
+    def countInterestingSubarrays(self, nums: List[int], modulo: int, k: int) -> int:
+        # cnt = collections.Counter({0: 1})
+        cnt = collections.Counter([0])
+        ans = mod = 0
+        for v in nums:
+            mod = (mod + (v % modulo == k)) % modulo
+            ans += cnt[(mod - k) % modulo]
+            cnt[mod] += 1
+        return ans
+
+    def countInterestingSubarrays(self, nums: List[int], modulo: int, k: int) -> int:
+        cnt = collections.defaultdict(int)
+        ans = 0
+        for x in itertools.accumulate((v % modulo == k for v in nums), initial=0):
+            ans += cnt[(x - k) % modulo]
+            cnt[x % modulo] += 1
+        return ans
+
+
+# 2846 - Minimum Edge Weight Equilibrium Queries in a Tree - HARD
+class Solution:
+    # O(nq) / O(U), U = 边数, TLE
+    def minOperationsQueries(
+        self, n: int, edges: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        g = [[] for _ in range(n + 1)]
+        for x, y, w in edges:
+            g[x].append((y, w - 1))
+            g[y].append((x, w - 1))
+
+        def bfs(s: int, d: int) -> int:
+            q = [(s, [0] * 26)]
+            l = 0
+            while q:
+                new = []
+                for x, arr in q:
+                    if x == d:
+                        return l - max(arr)
+                    for y, w in g[x]:
+                        cp = arr.copy()
+                        cp[w] += 1
+                        new.append((y, cp))
+                q = new
+                l += 1
+            return -1
+
+        return [bfs(x, y) for x, y in queries]
+
+    # O((n + q) * U * logn), O(nUlogn), U = 边权种类数
+    def minOperationsQueries(
+        self, n: int, edges: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        g = [[] for _ in range(n)]
+        for x, y, w in edges:
+            g[x].append((y, w - 1))
+            g[y].append((x, w - 1))
+
+        m = n.bit_length()
+        pa = [[-1] * m for _ in range(n)]
+        cnt = [[[0] * 26 for _ in range(m)] for _ in range(n)]
+        depth = [0] * n
+
+        def dfs(x: int, fa: int) -> None:
+            pa[x][0] = fa
+            for y, w in g[x]:
+                if y != fa:
+                    cnt[y][0][w] = 1
+                    depth[y] = depth[x] + 1
+                    dfs(y, x)
+
+        dfs(0, -1)
+
+        # 倍增模板
+        for i in range(m - 1):
+            for x in range(n):
+                p = pa[x][i]
+                if p != -1:
+                    pp = pa[p][i]
+                    pa[x][i + 1] = pp
+                    for j, (c1, c2) in enumerate(zip(cnt[x][i], cnt[p][i])):
+                        cnt[x][i + 1][j] = c1 + c2
+
+        ans = []
+        for x, y in queries:
+            path_len = depth[x] + depth[y]  # 最后减去 depth[lca] * 2
+            cw = [0] * 26
+            if depth[x] > depth[y]:
+                x, y = y, x
+
+            # 使 y 和 x 在同一深度
+            k = depth[y] - depth[x]
+            for i in range(k.bit_length()):
+                if (k >> i) & 1:  # k 二进制从低到高第 i 位是 1
+                    p = pa[y][i]
+                    for j, c in enumerate(cnt[y][i]):
+                        cw[j] += c
+                    y = p
+
+            if y != x:
+                for i in range(m - 1, -1, -1):
+                    px, py = pa[x][i], pa[y][i]
+                    if px != py:
+                        for j, (c1, c2) in enumerate(zip(cnt[x][i], cnt[y][i])):
+                            cw[j] += c1 + c2
+                        x, y = px, py  # 同时上跳 2^i 步
+                for j, (c1, c2) in enumerate(zip(cnt[x][0], cnt[y][0])):
+                    cw[j] += c1 + c2
+                x = pa[x][0]
+
+            lca = x
+            path_len -= depth[lca] * 2
+            ans.append(path_len - max(cw))
+        return ans
+
+    # O((n + q) * M + (n + q) * logn), 来源于统计频率以及寻找 LCA
+    def minOperationsQueries(
+        self, n: int, edges: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        g = [[] for _ in range(n)]
+        for u, v, w in edges:
+            g[u].append((v, w - 1))
+            g[v].append((u, w - 1))
+
+        from algo.lca import LCA
+
+        lca = LCA(g, 0)
+
+        parent = lca.parent[0]
+        vals = [[0] * 26 for _ in range(n)]
+        stack = [0]
+        vis = [0] * n
+        vis[0] = 1
+        while stack:
+            u = stack.pop()
+            for v, w in g[u]:
+                if not vis[v]:
+                    vis[v] = 1
+                    stack.append(v)
+                    for i in range(26):
+                        # 统计
+                        vals[v][i] += vals[u][i]
+                    vals[v][w] += 1
+
+        ans = []
+        for u, v in queries:
+            l = lca.getLCA(u, v)
+            tmp = [0] * 26
+            for i in range(26):
+                tmp[i] += vals[u][i] + vals[v][i] - vals[l][i] * 2
+            ans.append(sum(tmp) - max(tmp))
+        return ans
+
+    # 枚举可能的众数, 把对应数字的边权重都强行赋值为 0 这样要求的就是所有情况中路径长度的最小值.
+    # 为此可以通过 26 次建图, 得到 26 个不同的从根节点出发的深度,
+    # 再使用 dist(u) + dist(v) - dist(lca(u,v)) * 2 得到新路径的长度.
+    # 注意这里不需要查询 26q 次 lca, 因为路径权值的改变不改变 lca, 因此开始预处理即可
+    def minOperationsQueries(
+        self, n: int, edges: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        g = [[] for _ in range(n)]
+        for u, v, w in edges:
+            g[u].append((v, w))
+            g[v].append((u, w))
+
+        from algo.lca import LCA
+
+        lca = LCA(g, 0)
+
+        ans = [math.inf] * len(queries)
+        lcas = [lca.getLCA(u, v) for u, v in queries]
+        for i in range(1, 27):
+            depth = [math.inf] * n
+            depth[0] = 0
+            stack = [0]
+            while stack:
+                u = stack.pop()
+                for v, w in g[u]:
+                    if depth[v] == math.inf:
+                        if w == i:
+                            depth[v] = depth[u]
+                        else:
+                            depth[v] = depth[u] + 1
+                        stack.append(v)
+            for i in range(len(queries)):
+                u, v = queries[i]
+                l = lcas[i]
+                ans[i] = min(depth[u] + depth[v] - 2 * depth[l], ans[i])
+        return ans
+
+    def minOperationsQueries(
+        self, n: int, edges: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        g = [[] for _ in range(n)]
+        for u, v, w in edges:
+            g[u].append((v, w - 1))
+            g[v].append((u, w - 1))
+        q = collections.deque([0])
+        par = [0] * n
+        dep = [0] * n
+        summ = [None for _ in range(n)]
+        f = [[0] * 14 for _ in range(n)]
+        summ[0] = [0] * 26
+        while q:
+            u = q.popleft()
+            f[u][0] = par[u]
+            for i in range(1, 14):
+                f[u][i] = f[f[u][i - 1]][i - 1]
+            for v, w in g[u]:
+                if par[u] != v:
+                    par[v] = u
+                    summ[v] = summ[u].copy()
+                    summ[v][w] += 1
+                    dep[v] = dep[u] + 1
+                    q.append(v)
+        ans = []
+        for u, v in queries:
+            x, y = u, v
+            if dep[x] > dep[y]:
+                x, y = y, x
+            for i in reversed(range(14)):
+                if dep[y] - dep[x] >= 1 << i:
+                    y = f[y][i]
+            for i in reversed(range(14)):
+                if f[x][i] != f[y][i]:
+                    x, y = f[x][i], f[y][i]
+            if x != y:
+                x = par[x]
+            ans.append(
+                dep[u]
+                + dep[v]
+                - 2 * dep[x]
+                - max([summ[u][i] + summ[v][i] - 2 * summ[x][i] for i in range(26)])
+            )
+        return ans

@@ -1,8 +1,10 @@
 package src;
 
-import java.math.BigInteger;
 import java.util.*;
+import java.math.*;
+import java.util.function.*;
 
+@SuppressWarnings("unchecked")
 public class Lc2800_2899 {
     // 2800. Shortest String That Contains Three Strings - MEDIUM
     class Solution2800a {
@@ -431,6 +433,332 @@ public class Lc2800_2899 {
                 k -= Math.min(k, entry.getValue());
             }
             return (int) prod;
+        }
+    }
+
+    // 2843. Count Symmetric Integers - EASY
+    class Solution2843a {
+        public int countSymmetricIntegers(int low, int high) {
+            int count = 0;
+            for (int i = low; i <= high; i++) {
+                if (("" + i).length() % 2 == 0) {
+                    int sum = 0;
+                    for (int j = 0; j < ("" + i).length() / 2; j++) {
+                        sum += ("" + i).charAt(j) - ("" + i).charAt(("" + i).length() - j - 1);
+                    }
+                    count += sum == 0 ? 1 : 0;
+                }
+            }
+            return count;
+        }
+    }
+
+    // 2844. Minimum Operations to Make a Special Number - MEDIUM
+    class Solution2844a {
+        public int minimumOperations(String num) {
+            int ans = num.length();
+            for (int i = 0; i < num.length(); i++) {
+                if (num.charAt(i) == '0') {
+                    ans = Math.min(ans, num.length() - 1);
+                }
+                for (int j = i + 1; j < num.length(); j++) {
+                    if (((num.charAt(i) - '0') * 10 + num.charAt(j) - '0') % 25 == 0) {
+                        ans = Math.min(ans, num.length() - i - 2);
+                    }
+                }
+            }
+            return ans;
+        }
+    }
+
+    // 2845. Count of Interesting Subarrays - MEDIUM
+    class Solution2845a {
+        public long countInterestingSubarrays(List<Integer> nums, int modulo, int k) {
+            long count = 0, curr = 0;
+            HashMap<Long, Integer> map = new HashMap<>(Map.of(0L, 1));
+            for (int num : nums) {
+                count += map.getOrDefault(((curr += num % modulo == k ? 1 : 0) - k + modulo) % modulo, 0);
+                map.put(curr % modulo, map.getOrDefault(curr % modulo, 0) + 1);
+            }
+            return count;
+        }
+    }
+
+    // 2846. Minimum Edge Weight Equilibrium Queries in a Tree - HARD
+    public class Solution2846a {
+        static int max[][][], p[][], sz, lev[];
+        static ArrayList<Pair> adj[];
+
+        public int[] minOperationsQueries(int n, int[][] edges, int[][] queries) {
+            adj = new ArrayList[n + 1];
+            for (int i = 1; i <= n; ++i) {
+                adj[i] = new ArrayList<>();
+            }
+            for (int i = 1; i < n; ++i) {
+                int u = edges[i - 1][0] + 1, v = edges[i - 1][1] + 1, w[] = new int[27];
+                w[edges[i - 1][2]] = 1;
+                adj[u].add(new Pair(v, w));
+                adj[v].add(new Pair(u, w));
+            }
+            sz = (int) (Math.log(n) / Math.log(2));
+            max = new int[n + 1][sz + 1][];
+            p = new int[n + 1][sz + 1];
+            lev = new int[n + 1];
+            dfs(1, 1, new int[27]);
+            int[] result = new int[queries.length];
+            for (int i = 0; i < queries.length; i++) {
+                int u = queries[i][0] + 1, v = queries[i][1] + 1;
+                int[] max_weight = calc(u, v);
+                int max = 0, sum = 0;
+                for (int j = 1; j <= 26; j++) {
+                    max = Math.max(max, max_weight[j]);
+                    sum += max_weight[j];
+                }
+                result[i] = sum - max;
+            }
+            return result;
+        }
+
+        static int[] calc(int u, int v) {
+            if (lev[u] > lev[v]) {
+                int temp = u;
+                u = v;
+                v = temp;
+            }
+            int diff = lev[v] - lev[u];
+            int[] max_weight = new int[27];
+            for (int i = 0; i <= sz; ++i) {
+                if ((diff & (1 << i)) != 0) {
+                    max_weight = max(max_weight, max[v][i]);
+                    v = p[v][i];
+                }
+            }
+            if (u == v) {
+                return max_weight;
+            }
+            for (int i = sz; i >= 0; --i) {
+                if (p[u][i] != p[v][i]) {
+                    max_weight = max(max_weight, max[u][i]);
+                    max_weight = max(max_weight, max[v][i]);
+                    u = p[u][i];
+                    v = p[v][i];
+                }
+            }
+            max_weight = max(max_weight, max[u][0]);
+            max_weight = max(max_weight, max[v][0]);
+            return max_weight;
+        }
+
+        static void dfs(int x, int par, int[] weight_from_parent) {
+            if (x != par) {
+                lev[x] = lev[par] + 1;
+            }
+            p[x][0] = par;
+            max[x][0] = weight_from_parent;
+            for (int i = 1; i <= sz; ++i) {
+                p[x][i] = p[p[x][i - 1]][i - 1];
+                max[x][i] = max(max[x][i - 1], max[p[x][i - 1]][i - 1]);
+            }
+            for (Pair p : adj[x]) {
+                if (p.x != par) {
+                    dfs(p.x, x, p.y);
+                }
+            }
+        }
+
+        static class Pair {
+            int x, y[];
+
+            Pair(int x, int[] y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
+        static int[] max(int[] a, int[] b) {
+            int[] max = new int[27];
+            for (int i = 1; i <= 26; i++) {
+                max[i] = a[i] + b[i];
+            }
+            return max;
+        }
+    }
+
+    class Solution2846b {
+        List<DirectedEdge>[] g;
+        int[][] ps;
+
+        public int[] minOperationsQueries(int n, int[][] edges, int[][] queries) {
+            g = new List[n];
+            for (int i = 0; i < n; i++) {
+                g[i] = new ArrayList<>();
+            }
+            for (int[] e : edges) {
+                g[e[0]].add(new DirectedEdge(e[1], e[2] - 1));
+                g[e[1]].add(new DirectedEdge(e[0], e[2] - 1));
+            }
+            var lca = new LcaOnTreeBySchieberVishkin(g, 0);
+            ps = new int[n][];
+            dfs(0, -1, -1);
+            int[] ans = new int[queries.length];
+            for (int i = 0; i < queries.length; i++) {
+                int[] q = queries[i];
+                int a = q[0];
+                int b = q[1];
+                int c = lca.lca(a, b);
+                int totalEdge = 0;
+                int maxEdge = 0;
+                for (int j = 0; j < 26; j++) {
+                    int cnt = ps[a][j] + ps[b][j] - 2 * ps[c][j];
+                    totalEdge += cnt;
+                    maxEdge = Math.max(maxEdge, cnt);
+                }
+                ans[i] = totalEdge - maxEdge;
+            }
+            return ans;
+        }
+
+        public void dfs(int root, int p, int v) {
+            ps[root] = (p == -1) ? new int[26] : ps[p].clone();
+            if (v >= 0) {
+                ps[root][v]++;
+            }
+            for (var e : g[root]) {
+                if (e.to == p) {
+                    continue;
+                }
+                dfs(e.to, root, e.w);
+            }
+
+        }
+
+        public static class DirectedEdge {
+            public int to;
+            public int w;
+
+            public DirectedEdge(int to, int w) {
+                this.to = to;
+                this.w = w;
+            }
+
+            @Override
+            public String toString() {
+                return "->" + to;
+            }
+        }
+
+        static class Log2 {
+            public static int ceilLog(int x) {
+                if (x <= 0) {
+                    return 0;
+                }
+                return 32 - Integer.numberOfLeadingZeros(x - 1);
+            }
+
+            public static int floorLog(int x) {
+                if (x <= 0) {
+                    throw new IllegalArgumentException();
+                }
+                return 31 - Integer.numberOfLeadingZeros(x);
+            }
+
+            public static int ceilLog(long x) {
+                if (x <= 0) {
+                    return 0;
+                }
+                return 64 - Long.numberOfLeadingZeros(x - 1);
+            }
+
+            public static int floorLog(long x) {
+                if (x <= 0) {
+                    throw new IllegalArgumentException();
+                }
+                return 63 - Long.numberOfLeadingZeros(x);
+            }
+        }
+
+        /**
+         * https://github.com/indy256/codelibrary/blob/master/java/graphs/lca/LcaSchieberVishkin.java
+         */
+        // Answering LCA queries in O(1) with O(n) preprocessing
+        public static class LcaOnTreeBySchieberVishkin {
+            int[] parent;
+            int[] preOrder;
+            int[] i;
+            int[] head;
+            int[] a;
+            int time;
+
+            void dfs1(List<? extends DirectedEdge>[] tree, int u, int p) {
+                parent[u] = p;
+                i[u] = preOrder[u] = time++;
+                for (DirectedEdge e : tree[u]) {
+                    int v = e.to;
+                    if (v == p)
+                        continue;
+                    dfs1(tree, v, u);
+                    if (Integer.lowestOneBit(i[u]) < Integer.lowestOneBit(i[v])) {
+                        i[u] = i[v];
+                    }
+                }
+                head[i[u]] = u;
+            }
+
+            void dfs2(List<? extends DirectedEdge>[] tree, int u, int p, int up) {
+                a[u] = up | Integer.lowestOneBit(i[u]);
+                for (DirectedEdge e : tree[u]) {
+                    int v = e.to;
+                    if (v == p)
+                        continue;
+                    dfs2(tree, v, u, a[u]);
+                }
+            }
+
+            public void init(List<? extends DirectedEdge>[] tree, int root) {
+                init(tree, i -> i == root);
+            }
+
+            public void init(List<? extends DirectedEdge>[] tree, IntPredicate isRoot) {
+                time = 0;
+                for (int i = 0; i < tree.length; i++) {
+                    if (isRoot.test(i)) {
+                        dfs1(tree, i, -1);
+                        dfs2(tree, i, -1, 0);
+                    }
+                }
+            }
+
+            public LcaOnTreeBySchieberVishkin(int n) {
+                preOrder = new int[n];
+                i = new int[n];
+                head = new int[n];
+                a = new int[n];
+                parent = new int[n];
+            }
+
+            public LcaOnTreeBySchieberVishkin(List<? extends DirectedEdge>[] tree, IntPredicate isRoot) {
+                this(tree.length);
+                init(tree, isRoot);
+            }
+
+            public LcaOnTreeBySchieberVishkin(List<? extends DirectedEdge>[] tree, int root) {
+                this(tree, i -> i == root);
+            }
+
+            private int enterIntoStrip(int x, int hz) {
+                if (Integer.lowestOneBit(i[x]) == hz)
+                    return x;
+                int hw = 1 << Log2.floorLog(a[x] & (hz - 1));
+                return parent[head[i[x] & -hw | hw]];
+            }
+
+            public int lca(int x, int y) {
+                int hb = i[x] == i[y] ? Integer.lowestOneBit(i[x]) : (1 << Log2.floorLog(i[x] ^ i[y]));
+                int hz = Integer.lowestOneBit(a[x] & a[y] & -hb);
+                int ex = enterIntoStrip(x, hz);
+                int ey = enterIntoStrip(y, hz);
+                return preOrder[ex] < preOrder[ey] ? ex : ey;
+            }
         }
     }
 }

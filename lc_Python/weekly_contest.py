@@ -1302,3 +1302,8 @@ T4: 874 pass
 # 贪心, 位运算
 # 99 / https://leetcode.cn/contest/weekly-contest-360/problems/maximize-value-of-function-in-a-ball-passing-game/
 # dp, 树上倍增, 内向基环树
+
+
+# https://leetcode.cn/contest/weekly-contest-361/
+# 222 / https://leetcode.cn/contest/weekly-contest-361/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/
+# LCA 模版, 树上倍增
