@@ -679,6 +679,48 @@ class Solution:
         return sorted(target) == sorted(arr)
 
 
+# 1462 - Course Schedule IV - MEDIUM
+class Solution:
+    def checkIfPrerequisite(
+        self, numCourses: int, prerequisites: List[List[int]], queries: List[List[int]]
+    ) -> List[bool]:
+        g = [[] for _ in range(numCourses)]
+        indegree = [0] * numCourses
+        fa = [set() for _ in range(numCourses)]
+        for x, y in prerequisites:
+            fa[y].add(x)
+            indegree[y] += 1
+            g[x].append(y)
+        q = [i for i, d in enumerate(indegree) if d == 0]
+        while q:
+            new = []
+            for u in q:
+                for v in g[u]:
+                    fa[v] |= fa[u]
+                    indegree[v] -= 1
+                    if indegree[v] == 0:
+                        new.append(v)
+            q = new
+        return [x in fa[y] for x, y in queries]
+
+    def checkIfPrerequisite(
+        self, numCourses: int, prerequisites: List[List[int]], queries: List[List[int]]
+    ) -> List[bool]:
+        g = [[] for _ in range(numCourses)]
+        for x, y in prerequisites:
+            g[x].append(y)
+
+        @functools.lru_cache(None)
+        def dfs(i: int) -> set:
+            res = {i}
+            for nxt in g[i]:
+                res |= dfs(nxt)
+            return res
+
+        nexts = [dfs(i) for i in range(numCourses)]
+        return [y in nexts[x] for x, y in queries]
+
+
 # 1464 - Maximum Product of Two Elements in an Array - EASY
 class Solution:
     # O(n^2) / O(1)

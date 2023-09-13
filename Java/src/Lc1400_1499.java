@@ -106,6 +106,76 @@ public class Lc1400_1499 {
         }
     }
 
+    // 1462. Course Schedule IV - MEDIUM
+    class Solution1462a { // 8ms
+        public List<Boolean> checkIfPrerequisite(int numCourses, int[][] prerequisites, int[][] queries) {
+            int[] indegree = new int[numCourses], next = new int[prerequisites.length], head = new int[numCourses];
+            for (int i = 0; i < numCourses; ++i)
+                head[i] = -1;
+            BitSet[] fa = new BitSet[numCourses];
+            for (int i = 0; i < numCourses; i++)
+                fa[i] = new BitSet(numCourses);
+            for (int i = 0; i < prerequisites.length; ++i) {
+                int x = prerequisites[i][0], y = prerequisites[i][1];
+                indegree[y]++;
+                fa[y].set(x);
+                next[i] = head[x];
+                head[x] = i;
+            }
+            Deque<Integer> dq = new LinkedList<>();
+            for (int i = 0; i < numCourses; i++) {
+                if (indegree[i] == 0)
+                    dq.offer(i);
+            }
+            while (!dq.isEmpty()) {
+                int x = dq.poll();
+                for (int idx = head[x]; idx != -1; idx = next[idx]) {
+                    int y = prerequisites[idx][1];
+                    fa[y].or(fa[x]);
+                    if (--indegree[y] == 0)
+                        dq.offer(y);
+                }
+            }
+            List<Boolean> ans = new ArrayList<>(queries.length);
+            for (int[] query : queries) {
+                if (fa[query[1]].get(query[0]))
+                    ans.add(true);
+                else
+                    ans.add(false);
+            }
+            return ans;
+        }
+    }
+
+    class Solution1462b { // 10ms
+        private void dfs(List<Integer>[] g, boolean[][] fa, boolean[] vis, int x) {
+            if (vis[x])
+                return;
+            vis[x] = true;
+            for (int y : g[x]) {
+                dfs(g, fa, vis, y);
+                fa[x][y] = true;
+                for (int i = 0; i < fa.length; ++i)
+                    fa[x][i] = fa[x][i] | fa[y][i];
+            }
+        }
+
+        public List<Boolean> checkIfPrerequisite(int numCourses, int[][] prerequisites, int[][] queries) {
+            List<Integer>[] g = new List[numCourses];
+            for (int i = 0; i < numCourses; i++)
+                g[i] = new ArrayList<Integer>();
+            boolean vis[] = new boolean[numCourses], fa[][] = new boolean[numCourses][numCourses];
+            for (int[] p : prerequisites)
+                g[p[0]].add(p[1]);
+            for (int i = 0; i < numCourses; ++i)
+                dfs(g, fa, vis, i);
+            List<Boolean> res = new ArrayList<Boolean>(queries.length);
+            for (int[] q : queries)
+                res.add(fa[q[0]][q[1]]);
+            return res;
+        }
+    }
+
     // 1483. Kth Ancestor of a Tree Node - HARD
     class TreeAncestor { // 66ms
         // 构建 dfs 序
