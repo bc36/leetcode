@@ -4,6 +4,33 @@ import java.util.*;
 import java.util.stream.*;
 
 public class Lc1200_1299 {
+    // 1222. Queens That Can Attack the King - MEDIUM
+    class Solution1222a {
+        private final static int[][] directions = { { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 },
+                { 0, -1 }, { 1, -1 } };
+
+        public List<List<Integer>> queensAttacktheKing(int[][] queens, int[] king) {
+            boolean[][] isQueen = new boolean[8][8]; // 数组效率比哈希表高
+            for (int[] q : queens) {
+                isQueen[q[0]][q[1]] = true;
+            }
+            List<List<Integer>> ans = new ArrayList<>();
+            for (int[] d : directions) {
+                int x = king[0] + d[0];
+                int y = king[1] + d[1];
+                while (0 <= x && x < 8 && 0 <= y && y < 8) {
+                    if (isQueen[x][y]) {
+                        ans.add(List.of(x, y));
+                        break;
+                    }
+                    x += d[0];
+                    y += d[1];
+                }
+            }
+            return ans;
+        }
+    }
+
     // 1253. Reconstruct a 2-Row Binary Matrix - MEDIUM
     class Solution1253a {
         public List<List<Integer>> reconstructMatrix(int upper, int lower, int[] colsum) {
