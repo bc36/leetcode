@@ -229,38 +229,33 @@ class Solution:
 class Solution:
     # O(nlogn) / O(n)
     def scheduleCourse(self, courses: List[List[int]]) -> int:
-        courses.sort(key=lambda c: c[1])
-        pq = []
-        t = 0
-        for d, ddl in courses:
-            t += d
-            if t > ddl:
-                t += heapq.heappushpop(pq, -d)
-                # t -= -heapq.heappushpop(pq, -d)
+        h = []
+        total = 0
+        for d, lastDay in sorted(courses, key=lambda x: x[1]):
+            total += d
+            if total > lastDay:
+                total += heapq.heappushpop(h, -d)
             else:
-                heapq.heappush(pq, -d)
+                heapq.heappush(h, -d)
 
             # or
-            # if t + d <= ddl:
-            #     t += d
-            #     heapq.heappush(pq, -d)
-            # elif pq and -pq[0] > d:
-            #     # t += heapq.heappushpop(pq, -d) + d
-            #     t -= -pq[0] - d
-            #     heapq.heappop(pq)
-            #     heapq.heappush(pq, -d)
-        return len(pq)
+            # if total + d <= lastDay:
+            #     total += d
+            #     heapq.heappush(h, -d)
+            # elif h and -h[0] > d:
+            #     total += heapq.heappushpop(h, -d) + d
+        return len(h)
 
     def scheduleCourse(self, courses: List[List[int]]) -> int:
-        pq = []
-        t = 0
-        for d, ddl in sorted(courses, key=lambda x: x[1]):
-            if t + d > ddl and pq and -pq[0] > d:
-                t += heapq.heappop(pq)
-            if t + d <= ddl:
-                heapq.heappush(pq, -d)
-                t += d
-        return len(pq)
+        h = []
+        total = 0
+        for d, lastDay in sorted(courses, key=lambda x: x[1]):
+            if d + total > lastDay and h and d < -h[0]:
+                total += heapq.heappop(h)
+            if d + total <= lastDay:
+                heapq.heappush(h, -d)
+                total += d
+        return len(h)
 
 
 # 633 - Sum of Square Numbers - MEDIUM

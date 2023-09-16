@@ -76,4 +76,24 @@ public class Lc200_299 {
             return ans;
         }
     }
+
+    // 213. House Robber II - MEDIUM
+    class Solution213a {
+        public int rob(int[] nums) {
+            if (nums.length < 3)
+                return nums.length == 1 ? nums[0] : Math.max(nums[0], nums[1]);
+            int pre0 = nums[0], cur0 = Math.max(nums[0], nums[1]), pre1 = nums[1], cur1 = Math.max(nums[1], nums[2]);
+            for (int i = 2; i < nums.length - 1; i++) {
+                int tmp = cur0;
+                cur0 = Math.max(pre0 + nums[i], cur0);
+                pre0 = tmp;
+            }
+            for (int i = 3; i < nums.length; i++) {
+                int tmp = cur1;
+                cur1 = Math.max(pre1 + nums[i], cur1);
+                pre1 = tmp;
+            }
+            return Math.max(Math.max(pre0, cur0), Math.max(pre1, cur1));
+        }
+    }
 }

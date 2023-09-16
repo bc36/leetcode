@@ -581,43 +581,34 @@ class Solution:
     def rob(self, nums: List[int]) -> int:
         if len(nums) < 3:
             return max(nums)
-        # dp0: start from index 0, dp1: start from index 1
-        dp0 = [0] * (len(nums) - 1)
-        dp0[0], dp0[1] = nums[0], max(nums[0], nums[1])
-        dp1 = [0] * (len(nums) - 1)
-        dp1[0], dp1[1] = nums[1], max(nums[1], nums[2])
+        a, b = nums[0], max(nums[0], nums[1])
         for i in range(2, len(nums) - 1):
-            dp0[i] = max(dp0[i - 2] + nums[i], dp0[i - 1])
+            a, b = b, max(b, a + nums[i])
+        startFrom0 = max(a, b)
+        a, b = nums[1], max(nums[1], nums[2])
         for i in range(3, len(nums)):
-            dp1[i - 1] = max(dp1[i - 3] + nums[i], dp1[i - 2])
-        return max(dp0[-1], dp1[-1])
+            a, b = b, max(b, a + nums[i])
+        startFrom1 = max(a, b)
+        return max(startFrom0, startFrom1)
 
     def rob(self, nums: List[int]) -> int:
         def my_rob(nums):
-            cur, pre = 0, 0
-            for num in nums:
+            cur = pre = 0
+            for v in nums:
                 """
-                Correct:
-                cur, pre = max(pre + num, cur), cur
+                cur, pre = max(pre + v, cur), cur
 
-                pre, cur = cur, max(pre + num, cur)
+                pre, cur = cur, max(pre + v, cur)
 
                 tmp = pre
                 pre = cur
-                cur = max(tmp + num, cur)
+                cur = max(tmp + v, cur)
 
                 tmp = cur
-                cur = max(pre + num, cur)
+                cur = max(pre + v, cur)
                 pre = tmp
-
-                Wrong:
-                pre = cur
-                cur = max(tmp + num, cur)
-
-                cur = max(tmp + num, cur)
-                pre = cur
                 """
-                pre, cur = cur, max(pre + num, cur)
+                pre, cur = cur, max(pre + v, cur)
             return cur
 
         return max(my_rob(nums[:-1]), my_rob(nums[1:])) if len(nums) != 1 else nums[0]
