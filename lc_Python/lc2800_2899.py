@@ -1279,3 +1279,232 @@ class Solution:
                 - max([summ[u][i] + summ[v][i] - 2 * summ[x][i] for i in range(26)])
             )
         return ans
+
+
+# 2848 - Points That Intersect With Cars - EASY
+class Solution:
+    # O(nD) / O(D), D = max(e - s)
+    def numberOfPoints(self, nums: List[List[int]]) -> int:
+        car = [False] * 101
+        for s, e in nums:
+            for i in range(s, e + 1):
+                car[i] = True
+        return sum(car)
+
+    # O(n + M) / O(M), M = max(ends)
+    def numberOfPoints(self, nums: List[List[int]]) -> int:
+        diff = [0] * 102
+        for s, e in nums:
+            diff[s] += 1
+            diff[e + 1] -= 1
+        return sum(v > 0 for v in itertools.accumulate(diff))
+
+
+# 2849 - Determine if a Cell Is Reachable at a Given Time - MEDIUM
+class Solution:
+    # O(1) / O(1)
+    def isReachableAtTime(self, sx: int, sy: int, fx: int, fy: int, t: int) -> bool:
+        if sx == fx and sy == fy:
+            return t != 1
+        return max(abs(fx - sx), abs(fy - sy)) <= t
+
+    def isReachableAtTime(self, sx: int, sy: int, fx: int, fy: int, t: int) -> bool:
+        dx = abs(sx - fx)
+        dy = abs(sy - fy)
+        return t >= max(dx, dy) if dx or dy else t != 1
+
+
+# 2850 - Minimum Moves to Spread Stones Over Grid - MEDIUM
+class Solution:
+    # 更快的做法是最小费用最大流, 即使是 10 x 10 的网格也可以做
+    # 建图规则如下:
+    # 从每个大于 1 的格子向每个等于 0 的格子连边, 容量为 1, 费用为两个格子之间的曼哈顿距离.
+    # 从超级源点向每个大于 1 的格子连边, 容量为格子的值减一 (即移走的石子数), 费用为 0.
+    # 从每个等于 0 的格子向超级汇点连边, 容量 1 (即移入的石子数), 费用为 0.
+    # 答案为最大流时, 对应的最小费用.
+
+    # 最少步数经常的想法是使用 BFS / Dijkstra 等最短路算法
+    # 对于此题, 可能的状态数是 9 个非负整数相加等于 9 的不同方案数, math.comb(17, 8) = 24310
+    # O(mn * (mn)!) / O(mn), m = n = 3, 1120ms
+    def minimumMoves(self, grid: List[List[int]]) -> int:
+        q = [tuple(v for row in grid for v in row)]
+        vis = set(q)
+        ans = 0
+        while q:
+            new = []
+            for state in q:
+                if max(state) == 1:
+                    return ans
+                state = list(state)
+                for i in range(9):
+                    if state[i] > 1:
+                        x, y = divmod(i, 3)
+                        for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                            if 0 <= nx < 3 and 0 <= ny < 3:
+                                ni = nx * 3 + ny
+                                state[i] -= 1
+                                state[ni] += 1
+                                t = tuple(state)
+                                if t not in vis:
+                                    vis.add(t)
+                                    new.append(t)
+                                state[i] += 1
+                                state[ni] -= 1
+            q = new
+            ans += 1
+        return -1
+
+
+# 或者反过来预处理, 跑一次最短路即可, 296ms
+init = (1,) * 9
+q = [init]
+vis = {init: 0}
+while q:
+    new = []
+    for pre in q:
+        state = list(pre)
+        for i in range(9):
+            if state[i] > 0:
+                x, y = divmod(i, 3)
+                for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                    if 0 <= nx < 3 and 0 <= ny < 3:
+                        ni = nx * 3 + ny
+                        state[i] -= 1
+                        state[ni] += 1
+                        t = tuple(state)
+                        if t not in vis:
+                            vis[t] = vis[pre] + 1
+                            new.append(t)
+                        state[i] += 1
+                        state[ni] -= 1
+    q = new
+
+
+class Solution:
+    def minimumMoves(self, grid: List[List[int]]) -> int:
+        return vis[tuple(v for row in grid for v in row)]
+
+
+class Solution:
+    # 枚举 from 的所有排列, 与 to 匹配, 累加从 from[i] 到 to[i] 的曼哈顿距离
+    #  O(mn * (mn)!) / O(mn), m = n = 3, 600ms
+    def minimumMoves(self, grid: List[List[int]]) -> int:
+        fromm = []
+        to = []
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v > 1:
+                    fromm.extend(((i, j),) * (v - 1))
+                elif v == 0:
+                    to.append((i, j))
+        return min(
+            sum(abs(x1 - x2) + abs(y1 - y2) for (x1, y1), (x2, y2) in zip(possible, to))
+            for possible in itertools.permutations(fromm)
+        )
+
+
+# 2851 - String Transformation - HARD
+class Solution:
+    def numberOfWays(self, s, t, k):
+        n = len(s)
+        c = self.kmp_search(s + s[:-1], t)
+        m = [[c - 1, c], [n - c, n - 1 - c]]
+        m = self.pow(m, k)
+        return m[0][s != t]
+
+    # KMP 模板
+    def calc_max_match(self, s: str) -> List[int]:
+        match = [0] * len(s)
+        c = 0
+        for i in range(1, len(s)):
+            v = s[i]
+            while c and s[c] != v:
+                c = match[c - 1]
+            if s[c] == v:
+                c += 1
+            match[i] = c
+        return match
+
+    # KMP 模板
+    # 返回 text 中出现了多少次 pattern（允许 pattern 重叠）
+    def kmp_search(self, text: str, pattern: str) -> int:
+        match = self.calc_max_match(pattern)
+        match_cnt = c = 0
+        for i, v in enumerate(text):
+            v = text[i]
+            while c and pattern[c] != v:
+                c = match[c - 1]
+            if pattern[c] == v:
+                c += 1
+            if c == len(pattern):
+                match_cnt += 1
+                c = match[c - 1]
+        return match_cnt
+
+    # 矩阵乘法
+    def multiply(self, a: List[List[int]], b: List[List[int]]) -> List[List[int]]:
+        c = [[0, 0], [0, 0]]
+        for i in range(2):
+            for j in range(2):
+                c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % (10**9 + 7)
+        return c
+
+    # 矩阵快速幂
+    def pow(self, a: List[List[int]], n: int) -> List[List[int]]:
+        res = [[1, 0], [0, 1]]
+        while n:
+            if n % 2:
+                res = self.multiply(res, a)
+            a = self.multiply(a, a)
+            n //= 2
+        return res
+
+
+class Solution:
+    def numberOfWays(self, s: str, t: str, k: int) -> int:
+        tmp = t + "#" + s * 2
+        n = len(s)
+        cnt = 0
+        kmp = self.prep(tmp)
+        for i in range(len(kmp)):
+            if kmp[i] == n and i - n * 2 < n:
+                cnt += 1
+
+        grid = [[cnt - 1, cnt], [n - cnt, n - cnt - 1]]
+        grid_pow = self.matrix_pow(grid, k)
+        return grid_pow[0][0] if s == t else grid_pow[0][1]
+
+    def prep(self, p):
+        pi = [0] * len(p)
+        j = 0
+        for i in range(1, len(p)):
+            while j != 0 and p[j] != p[i]:
+                j = pi[j - 1]
+            if p[j] == p[i]:
+                j += 1
+            pi[i] = j
+        return pi
+
+    def matrix_mul(self, A, B, mod=10**9 + 7):
+        n, m = len(A), len(A[0])
+        p = len(B[0])
+        ans = [[0] * p for _ in range(n)]
+        for i in range(n):
+            for j in range(m):
+                for k in range(p):
+                    ans[i][k] += A[i][j] * B[j][k]
+                    ans[i][k] %= mod
+        return ans
+
+    def matrix_pow(self, A, n):
+        length = len(A)
+        tmp = A
+        ans = [[0] * length for _ in range(length)]
+        for i in range(length):
+            ans[i][i] = 1
+        for i in range(60):
+            if n % 2:
+                ans = self.matrix_mul(ans, tmp)
+            tmp = self.matrix_mul(tmp, tmp)
+            n //= 2
+        return ans

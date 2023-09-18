@@ -485,7 +485,7 @@ public class Lc2800_2899 {
     }
 
     // 2846. Minimum Edge Weight Equilibrium Queries in a Tree - HARD
-    public class Solution2846a {
+    class Solution2846a {
         static int max[][][], p[][], sz, lev[];
         static ArrayList<Pair> adj[];
 
@@ -759,6 +759,110 @@ public class Lc2800_2899 {
                 int ey = enterIntoStrip(y, hz);
                 return preOrder[ex] < preOrder[ey] ? ex : ey;
             }
+        }
+    }
+
+    // 2848. Points That Intersect With Cars - EASY
+    class Solution2848a {
+        public int numberOfPoints(List<List<Integer>> nums) {
+            HashSet<Integer> set = new HashSet<>();
+            for (List<Integer> num : nums) {
+                for (int i = num.get(0); i <= num.get(1); i++) {
+                    set.add(i);
+                }
+            }
+            return set.size();
+        }
+    }
+
+    // 2849. Determine if a Cell Is Reachable at a Given Time - MEDIUM
+    class Solution2849a {
+        public boolean isReachableAtTime(int sx, int sy, int fx, int fy, int t) {
+            return sx == fx && sy == fy ? t != 1 : Math.max(Math.abs(sx - fx), Math.abs(sy - fy)) <= t;
+        }
+    }
+
+    // 2850. Minimum Moves to Spread Stones Over Grid - MEDIUM
+    class Solution2850a {
+        public int minimumMoves(int[][] grid) {
+            ArrayList<int[]> list1 = new ArrayList<>(), list2 = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (grid[i][j] == 0) {
+                        list1.add(new int[] { i, j });
+                    }
+                    for (int k = 1; k < grid[i][j]; k++) {
+                        list2.add(new int[] { i, j });
+                    }
+                }
+            }
+            return minimumMoves(0, list1, list2);
+        }
+
+        private int minimumMoves(int index, ArrayList<int[]> list1, ArrayList<int[]> list2) {
+            if (index == list1.size()) {
+                return 0;
+            }
+            int min = Integer.MAX_VALUE, temp[] = list1.get(index);
+            for (int i = index; i < list1.size(); i++) {
+                list1.set(index, list1.get(i));
+                list1.set(i, temp);
+                min = Math.min(min, Math.abs(list1.get(index)[0] - list2.get(index)[0])
+                        + Math.abs(list1.get(index)[1] - list2.get(index)[1]) + minimumMoves(index + 1, list1, list2));
+                list1.set(i, list1.get(index));
+                list1.set(index, temp);
+            }
+            return min;
+        }
+    }
+
+    // 2851. String Transformation - HARD
+    class Solution2851a {
+        public int numberOfWays(String s, String t, long k) {
+            int dp[] = modpow(new int[][] { { 0, 1 }, { s.length() - 1, s.length() - 2 } }, k, 1000000007)[0],
+                    z[] = z(s + t + t), count = 0;
+            for (int i = s.length(); i < s.length() + s.length(); i++) {
+                count = (count + (z[i] < s.length() ? 0 : dp[Math.min(1, i - s.length())])) % 1000000007;
+            }
+            return count;
+        }
+
+        private int[][] modMult(int[][] A, int[][] B, int m) {
+            int[][] C = new int[A.length][B[0].length];
+            for (int i = 0; i < A.length; i++) {
+                for (int j = 0; j < B[0].length; j++) {
+                    for (int k = 0; k < A[0].length; k++) {
+                        long prod = (long) A[i][k] * B[k][j];
+                        C[i][j] = (int) ((C[i][j] + prod) % m);
+                    }
+                }
+            }
+            return C;
+        }
+
+        private int[][] modpow(int[][] A, long k, int m) {
+            if (k == 0) {
+                int[][] I = new int[A.length][A.length];
+                for (int i = 0; i < A.length; i++) {
+                    I[i][i] = 1;
+                }
+                return I;
+            } else if (k % 2 == 1) {
+                return modMult(A, modpow(A, k - 1, m), m);
+            } else {
+                int[][] M = modpow(A, k / 2, m);
+                return modMult(M, M, m);
+            }
+        }
+
+        private int[] z(String s) {
+            int[] z = new int[s.length()];
+            for (int i = 1, x = 0, y = 0; i < s.length(); i++) {
+                for (z[i] = Math.max(0, Math.min(z[i - x], y - i + 1)); i + z[i] < s.length()
+                        && s.charAt(z[i]) == s.charAt(i + z[i]); y = i + z[x = i]++) {
+                }
+            }
+            return z;
         }
     }
 }

@@ -1307,3 +1307,10 @@ T4: 874 pass
 # https://leetcode.cn/contest/weekly-contest-361/
 # 222 / https://leetcode.cn/contest/weekly-contest-361/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/
 # LCA 模版, 树上倍增
+
+
+# https://leetcode.cn/contest/weekly-contest-362/
+# 1054 / https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
+# 枚举全排列 / 最小费用最大流
+# 75 / https://leetcode.cn/contest/weekly-contest-362/problems/string-transformation/
+# KMP, 矩阵快速幂
