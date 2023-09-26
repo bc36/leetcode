@@ -2987,3 +2987,37 @@ class Solution:
         return sum(run)
 
     # 还有线段树做法 O(nlogn), TODO
+
+
+# 2594 - Minimum Time to Repair Cars - MEDIUM
+class Solution:
+    def repairCars(self, ranks: List[int], cars: int) -> int:
+        return bisect.bisect_left(
+            range(min(ranks) * cars * cars),
+            cars,
+            key=lambda m: sum(math.floor(math.sqrt(m // v)) for v in ranks),
+        )
+
+    def repairCars(self, ranks: List[int], cars: int) -> int:
+        return bisect.bisect_left(
+            range(10**15),
+            True,
+            key=lambda m: sum(int(math.sqrt(m / v)) for v in ranks) >= cars,
+        )
+
+
+# 2596 - Check Knight Tour Configuration - MEDIUM
+class Solution:
+    def checkValidGrid(self, grid: List[List[int]]) -> bool:
+        pos = [0] * (len(grid) ** 2)
+        for i, row in enumerate(grid):
+            for j, x in enumerate(row):
+                pos[x] = (i, j)  # 记录坐标
+        if pos[0] != (0, 0):  # 必须从左上角出发
+            return False
+        for (x, y), (nx, ny) in pairwise(pos):
+            dx, dy = abs(nx - x), abs(ny - y)  # 移动距离
+            # if dx * dy != 2:
+            if not ((dx == 2 and dy == 1) or (dx == 1 and dy == 2)):  # 不合法
+                return False
+        return True

@@ -120,21 +120,21 @@ public class Lc2500_2599 {
         return sum;
     }
 
-    // 2594. Minimum Time to Repair Cars - HARD
+    // 2594. Minimum Time to Repair Cars - MEDIUM
     public long repairCars(int[] ranks, int cars) {
-        long left = 1, right = 100000000000000L;
-        while (left < right) {
-            long mid = (left + right) / 2, count = 0;
+        long l = 1, r = 100000000000000L;
+        while (l < r) {
+            long m = (l + r) / 2, count = 0;
             for (int rank : ranks) {
-                count += Math.sqrt(mid / rank);
+                count += Math.sqrt(m / rank);
             }
             if (count < cars) {
-                left = mid + 1;
+                l = m + 1;
             } else {
-                right = mid;
+                r = m;
             }
         }
-        return left;
+        return l;
     }
 
     // 2595. Number of Even and Odd Bits - EASY
