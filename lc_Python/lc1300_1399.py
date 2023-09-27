@@ -315,6 +315,22 @@ class Solution:
         return 1 if s == s[::-1] else 2
 
 
+# 1333 - Filter Restaurants by Vegan-Friendly, Price and Distance - MEDIUM
+class Solution:
+    def filterRestaurants(
+        self,
+        restaurants: List[List[int]],
+        veganFriendly: int,
+        maxPrice: int,
+        maxDistance: int,
+    ) -> List[int]:
+        return [
+            i
+            for i, _, v, p, d in sorted(restaurants, key=lambda x: (-x[1], -x[0]))
+            if v >= veganFriendly and p <= maxPrice and d <= maxDistance
+        ]
+
+
 # 1335 - Minimum Difficulty of a Job Schedule - HARD
 class Solution:
     # O(n^2 * d) / O(nd)
