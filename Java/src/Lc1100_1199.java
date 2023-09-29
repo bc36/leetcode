@@ -1,8 +1,28 @@
 package src;
 
 import java.util.*;
+// import javafx.util.Pair;
 
 public class Lc1100_1199 {
+    // 1123. Lowest Common Ancestor of Deepest Leaves - MEDIUM
+    class Solution1123 {
+        // public TreeNode lcaDeepestLeaves(TreeNode root) {
+        //     return dfs(root).getValue();
+        // }
+
+        // private Pair<Integer, TreeNode> dfs(TreeNode node) {
+        //     if (node == null)
+        //         return new Pair<>(0, null);
+        //     var left = dfs(node.left);
+        //     var right = dfs(node.right);
+        //     if (left.getKey() > right.getKey())
+        //         return new Pair<>(left.getKey() + 1, left.getValue());
+        //     if (left.getKey() < right.getKey())
+        //         return new Pair<>(right.getKey() + 1, right.getValue());
+        //     return new Pair<>(left.getKey() + 1, node);
+        // }
+    }
+
     // 1130. Minimum Cost Tree From Leaf Values - MEDIUM
     class Solution1130a {
         public int mctFromLeafValues(int[] arr) {

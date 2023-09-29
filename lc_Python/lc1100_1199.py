@@ -264,6 +264,24 @@ class Solution:
         return ans
 
 
+# 1123 - Lowest Common Ancestor of Deepest Leaves - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def lcaDeepestLeaves(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        def dfs(node: Optional[TreeNode]) -> (Optional[TreeNode], int):
+            if not node:
+                return None, 0
+            l, dl = dfs(node.left)
+            r, dr = dfs(node.right)
+            if dl > dr:
+                return l, dl + 1
+            elif dl < dr:
+                return r, dr + 1
+            return node, dl + 1
+
+        return dfs(root)[0]
+
+
 # 1124 - Longest Well-Performing Interval - MEDIUM
 class Solution:
     # O(n) / O(n)
