@@ -1529,6 +1529,15 @@ class Solution:
                 ans2 ^= i
         return [ans1, ans2]
 
+    def singleNumber(self, nums: List[int]) -> List[int]:
+        xor = functools.reduce(operator.xor, nums)
+        lowbit = xor & -xor
+        ans = [0, 0]
+        for x in nums:
+            ans[(x & lowbit) != 0] ^= x  # 分组异或
+            # ans[(x & lowbit) == 0] ^= x
+        return ans
+
 
 # 264 - Ugly Number II - MEDIUM
 class Solution:
