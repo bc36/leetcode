@@ -284,6 +284,16 @@ class Solution:
         return count
 
 
+# 1726 - Tuple with Same Product - MEDIUM
+class Solution:
+    def tupleSameProduct(self, nums: List[int]) -> int:
+        d = collections.defaultdict(int)
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                d[nums[i] * nums[j]] += 1
+        return 8 * sum(v * (v - 1) // 2 for v in d.values())
+
+
 # 1732 - Find the Highest Altitude - EASY
 class Solution:
     # O(n) / O(n)

@@ -4,6 +4,26 @@ import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class Lc1700_1799 {
+    // 1726. Tuple with Same Product - MEDIUM
+    class Solution1726a {
+        public int tupleSameProduct(int[] nums) {
+            Map<Integer, Integer> mp = new HashMap<>();
+            for (int i = 0; i < nums.length - 1; i++) {
+                for (int j = i + 1; j < nums.length; j++) {
+                    // mp.put(nums[i] * nums[j], mp.getOrDefault(nums[i] * nums[j], 0) + 1); // 179ms
+                    mp.merge(nums[i] * nums[j], 1, Integer::sum); // 161ms
+                    // mp.compute(nums[i] * nums[j], (k, v) -> Objects.isNull(v) ? 1 : v + 1); // 160ms
+                }
+            }
+            int ans = 0;
+            for (int v : mp.values()) {
+                ans += v * (v - 1) / 2;
+            }
+            return ans * 8;
+
+        }
+    }
+
     // 1749. Maximum Absolute Sum of Any Subarray - MEDIUM
     class Solution1749a { // 3ms
         public int maxAbsoluteSum(int[] nums) {
