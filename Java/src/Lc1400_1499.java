@@ -21,6 +21,21 @@ public class Lc1400_1499 {
         }
     }
 
+    // 1402. Reducing Dishes - HARD
+    class Solution1402a {
+        public int maxSatisfaction(int[] satisfaction) {
+            Arrays.sort(satisfaction);
+            int f = 0, s = 0;
+            for (int i = satisfaction.length - 1; i >= 0; i--) {
+                s += satisfaction[i];
+                if (s <= 0)
+                    break;
+                f += s; // f(k) = f(k - 1) + s
+            }
+            return f;
+        }
+    }
+
     // 1414. Find the Minimum Number of Fibonacci Numbers Whose Sum Is K - MEDIUM
     class Solution1414a {
         public int findMinFibonacciNumbers(int k) {

@@ -52,6 +52,30 @@ class Solution:
         return dx * dx + dy * dy <= radius * radius
 
 
+# 1402 - Reducing Dishes - HARD
+class Solution:
+    # O(nlogn + n ^ 2) / O(n)
+    def maxSatisfaction(self, satisfaction: List[int]) -> int:
+        satisfaction.sort()
+        return max(
+            0,
+            max(
+                sum((j - i + 1) * satisfaction[j] for j in range(i, len(satisfaction)))
+                for i in range(len(satisfaction))
+            ),
+        )
+
+    # O(nlogn) / O(n)
+    def maxSatisfaction(self, satisfaction: List[int]) -> int:
+        satisfaction.sort(reverse=True)
+        f = 0
+        for s in itertools.accumulate(satisfaction):
+            if s <= 0:
+                break
+            f += s  # f(k) = f(k - 1) + s
+        return f
+
+
 # 1403 - Minimum Subsequence in Non-Increasing Order - MEDIUM
 class Solution:
     def minSubsequence(self, nums: List[int]) -> List[int]:
