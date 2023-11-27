@@ -3,6 +3,23 @@ package src;
 import java.util.*;
 
 public class Lc100_199 {
+    // 110. Balanced Binary Tree - EASY
+    class Solution110a {
+        public boolean isBalanced(TreeNode root) {
+            return dfs(root) != -1;
+        }
+
+        public int dfs(TreeNode root) {
+            if (root == null)
+                return 0;
+            int l = dfs(root.left);
+            int r = dfs(root.right);
+            if ((l == -1) || (r == -1))
+                return -1;
+            return Math.abs(l - r) <= 1 ? Math.max(l, r) + 1 : -1;
+        }
+    }
+
     // 119. Pascal's Triangle II - EASY
     class Solution119a {
         public List<Integer> getRow(int rowIndex) {

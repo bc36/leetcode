@@ -253,6 +253,21 @@ class Solution:
         return helper(0, len(nums) - 1)
 
 
+# 110 - Balanced Binary Tree - EASY
+class Solution:
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        def dfs(root: Optional[TreeNode]) -> int:
+            if not root:
+                return 0
+            l = dfs(root.left)
+            r = dfs(root.right)
+            if l == -1 or r == -1:
+                return -1
+            return max(l, r) + 1 if abs(l - r) <= 1 else -1
+
+        return dfs(root) != -1
+
+
 # 112 - Path Sum - EASY
 class Solution:
     def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
