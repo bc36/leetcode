@@ -3,6 +3,27 @@ package src;
 import java.util.*;
 
 public class Lc800_899 {
+    // 823. Binary Trees With Factors - MEDIUM
+    class Solution823a {
+        public int numFactoredBinaryTrees(int[] arr) {
+            Arrays.sort(arr);
+            Map<Integer, Integer> m = new HashMap<>();
+            for (int i = 0; i < arr.length; i++) {
+                m.put(arr[i], i);
+            }
+            long ans = 0, f[] = new long[arr.length];
+            for (int i = 0; i < arr.length; i++) {
+                f[i] = 1;
+                for (int j = 0; j < i; j++) {
+                    if (arr[i] % arr[j] == 0 && m.containsKey(arr[i] / arr[j]))
+                        f[i] += f[j] * f[m.get(arr[i] / arr[j])];
+                }
+                ans += f[i];
+            }
+            return (int) (ans % 1000000007);
+        }
+    }
+
     // 831. Masking Personal Information - MEDIUM
     class Solution831a {
         public String maskPII(String s) {

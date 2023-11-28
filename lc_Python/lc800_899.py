@@ -562,6 +562,48 @@ class Solution:
         return ans % 2001
 
 
+# 823 - Binary Trees With Factors - MEDIUM
+class Solution:
+    def numFactoredBinaryTrees(self, arr: List[int]) -> int:
+        s = set(arr)
+
+        @functools.cache
+        def dfs(rootVal: int) -> int:
+            res = 1
+            for v in arr:
+                if rootVal % v == 0 and rootVal // v in s:
+                    res += dfs(v) * dfs(rootVal // v)
+            return res
+
+        return sum(dfs(v) for v in arr) % (10**9 + 7)
+
+    def numFactoredBinaryTrees(self, arr: List[int]) -> int:
+        arr.sort()
+        idx = {v: i for i, v in enumerate(arr)}
+
+        @functools.cache
+        def dfs(i: int) -> int:
+            res = 1
+            rootVal = arr[i]
+            for j in range(i):
+                v = arr[j]
+                if rootVal % v == 0 and rootVal // v in idx:
+                    res += dfs(j) * dfs(idx[rootVal // v])
+            return res
+
+        return sum(dfs(i) for i in range(len(arr))) % (10**9 + 7)
+
+    def numFactoredBinaryTrees(self, arr: List[int]) -> int:
+        arr.sort()
+        idx = {v: i for i, v in enumerate(arr)}
+        f = [1] * len(arr)
+        for i, rootVal in enumerate(arr):
+            for j in range(i):
+                if rootVal % arr[j] == 0 and rootVal // arr[j] in idx:
+                    f[i] += f[j] * f[idx[rootVal // arr[j]]]
+        return sum(f) % (10**9 + 7)
+
+
 # 824 - Goat Latin - EASY
 class Solution:
     def toGoatLatin(self, sentence: str) -> str:

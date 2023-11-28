@@ -14,7 +14,7 @@ public class Lc100_199 {
                 return 0;
             int l = dfs(root.left);
             int r = dfs(root.right);
-            if ((l == -1) || (r == -1))
+            if (l == -1 || r == -1)
                 return -1;
             return Math.abs(l - r) <= 1 ? Math.max(l, r) + 1 : -1;
         }
