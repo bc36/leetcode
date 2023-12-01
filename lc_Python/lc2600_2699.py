@@ -1502,6 +1502,22 @@ class Solution:
         return ans + n - 1
 
 
+# 2661 - First Completely Painted Row or Column - MEDIUM
+class Solution:
+    def firstCompleteIndex(self, arr: List[int], mat: List[List[int]]) -> int:
+        m = len(mat)
+        n = len(mat[0])
+        row = [0] * m
+        col = [0] * n
+        d = {v: (x, y) for x, row in enumerate(mat) for y, v in enumerate(row)}
+        for i, v in enumerate(arr):
+            x, y = d[v]
+            row[x] += 1
+            col[y] += 1
+            if row[x] == n or col[y] == m:
+                return i
+
+
 # 2670 - Find the Distinct Difference Array - EASY
 class Solution:
     # O(n^2) / O(n)

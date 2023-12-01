@@ -967,6 +967,27 @@ public class Lc2600_2699 {
         }
     }
 
+    // 2661. First Completely Painted Row or Column - MEDIUM
+    class Solution2661a {
+        public int firstCompleteIndex(int[] arr, int[][] mat) {
+            int m = mat.length, n = mat[0].length;
+            int[] d = new int[arr.length + 1];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    int idx = i * n + j;
+                    d[mat[i][j]] = idx;
+                }
+            }
+            int[] row = new int[m], col = new int[n];
+            for (int i = 0; i < arr.length; i++) {
+                int x = d[arr[i]] / n, y = d[arr[i]] % n;
+                if (++row[x] == n || ++col[y] == m)
+                    return i;
+            }
+            return -1;
+        }
+    }
+
     // 2670. Find the Distinct Difference Array - EASY
     // 2671. Frequency Tracker - MEDIUM
     class FrequencyTracker {
