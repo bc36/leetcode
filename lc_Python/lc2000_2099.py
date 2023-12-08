@@ -51,6 +51,21 @@ class Solution:
         return ans
 
 
+# 2008 - Maximum Earnings From Taxi - MEDIUM
+class Solution:
+    # O(n + m) / O(n + m)
+    def maxTaxiEarnings(self, n: int, rides: List[List[int]]) -> int:
+        g = collections.defaultdict(list)
+        for s, e, t in rides:
+            g[e].append((s, e - s + t))
+        f = [0] * (n + 1)
+        for i in range(2, n + 1):
+            f[i] = f[i - 1]
+            if i in g:
+                f[i] = max(f[i], max(f[s] + t for s, t in g[i]))
+        return f[n]
+
+
 # 2011 - Final Value of Variable After Performing Operations - EASY
 class Solution:
     def finalValueAfterOperations(self, operations: List[str]) -> int:
