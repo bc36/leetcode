@@ -422,6 +422,87 @@ class Solution:
         return [check(x, y) for x, y in zip(l, r)]
 
 
+# 1631 - Path With Minimum Effort - MEDIUM
+class Solution:
+    def minimumEffortPath(self, heights: List[List[int]]) -> int:
+        def check(m):
+            q = [(0, 0)]
+            vis = {(0, 0)}
+            new = []
+            while q:
+                new = []
+                for x, y in q:
+                    if x == row - 1 and y == col - 1:
+                        return True
+                    for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                        if (
+                            0 <= nx < row
+                            and 0 <= ny < col
+                            and (nx, ny) not in vis
+                            and abs(heights[x][y] - heights[nx][ny]) <= m
+                        ):
+                            new.append((nx, ny))
+                            vis.add((nx, ny))
+                q = new
+            return False
+
+        row, col = len(heights), len(heights[0])
+        l, r = 0, 1000001
+        while l < r:
+            m = l + r >> 1
+            if check(m):
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    def minimumEffortPath(self, heights: List[List[int]]) -> int:
+        class UnionFind:
+            def __init__(self, n: int) -> None:
+                self.p = [i for i in range(n)]
+
+            def find(self, x: int) -> int:
+                """path compression"""
+                if self.p[x] != x:
+                    self.p[x] = self.find(self.p[x])
+                return self.p[x]
+
+            def union(self, x: int, y: int) -> None:
+                """x's root = y"""
+                px = self.find(x)
+                py = self.find(y)
+                if px == py:
+                    return
+                self.p[px] = py
+                return
+
+            def union(self, x: int, y: int) -> None:
+                """x = y's root"""
+                if self.find(y) != self.find(x):
+                    self.p[self.find(y)] = self.find(x)
+                return
+
+            def is_connected(self, x: int, y: int) -> bool:
+                return self.find(x) == self.find(y)
+
+        row, col = len(heights), len(heights[0])
+        edges = []
+        for i in range(row):
+            for j in range(col):
+                p = i * col + j
+                if i < row - 1:
+                    edges.append((abs(heights[i + 1][j] - heights[i][j]), p, p + col))
+                if j < col - 1:
+                    edges.append((abs(heights[i][j + 1] - heights[i][j]), p, p + 1))
+        edges.sort()
+        uf = UnionFind(10001)
+        for e in edges:
+            uf.union(e[1], e[2])
+            if uf.is_connected(0, row * col - 1):
+                return e[0]
+        return 0
+
+
 # 1636 - Sort Array by Increasing Frequency - EASY
 class Solution:
     def frequencySort(self, nums: List[int]) -> List[int]:

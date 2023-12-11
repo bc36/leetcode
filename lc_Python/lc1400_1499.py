@@ -525,6 +525,36 @@ class Solution:
         return ans
 
 
+# 1444 - Number of Ways of Cutting a Pizza - HARD
+class Solution:
+    # O(kmn(m + n)) / O(kmn)
+    def ways(self, pizza: List[str], k: int) -> int:
+        m, n = len(pizza), len(pizza[0])
+        s = [[0] * (n + 1) for _ in range(m + 1)]
+        for i, row in enumerate(pizza):
+            for j, v in enumerate(row):
+                s[i + 1][j + 1] = s[i + 1][j] + s[i][j + 1] - s[i][j] + (v == "A")
+
+        def query(r1: int, c1: int, r2: int, c2: int) -> int:
+            return s[r2][c2] - s[r2][c1] - s[r1][c2] + s[r1][c1]
+
+        @functools.lru_cache(None)
+        def dfs(i: int, j: int, c: int) -> int:
+            """the ways that top-left: i, j, bottom-right: m - 1, n - 1, cut c times that each area has apple"""
+            if c == 0:
+                return 1 if query(i, j, m, n) else 0
+            ans = 0
+            for i2 in range(i + 1, m):  # 水平切
+                if query(i, j, i2, n):
+                    ans += dfs(i2, j, c - 1)
+            for j2 in range(j + 1, n):  # 垂直切
+                if query(i, j, m, j2):
+                    ans += dfs(i, j2, c - 1)
+            return ans % 1000000007
+
+        return dfs(0, 0, k - 1)
+
+
 # 1446 - Consecutive Characters - EASY
 class Solution:
     def maxPower(self, s: str) -> int:

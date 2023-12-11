@@ -26,4 +26,24 @@ public class Lc2000_2099 {
             return f[n];
         }
     }
+
+    // 2048. Next Greater Numerically Balanced Number - MEDIUM
+    class Solution2048a {
+        public int nextBeautifulNumber(int n) {
+            for (int i = n + 1;; i++) {
+                int[] cnt = new int[10];
+                for (int x = i; x > 0; x /= 10)
+                    cnt[x % 10]++;
+                boolean ok = true;
+                for (int x = i; x > 0; x /= 10) {
+                    if (x % 10 != cnt[x % 10]) {
+                        ok = false;
+                        break;
+                    }
+                }
+                if (ok)
+                    return i;
+            }
+        }
+    }
 }

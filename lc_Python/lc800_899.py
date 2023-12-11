@@ -837,6 +837,33 @@ class Solution:
         return [[1 - v for v in r[::-1]] for r in image]
 
 
+# 833 - Find And Replace in String - MEDIUM
+class Solution:
+    def findReplaceString(
+        self, s: str, indices: List[int], sources: List[str], targets: List[str]
+    ) -> str:
+        replace = [(c, 1) for c in s]
+        for i, src, tar in zip(indices, sources, targets):
+            if s.startswith(src, i):  # a bit faster than slicing
+                replace[i] = (tar, len(src))
+
+        ans = []
+        i = 0
+        while i < len(s):
+            ans.append(replace[i][0])
+            i += replace[i][1]
+        return "".join(ans)
+
+    def findReplaceString(
+        self, s: str, indices: List[int], sources: List[str], targets: List[str]
+    ) -> str:
+        ans = list(s)
+        for i, src, tar in zip(indices, sources, targets):
+            if s.startswith(src, i):
+                ans[i : i + len(src)] = [tar] + [""] * (len(src) - 1)
+        return "".join(ans)
+
+
 # 838 - Push Dominoes - MEDIUM
 class Solution:
     def pushDominoes(self, dominoes: str) -> str:
