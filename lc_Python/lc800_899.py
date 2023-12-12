@@ -980,8 +980,8 @@ class Solution:
         a = pre = seats.index(1)
         b = seats[::-1].index(1)
         c = 0
-        for i in range(len(seats)):
-            if seats[i] == 1:
+        for i, v in enumerate(seats):
+            if v == 1:
                 c = max(c, (i - pre) // 2)
                 pre = i
         return max(a, b, c)
@@ -1002,16 +1002,16 @@ class Solution:
         return ans
 
     def maxDistToClosest(self, seats: List[int]) -> int:
-        prev, ans = 0, 0
-        for cur, seat in enumerate(seats):
-            if seat:
-                if seats[prev]:
-                    ans = max(ans, (cur - prev) // 2)
+        pre = ans = 0, 0
+        for i, v in enumerate(seats):
+            if v:
+                if seats[pre]:
+                    ans = max(ans, (i - pre) // 2)
                 else:
-                    ans = max(ans, (cur - prev))
-                prev = cur
-        if seats[prev]:
-            ans = max(ans, len(seats) - 1 - prev)
+                    ans = max(ans, (i - pre))
+                pre = i
+        if seats[pre]:
+            ans = max(ans, len(seats) - 1 - pre)
         return ans
 
 

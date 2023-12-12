@@ -38,6 +38,29 @@ public class Lc800_899 {
         }
     }
 
+    // 849. Maximize Distance to Closest Person - MEDIUM
+    class Solution849a {
+        public int maxDistToClosest(int[] seats) {
+            int head = -1, tail = 0, middle = 0, pre = -1;
+            for (int i = 0; i < seats.length; i++) {
+                if (seats[i] == 1) {
+                    if (head == -1) {
+                        head = i;
+                        pre = i;
+                    }
+                    tail = seats.length - 1 - i;
+                }
+            }
+            for (int i = 0; i < seats.length; i++) {
+                if (seats[i] == 1) {
+                    middle = middle > (i - pre) / 2 ? middle : (i - pre) / 2;
+                    pre = i;
+                }
+            }
+            return Math.max(Math.max(head, tail), middle);
+        }
+    }
+
     // 874. Walking Robot Simulation - MEDIUM
     class Solution874a {
         public int robotSim(int[] commands, int[][] obstacles) {
