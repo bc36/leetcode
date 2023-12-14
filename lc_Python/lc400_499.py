@@ -1125,6 +1125,51 @@ class Solution:
         return (s + s).find(s, 1) != len(s)
 
 
+# 460 - LFU Cache - HARD
+class LFUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.key_to_value = {}
+        self.key_to_freq = {}
+        self.freq_to_keys = collections.defaultdict(collections.OrderedDict)
+        self.min_freq = 0  # 记录最小的使用频率
+
+    def get(self, key: int) -> int:
+        if key in self.key_to_value:
+            self.key_to_freq[key] += 1
+            freq = self.key_to_freq[key]
+            del self.freq_to_keys[freq - 1][key]  # 将键从旧的频率列表中移除, 并添加到新的频率列表中
+            self.freq_to_keys[freq][key] = "#"
+            if not self.freq_to_keys[freq - 1]:  # 如果旧频率列表为空, 更新最小频率
+                if freq - 1 == self.min_freq:
+                    self.min_freq += 1
+            return self.key_to_value[key]
+        return -1
+
+    def put(self, key: int, value: int) -> None:
+        if self.capacity == 0:
+            return
+        if key in self.key_to_value:
+            self.key_to_value[key] = value
+            self.key_to_freq[key] += 1
+            freq = self.key_to_freq[key]
+            del self.freq_to_keys[freq - 1][key]
+            self.freq_to_keys[freq][key] = "#"
+            if not self.freq_to_keys[freq - 1]:
+                if freq - 1 == self.min_freq:
+                    self.min_freq += 1
+        else:
+            if len(self.key_to_value) >= self.capacity:
+                # 缓存已满, 移除最不经常使用的键, 获取最小频率列表的第一个键, 并移除它
+                evict_key, _ = self.freq_to_keys[self.min_freq].popitem(last=False)
+                del self.key_to_value[evict_key]
+                del self.key_to_freq[evict_key]
+            self.key_to_value[key] = value
+            self.key_to_freq[key] = 1
+            self.freq_to_keys[1][key] = "#"
+            self.min_freq = 1
+
+
 # 461 - Hamming Distance - EASY
 class Solution:
     def hammingDistance(self, x: int, y: int) -> int:
