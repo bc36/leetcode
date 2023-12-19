@@ -1343,6 +1343,55 @@ class Solution:
         return -1
 
 
+# 1289 - Minimum Falling Path Sum II - HARD
+class Solution:
+    # O(n ^ 3) / O(n ^ 2)
+    def minFallingPathSum(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        f = [[0] * n for _ in range(n + 1)]
+        for i, row in enumerate(grid, 1):
+            for j, v in enumerate(row):
+                x = min((f[i - 1][k] for k in range(n) if k != j), default=0)
+                f[i][j] = v + x
+        return min(f[n])
+
+    # O(n ^ 3) / O(n)
+    def minFallingPathSum(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        f = [0] * n
+        for i in range(n):
+            g = [0] * n
+            for j in range(n):
+                g[j] = min((f[k] for k in range(n) if k != j), default=0) + grid[i][j]
+            f = g
+        return min(f)
+
+    def minFallingPathSum(self, grid: List[List[int]]) -> int:
+        f = [0] * len(grid)
+        for i in range(len(grid)):
+            f = list(
+                grid[i][j] + min((f[k] for k in range(len(grid)) if k != j), default=0)
+                for j in range(len(grid))
+            )
+        return min(f)
+
+    # O(n ^ 2) / O(1)
+    def minFallingPathSum(self, grid: List[List[int]]) -> int:
+        f = g = 0  # 前 i 行最小数字和, 前 i 行第二小数字和
+        icol = -1  # 第 i 行最小数字所在的列
+        for row in grid:
+            f2 = g2 = math.inf
+            icol2 = -1
+            for j, v in enumerate(row):
+                s = (f if j != icol else g) + v
+                if s < f2:
+                    g2, f2, icol2 = f2, s, j
+                elif s < g2:
+                    g2 = s
+            f, g, icol = f2, g2, icol2
+        return f
+
+
 # 1290 - Convert Binary Number in a Linked List to Integer - EASY
 class Solution:
     def getDecimalValue(self, head: ListNode) -> int:

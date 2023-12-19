@@ -1140,11 +1140,16 @@ class WordFilter:
 # 746 - Min Cost Climbing Stairs - EASY
 class Solution:
     def minCostClimbingStairs(self, cost: List[int]) -> int:
-        dp = [0] * len(cost)
-        dp[0], dp[1] = cost[0], cost[1]
         for i in range(2, len(cost)):
-            dp[i] = min(dp[i - 2], dp[i - 1]) + cost[i]
-        return min(dp[-2], dp[-1])
+            cost[i] = min(cost[i - 2], cost[i - 1]) + cost[i]
+        return min(cost[-2], cost[-1])
+
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        prev = curr = 0
+        for i in range(2, len(cost) + 1):
+            nxt = min(curr + cost[i - 1], prev + cost[i - 2])
+            prev, curr = curr, nxt
+        return curr
 
 
 # 747 - Largest Number At Least Twice of Others - EASY
