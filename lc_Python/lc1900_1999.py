@@ -3,6 +3,26 @@ from typing import List, Optional, Tuple
 import sortedcontainers
 
 
+# 1901 - Find a Peak Element II - MEDIUM
+class Solution:
+    def findPeakGrid(self, mat: List[List[int]]) -> List[int]:
+        return max(
+            ((i, j) for i in range(len(mat)) for j in range(len(mat[0]))),
+            key=lambda x: mat[x[0]][x[1]],
+        )
+
+    def findPeakGrid(self, mat: List[List[int]]) -> List[int]:
+        l, r = 0, len(mat) - 1
+        while l < r:
+            m = l + r >> 1
+            mx = max(mat[m])
+            if mx > mat[m + 1][mat[m].index(mx)]:
+                r = m
+            else:
+                l = m + 1
+        return [l, mat[l].index(max(mat[l]))]
+
+
 # 1903 - Largest Odd Number in String - EASY
 class Solution:
     # 170 ms, map 有点慢

@@ -65,6 +65,38 @@ class StockSpanner:
         return self.i - self.st[-2][1]
 
 
+# 902 - Numbers At Most N Given Digit Set - HARD
+class Solution:
+    def atMostNGivenDigitSet(self, digits: List[str], n: int) -> int:
+        s = str(n)
+
+        @functools.cache
+        def f(i: int, isLimit: bool, isNum: bool) -> int:
+            """数位dp
+            f(i, isLimit, isNum) 表示构造从左往右第 i 位及其之后数位的合法方案数
+            isLimit 表示当前是否受到了 n 的约束. 若为真, 则第 i 位填入的数字至多为 s[i], 否则至多为 9
+            isNum 表示 i 前面的数位是否填了数字. 若为假, 则当前位可以跳过（不填数字）, 或者要填入的数字至少为 1; 若为真, 则必须填数字, 且要填入的数字从 0 开始. 这样我们可以控制构造出的是一位数/两位数/三位数等等
+            """
+            if i == len(s):
+                return int(isNum)  # 如果填了数字, 则为 1 种合法方案
+            res = 0
+            if not isNum:  # 前面不填数字, 那么可以跳过当前数位, 也不填数字
+                # isLimit 改为 False, 因为没有填数字, 位数都比 n 要短, 自然不会受到 n 的约束
+                # isNum 仍然为 False, 因为没有填任何数字
+                res = f(i + 1, False, False)
+            up = s[i] if isLimit else "9"  # 根据是否受到约束, 决定可以填的数字的上限
+            # 注意: 对于一般的题目而言, 如果此时 isNum 为 False, 则必须从 1 开始枚举, 由于本题 digits 没有 0, 所以无需处理这种情况
+            for d in digits:  # 枚举要填入的数字 d
+                if d > up:
+                    break  # d 超过上限, 由于 digits 是有序的, 后面的 d 都会超过上限, 故退出循环
+                # is_limit: 如果当前受到 n 的约束, 且填的数字等于上限, 那么后面仍然会受到 n 的约束
+                # isNum 为 True, 因为填了数字
+                res += f(i + 1, isLimit and d == up, True)
+            return res
+
+        return f(0, True, False)
+
+
 # 904 - Fruit Into Baskets - MEDIUM
 class Solution:
     def totalFruit(self, fruits: List[int]) -> int:
@@ -1589,6 +1621,62 @@ class Solution:
         ans = [0]
         dfs(root)
         return ans[0]
+
+
+# 980 - Unique Paths III - HARD
+class Solution:
+    # O(3 ^ (mn)) / O(mn)
+    def uniquePathsIII(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+
+        def dfs(x: int, y: int, left: int) -> int:
+            """dfs(x, y, left) 表示从 (x, y) 出发, 还剩下 left 个无障碍方格(不含终点)需要访问时的不同路径个数"""
+            if x < 0 or x >= m or y < 0 or y >= n or grid[x][y] < 0:
+                return 0
+            if grid[x][y] == 2:
+                return left == 0
+            grid[x][y] = -1
+            ans = (
+                dfs(x - 1, y, left - 1)
+                + dfs(x, y - 1, left - 1)
+                + dfs(x + 1, y, left - 1)
+                + dfs(x, y + 1, left - 1)
+            )
+            grid[x][y] = 0
+            return ans
+
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v == 1:
+                    return dfs(i, j, sum(row.count(0) for row in grid) + 1)
+
+    # O(mn * 2 ^ (mn)) / O(mn * 2 ^ (mn))
+    def uniquePathsIII(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+
+        @functools.lru_cache(None)
+        def dfs(x: int, y: int, vis: int) -> int:
+            """如果访问了 (x, y), 就把 vis 从低到高第 nx + y 个比特位标记成 1"""
+            if x < 0 or x >= m or y < 0 or y >= n or vis >> (x * n + y) & 1:
+                return 0
+            vis |= 1 << (x * n + y)
+            if grid[x][y] == 2:
+                return vis == (1 << m * n) - 1  # 全集(所有格子的坐标集合)
+            return (
+                dfs(x - 1, y, vis)
+                + dfs(x, y - 1, vis)
+                + dfs(x + 1, y, vis)
+                + dfs(x, y + 1, vis)
+            )
+
+        vis = 0
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if v < 0:
+                    vis |= 1 << (i * n + j)
+                elif v == 1:
+                    sx, sy = i, j
+        return dfs(sx, sy, vis)
 
 
 # 981 - Time Based Key-Value Store - MEDIUM

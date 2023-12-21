@@ -891,6 +891,23 @@ class Solution:
         return ans
 
 
+# 1170 - Compare Strings by Frequency of the Smallest Character - MEDIUM
+class Solution:
+    def numSmallerByFrequency(self, queries: List[str], words: List[str]) -> List[int]:
+        f = sorted(w.count(sorted(w)[0]) for w in words)
+        return [
+            len(words) - bisect.bisect_right(f, q.count(sorted(q)[0])) for q in queries
+        ]
+
+    def numSmallerByFrequency(self, queries: List[str], words: List[str]) -> List[int]:
+        def f(s: str) -> int:
+            cnt = collections.Counter(s)
+            return next(cnt[c] for c in string.ascii_lowercase if cnt[c])
+
+        arr = sorted(f(w) for w in words)
+        return [len(words) - bisect.bisect_right(arr, f(q)) for q in queries]
+
+
 # 1171 - Remove Zero Sum Consecutive Nodes from Linked List - MEDIUM
 class Solution:
     def removeZeroSumSublists(self, head: Optional[ListNode]) -> Optional[ListNode]:

@@ -1179,6 +1179,42 @@ class MyQueue:
         return not self.stack1 and not self.stack2
 
 
+# 233 - Number of Digit One - HARD
+class Solution:
+    def countDigitOne(self, n: int) -> int:
+        s = str(n)
+
+        @functools.cache
+        def f(i: int, isLimit: bool, isNum: bool, one: int) -> int:
+            if i == len(s):
+                return one
+            res = 0
+            if not isNum:
+                res += f(i + 1, False, False, 0)
+            up = int(s[i]) if isLimit else 9
+            for d in range(1 - int(isNum), up + 1):
+                res += f(i + 1, isLimit and d == up, True, one + (d == 1))
+            return res
+
+        return f(0, True, False, 0)
+
+    def countDigitOne(self, n: int) -> int:
+        s = str(n)
+
+        @functools.cache
+        def f(i: int, cnt1: int, isLimit: bool) -> int:
+            """由于前导零对答案无影响, isNum 可以省略"""
+            if i == len(s):
+                return cnt1
+            res = 0
+            up = int(s[i]) if isLimit else 9
+            for d in range(up + 1):  # 枚举要填入的数字 d
+                res += f(i + 1, cnt1 + (d == 1), isLimit and d == up)
+            return res
+
+        return f(0, 0, True)
+
+
 # 235 - Lowest Common Ancestor of a Binary Search Tree - EASY
 class Solution:
     # recursive solution
