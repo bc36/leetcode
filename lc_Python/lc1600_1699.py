@@ -1,4 +1,4 @@
-import collections, itertools, heapq, functools, math
+import bisect, collections, itertools, heapq, functools, math
 from typing import List
 
 
@@ -1024,6 +1024,85 @@ class Solution:
         p.next = q.next
         q.next = None
         return list1
+
+
+# 1671 - Minimum Number of Removals to Make Mountain Array - HARD
+class Solution:
+    # O(n^2) / O(n)
+    def minimumMountainRemovals(self, nums: List[int]) -> int:
+        def fn(a: List[int]) -> List[int]:
+            f = list(range(n))
+            for i in range(n):
+                for j in range(i):
+                    if a[j] < a[i]:
+                        # print(j, i, f)
+                        f[i] = min(f[i], f[j] + i - j - 1)
+            return f
+
+        n = len(nums)
+        left = fn(nums)
+        right = fn(nums[::-1])
+        # 不能把左边或者右边都清空, 必须左右同时有小于"山峰"的值
+        possible = sorted((l + r, i) for l, r, i in zip(left, right[::-1], range(n)))
+        for p, i in possible:
+            if i == 0 or i == n - 1:
+                continue
+            if all(nums[j] >= nums[i] for j in range(i)) or all(
+                nums[j] >= nums[i] for j in range(i + 1, n)
+            ):
+                continue
+            return p
+
+    # O(nlogn) / O(n)
+    def minimumMountainRemovals(self, nums: List[int]) -> int:
+        n = len(nums)
+        suf = [0] * n
+        g = []
+        for i in range(n - 1, 0, -1):
+            x = nums[i]
+            j = bisect.bisect_left(g, x)
+            if j == len(g):
+                g.append(x)
+            else:
+                g[j] = x
+            suf[i] = j + 1  # 从 nums[i] 开始的最长严格递减子序列的长度
+
+        mx = 0  # 最长山形子序列的长度
+        g = []
+        for i in range(n):
+            x = nums[i]
+            j = bisect.bisect_left(g, x)
+            if j == len(g):
+                g.append(x)
+            else:
+                g[j] = x
+            pre = j + 1  # 在 nums[i] 结束的最长严格递增子序列的长度
+            if pre >= 2 and suf[i] >= 2:  # 本题要求峰顶左右两侧必须有数字
+                mx = max(mx, pre + suf[i] - 1)  # 减去重复的 nums[i]
+        return n - mx
+
+    def minimumMountainRemovals(self, nums: List[int]) -> int:
+        def LIS(nums: List[int]) -> int:
+            """O(nlogn), Longest Increasing Subsequence"""
+            st = []
+            arr = []
+            for x in nums:
+                i = bisect.bisect_left(st, x)
+                if i < len(st):
+                    st[i] = x
+                    arr.append(len(st))
+                else:
+                    st.append(x)
+                    arr.append(i + 1)
+            return arr
+
+        pre = LIS(nums)  # 在 nums[i] 结束的最长严格递增子序列的长度
+        suf = LIS(nums[::-1])[::-1]  # 从 nums[i] 开始的最长严格递减子序列的长度
+        mx = 0
+        for p, s in zip(pre, suf):
+            if p > 1 and s > 1:
+                mx = max(mx, p + s - 1)
+        return len(nums) - mx
 
 
 # 1672 - Richest Customer Wealth - EASY

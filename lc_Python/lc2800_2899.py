@@ -1587,3 +1587,23 @@ class Solution:
             ans = max(ans, pre + suf[i + 1])
             s.append(i)
         return ans
+
+
+# 2869 - Minimum Operations to Collect Elements - EASY
+class Solution:
+    def minOperations(self, nums: List[int], k: int) -> int:
+        target = (2 << k) - 2  # 1~k
+        cur = 0
+        for i in range(len(nums) - 1, -1, -1):
+            cur |= 1 << nums[i]
+            if (cur & target) == target:
+                return len(nums) - i
+
+
+# 2870 - Minimum Number of Operations to Make Array Empty - MEDIUM
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        cnt = collections.Counter(nums)
+        if 1 in cnt.values():
+            return -1
+        return sum((c + 2) // 3 for c in cnt.values())
