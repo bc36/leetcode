@@ -1508,3 +1508,82 @@ class Solution:
             tmp = self.matrix_mul(tmp, tmp)
             n //= 2
         return ans
+
+
+# 2864 - Maximum Odd Binary Number - EASY
+class Solution:
+    def maximumOddBinaryNumber(self, s: str) -> str:
+        x = s.count("1")
+        return "1" * (x - 1) + "0" * (len(s) - x) + "1"
+
+
+# 2865 - Beautiful Towers I - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def maximumSumOfHeights(self, maxHeights: List[int]) -> int:
+        def f(a: List[int]) -> List[int]:
+            res = []
+            s = []
+            t = 0
+            for i, x in enumerate(a):
+                while s and s[-1][1] >= x:
+                    _, y, l = s.pop()
+                    t -= l * y
+                l = i - s[-1][0] if s else i + 1
+                s.append((i, x, l))
+                t += l * x
+                res.append(t)
+            return res
+
+        l = f(maxHeights)
+        r = f(maxHeights[::-1])
+        return max(
+            l[i] + r[len(maxHeights) - 1 - i] - x for i, x in enumerate(maxHeights)
+        )
+
+
+# 2866 - Beautiful Towers II - MEDIUM
+class Solution:
+    # O(n) / O(n)
+    def maximumSumOfHeights(self, maxHeights: List[int]) -> int:
+        def f(a: List[int]) -> List[int]:
+            res = [0]
+            s = []
+            t = 0  # 元素和
+            for i, x in enumerate(a):
+                while s and s[-1][1] >= x:
+                    _, y, l = s.pop()
+                    t -= l * y
+                l = i - s[-1][0] if s else i + 1
+                s.append((i, x, l))
+                t += l * x
+                res.append(t)
+            return res
+
+        return max(l + r for l, r in zip(f(maxHeights), f(maxHeights[::-1])[::-1]))
+
+    def maximumSumOfHeights(self, maxHeights: List[int]) -> int:
+        n = len(maxHeights)
+        suf = [0] * (n + 1)
+        s = [n]  # 哨兵, 栈存的是下标
+        t = 0  # 元素和
+        for i in range(n - 1, -1, -1):
+            x = maxHeights[i]
+            while len(s) > 1 and x <= maxHeights[s[-1]]:
+                j = s.pop()
+                t -= maxHeights[j] * (s[-1] - j)
+            t += x * (s[-1] - i)
+            suf[i] = t
+            s.append(i)
+
+        ans = t
+        s = [-1]
+        pre = 0
+        for i, x in enumerate(maxHeights):
+            while len(s) > 1 and x <= maxHeights[s[-1]]:
+                j = s.pop()
+                pre -= maxHeights[j] * (j - s[-1])
+            pre += x * (i - s[-1])
+            ans = max(ans, pre + suf[i + 1])
+            s.append(i)
+        return ans

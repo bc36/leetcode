@@ -735,7 +735,7 @@ class SparseTable:
 
 class SparseTable:
     def __init__(self, data: list, func=operator.or_):
-        # ST表 稀疏表，O(nlgn) 预处理，O(1) 查询区间最值/或和/gcd
+        # ST表 稀疏表, O(nlgn) 预处理, O(1) 查询区间最值/或和/gcd
         # 下标从 0 开始
         self.func = func
         self.st = st = [list(data)]
@@ -822,6 +822,13 @@ BIT:              query: O(logn), update: O(logn)
 
 segment tree:     query: O(logn), update: O(logn)
 
+
+区间求和问题:
+数组不变, 区间查询: 前缀和 > 树状数组、线段树; 
+数组单点修改, 区间查询: 树状数组 > 线段树; 
+数组区间修改, 单点查询: 差分 > 线段树; 
+数组区间修改, 区间查询: 线段树. 
+java 线段树板子: https://mp.weixin.qq.com/s?__biz=MzU4NDE3MTEyMA==&mid=2247490329&idx=1&sn=6d448a53cd722bbd990fda82bd262857
 
 
 拓扑排序: topological sort

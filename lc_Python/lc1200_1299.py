@@ -711,6 +711,24 @@ class Solution:
         return ans
 
 
+# 1235 - Maximum Profit in Job Scheduling - HARD
+class Solution:
+    # O(nlogn) / O(n)
+    def jobScheduling(
+        self, startTime: List[int], endTime: List[int], profit: List[int]
+    ) -> int:
+        arr = sorted(zip(endTime, startTime, profit))
+        #  f[i] 表示按照结束时间排序后的前 i 个工作的最大报酬
+        f = [0] * (len(startTime) + 1)
+        for i, (_, s, p) in enumerate(arr):
+            # 保存的都是 tuple, 为了保证比 (arr[i][1], ..., ...) 大, 用 math.inf
+            # 寻找满足 engTime[j] <= startTime[i] 的 最大的 j -> f[i] = f[j] + profit[i]
+            j = bisect.bisect_right(arr, (s, math.inf), hi=i)  # hi=i 表示二分上界为 i (默认为 n)
+            # 为什么是 j 不是 j + 1: 上面算的是 > st, -1 后得到 <= st, 但由于还要 +1, 抵消了
+            f[i + 1] = max(f[i], f[j] + p)
+        return f[-1]
+
+
 # 1237 - Find Positive Integer Solution for a Given Equation - MEDIUM
 # print(inspect.getsource(customfunction.__class__))
 class CustomFunction:

@@ -1057,6 +1057,55 @@ class Solution:
         return ans
 
 
+# 854 - K-Similar Strings - HARD
+class Solution:
+    def kSimilarity(self, s1: str, s2: str) -> int:
+        def next(s: str) -> List[str]:
+            i = 0
+            while s[i] == s2[i]:
+                i += 1
+            res = []
+            for j in range(i + 1, len(s1)):
+                if s[j] == s2[i] and s[j] != s2[j]:
+                    res.append(s2[: i + 1] + s[i + 1 : j] + s[i] + s[j + 1 :])
+            return res
+
+        q = collections.deque([s1])
+        vis = {s1}
+        ans = 0
+        while 1:
+            for _ in range(len(q)):
+                s = q.popleft()
+                if s == s2:
+                    return ans
+                for nxt in next(s):
+                    if nxt not in vis:
+                        vis.add(nxt)
+                        q.append(nxt)
+            ans += 1
+
+    def kSimilarity(self, s1: str, s2: str) -> int:
+        step, n = 0, len(s1)
+        q, vis = [(s1, 0)], {s1}
+        while True:
+            tmp = q
+            q = []
+            for s, i in tmp:
+                if s == s2:
+                    return step
+                while i < n and s[i] == s2[i]:
+                    i += 1
+                for j in range(i + 1, n):
+                    if s[j] == s2[i] != s2[j]:  # 剪枝，只在 s[j] != s2[j] 时去交换
+                        t = list(s)
+                        t[i], t[j] = t[j], t[i]
+                        t = "".join(t)
+                        if t not in vis:
+                            vis.add(t)
+                            q.append((t, i + 1))
+            step += 1
+
+
 # 855 - Exam Room - MEDIUM
 class ExamRoom:
     def __init__(self, n: int):
