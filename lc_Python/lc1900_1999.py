@@ -144,6 +144,28 @@ class Solution:
         return "".join(str(v) for v in num)
 
 
+# 1954 - Minimum Garden Perimeter to Collect Enough Apples - MEDIUM
+class Solution:
+    # 找规律, 奇数边长没有意义, 只向外扩展半个格子
+    # f[n] 为边长为 n 时, 左上角(四分之一面积)部分的总量
+    # f[0] = 0, f[n] = f[n - 2] + f[n]
+    def minimumPerimeter(self, neededApples: int) -> int:
+        f = 3
+        t = 2
+        while f * 4 < neededApples:
+            t += 2
+            f += t + t // 2 + (t + t // 2) * (t // 2 - 1)
+        return t * 4
+
+    # 如果正方形土地的右上角坐标为 (n, n), 即边长为 2n, 周长为 8n, 那么其中包含的苹果总数为
+    # Sn = 2n(n + 1)(2n + 1)
+    def minimumPerimeter(self, neededApples: int) -> int:
+        n = 1
+        while 2 * n * (n + 1) * (2 * n + 1) < neededApples:
+            n += 1
+        return n * 8
+
+
 # 1957 - Delete Characters to Make Fancy String - EASY
 class Solution:
     def makeFancyString(self, s: str) -> str:
@@ -166,6 +188,31 @@ class Solution:
             ans += words[i]
             i += 1
         return ans == s
+
+
+# 1962 - Remove Stones to Minimize the Total - MEDIUM
+class Solution:
+    # O(klogn) / O(n)
+    def minStoneSum(self, piles: List[int], k: int) -> int:
+        arr = sorted(-v for v in piles)
+        for _ in range(k):
+            heapq.heapreplace(arr, -((-arr[0] + 1) // 2))
+        return -sum(arr)
+
+    # O(nlogn) / O(k)
+    # 仔细思考, 由于每次总是将当前剩余最大的石头删掉一半, 因此这个重新插回去的值也是有序的, 它一定是非递增的
+    # 已经被扔过的部分中, 由于它的大小一定是按操作时间不递增的, 所以最大值必然是最早扔过的. 所以当前最大值一定是 原有排序后的末尾 或 被扔过的部分的末尾(由于插入到头部)
+    def minStoneSum(self, piles: List[int], k: int) -> int:
+        piles.sort()
+        dq = collections.deque()  # 左小右大
+        for _ in range(k):
+            # 若还未扔过石头(第一次) 或 原有石头的最大值大于被扔过石头的最大值时
+            if not dq or piles and piles[-1] > dq[-1]:
+                x = piles.pop()
+            else:
+                x = dq.pop()
+            dq.appendleft(x - x // 2)
+        return sum(piles) + sum(dq)
 
 
 # 1971 - Find if Path Exists in Graph - EASY

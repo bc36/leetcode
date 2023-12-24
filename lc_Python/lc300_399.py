@@ -219,64 +219,117 @@ class Solution:
 # 307 - Range Sum Query - Mutable - MEDIUM
 # segment tree
 # O(n + logn) / O(n), constructor: O(n), update / sunRange: O(logn)
-class NumArray:
+class SegmentTree:
+    """根节点下标 0"""
+
     def __init__(self, nums: List[int]):
         n = len(nums)
-        self.n = n
         self.t = [0] * (n * 4)
-        self.buildTree(nums, 0, 0, n - 1)
+        self.build(nums, 0, 0, n - 1)
 
-    def buildTree(self, nums: List[int], node: int, s: int, e: int):
-        if s == e:
-            self.t[node] = nums[s]
+    def build(self, nums: List[int], o: int, l: int, r: int):
+        if l == r:
+            self.t[o] = nums[l]
             return
-        m = s + (e - s) // 2
-        self.buildTree(nums, node * 2 + 1, s, m)
-        self.buildTree(nums, node * 2 + 2, m + 1, e)
-        self.t[node] = self.t[node * 2 + 1] + self.t[node * 2 + 2]
+        m = l + r >> 1
+        self.build(nums, o * 2 + 1, l, m)
+        self.build(nums, o * 2 + 2, m + 1, r)
+        self.t[o] = self.t[o * 2 + 1] + self.t[o * 2 + 2]
         return
 
-    def updateTree(self, node: int, s: int, e: int, idx: int, val: int):
-        if s == e:
-            self.t[node] = val
+    def update(self, o: int, l: int, r: int, idx: int, val: int):
+        """将 idx 下标位置更新为 val, self.update(0, 0, n - 1, idx, val)"""
+        if l == r:
+            self.t[o] = val
             return
-        m = s + (e - s) // 2
+        m = l + r >> 1
         if idx <= m:
-            self.updateTree(node * 2 + 1, s, m, idx, val)
+            self.update(o * 2 + 1, l, m, idx, val)
         else:
-            self.updateTree(node * 2 + 2, m + 1, e, idx, val)
-        self.t[node] = self.t[node * 2 + 1] + self.t[node * 2 + 2]
+            self.update(o * 2 + 2, m + 1, r, idx, val)
+        self.t[o] = self.t[o * 2 + 1] + self.t[o * 2 + 2]
         return
 
-    def queryTree(self, node: int, l: int, r: int, s: int, e: int) -> int:
-        if r < s or l > e:
-            return 0
-        elif s == e:
-            return self.t[node]
-        elif l <= s and e <= r:
-            return self.t[node]
-        else:
-            m = (e + s) // 2
-            return self.queryTree(node * 2 + 1, l, r, s, m) + self.queryTree(
-                node * 2 + 2, l, r, m + 1, e
-            )
+    def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+        """返回 [L, R] 闭区间内元素和, self.query(0, 0, self.n - 1, L, R)"""
+        if L <= l and r <= R:
+            return self.t[o]
+        m = l + r >> 1
+        res = 0
+        if L <= m:
+            res += self.query(o * 2 + 1, l, m, L, R)
+        if R > m:
+            res += self.query(o * 2 + 2, m + 1, r, L, R)
+        return res
 
-    # def queryTree(self, node: int, l: int, r: int, s: int, e: int) -> int:
-    #     if l == s and r == e:
-    #         return self.t[node]
-    #     m = s + (e - s) // 2
-    #     if r <= m:
-    #         return self.queryTree(node * 2 + 1, l, r, s, m)
-    #     if l > m:
-    #         return self.queryTree(node * 2 + 2, l, r, m + 1, e)
-    #     return self.queryTree(node * 2 + 1, l, m, s, m) + self.queryTree(
-    #         node * 2 + 2, m + 1, r, m + 1, e)
 
-    def update(self, index: int, val: int) -> None:
-        self.updateTree(0, 0, self.n - 1, index, val)
+class NumArray:
+    def __init__(self, nums: List[int]):
+        self.n = len(nums)
+        self.st = SegmentTree(nums)
+
+    def update(self, idx: int, val: int) -> None:
+        self.st.update(0, 0, self.n - 1, idx, val)
 
     def sumRange(self, left: int, right: int) -> int:
-        return self.queryTree(0, left, right, 0, self.n - 1)
+        return self.st.query(0, 0, self.n - 1, left, right)
+
+
+class SegmentTree:
+    """基本款"""
+
+    def __init__(self, nums: List[int]):
+        """根节点下标 1, 管辖范围 1 - n"""
+        n = len(nums)
+        self.t = [0] * (n * 4)
+        self.build(nums, 1, 1, n)
+
+    def update(self, o: int, l: int, r: int, idx: int, val: int) -> None:
+        """给 idx 下标位置 += val, self.update(1, 1, n, idx, val)"""
+        if l == r:
+            self.t[o] = val
+            return
+        m = l + r >> 1
+        if idx <= m:
+            self.update(o << 1, l, m, idx, val)
+        else:
+            self.update(o << 1 | 1, m + 1, r, idx, val)
+        self.t[o] = self.t[o << 1] + self.t[o << 1 | 1]  # push up
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+        """返回 [L, R] 闭区间内元素和, self.query(1, 1, n, L, R)"""
+        if L <= l and r <= R:
+            return self.t[o]
+        res = 0
+        m = l + r >> 1
+        if L <= m:
+            res += self.query(o << 1, l, m, L, R)
+        if R > m:
+            res += self.query(o << 1 | 1, m + 1, r, L, R)
+        return res
+
+    def build(self, nums: List[int], o: int, l: int, r: int) -> None:
+        if l == r:
+            self.t[o] = nums[l - 1]
+            return
+        m = l + r >> 1
+        self.build(nums, o << 1, l, m)
+        self.build(nums, o << 1 | 1, m + 1, r)
+        self.t[o] = self.t[o << 1] + self.t[o << 1 | 1]
+        return
+
+
+class NumArray:
+    def __init__(self, nums: List[int]):
+        self.n = len(nums)
+        self.st = SegmentTree(nums)
+
+    def update(self, idx: int, val: int) -> None:
+        self.st.update(1, 1, self.n, idx + 1, val)
+
+    def sumRange(self, left: int, right: int) -> int:
+        return self.st.query(1, 1, self.n, left + 1, right + 1)
 
 
 # iterative

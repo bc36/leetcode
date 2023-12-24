@@ -1598,6 +1598,37 @@ class Solution:
 
 
 # 2338 - Count the Number of Ideal Arrays - HARD
+ks = [[] for _ in range(10001)]  # ks[x] 为 x 分解质因数后, 每个质因数的个数列表
+for i in range(2, 10001):
+    p, x = 2, i
+    while p * p <= x:
+        if x % p == 0:
+            k = 1
+            x //= p
+            while x % p == 0:
+                k += 1
+                x //= p
+            ks[i].append(k)
+        p += 1
+    if x > 1:
+        ks[i].append(1)
+
+
+class Solution:
+    # f[i] 末尾数字 为 i 的数组数量
+    # 首先对 i 分解 质因数, 那么为了让因数的相乘结果是 i, 需要所有的质因数都必须出现在数组相邻两项的比值当中.
+    # 如果质因数的排列方式不同, 那么最终形成的数组就不相同, 故需要求质因数的排列方案数.
+    # 设 i = P1^c1 * P2^c2 * ... Pk^ck. 对于每个质因数 pj 数量为 cj 它需要分配到数组的 n 个位置中.
+    # 这是一个经典问题: 将 cj 个小球放到 n 个盒子中, 盒子可以空, 则分配方案数 cntj = C(n + k - 1, n - 1) = C(n + k - 1, k)
+    # f[i] = cnt1 + cnt2 + ... + cntk (搜索小球放盒子问题), 最终答案是 f[1] + f[2] + ... + f[maxValue] = sum(f)
+    def idealArrays(self, n: int, maxValue: int) -> int:
+        ans = 0
+        for x in range(1, maxValue + 1):
+            mul = 1
+            for k in ks[x]:
+                mul = mul * math.comb(n + k - 1, k) % 1000000007
+            ans += mul
+        return ans % 1000000007
 
 
 # 2341 - Maximum Number of Pairs in Array - EASY

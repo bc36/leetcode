@@ -802,6 +802,19 @@ class Solution:
         return (f - 1) * (s - 1)
 
 
+# 1466 - Reorder Routes to Make All Paths Lead to the City Zero - MEDIUM
+class Solution:
+    def minReorder(self, n: int, connections: List[List[int]]) -> int:
+        def dfs(a: int, fa: int) -> int:
+            return sum(c + dfs(b, a) for b, c in g[a] if b != fa)
+
+        g = [[] for _ in range(n)]
+        for a, b in connections:
+            g[a].append((b, 1))
+            g[b].append((a, 0))
+        return dfs(0, -1)
+
+
 # 1470 - Shuffle the Array - EASY
 class Solution:
     def shuffle(self, nums: List[int], n: int) -> List[int]:
