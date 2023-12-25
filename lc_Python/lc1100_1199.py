@@ -89,6 +89,73 @@ class Solution:
         return address.replace(".", "[.]")
 
 
+# 1109 - Corporate Flight Bookings - MEDIUM
+class Solution:
+    def corpFlightBookings(self, bookings: List[List[int]], n: int) -> List[int]:
+        st = SegmentTree(n)
+        for f, l, s in bookings:
+            st.range_update(1, 1, n, f, l, s)
+        return [st.query(1, 1, n, i, i) for i in range(1, n + 1)]
+
+
+class SegmentTree:
+    """区间更新款, 根节点下标 1, 管辖范围 1 - n"""
+
+    def __init__(self, n: int):
+        self.t = [0] * (4 * n)
+        self.lazy = [0] * (4 * n)
+
+    def build(self, nums: List[int], o: int, l: int, r: int) -> None:
+        if l == r:
+            self.t[o] = nums[l - 1]
+            return
+        m = l + r >> 1
+        self.build(nums, o << 1, l, m)
+        self.build(nums, o << 1 | 1, m + 1, r)
+        self.t[o] = self.t[o << 1] + self.t[o << 1 | 1]
+        return
+
+    def pushdown(self, o: int, cnt: int) -> None:
+        """o 为该节点, cnt 为该节点管辖范围内有多少点, 所有 push down 总和为 o.lazy * cnt"""
+        if self.lazy[o] != 0:
+            # 更新对左/右子区间的影响
+            self.t[o << 1] += self.lazy[o] * (cnt - cnt // 2)
+            self.t[o << 1 | 1] += self.lazy[o] * (cnt // 2)
+            # 更新对左/右儿子的标记的影响
+            self.lazy[o << 1] += self.lazy[o]
+            self.lazy[o << 1 | 1] += self.lazy[o]
+            self.lazy[o] = 0
+        return
+
+    def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
+        """Range updates (Lazy Propagation)"""
+        if L <= l and r <= R:
+            self.t[o] += val * (r - l + 1)
+            self.lazy[o] += val  # 如果到了最后一层子树, 那么懒标记就挂着, 反正不会再往下 push 了
+            return
+        self.pushdown(o, r - l + 1)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R, val)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R, val)
+        self.t[o] = self.t[o << 1] + self.t[o << 1 | 1]
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+        """返回 [L, R] 闭区间内元素和, self.query(1, 1, n, L, R)"""
+        if L <= l and r <= R:
+            return self.t[o]
+        self.pushdown(o, r - l + 1)
+        res = 0
+        m = l + r >> 1
+        if L <= m:
+            res += self.query(o << 1, l, m, L, R)
+        if m < R:
+            res += self.query(o << 1 | 1, m + 1, r, L, R)
+        return res
+
+
 # 1114 - Print in Order - EASY
 class Foo:
     def __init__(self):
