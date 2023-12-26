@@ -1,4 +1,4 @@
-import bisect, collections, functools, heapq, itertools, math, operator, re, string
+import bisect, collections, functools, heapq, itertools, math, operator, random, re, string
 from typing import List, Optional, Tuple
 import sortedcontainers
 
@@ -260,23 +260,7 @@ class RangeModule:
         self.track[start:end] = subtrack
 
 
-class RangeModule:
-    def __init__(self):
-        self.st = SegmentTree()
-
-    def addRange(self, left: int, right: int) -> None:
-        self.st.range_update(1, 1, 10**9, left, right - 1, 1)
-
-    def queryRange(self, left: int, right: int) -> bool:
-        return self.st.query(1, 1, 10**9, left, right - 1)
-
-    def removeRange(self, left: int, right: int) -> None:
-        self.st.range_update(1, 1, 10**9, left, right - 1, 2)
-
-
 class SegmentTree:
-    """动态开点款, 1e9 值域, 离散化, implicit segment tree or sparse segment tree"""
-
     def __init__(self):
         self.t = collections.defaultdict(int)
         # 经验: 区间覆盖问题似乎都可以不用懒标记
@@ -289,8 +273,6 @@ class SegmentTree:
         return
 
     def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
-        if r < L or R < l:
-            return
         if L <= l and r <= R:
             self.t[o] = val
             return
@@ -313,6 +295,20 @@ class SegmentTree:
         self.pushdown(o)
         m = l + r >> 1
         return self.query(o << 1, l, m, L, R) and self.query(o << 1 | 1, m + 1, r, L, R)
+
+
+class RangeModule:
+    def __init__(self):
+        self.st = SegmentTree()
+
+    def addRange(self, left: int, right: int) -> None:
+        self.st.range_update(1, 1, 10**9, left, right - 1, 1)
+
+    def queryRange(self, left: int, right: int) -> bool:
+        return self.st.query(1, 1, 10**9, left, right - 1)
+
+    def removeRange(self, left: int, right: int) -> None:
+        self.st.range_update(1, 1, 10**9, left, right - 1, 2)
 
 
 # 717 - 1-bit and 2-bit Characters - EASY

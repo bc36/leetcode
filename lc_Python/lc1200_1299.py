@@ -1273,6 +1273,22 @@ class Solution:
         )
 
 
+# 1276 - Number of Burgers with No Waste of Ingredients - MEDIUM
+class Solution:
+    def numOfBurgers(self, tomatoSlices: int, cheeseSlices: int) -> List[int]:
+        # 4x + 2y = tomatoSlices
+        # x + y = cheeseSlices
+        # x = (tomatoSlices - 2 * cheeseSlices) // 2
+        # y = cheeseSlices - x = cheeseSlices * 2 - tomatoSlices // 2
+        if (
+            tomatoSlices % 2 != 0
+            or tomatoSlices < cheeseSlices * 2
+            or cheeseSlices * 4 < tomatoSlices
+        ):
+            return []
+        return [tomatoSlices // 2 - cheeseSlices, cheeseSlices * 2 - tomatoSlices // 2]
+
+
 # 1281 - Subtract the Product and Sum of Digits of an Integer - EASY
 class Solution:
     def subtractProductAndSum(self, n: int) -> int:

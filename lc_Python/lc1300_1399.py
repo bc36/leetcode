@@ -481,6 +481,54 @@ class Solution:
         return sum(abs(v) for v in d.values())
 
 
+# 1349 - Maximum Students Taking Exam - HARD
+class Solution:
+    # 状态压缩, 状压dp
+    def maxStudents(self, seats: List[List[str]]) -> int:
+        # 二维打家劫舍 从最底层开始 顺序从左到右 从下到上的状态
+        # 每行进入的时候都有一个 mask 代表上一行选择后屏蔽了哪些位置 由于列数小于 8 用int状态压缩 mask
+        # 不用判断横轴末尾, 直接越界才刷新状态
+        m, n = len(seats), len(seats[0])
+
+        @functools.lru_cache(None)
+        def dfs(x, y, pre, cur):
+            if x == -1:
+                return 0
+            if y >= n:
+                return dfs(x - 1, 0, cur, 0)
+            if seats[x][y] == "#" or 1 << y + 1 & pre:
+                return dfs(x, y + 1, pre, cur)
+            # 如果选择坐该座位, 则占该座位 (1 << y), 并在后续的 dfs 搜索中 +1
+            # 并且贪心地尽可能占据隔一排的位置 (1 << y + 2), 若违法则被上述 if 跳过, 直到越界退出搜索
+            new = cur | 1 << y | 1 << y + 2
+            return max(dfs(x, y + 1, pre, cur), 1 + dfs(x, y + 2, pre, new))
+
+        return dfs(m - 1, 0, 0, 0)
+
+    # 每一行只与上一行有关, 同时每一行最多 2^8 种状态, 我们自然想到进行状态压缩DP
+    # dp[row][state] = max(dp[row - 1][last] + state.count())
+    # O(m * 2^n * 2^n) / O(m * 2^n)
+    def maxStudents(self, seats: List[List[str]]) -> int:
+        m, n = len(seats), len(seats[0])
+        dp = [[0] * (1 << n) for _ in range(m + 1)]
+        # arr = [
+        #     functools.reduce(
+        #         lambda a, b: a | 1 << b, [0] + [j for j, c in enumerate(s) if c == "#"]
+        #     )
+        #     for s in seats
+        # ]
+        # arr = [functools.reduce(lambda a, b: a << 1 | (b == "#"), s, 0) for s in seats]
+        arr = [sum((c == "#") << j for j, c in enumerate(s)) for s in seats]
+
+        for row in range(m - 1, -1, -1):
+            for j in range(1 << n):
+                if not j & j << 1 and not j & j >> 1 and not j & arr[row]:
+                    for k in range(1 << n):
+                        if not j & k << 1 and not j & k >> 1:
+                            dp[row][j] = max(dp[row][j], dp[row + 1][k] + j.bit_count())
+        return max(dp[0])
+
+
 # 1374 - Generate a String With Characters That Have Odd Counts - EASY
 class Solution:
     def generateTheString(self, n: int) -> str:

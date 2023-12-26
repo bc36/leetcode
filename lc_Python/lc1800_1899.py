@@ -619,3 +619,113 @@ class Solution:
             if h:
                 ans[j] = h[0][0]
         return ans
+
+
+# 1893 - Check if All the Integers in a Range Are Covered - EASY
+class Solution:
+    def isCovered(self, ranges: List[List[int]], left: int, right: int) -> bool:
+        d = [0] * 52
+        for l, r in ranges:
+            d[l] += 1
+            d[r + 1] -= 1
+        s = 0
+        for i in range(1, 51):
+            s += d[i]
+            if left <= i <= right and s <= 0:
+                return False
+        return True
+
+
+class SegmentTree:
+    def __init__(self, n: int):
+        self.t = [0] * (4 * n)
+
+    def pushdown(self, o: int) -> None:
+        if self.t[o] != 0:
+            self.t[o << 1] = self.t[o]
+            self.t[o << 1 | 1] = self.t[o]
+        return
+
+    def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
+        if L <= l and r <= R:
+            self.t[o] = val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R, val)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R, val)
+        self.t[o] = self.t[o << 1] & self.t[o << 1 | 1]  # push up
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+        if L <= l and r <= R:
+            return self.t[o] == 1
+        self.pushdown(o)
+        res = True
+        m = l + r >> 1
+        if L <= m:
+            res &= self.query(o << 1, l, m, L, R)
+        if m < R:
+            res &= self.query(o << 1 | 1, m + 1, r, L, R)
+        return res
+
+    # def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+    #     if R < l or r < L:
+    #         return True
+    #     if L <= l and r <= R:
+    #         return self.t[o] == 1
+    #     self.pushdown(o)
+    #     m = l + r >> 1
+    #     return self.query(o << 1, l, m, L, R) and self.query(o << 1 | 1, m + 1, r, L, R)
+
+
+class Solution:
+    def isCovered(self, ranges: List[List[int]], left: int, right: int) -> bool:
+        st = SegmentTree(50)
+        for l, r in ranges:
+            st.range_update(1, 1, 50, l, r, 1)
+        return st.query(1, 1, 50, left, right)
+
+
+class SegmentTree:
+    def __init__(self):
+        self.t = collections.defaultdict(int)
+
+    def pushdown(self, o: int) -> None:
+        if self.t[o]:
+            self.t[o << 1] = self.t[o]
+            self.t[o << 1 | 1] = self.t[o]
+        return
+
+    def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
+        if L <= l and r <= R:
+            self.t[o] = val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R, val)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R, val)
+        self.t[o] = self.t[o << 1] & self.t[o << 1 | 1]  # push up
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int):
+        """返回 [L, R] 闭区间内元素和, self.query(1, 1, n, L, R)"""
+        if r < L or R < l:
+            return True
+        if L <= l and r <= R:
+            return self.t[o] == 1
+        self.pushdown(o)
+        m = l + r >> 1
+        return self.query(o << 1, l, m, L, R) and self.query(o << 1 | 1, m + 1, r, L, R)
+
+
+class Solution:
+    def isCovered(self, ranges: List[List[int]], left: int, right: int) -> bool:
+        st = SegmentTree()
+        for l, r in ranges:
+            st.range_update(1, 1, 50, l, r, 1)
+        return st.query(1, 1, 50, left, right)

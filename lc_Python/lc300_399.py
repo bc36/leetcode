@@ -220,8 +220,6 @@ class Solution:
 # segment tree
 # O(n + logn) / O(n), constructor: O(n), update / sunRange: O(logn)
 class SegmentTree:
-    """根节点下标 0"""
-
     def __init__(self, nums: List[int]):
         n = len(nums)
         self.t = [0] * (n * 4)
@@ -238,7 +236,6 @@ class SegmentTree:
         return
 
     def update(self, o: int, l: int, r: int, idx: int, val: int):
-        """将 idx 下标位置更新为 val, self.update(0, 0, n - 1, idx, val)"""
         if l == r:
             self.t[o] = val
             return
@@ -251,7 +248,6 @@ class SegmentTree:
         return
 
     def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
-        """返回 [L, R] 闭区间内元素和, self.query(0, 0, self.n - 1, L, R)"""
         if L <= l and r <= R:
             return self.t[o]
         m = l + r >> 1
@@ -276,16 +272,12 @@ class NumArray:
 
 
 class SegmentTree:
-    """基本款"""
-
     def __init__(self, nums: List[int]):
-        """根节点下标 1, 管辖范围 1 - n"""
         n = len(nums)
         self.t = [0] * (n * 4)
         self.build(nums, 1, 1, n)
 
     def update(self, o: int, l: int, r: int, idx: int, val: int) -> None:
-        """给 idx 下标位置 += val, self.update(1, 1, n, idx, val)"""
         if l == r:
             self.t[o] = val
             return
@@ -298,7 +290,6 @@ class SegmentTree:
         return
 
     def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
-        """返回 [L, R] 闭区间内元素和, self.query(1, 1, n, L, R)"""
         if L <= l and r <= R:
             return self.t[o]
         res = 0
