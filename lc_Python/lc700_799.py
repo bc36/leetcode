@@ -228,6 +228,93 @@ class Solution:
             sell, buy = max(sell, buy + prices[i] - fee), max(buy, sell - prices[i])
         return sell
 
+
+# 715 - Range Module - HARD
+class RangeModule:
+    def __init__(self):
+        self.track = []
+
+    def addRange(self, left, right):
+        start = bisect.bisect_left(self.track, left)
+        end = bisect.bisect_right(self.track, right)
+        subtrack = []
+        if start % 2 == 0:
+            subtrack.append(left)
+        if end % 2 == 0:
+            subtrack.append(right)
+        self.track[start:end] = subtrack
+
+    def queryRange(self, left, right):
+        start = bisect.bisect_right(self.track, left)
+        end = bisect.bisect_left(self.track, right)
+        return start == end and start % 2 == 1
+
+    def removeRange(self, left, right):
+        start = bisect.bisect_left(self.track, left)
+        end = bisect.bisect_right(self.track, right)
+        subtrack = []
+        if start % 2 == 1:
+            subtrack.append(left)
+        if end % 2 == 1:
+            subtrack.append(right)
+        self.track[start:end] = subtrack
+
+
+class RangeModule:
+    def __init__(self):
+        self.st = SegmentTree()
+
+    def addRange(self, left: int, right: int) -> None:
+        self.st.range_update(1, 1, 10**9, left, right - 1, 1)
+
+    def queryRange(self, left: int, right: int) -> bool:
+        return self.st.query(1, 1, 10**9, left, right - 1)
+
+    def removeRange(self, left: int, right: int) -> None:
+        self.st.range_update(1, 1, 10**9, left, right - 1, 2)
+
+
+class SegmentTree:
+    """动态开点款, 1e9 值域, 离散化, implicit segment tree or sparse segment tree"""
+
+    def __init__(self):
+        self.t = collections.defaultdict(int)
+        # 经验: 区间覆盖问题似乎都可以不用懒标记
+        # 初始是0, 全覆盖是1, 全不覆盖是2, 部分覆盖又是改回0是吗
+
+    def pushdown(self, o: int) -> None:
+        if self.t[o]:
+            self.t[o << 1] = self.t[o]
+            self.t[o << 1 | 1] = self.t[o]
+        return
+
+    def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
+        if r < L or R < l:
+            return
+        if L <= l and r <= R:
+            self.t[o] = val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R, val)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R, val)
+        # 注意这里不要用 and, 里面有 0, 1, 2, & 是按位运算符, 1 & 2 = 0, 1 and 2 = 2, 2 and 1 = 1
+        self.t[o] = self.t[o << 1] & self.t[o << 1 | 1]  # push up
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int):
+        """返回 [L, R] 闭区间内元素和, self.query(1, 1, n, L, R)"""
+        if r < L or R < l:
+            return True
+        if L <= l and r <= R:
+            return self.t[o] == 1
+        self.pushdown(o)
+        m = l + r >> 1
+        return self.query(o << 1, l, m, L, R) and self.query(o << 1 | 1, m + 1, r, L, R)
+
+
 # 717 - 1-bit and 2-bit Characters - EASY
 class Solution:
     def isOneBitCharacter(self, bits: List[int]) -> bool:
