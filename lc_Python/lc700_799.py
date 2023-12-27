@@ -310,6 +310,69 @@ class RangeModule:
         self.st.range_update(1, 1, 10**9, left, right - 1, 2)
 
 
+class Node:
+    __slots__ = "left", "right", "val", "lazy"
+
+    def __init__(self):
+        self.left = self.right = None
+        self.val = False
+
+
+class SegmentTree:
+    def __init__(self):
+        self.root = Node()
+
+    def pushdown(self, o: Node) -> None:
+        if not o.left:
+            o.left = Node()
+        if not o.right:
+            o.right = Node()
+        if o.val:
+            o.left.val = o.val
+            o.right.val = o.val
+        return
+
+    def range_update(self, o: Node, l: int, r: int, L: int, R: int, val: int) -> None:
+        if L <= l and r <= R:
+            o.val = val
+            o.lazy = val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o.left, l, m, L, R, val)
+        if m < R:
+            self.range_update(o.right, m + 1, r, L, R, val)
+        o.val = o.left.val & o.right.val
+        return
+
+    def query(self, o: Node, l: int, r: int, L: int, R: int) -> int:
+        if L <= l and r <= R:
+            return o.val == 1
+        self.pushdown(o)
+        res = True
+        m = l + r >> 1
+        if L <= m:
+            res &= self.query(o.left, l, m, L, R)
+        if m < R:
+            res &= self.query(o.right, m + 1, r, L, R)
+        return res
+
+
+class RangeModule:
+    def __init__(self):
+        self.st = SegmentTree()
+
+    def addRange(self, left: int, right: int) -> None:
+        self.st.range_update(self.st.root, 1, 10**9, left, right - 1, 1)
+
+    def queryRange(self, left: int, right: int) -> bool:
+        return self.st.query(self.st.root, 1, 10**9, left, right - 1)
+
+    def removeRange(self, left: int, right: int) -> None:
+        self.st.range_update(self.st.root, 1, 10**9, left, right - 1, 2)
+
+
 # 717 - 1-bit and 2-bit Characters - EASY
 class Solution:
     def isOneBitCharacter(self, bits: List[int]) -> bool:
@@ -669,7 +732,7 @@ class MyCalendar:
 class MyCalendarTwo:
     def __init__(self):
         self.t = collections.defaultdict(int)
-        self.l = collections.defaultdict(int)
+        self.lazy = collections.defaultdict(int)
 
     def query(self, k: int, l: int, r: int, s: int, e: int) -> int:
         if s > r or e < l:
@@ -677,12 +740,12 @@ class MyCalendarTwo:
         if s <= l and r <= e:
             return self.t[k] >= 2
         # push down
-        if self.l[k]:
-            self.l[k << 1] += self.l[k]
-            self.t[k << 1] += self.l[k]
-            self.l[k << 1 | 1] += self.l[k]
-            self.t[k << 1 | 1] += self.l[k]
-            self.l[k] = 0
+        if self.lazy[k]:
+            self.lazy[k << 1] += self.lazy[k]
+            self.t[k << 1] += self.lazy[k]
+            self.lazy[k << 1 | 1] += self.lazy[k]
+            self.t[k << 1 | 1] += self.lazy[k]
+            self.lazy[k] = 0
         m = l + r >> 1
         return self.query(k << 1, l, m, s, e) or self.query(k << 1 | 1, m + 1, r, s, e)
 
@@ -691,20 +754,19 @@ class MyCalendarTwo:
             return
         if s <= l and r <= e:
             self.t[k] += 1
-            self.l[k] += 1
+            self.lazy[k] += 1
             return
         # push down(optional)
-        if self.l[k]:
-            self.l[k << 1] += self.l[k]
-            self.t[k << 1] += self.l[k]
-            self.l[k << 1 | 1] += self.l[k]
-            self.t[k << 1 | 1] += self.l[k]
-            self.l[k] = 0
+        if self.lazy[k]:
+            self.lazy[k << 1] += self.lazy[k]
+            self.t[k << 1] += self.lazy[k]
+            self.lazy[k << 1 | 1] += self.lazy[k]
+            self.t[k << 1 | 1] += self.lazy[k]
+            self.lazy[k] = 0
         m = l + r >> 1
         self.update(k << 1, l, m, s, e)
         self.update(k << 1 | 1, m + 1, r, s, e)
-        # push up
-        self.t[k] = self.l[k] + max(self.t[k << 1], self.t[k << 1 | 1])
+        self.t[k] = self.lazy[k] + max(self.t[k << 1], self.t[k << 1 | 1])  # push up
         return
 
     def book(self, start: int, end: int) -> bool:
@@ -717,18 +779,18 @@ class MyCalendarTwo:
 class MyCalendarTwo:
     def __init__(self):
         self.t = collections.defaultdict(int)
-        self.l = collections.defaultdict(int)
+        self.lazy = collections.defaultdict(int)
 
     def query(self, k: int, l: int, r: int, s: int, e: int) -> int:
         if s <= l and r <= e:
             return self.t[k]
         m = l + r >> 1
-        if self.l[k] > 0:
-            self.t[2 * k] += self.l[k]
-            self.t[2 * k + 1] += self.l[k]
-            self.l[2 * k] += self.l[k]
-            self.l[2 * k + 1] += self.l[k]
-            self.l[k] = 0
+        if self.lazy[k] > 0:
+            self.t[2 * k] += self.lazy[k]
+            self.t[2 * k + 1] += self.lazy[k]
+            self.lazy[2 * k] += self.lazy[k]
+            self.lazy[2 * k + 1] += self.lazy[k]
+            self.lazy[k] = 0
         ans = 0
         if s <= m:
             ans = max(ans, self.query(2 * k, l, m, s, e))
@@ -741,12 +803,12 @@ class MyCalendarTwo:
             return
         if s <= l and r <= e:
             self.t[k] += 1
-            self.l[k] += 1
+            self.lazy[k] += 1
             return
         m = l + r >> 1
         self.update(2 * k, l, m, s, e)
         self.update(2 * k + 1, m + 1, r, s, e)
-        self.t[k] = self.l[k] + max(self.t[2 * k], self.t[2 * k + 1])
+        self.t[k] = self.lazy[k] + max(self.t[2 * k], self.t[2 * k + 1])
         return
 
     def book(self, start: int, end: int) -> bool:
@@ -875,6 +937,44 @@ class MyCalendarThree:
     def book(self, startTime: int, endTime: int) -> int:
         self.st.range_update(self.st.root, 0, 10**9, startTime, endTime - 1, 1)
         return self.st.root.val
+
+
+class SegmentTree:
+    def __init__(self):
+        self.t = collections.defaultdict(int)
+        self.lazy = collections.defaultdict(int)
+
+    def pushdown(self, o: int) -> None:
+        if self.lazy[o] != 0:
+            self.t[o << 1] += self.lazy[o]
+            self.t[o << 1 | 1] += self.lazy[o]
+            self.lazy[o << 1] += self.lazy[o]
+            self.lazy[o << 1 | 1] += self.lazy[o]
+            self.lazy[o] = 0
+        return
+
+    def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
+        if L <= l and r <= R:
+            self.t[o] += val
+            self.lazy[o] += val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R, val)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R, val)
+        self.t[o] = max(self.t[o << 1], self.t[o << 1 | 1])  # push up
+        return
+
+
+class MyCalendarThree:
+    def __init__(self):
+        self.st = SegmentTree()
+
+    def book(self, startTime: int, endTime: int) -> int:
+        self.st.range_update(1, 0, 10**9, startTime, endTime - 1, 1)
+        return self.st.t[1]
 
 
 # 733 - Flood Fill - EASY

@@ -1576,4 +1576,158 @@ class Solution:
             heights[i] = max(heights[i], heights[i - 1])
         return heights
 
-    # segment tree: TODO
+
+class SegmentTree:
+    def __init__(self):
+        self.t = collections.defaultdict(int)
+        self.lazy = collections.defaultdict(int)
+
+    def pushdown(self, o: int) -> None:
+        if self.lazy[o] != 0:
+            self.t[o << 1] = self.lazy[o]
+            self.t[o << 1 | 1] = self.lazy[o]
+            self.lazy[o << 1] = self.lazy[o]
+            self.lazy[o << 1 | 1] = self.lazy[o]
+            self.lazy[o] = 0
+        return
+
+    def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
+        if R < l or r < L:
+            return
+        if L <= l and r <= R:
+            self.t[o] = val
+            self.lazy[o] = val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R, val)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R, val)
+        self.t[o] = max(self.t[o << 1], self.t[o << 1 | 1])  # push up
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+        if R < l or r < L:
+            return 0
+        if L <= l and r <= R:
+            return self.t[o]
+        self.pushdown(o)
+        m = l + r >> 1
+        return max(
+            self.query(o << 1, l, m, L, R), self.query(o << 1 | 1, m + 1, r, L, R)
+        )
+
+
+class Solution:
+    def fallingSquares(self, positions: List[List[int]]) -> List[int]:
+        st = SegmentTree()
+        ans = []
+        for l, s in positions:
+            # 先求这个区间内的(最大)值, 因为后续方块肯定会垒在这个区间上, 变成更高的
+            mx = st.query(1, 1, 1000000000, l, l + s - 1)
+            st.range_update(1, 1, 1000000000, l, l + s - 1, mx + s)
+            ans.append(st.t[1])
+        return ans
+
+
+class SegmentTree:
+    def __init__(self):
+        self.t = collections.defaultdict(int)
+        self.lazy = collections.defaultdict(int)
+
+    def pushdown(self, o: int) -> None:
+        if self.lazy[o] != 0:
+            self.t[o << 1] = self.lazy[o]
+            self.t[o << 1 | 1] = self.lazy[o]
+            self.lazy[o << 1] = self.lazy[o]
+            self.lazy[o << 1 | 1] = self.lazy[o]
+            self.lazy[o] = 0
+        return
+
+    def range_update(self, o: int, l: int, r: int, L: int, R: int, val: int) -> None:
+        if R < l or r < L:
+            return
+        if L <= l and r <= R:
+            self.t[o] = val
+            self.lazy[o] = val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R, val)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R, val)
+        self.t[o] = max(self.t[o << 1], self.t[o << 1 | 1])  # push up
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+        if R < l or r < L:
+            return 0
+        if L <= l and r <= R:
+            return self.t[o]
+        self.pushdown(o)
+        m = l + r >> 1
+        return max(
+            self.query(o << 1, l, m, L, R), self.query(o << 1 | 1, m + 1, r, L, R)
+        )
+
+
+class Node:
+    __slots__ = "left", "right", "val", "lazy"
+
+    def __init__(self):
+        self.left = self.right = None
+        self.val = self.lazy = 0
+
+
+class SegmentTree:
+    def __init__(self):
+        self.root = Node()
+
+    def pushdown(self, o: Node) -> None:
+        if not o.left:
+            o.left = Node()
+        if not o.right:
+            o.right = Node()
+        if o.lazy != 0:
+            o.left.val = o.lazy
+            o.right.val = o.lazy
+            o.left.lazy = o.lazy
+            o.right.lazy = o.lazy
+            o.lazy = 0
+        return
+
+    def range_update(self, o: Node, l: int, r: int, L: int, R: int, val: int) -> None:
+        if L <= l and r <= R:
+            o.val = val
+            o.lazy = val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o.left, l, m, L, R, val)
+        if m < R:
+            self.range_update(o.right, m + 1, r, L, R, val)
+        o.val = max(o.left.val, o.right.val)
+        return
+
+    def query(self, o: Node, l: int, r: int, L: int, R: int) -> int:
+        if R < l or r < L:
+            return 0
+        if L <= l and r <= R:
+            return o.val
+        self.pushdown(o)
+        m = l + r >> 1
+        return max(self.query(o.left, l, m, L, R), self.query(o.right, m + 1, r, L, R))
+
+
+class Solution:
+    def fallingSquares(self, positions: List[List[int]]) -> List[int]:
+        st = SegmentTree()
+        ans = []
+        for l, s in positions:
+            mx = st.query(st.root, 1, 1000000000, l, l + s - 1)
+            st.range_update(st.root, 1, 1000000000, l, l + s - 1, mx + s)
+            ans.append(st.root.val)
+        return ans
