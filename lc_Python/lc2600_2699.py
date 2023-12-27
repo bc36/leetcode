@@ -1502,6 +1502,17 @@ class Solution:
         return ans + n - 1
 
 
+# 2660 - Determine the Winner of a Bowling Game - EASY
+class Solution:
+    def isWinner(self, player1: List[int], player2: List[int]) -> int:
+        f = lambda arr: sum(
+            x * 2 if i > 0 and arr[i - 1] == 10 or i > 1 and arr[i - 2] == 10 else x
+            for i, x in enumerate(arr)
+        )
+        s1, s2 = f(player1), f(player2)
+        return 0 if s1 == s2 else 1 if s1 > s2 else 2
+
+
 # 2661 - First Completely Painted Row or Column - MEDIUM
 class Solution:
     def firstCompleteIndex(self, arr: List[int], mat: List[List[int]]) -> int:

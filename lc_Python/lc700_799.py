@@ -287,7 +287,6 @@ class SegmentTree:
         return
 
     def query(self, o: int, l: int, r: int, L: int, R: int):
-        """返回 [L, R] 闭区间内元素和, self.query(1, 1, n, L, R)"""
         if r < L or R < l:
             return True
         if L <= l and r <= R:
@@ -810,25 +809,72 @@ class MyCalendarTwo:
 # 732 - My Calendar III - HARD
 class MyCalendarThree:
     def __init__(self):
-        self.f = collections.defaultdict(int)
+        self.t = collections.defaultdict(int)
         self.lazy = collections.defaultdict(int)
 
-    def update(self, i: int, l: int, r: int, start: int, end: int):
-        if r < start or end < l:
+    def range_update(self, o: int, l: int, r: int, L: int, R: int):
+        if L <= l and r <= R:
+            self.t[o] += 1
+            self.lazy[o] += 1
             return
-        if start <= l and r <= end:
-            self.f[i] += 1
-            self.lazy[i] += 1
-        else:
-            mid = (l + r) // 2
-            self.update(i * 2, l, mid, start, end)
-            self.update(i * 2 + 1, mid + 1, r, start, end)
-            self.f[i] = self.lazy[i] + max(self.f[i * 2], self.f[i * 2 + 1])
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o << 1, l, m, L, R)
+        if m < R:
+            self.range_update(o << 1 | 1, m + 1, r, L, R)
+        self.t[o] = self.lazy[o] + max(self.t[o << 1], self.t[o << 1 | 1])
         return
 
-    def book(self, start: int, end: int) -> int:
-        self.update(1, 0, 10**9, start, end - 1)
-        return self.f[1]
+    def book(self, startTime: int, endTime: int) -> int:
+        self.range_update(1, 0, 10**9, startTime, endTime - 1)
+        return self.t[1]
+
+
+class Node:
+    def __init__(self):
+        self.left = self.right = None
+        self.val = self.lazy = 0
+
+
+class SegmentTree:
+    def __init__(self):
+        self.root = Node()
+
+    def pushdown(self, o: Node) -> None:
+        if not o.left:
+            o.left = Node()
+        if not o.right:
+            o.right = Node()
+        if o.lazy != 0:
+            o.left.val += o.lazy
+            o.right.val += o.lazy
+            o.left.lazy += o.lazy
+            o.right.lazy += o.lazy
+            o.lazy = 0
+        return
+
+    def range_update(self, o: Node, l: int, r: int, L: int, R: int, val: int) -> None:
+        if L <= l and r <= R:
+            o.val += val
+            o.lazy += val
+            return
+        self.pushdown(o)
+        m = l + r >> 1
+        if L <= m:
+            self.range_update(o.left, l, m, L, R, val)
+        if m < R:
+            self.range_update(o.right, m + 1, r, L, R, val)
+        o.val = max(o.left.val, o.right.val)
+        return
+
+
+class MyCalendarThree:
+    def __init__(self):
+        self.st = SegmentTree()
+
+    def book(self, startTime: int, endTime: int) -> int:
+        self.st.range_update(self.st.root, 0, 10**9, startTime, endTime - 1, 1)
+        return self.st.root.val
 
 
 # 733 - Flood Fill - EASY

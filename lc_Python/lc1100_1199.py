@@ -114,7 +114,6 @@ class SegmentTree:
         return
 
     def pushdown(self, o: int, cnt: int) -> None:
-        """o 为该节点, cnt 为该节点管辖范围内有多少点, 所有 push down 总和为 o.lazy * cnt"""
         if self.lazy[o] != 0:
             self.t[o << 1] += self.lazy[o] * (cnt - cnt // 2)
             self.t[o << 1 | 1] += self.lazy[o] * (cnt // 2)

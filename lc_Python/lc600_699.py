@@ -1519,7 +1519,44 @@ class Solution:
         dfs(0)
         return ans
 
-    # TODO 状态压缩
+    def canPartitionKSubsets(self, nums: List[int], k: int) -> bool:
+        summ = sum(nums)
+        if summ % k:
+            return False
+        t = summ // k
+        nums.sort()
+        if nums[-1] > t:
+            return False
+
+        # final = (1 << len(nums)) - 1
+
+        # @functools.lru_cache(None)
+        # def dfs(state, cur) -> bool:
+        #     """第 i 位 = 0 表示数字 nums[i] 可以使用, 取模表示恰好可以分出一个子集, 继续划分"""
+        #     if state == final:
+        #         return True
+        #     for i, x in enumerate(nums):
+        #         if x + cur > t:
+        #             break
+        #         if state & 1 << i == 0 and dfs(state | 1 << i, (cur + x) % t):
+        #             return True
+        #     return False
+
+        # return dfs(0, 0)
+
+        @functools.lru_cache(None)
+        def dfs(state, cur) -> bool:
+            """第 i 位 = 1 表示数字 nums[i] 可以使用, 取模表示恰好可以分出一个子集, 继续划分"""
+            if state == 0:
+                return True
+            for i, x in enumerate(nums):
+                if x + cur > t:
+                    break
+                if state >> i & 1 and dfs(state ^ (1 << i), (cur + x) % t):
+                    return True
+            return False
+
+        return dfs((1 << len(nums)) - 1, 0)
 
 
 # 699 - Falling Squares - HARD
