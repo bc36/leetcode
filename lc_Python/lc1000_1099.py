@@ -921,6 +921,19 @@ class Solution:
         return ans
 
 
+# 1043 - Partition Array for Maximum Sum - MEDIUM
+class Solution:
+    def maxSumAfterPartitioning(self, arr: List[int], k: int) -> int:
+        # f[i + 1] 表示把 arr[0] 到 arr[i] 这段做分隔变换后能够得到的元素最大和
+        f = [0] * (len(arr) + 1)
+        for i in range(len(arr)):
+            mx = 0
+            for j in range(i, max(-1, i - k), -1):
+                mx = max(mx, arr[j])
+                f[i + 1] = max(f[i + 1], f[j] + (i - j + 1) * mx)
+        return f[-1]
+
+
 # 1046 - Last Stone Weight - EASY
 class Solution:
     def lastStoneWeight(self, stones: List[int]) -> int:
@@ -1187,7 +1200,6 @@ class Solution:
                 st.append(c)
                 vis.add(c)
         return "".join(st)
-
 
 
 # 1089 - Duplicate Zeros - EASY
