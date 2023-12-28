@@ -313,6 +313,51 @@ class Solution:
         return max(itertools.accumulate(diff[k] for k in sorted(diff)))
 
 
+# 2407 - Longest Increasing Subsequence II - HARD
+class SegmentTree:
+    def __init__(self, n: int):
+        self.t = [0] * (n * 4)
+
+    def update(self, o: int, l: int, r: int, idx: int, val: int) -> None:
+        if l == r:
+            self.t[o] = val
+            return
+        m = l + r >> 1
+        if idx <= m:
+            self.update(o << 1, l, m, idx, val)
+        else:
+            self.update(o << 1 | 1, m + 1, r, idx, val)
+        self.t[o] = max(self.t[o << 1], self.t[o << 1 | 1])  # push up
+        return
+
+    def query(self, o: int, l: int, r: int, L: int, R: int) -> int:
+        if R < l or r < L:
+            return 0
+        if L <= l and r <= R:
+            return self.t[o]
+        m = l + r >> 1
+        return max(
+            self.query(o << 1, l, m, L, R), self.query(o << 1 | 1, m + 1, r, L, R)
+        )
+
+
+class Solution:
+    def lengthOfLIS(self, nums: List[int], k: int) -> int:
+        u = max(nums) + 1
+        st = SegmentTree(u)
+        # f[i][j] 表示 nums 的前 i 个元素中, 以元素 j (不是nums[j]) 结尾的满足条件的子序列的最长长度
+        # 因为 f[i] 只从 f[i - 1] 转移, f[x] = max(f'[y] for y in [x - k, x)) + 1
+        for x in nums:
+            mx = st.query(1, 1, u, max(1, x - k), x - 1)
+            st.update(1, 1, u, x, mx + 1)
+            # if x == 1:
+            #     st.update(1, 1, u, 1, 1)
+            # else:
+            #     mx = 1 + st.query(1, 1, u, max(x - k, 1), x - 1)
+            #     st.update(1, 1, u, x, mx)
+        return st.t[1]
+
+
 # 2409 - Count Days Spent Together - EASY
 class Solution:
     def countDaysTogether(
@@ -851,6 +896,150 @@ class Solution:
                     cnt[fy] = cnt[fx]
                 fa[fx] = fy
         return ans + n
+
+
+# 2423 - Remove Letter To Equalize Frequency - EASY
+class Solution:
+    # O(n**2) / O(n)
+    def equalFrequency(self, word: str) -> bool:
+        for i in range(len(word)):
+            cnt = collections.Counter(word[:i] + word[i + 1 :])
+            pick = cnt.popitem()[1]
+            if all(c == pick for c in cnt.values()):
+                return True
+        return False
+
+    def equalFrequency(self, w: str) -> bool:
+        def check(s: str) -> bool:
+            cnt = collections.Counter(s)
+            return len(set(cnt.values())) == 1
+
+        for i in range(len(w)):
+            if check(w[:i] + w[i + 1 :]):
+                return True
+        return False
+
+    # O(n + 26 ** 2) / O(n), 枚举需要删除的字母, 并检查剩下字母出现的频率是否相同
+    def equalFrequency(self, word: str) -> bool:
+        cnt = [0] * 26
+        for c in word:
+            cnt[ord(c) - 97] += 1
+        for i in range(26):
+            if cnt[i] > 0:
+                cnt[i] -= 1
+                t = 0
+                ok = True
+                for j in range(26):
+                    if cnt[j] > 0:
+                        if t == 0:
+                            t = cnt[j]
+                        elif t != cnt[j]:
+                            ok = False
+                            break
+                if ok:
+                    return True
+                cnt[i] += 1
+        return False
+
+    # O(n * log26 + 26 + 26) / O(n)
+    def equalFrequency(self, word: str) -> bool:
+        c = sorted(collections.Counter(word).values())
+        return (
+            len(c) == 1
+            or c[0] == 1
+            and len(set(c[1:])) == 1
+            or c[-1] == c[-2] + 1
+            and len(set(c[:-1])) == 1
+        )
+
+    # O(n) 做法见 1224. 最大相等频率 TODO
+
+
+# 2424 - Longest Uploaded Prefix - MEDIUM
+class LUPrefix:
+    def __init__(self, n: int):
+        self.a = [False] * (n + 1)
+        self.i = 1
+
+    def upload(self, video: int) -> None:
+        self.a[video] = True
+        while self.i < len(self.a) and self.a[self.i]:
+            self.i += 1
+        return
+
+    def longest(self) -> int:
+        return self.i - 1
+
+
+class LUPrefix:
+    def __init__(self, n: int):
+        self.i = 1
+        self.s = set()
+
+    def upload(self, video: int) -> None:
+        self.s.add(video)
+        return
+
+    def longest(self) -> int:
+        while self.i in self.s:
+            self.i += 1
+        return self.i - 1
+
+
+# 2425 - Bitwise XOR of All Pairings - MEDIUM
+class Solution:
+    def xorAllNums(self, nums1: List[int], nums2: List[int]) -> int:
+        cnt = collections.Counter()
+        m = len(nums1)
+        n = len(nums2)
+        if n & 1:
+            for v in nums1:
+                cnt[v] += n
+        if m & 1:
+            for v in nums2:
+                cnt[v] += m
+
+        # Python C-level APIs developed, a lot of built-in functions and methods don't actually have names for their arguments.
+        # Python 底层 API 是调用的 C 语言, 没写函数没有实现 Python 特性, 只能靠位置判断参数, 写参数名字也没用
+        # return functools.reduce(operator.xor, (k for k, v in cnt.items() if v & 1), initializer=0) # TypeError: reduce() takes no keyword arguments
+        # return functools.reduce(operator.xor, (k for k, v in cnt.items() if v & 1), 0) # 正确
+
+        ans = 0
+        for k, v in cnt.items():
+            if v & 1:
+                ans ^= k
+        return ans
+
+    def xorAllNums(self, nums1: List[int], nums2: List[int]) -> int:
+        ans = 0
+        if len(nums2) % 2:
+            ans ^= functools.reduce(operator.xor, nums1)
+        if len(nums1) % 2:
+            ans ^= functools.reduce(operator.xor, nums2)
+        return ans
+
+
+# 2426 - Number of Pairs Satisfying Inequality - HARD
+class Solution:
+    # a[i] <= a[j] + diff
+    # 从左到右遍历 a[i], 统计 <= a[i] + diff 的元素个数
+    # 需要一个数据结构, 能够添加并查询 <= x 的元素个数
+    def numberOfPairs(self, nums1: List[int], nums2: List[int], diff: int) -> int:
+        arr = []
+        ans = 0
+        for a, b in zip(nums1, nums2):
+            d = a - b
+            ans += bisect.bisect_left(arr, d + diff + 1)
+            bisect.insort(arr, a - b)
+        return ans
+
+    def numberOfPairs(self, nums1: List[int], nums2: List[int], diff: int) -> int:
+        ans = 0
+        sl = sortedcontainers.SortedList()
+        for a, b in zip(nums1, nums2):
+            ans += sl.bisect_right(a - b + diff)
+            sl.add(a - b)
+        return ans
 
 
 # 2427 - Number of Common Factors - EASY

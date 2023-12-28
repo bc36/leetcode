@@ -1,4 +1,4 @@
-import bisect, collections, functools, heapq, itertools, math, queue, operator, string, threading
+import bisect, collections, datetime, functools, heapq, itertools, math, queue, operator, string, threading
 from typing import Callable, List, Optional, Tuple
 import sortedcontainers
 
@@ -51,6 +51,43 @@ class Solution:
             d -= 1
             label >>= 1
         return ans[::-1]
+
+
+# 1105 - Filling Bookcase Shelves - MEDIUM
+class Solution:
+    # O(n ^ 2) / O(n), 递归需要 O(n) 的栈空间
+    def minHeightShelves(self, books: List[List[int]], shelf_width: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(i: int) -> int:
+            """定义 dfs(i) 表示把 books[0] 到 books[i] 按顺序摆放后的最小高度"""
+            if i < 0:
+                return 0  # 没有书了, 高度是 0
+            res = math.inf
+            mx = 0
+            can = shelf_width
+            for j in range(i, -1, -1):
+                can -= books[j][0]
+                if can < 0:
+                    break  # 空间不足, 无法放书
+                mx = max(mx, books[j][1])  # 从 j 到 i 的最大高度
+                res = min(res, dfs(j - 1) + mx)
+            return res
+
+        return dfs(len(books) - 1)
+
+    def minHeightShelves(self, books: List[List[int]], shelf_width: int) -> int:
+        n = len(books)
+        f = [0] + [math.inf] * n  # 在前面插入一个状态表示 dfs(-1)=0
+        for i in range(n):
+            mx = 0
+            can = shelf_width
+            for j in range(i, -1, -1):
+                can -= books[j][0]
+                if can < 0:
+                    break
+                mx = max(mx, books[j][1])
+                f[i + 1] = min(f[i + 1], f[j] + mx)
+        return f[n]
 
 
 # 1106 - Parsing A Boolean Expression - HARD
@@ -1055,6 +1092,31 @@ class Solution:
         a = min(destination, start)
         b = max(destination, start)
         return min(sum(distance[a:b]), sum(distance[b:] + distance[:a]))
+
+
+# 1185 - Day of the Week - EASY
+class Solution:
+    def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
+        return datetime.date(year, month, day).strftime("%A")
+
+    # Zelle formula
+    days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ]
+
+    def dayOfTheWeek(self, d, m, y):
+        if m < 3:
+            m += 12
+            y -= 1
+        c, y = y // 100, y % 100
+        w = (c // 4 - 2 * c + y + y // 4 + 13 * (m + 1) // 5 + d - 1) % 7
+        return self.days[w]
 
 
 # 1189 - Maximum Number of Balloons - EASY

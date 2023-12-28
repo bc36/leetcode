@@ -1127,6 +1127,23 @@ class Solution:
         return ans
 
 
+# 1079 - Letter Tile Possibilities - MEDIUM
+class Solution:
+    # O(n * n!) / O(n), n = len(cnt.keys())
+    def numTilePossibilities(self, tiles: str) -> int:
+        def dfs(cnt: collections.Counter) -> int:
+            res = 0
+            for k, v in cnt.items():
+                if v:
+                    cnt[k] -= 1
+                    res += 1 + dfs(cnt)
+                    cnt[k] += 1
+            return res
+
+        cnt = collections.Counter(tiles)
+        return dfs(cnt)
+
+
 # 1080 - Insufficient Nodes in Root to Leaf Paths - MEDIUM
 class Solution:
     # O(n) / O(n)
@@ -1171,30 +1188,6 @@ class Solution:
                 vis.add(c)
         return "".join(st)
 
-
-# 1185 - Day of the Week - EASY
-class Solution:
-    def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
-        return datetime.date(year, month, day).strftime("%A")
-
-    # Zelle formula
-    days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-    ]
-
-    def dayOfTheWeek(self, d, m, y):
-        if m < 3:
-            m += 12
-            y -= 1
-        c, y = y // 100, y % 100
-        w = (c // 4 - 2 * c + y + y // 4 + 13 * (m + 1) // 5 + d - 1) % 7
-        return self.days[w]
 
 
 # 1089 - Duplicate Zeros - EASY
