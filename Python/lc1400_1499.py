@@ -851,6 +851,46 @@ class Solution:
         return ans
 
 
+# 1482 - Minimum Number of Days to Make m Bouquets - MEDIUM
+class Solution:
+    def minDays(self, bloomDay: List[int], m: int, k: int) -> int:
+        l = 0
+        r = 1000000001
+        while l < r:
+            mid = l + r >> 1
+            total = per = 0
+            for x in bloomDay:
+                if x <= mid:
+                    per += 1
+                    if per == k:
+                        total += 1
+                        per = 0
+                else:
+                    per = 0
+            if total >= m:
+                r = mid
+            else:
+                l = mid + 1
+        return l if l < 1000000001 else -1
+
+    def minDays(self, bloomDay: List[int], m: int, k: int) -> int:
+        def check(mid: int) -> True:
+            total = per = 0
+            for x in bloomDay:
+                if x <= mid:
+                    per += 1
+                else:
+                    per = 0
+                    continue
+                if per == k:
+                    total += 1
+                    per = 0
+            return total >= m
+
+        l = bisect.bisect_left(range(1000000001), True, key=check)
+        return l if l < 1000000001 else -1
+
+
 # 1483 - Kth Ancestor of a Tree Node - HARD
 class TreeAncestor:
     # O(nk) / O(n), 暴力, 显然是 TLE 的

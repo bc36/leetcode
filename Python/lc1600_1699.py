@@ -23,6 +23,47 @@ class TreeNode:
         self.right = None
 
 
+# 1601 - Maximum Number of Achievable Transfer Requests - HARD
+class Solution:
+    # O(2^R * (n + R)) / O(n), R = len(requests)
+    def maximumRequests(self, n: int, requests: List[List[int]]) -> int:
+        ans = 0
+        for i in range(1 << len(requests)):
+            cnt = [0] * n
+            for j, (f, t) in enumerate(requests):
+                # if i >> j & 1:
+                if i & 1 << j:
+                    cnt[f] -= 1
+                    cnt[t] += 1
+            # if all(x == 0 for x in cnt):
+            if max(cnt) == 0:
+                ans = max(ans, i.bit_count())
+        return ans
+
+    # O(2^R) / O(R + n), R = len(requests)
+    def maximumRequests(self, n: int, requests: List[List[int]]) -> int:
+        def backtrack(i: int, cnt: int) -> None:
+            """下标 i, 已选择数量 cnt"""
+            nonlocal ans
+            if i == len(requests):
+                if all(x == 0 for x in state):
+                    ans = max(ans, cnt)
+                return
+            f, t = requests[i]
+            backtrack(i + 1, cnt)  # 跳过 requests[i]
+            state[f] -= 1
+            state[t] += 1
+            backtrack(i + 1, cnt + 1)  # 选择 requests[i]
+            state[f] += 1
+            state[t] -= 1
+            return
+
+        ans = 0
+        state = [0] * n
+        backtrack(0, 0)
+        return ans
+
+
 # 1604 - Alert Using Same Key-Card Three or More Times in a One Hour Period - MEDIUM
 class Solution:
     # O(nlogn) / O(n)
