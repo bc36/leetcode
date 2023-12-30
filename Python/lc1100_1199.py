@@ -988,6 +988,39 @@ class Solution:
         return ans
 
 
+# 1163 - Last Substring in Lexicographical Order - HARD
+class Solution:
+    # O(n^2) / O(1)
+    def lastSubstring(self, s: str) -> str:
+        return max(s[i:] for i in range(len(s)))
+
+    def lastSubstring(self, s: str) -> str:
+        ans = ""
+        for j in range(len(s)):
+            if j > 1 and s[j] <= s[j - 1]:
+                continue
+            ans = max(ans, s[j:])
+        return ans
+
+    # O(n) / O(1)
+    def lastSubstring(self, s: str) -> str:
+        l = k = 0
+        r = 1
+        n = len(s)
+        while r + k < n:
+            if s[l + k] == s[r + k]:
+                k += 1
+            elif s[l + k] < s[r + k]:
+                l += k + 1
+                k = 0
+                if l >= r:
+                    r = l + 1
+            else:
+                r += k + 1
+                k = 0
+        return s[l:]
+
+
 # 1170 - Compare Strings by Frequency of the Smallest Character - MEDIUM
 class Solution:
     def numSmallerByFrequency(self, queries: List[str], words: List[str]) -> List[int]:
@@ -1099,24 +1132,23 @@ class Solution:
     def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
         return datetime.date(year, month, day).strftime("%A")
 
-    # Zelle formula
-    days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-    ]
-
     def dayOfTheWeek(self, d, m, y):
         if m < 3:
             m += 12
             y -= 1
-        c, y = y // 100, y % 100
+        c, y = divmod(y, 100)
         w = (c // 4 - 2 * c + y + y // 4 + 13 * (m + 1) // 5 + d - 1) % 7
-        return self.days[w]
+        # Zelle formula
+        days = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+        ]
+        return days[w]
 
 
 # 1189 - Maximum Number of Balloons - EASY

@@ -529,6 +529,42 @@ class Solution:
         return max(dp[0])
 
 
+# 1373 - Maximum Sum BST in Binary Tree - HARD
+class Solution:
+    def maxSumBST(self, root: Optional[TreeNode]) -> int:
+        def dfs(root: Optional[TreeNode]) -> Tuple[int, int, int]:
+            if not root:
+                return 0, math.inf, -math.inf
+            lv, lmi, lmx = dfs(root.left)
+            rv, rmi, rmx = dfs(root.right)
+            if root.val <= lmx or root.val >= rmi:
+                return 0, -math.inf, math.inf
+            s = lv + rv + root.val  # 这棵子树的所有节点值之和
+            nonlocal ans
+            ans = max(ans, s)
+            return s, min(lmi, root.val), max(rmx, root.val)
+
+        ans = 0  # 二叉搜索树可以为空
+        dfs(root)
+        return ans
+
+    def maxSumBST(self, root: Optional[TreeNode]) -> int:
+        def dfs(root):
+            """后序遍历, 返回值 = (子树所有节点值之和, 子树包含的最大值, 子树包含的最小值, 递归上来的答案"""
+            if not root:
+                return 0, math.inf, -math.inf, 0
+            lv, lmi, lmx, lans = dfs(root.left)
+            rv, rmi, rmx, rans = dfs(root.right)
+            if lmx >= root.val or rmi <= root.val:
+                return 0, -math.inf, math.inf, max(lans, rans)
+            t = lv + rv + root.val
+            mx = max(root.val, lmx, rmx)
+            mi = min(root.val, lmi, rmi)
+            return t, mi, mx, max(t, lans, rans)
+
+        return dfs(root)[3]
+
+
 # 1374 - Generate a String With Characters That Have Odd Counts - EASY
 class Solution:
     def generateTheString(self, n: int) -> str:

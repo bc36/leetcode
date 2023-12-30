@@ -880,6 +880,41 @@ class Solution:
         return f[0][n - 1]
 
 
+# 1040 - Moving Stones Until Consecutive II - MEDIUM
+class Solution:
+    def numMovesStonesII(self, s: List[int]) -> List[int]:
+        s.sort()
+        n = len(s)
+        e1 = s[-2] - s[0] - n + 2
+        e2 = s[-1] - s[1] - n + 2  # 计算空位
+        max_move = max(e1, e2)
+        if e1 == 0 or e2 == 0:  # 特殊情况: 没有空位
+            return [min(2, max_move), max_move]
+        max_cnt = left = 0
+        for right, sr in enumerate(s):  # 滑动窗口: 枚举右端点所在石子
+            while sr - s[left] + 1 > n:  # 窗口长度大于 n
+                left += 1  # 缩小窗口长度
+            max_cnt = max(max_cnt, right - left + 1)  # 维护窗口内的最大石子数
+        return [n - max_cnt, max_move]
+
+    def numMovesStonesII(self, stones: List[int]) -> List[int]:
+        n = len(stones)
+        stones.sort()
+        if stones[-1] - stones[0] + 1 == n:
+            return [0, 0]
+        ma = max(stones[-2] - stones[0] + 1, stones[-1] - stones[1] + 1) - (n - 1)
+        mi = n
+        j = 0
+        for i in range(n):
+            while j + 1 < n and stones[j + 1] - stones[i] + 1 <= n:
+                j += 1
+            if j - i + 1 == n - 1 and stones[j] - stones[i] + 1 == n - 1:
+                mi = min(mi, 2)
+            else:
+                mi = min(mi, n - (j - i + 1))
+        return [mi, ma]
+
+
 # 1041 - Robot Bounded In Circle - MEDIUM
 class Solution:
     def isRobotBounded(self, instructions: str) -> bool:
