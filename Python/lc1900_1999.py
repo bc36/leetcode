@@ -118,6 +118,21 @@ class Solution:
         return sum(1 - any(c in b for c in w) for w in text.split())
 
 
+# 1944 - Number of Visible People in a Queue - HARD
+class Solution:
+    def canSeePersonsCount(self, heights: List[int]) -> List[int]:
+        st = []
+        ans = [0] * len(heights)
+        for i in range(len(heights) - 1, -1, -1):
+            while st and heights[i] > st[-1]:
+                st.pop()
+                ans[i] += 1
+            if st:
+                ans[i] += 1
+            st.append(heights[i])
+        return ans
+
+
 # 1945 - Sum of Digits of String After Convert - EASY
 class Solution:
     def getLucky(self, s: str, k: int) -> int:

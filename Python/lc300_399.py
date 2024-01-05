@@ -1749,23 +1749,21 @@ class Solution:
 class Solution:
     def decodeString(self, s: str) -> str:
         st = []
+        cur = ""
         d = 0
-        ans = ""
         for c in s:
             if c == "[":
-                st.append(ans)
-                st.append(d)
-                ans = ""
+                st.append((cur, d))
+                cur = ""
                 d = 0
             elif c == "]":
-                pre_num = st.pop()
-                pre_string = st.pop()
-                ans = pre_string + pre_num * ans
+                pre, times = st.pop()
+                cur = pre + times * cur
             elif c.isdigit():
-                d = d * 10 + int(c)
+                d = 10 * d + int(c)
             else:
-                ans += c
-        return ans
+                cur += c
+        return cur
 
 
 # 396 - Rotate Function - MEDIUM

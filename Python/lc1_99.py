@@ -2738,6 +2738,36 @@ class Solution:
         return dfs(len(s) - 1)
 
 
+# 92 - Reverse Linked List II - MEDIUM
+class Solution:
+    #        None
+    #         ^
+    #         |
+    #   1 ->  2  <-  3  <-  4    5  -> None
+    #   ^                   ^    ^
+    #   |                   |    |
+    #   p                  pre  cur
+    def reverseBetween(
+        self, head: Optional[ListNode], left: int, right: int
+    ) -> Optional[ListNode]:
+        p = dummy = ListNode(next=head)
+        for _ in range(left - 1):
+            p = p.next
+
+        pre = None
+        cur = p.next
+        for _ in range(right - left + 1):
+            # nn = cur.next
+            # cur.next = pre
+            # pre = cur
+            # cur = nn
+            cur.next, pre, cur = pre, cur, cur.next
+
+        p.next.next = cur
+        p.next = pre
+        return dummy.next
+
+
 # 93 - Restore IP Addresses - MEDIUM
 class Solution:
     def restoreIpAddresses(self, s: str) -> List[str]:

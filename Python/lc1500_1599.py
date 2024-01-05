@@ -165,6 +165,34 @@ class Solution:
         return ans
 
 
+# 1545 - Find Kth Bit in Nth Binary String - MEDIUM
+class Solution:
+    def findKthBit(self, n: int, k: int) -> str:
+        s = "0"
+        while len(s) < k:
+            s = s + "1" + "".join("0" if c == "1" else "1" for c in s)[::-1]
+        return s[k - 1]
+
+    def findKthBit(self, n: int, k: int) -> str:
+        if n == 1:
+            return "0"
+        m = 1 << n - 1
+        if k == m:
+            return "1"
+        if k < m:
+            return self.findKthBit(n - 1, k)
+        return "0" if self.findKthBit(n - 1, (1 << n) - k) == "1" else "1"
+
+    def findKthBit(self, n: int, k: int) -> str:
+        if k == 1:
+            return "0"
+        m = 1 << n - 1
+        if k == m:
+            return "1"
+        if k < m:
+            return self.findKthBit(n - 1, k)
+        return "0" if self.findKthBit(n - 1, m * 2 - k) == "1" else "1"
+
 # 1557 - Minimum Number of Vertices to Reach All Nodes - MEDIUM
 class Solution:
     # O(m + n) / O(n)
