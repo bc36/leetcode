@@ -138,6 +138,32 @@ class Solution:
         return dfs(0, 0, True, True, False)
 
 
+# 2807 - Insert Greatest Common Divisors in Linked List - MEDIUM
+class Solution:
+    def insertGreatestCommonDivisors(
+        self, head: Optional[ListNode]
+    ) -> Optional[ListNode]:
+        dummy = head
+        arr = []
+        while head:
+            arr.append(head.val)
+            head = head.next
+        head = dummy
+        for i in range(1, len(arr)):
+            head.next = ListNode(math.gcd(head.val, arr[i]), head.next)
+            head = head.next.next
+        return dummy
+
+    def insertGreatestCommonDivisors(
+        self, head: Optional[ListNode]
+    ) -> Optional[ListNode]:
+        dummy = head
+        while head.next:
+            head.next = ListNode(math.gcd(head.val, head.next.val), head.next)
+            head = head.next.next
+        return dummy
+
+
 # 2815 - Max Pair Sum in an Array - EASY
 class Solution:
     def maxSum(self, nums: List[int]) -> int:

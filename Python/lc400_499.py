@@ -57,6 +57,33 @@ class Solution:
         return "".join(stack).lstrip("0") or "0"
 
 
+# 406 - Queue Reconstruction by Height - MEDIUM
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+        """
+        注意两者区别
+        1. people.sort(key=lambda x: (-x[0], x[1]))
+        2. people.sort(key=lambda x: -x[0])
+        
+        对于输入 [[9,0],[7,0],[1,9],[3,0],[2,7],[5,3],[6,0],[3,4],[6,2],[5,2]]
+        1 会输出 [[9, 0], [7, 0], [6, 0], [6, 2], [5, 2], [5, 3], [3, 0], [3, 4], [2, 7], [1, 9]]
+        2 会输出 [[9, 0], [7, 0], [6, 0], [6, 2], [5, 3], [5, 2], [3, 0], [3, 4], [2, 7], [1, 9]]
+        
+        对于输入 [[9,0],[7,0],[1,9],[3,0],[2,7],[5,2],[6,0],[3,4],[6,2],[5,3]]
+        输出均为 [9, 0], [7, 0], [6, 0], [6, 2], [5, 2], [5, 3], [3, 0], [3, 4], [2, 7], [1, 9]]
+        结论是: 如果只使用一个元素比较而不明确指定剩余元素如何比较, 则在第一个元素相同时, 排序顺序按出现顺序决定
+        """
+        people.sort(key=lambda x: (-x[0], x[1]))
+        ans = []
+        for p in people:
+            if len(ans) <= p[1]:
+                ans.append(p)
+            # elif len(ans) > p[1]:
+            else:
+                ans.insert(p[1], p)
+        return ans
+
+
 # 408 - Valid Word Abbreviation - EASY
 class Solution:
     def validWordAbbreviation(self, word: str, abbr: str) -> bool:
