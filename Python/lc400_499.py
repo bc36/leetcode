@@ -64,11 +64,11 @@ class Solution:
         注意两者区别
         1. people.sort(key=lambda x: (-x[0], x[1]))
         2. people.sort(key=lambda x: -x[0])
-        
+
         对于输入 [[9,0],[7,0],[1,9],[3,0],[2,7],[5,3],[6,0],[3,4],[6,2],[5,2]]
         1 会输出 [[9, 0], [7, 0], [6, 0], [6, 2], [5, 2], [5, 3], [3, 0], [3, 4], [2, 7], [1, 9]]
         2 会输出 [[9, 0], [7, 0], [6, 0], [6, 2], [5, 3], [5, 2], [3, 0], [3, 4], [2, 7], [1, 9]]
-        
+
         对于输入 [[9,0],[7,0],[1,9],[3,0],[2,7],[5,2],[6,0],[3,4],[6,2],[5,3]]
         输出均为 [9, 0], [7, 0], [6, 0], [6, 2], [5, 2], [5, 3], [3, 0], [3, 4], [2, 7], [1, 9]]
         结论是: 如果只使用一个元素比较而不明确指定剩余元素如何比较, 则在第一个元素相同时, 排序顺序按出现顺序决定
@@ -832,6 +832,36 @@ class Solution:
             for x in range(1, len(s)):
                 temp[s[x]] = max(s[x - 1], temp[s[x]])
         return True if r == temp else False
+
+
+# 447 - Number of Boomerangs - MEDIUM
+class Solution:
+    # O(n ^ 2) / O(n), 枚举中心点
+    def numberOfBoomerangs(self, points: List[List[int]]) -> int:
+        cnt = [dict() for _ in range(len(points))]
+        # cnt = [dict()] * len(points)  # 不要用这个, 数组里面的 dict 都是对同一个 dict 的引用
+        for i in range(len(points)):
+            a, b = points[i]
+            for j in range(len(points)):
+                if i == j:
+                    continue
+                c, d = points[j]
+                distance = (a - c) ** 2 + (b - d) ** 2
+                cnt[i][distance] = cnt[i].get(distance, 0) + 1
+        return sum(v * (v - 1) for d in cnt for v in d.values())
+
+    def numberOfBoomerangs(self, points: List[List[int]]) -> int:
+        ans = 0
+        for i in range(len(points)):
+            a, b = points[i]
+            cnt = collections.defaultdict(int)
+            for j in range(len(points)):
+                if i == j:
+                    continue
+                c, d = points[j]
+                cnt[(a - c) ** 2 + (b - d) ** 2] += 1
+            ans += sum(v * (v - 1) for v in cnt.values())
+        return ans
 
 
 # 448 - Find All Numbers Disappeared in an Array - EASY

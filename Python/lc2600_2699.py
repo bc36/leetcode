@@ -1220,7 +1220,7 @@ class Solution:
     # -> 至少有 (k + 1) 个 abc
     # -> 答案就是 3 * (k + 1) - n
     def addMinimum(self, word: str) -> int:
-        return (sum(a >= b for a, b in pairwise(word)) + 1) * 3 - len(word)
+        return (1 + sum(a >= b for a, b in itertools.pairwise(word))) * 3 - len(word)
 
     # 考虑相邻字母, 细节不太好想
     # (y - x - 1 + 3) % 3
