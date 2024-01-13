@@ -2524,7 +2524,7 @@ class Solution:
         return dummy.next
 
     # O(n) / O(1)
-    def deleteDuplicates(self, head: ListNode) -> ListNode:
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
         dummy = pre = ListNode(-101, head)
         while head:
             if pre.val == head.val:
@@ -2534,13 +2534,11 @@ class Solution:
             head = head.next
         return dummy.next
 
-    # O(n) / O(n)
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        dummy = pre = ListNode(-101)
+        dummy = ListNode(-1, head)
         while head:
-            if head.val != pre.val:
-                pre.next = ListNode(head.val)
-                pre = pre.next
+            while head.next and head.next.val == head.val:
+                head.next = head.next.next
             head = head.next
         return dummy.next
 

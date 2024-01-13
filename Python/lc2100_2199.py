@@ -1032,6 +1032,41 @@ class Solution:
         return ans
 
 
+# 2182 - Construct String With Repeat Limit - MEDIUM
+class Solution:
+    # 双指针思路
+    # 如果剩余的第一大字母不能取, 那么就取第二大的
+    # 因此只需要维护剩余的第一大字母和第二大字母即可
+    def repeatLimitedString(self, s: str, repeatLimit: int) -> str:
+        cnt = [0] * 128
+        for c in s:
+            cnt[ord(c)] += 1
+        p1 = ord("z")  # 第一大字母
+        p2 = ord("y")  # 第二大字母
+        rep = 0  # 当前重复次数
+        ans = []
+        while 1:
+            while p1 >= 97 and cnt[p1] == 0:
+                p1 -= 1
+            if p1 < 97:
+                break
+            p2 = min(p2, p1 - 1)
+            while p2 >= 97 and cnt[p2] == 0:
+                p2 -= 1
+            # 如果不能取最大, 就取第二大
+            if ans and ans[-1] == chr(p1) and rep + 1 > repeatLimit:
+                if p2 < 97:
+                    break
+                cnt[p2] -= 1
+                rep = 1
+                ans.append(chr(p2))
+            else:
+                cnt[p1] -= 1
+                rep = rep + 1 if ans and ans[-1] == chr(p1) else 1
+                ans.append(chr(p1))
+        return "".join(ans)
+
+
 # 2185 - Counting Words With a Given Prefix - EASY
 class Solution:
     def prefixCount(self, words: List[str], pref: str) -> int:
@@ -1270,7 +1305,7 @@ class Solution:
     def createBinaryTree(self, r: List[List[int]]) -> Optional[TreeNode]:
         nodes = {}
         hasParent = set()
-        for (parent, child, left) in r:
+        for parent, child, left in r:
             if parent not in nodes:
                 nodes[parent] = TreeNode(parent)
             if child not in nodes:

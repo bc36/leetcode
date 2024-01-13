@@ -831,6 +831,7 @@ class Solution:
         c1 = collections.Counter(words1)
         c2 = collections.Counter(words2)
         return sum(c2[k] == 1 for k, v in c1.items() if v == 1)
+        # return sum(c1[k] == c2[k] == 1 for k in c1.keys() | c2.keys())
 
 
 # 2089 - Find Target Indices After Sorting Array - EASY
