@@ -1314,3 +1314,8 @@ T4: 874 pass
 # 枚举全排列 / 最小费用最大流
 # 75 / https://leetcode.cn/contest/weekly-contest-362/problems/string-transformation/
 # KMP, 矩阵快速幂
+
+
+# https://leetcode.cn/contest/weekly-contest-379/
+# 32 / https://leetcode.cn/contest/weekly-contest-379/problems/maximize-the-number-of-partitions-after-operations/
+# 离谱, 二分dp, 前后缀, 枚举
