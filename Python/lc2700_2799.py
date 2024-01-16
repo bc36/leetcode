@@ -155,6 +155,88 @@ class Solution:
         return all(uf.find(x) == root for x in nums)
 
 
+# 2719 - Count of Integers - HARD
+class Solution:
+    # O(nmD) / O(nm), n = len(nums2), m = min(9n, max_sum), D = 10
+    def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
+        @functools.cache
+        def dfs(i: int, cur: int, is_limit: bool, is_num: bool, s: str) -> int:
+            if i == len(s):
+                return min_sum <= cur + d <= max_sum
+                return int(is_num)
+            ans = 0
+            if not is_num:
+                ans = dfs(i + 1, cur, False, False, s)
+            bound = int(s[i]) if is_limit else 9
+            for d in range(0 if is_num else 1, bound + 1):
+                # if min_sum <= cur + d <= max_sum:  #  放这里的话, 遇到大的 num1 num2, 都无法进入 if 循环
+                ans += dfs(i + 1, cur + d, is_limit and d == bound, True, s)
+            return ans % 1000000007
+
+        return (
+            dfs(0, 0, True, False, num2)
+            - dfs(0, 0, True, False, str(int(num1) - 1))
+            + 1000000007
+        ) % 1000000007
+
+    def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
+        """前导 0 对数位和没有影响可以省略"""
+
+        @functools.cache
+        def dfs(i: int, cur: int, is_limit: bool, s: str) -> int:
+            if cur > max_sum:
+                return 0
+            if i == len(s):
+                return cur >= min_sum
+            ans = 0
+            bound = int(s[i]) if is_limit else 9
+            for d in range(bound + 1):
+                ans += dfs(i + 1, cur + d, is_limit and d == bound, s)
+            return ans % 1000000007
+
+        return (
+            dfs(0, 0, True, num2) - dfs(0, 0, True, str(int(num1) - 1)) + 1000000007
+        ) % 1000000007
+
+    def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
+        def calc(s: str):
+            @functools.cache
+            def dfs(i: int, cur: int, is_limit: bool) -> int:
+                if cur > max_sum:
+                    return 0
+                if i == len(s):
+                    return cur >= min_sum
+                ans = 0
+                bound = int(s[i]) if is_limit else 9
+                for d in range(bound + 1):
+                    ans += dfs(i + 1, cur + d, is_limit and d == bound)
+                return ans % 1000000007
+
+            return dfs(0, 0, True)
+
+        return (calc(num2) - calc(str(int(num1) - 1))) % 1000000007
+
+    def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
+        """数位dp 2.0模版 - https://leetcode.cn/problems/count-of-integers/solutions/2296043/shu-wei-dp-tong-yong-mo-ban-pythonjavacg-9tuc/"""
+        n = len(num2)
+        num1 = "0" * (n - len(num1)) + num1  # 补前导零
+
+        @functools.cache
+        def dfs(i: int, s: int, limit_low: bool, limit_high: bool) -> int:
+            if s > max_sum:
+                return 0
+            if i == n:
+                return s >= min_sum
+            lo = int(num1[i]) if limit_low else 0
+            hi = int(num2[i]) if limit_high else 9
+            res = 0
+            for d in range(lo, hi + 1):  # 枚举当前数位填 d
+                res += dfs(i + 1, s + d, limit_low and d == lo, limit_high and d == hi)
+            return res
+
+        return dfs(0, 0, True, True) % 1000000007
+
+
 # 2729 - Check if The Number is Fascinating - EASY
 class Solution:
     def isFascinating(self, n: int) -> bool:

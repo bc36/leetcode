@@ -2712,7 +2712,7 @@ class Solution:
 
 # 2376 - Count Special Integers - HARD
 class Solution:
-    # digit dp, 数位dp
+    # digit dp, 数位dp模版
     def countSpecialNumbers(self, n: int) -> int:
         s = str(n)
 

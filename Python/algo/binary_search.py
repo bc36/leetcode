@@ -33,7 +33,7 @@ Therefore, the invariant we will maintain is that P(l) should always be true and
 How does the code look like in this case?
 
     while (l < r) {
-        int mid = ????;
+        int mid = ????; # (l + r + 1) / 2
         if (P(mid))
             l = mid; // Note that P(l) = P(mid) is true, so the invariant is maintained.
         else
@@ -43,6 +43,19 @@ How does the code look like in this case?
 Now, it is still true that (as real numbers) l < (l+r)/2 < r.
 But if we want l = mid to increase 'l', then we cannot round the division down.
 Rounding it up (by doing (l+r+1)/2) is fine, because then l < (l+r+1)/2 <= r, and therefore r = mid - 1 decreases 'r' and l = mid increases 'l'.
+
+
+See another way of maximizing the index
+LC 3007, https://leetcode.com/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/
+https://www.bilibili.com/video/BV1zt4y1R7Tc
+
+    while l + 1 < r:
+        if P(mid):
+            l = m
+        else:
+            r = m
+    return l
+
 
 try it on
 lc 1552 https://leetcode.cn/problems/magnetic-force-between-two-balls/

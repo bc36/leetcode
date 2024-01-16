@@ -6,6 +6,7 @@ https://cp-algorithms.com/data_structures/segment_tree.html
 https://oi-wiki.org/ds/seg/
 https://www.acwing.com/blog/content/1684/
 https://www.desgard.com/algo/docs/part3/ch02/3-segment-tree-range/
+https://zhuanlan.zhihu.com/p/246255556
 
 A Segment Tree is a data structure that stores information about array intervals as a tree. 
 This allows answering range queries over an array efficiently, while still being flexible enough to allow quick modification of the array.
@@ -40,6 +41,7 @@ https://leetcode.cn/tag/segment-tree/problemset/
 动态开点 + 区间覆盖, LC 715, 困难 https://leetcode.cn/problems/range-module/
 动态开点 + 区间覆盖/更新, 全部最大值, LC 732, 困难 https://leetcode.cn/problems/my-calendar-iii/
 动态开点 + 区间覆盖/更新, 全部最大值, LC 699, 困难 https://leetcode.cn/problems/falling-squares/
+TODO 239 327 654 729 731 1157 933 2080 2213 2286 2407 2426 2569 2659, 记得查查有没有对应的比赛, 扫描线 850
 """
 
 import collections
