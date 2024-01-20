@@ -1194,6 +1194,13 @@ class Solution:
         return ans
 
 
+# 2788 - Split Strings by Separator - EASY
+class Solution:
+    def splitWordsBySeparator(self, words: List[str], separator: str) -> List[str]:
+        return [x for w in words for x in w.split(separator) if x]
+        return [s for s in separator.join(words).split(separator) if s]
+
+
 # 2798 - Number of Employees Who Met the Target - EASY
 class Solution:
     def numberOfEmployeesWhoMetTarget(self, hours: List[int], target: int) -> int:

@@ -126,6 +126,67 @@ class Solution:
         return len(s) - odd + 1 if odd else len(s)
 
 
+# 410 - Split Array Largest Sum - HARD
+class Solution:
+    def splitArray(self, nums: List[int], k: int) -> int:
+        l, r = 0, 1000000000  # 注意这题, l, r 的边界随意设置会造成一定的麻烦, 尤其是左边界 l
+        while l < r:
+            m = l + r >> 1
+            p = cur = 0
+            f = False
+            for v in nums:
+                if v > m:
+                    f = True
+                    break
+                if cur + v > m:
+                    p += 1
+                    cur = 0
+                cur += v
+            if f:
+                l = min(m + 1, r)
+            elif p + 1 <= k:
+                r = m
+            else:
+                l = m + 1
+        return l
+
+    def splitArray(self, nums: List[int], k: int) -> int:
+        def check(m: int) -> int:
+            cur, p = 0, 1
+            for v in nums:
+                if cur + v > m:
+                    p += 1
+                    cur = v
+                else:
+                    cur += v
+            return -p
+
+        # 序列单调性 和 序列被check处理后的单调性 相反, 所以加了个个负号
+        return bisect.bisect_left(range(sum(nums) + 1), x=-k, lo=max(nums), key=check)
+
+    def splitArray(self, nums: List[int], k: int) -> int:
+        def check(m: int) -> bool:
+            cur, p = 0, 1
+            for v in nums:
+                if cur + v > m:
+                    p += 1
+                    cur = v
+                else:
+                    cur += v
+            return p <= k
+
+        return bisect.bisect_left(range(sum(nums) + 1), 1, lo=max(nums), key=check)
+        return bisect.bisect_left(range(sum(nums) + 1), True, lo=max(nums), key=check)
+        l, r = max(nums), sum(nums)
+        while l < r:
+            m = l + r >> 1
+            if check(m):
+                r = m
+            else:
+                l = m + 1
+        return l
+
+
 # 413 - Arithmetic Slices - MEDIUM
 class Solution:
     def numberOfArithmeticSlices(self, nums: List[int]) -> int:
