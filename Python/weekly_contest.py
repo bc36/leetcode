@@ -1319,3 +1319,10 @@ T4: 874 pass
 # https://leetcode.cn/contest/weekly-contest-379/
 # 32 / https://leetcode.cn/contest/weekly-contest-379/problems/maximize-the-number-of-partitions-after-operations/
 # 离谱, 二分dp, 前后缀, 枚举
+
+
+# https://leetcode.cn/contest/weekly-contest-380/
+# 300 / https://leetcode.cn/contest/weekly-contest-380/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/
+# 二分 + (数位dp / 数学公式 / 逐位构造)
+# 710 / https://leetcode.cn/contest/weekly-contest-380/problems/maximize-the-number-of-partitions-after-operations/
+# kmp

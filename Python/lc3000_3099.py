@@ -123,3 +123,251 @@ class Solution:
         c = len([x for x in s1 if x in s2])
         d = n - min(a, n) + n - min(b, n)
         return min(a, n) + min(b, n) + min(c, d)
+
+
+# 3005 - Count Elements With Maximum Frequency - EASY
+class Solution:
+    def maxFrequencyElements(self, nums: List[int]) -> int:
+        cnt = collections.Counter(nums)
+        mx = max(cnt.values())
+        return mx * sum(v == mx for v in cnt.values())
+        return sum(v for v in cnt.values() if v == mx)
+
+    def maxFrequencyElements(self, nums: List[int]) -> int:
+        ans = mx = 0
+        cnt = collections.Counter()
+        for x in nums:
+            cnt[x] += 1
+            if cnt[x] > mx:
+                mx = ans = cnt[x]
+            elif cnt[x] == mx:
+                ans += cnt[x]
+        return ans
+
+
+# 3006 - Find Beautiful Indices in the Given Array I - MEDIUM
+# 题意同 LC 3008, 但数据范围不同
+# 1 <= k <= s.length <= 10**5
+# 1 <= a.length, b.length <= 10
+
+# LC 3008 数据范围
+# 1 <= k <= s.length <= 5 * 10**5
+# 1 <= a.length, b.length <= 5 * 10**5
+
+
+# 3007 - Maximum Number That Sum of the Prices Is Less Than or Equal to K - MEDIUM
+class Solution:
+    def findMaximumNumber(self, k: int, x: int) -> int:
+        def countDigitOne(n: int) -> int:
+            """类似 LC233"""
+            s = bin(n)[2:]
+
+            @functools.cache
+            def dfs(i: int, cnt: int, is_limit: bool) -> int:
+                if i == len(s):
+                    return cnt
+                res = 0
+                up = int(s[i]) if is_limit else 1
+                for d in range(up + 1):
+                    res += dfs(
+                        i + 1,
+                        cnt + (d == 1 and (len(s) - i) % x == 0),
+                        is_limit and d == up,
+                    )
+                return res
+
+            return dfs(0, 0, True)
+
+        return bisect.bisect_left(range(10**16), k + 1, key=countDigitOne) - 1
+        return bisect.bisect_right(range(10**16), k, key=countDigitOne) - 1
+
+    def findMaximumNumber(self, k: int, x: int) -> int:
+        def count(num: int) -> int:
+            @functools.cache
+            def f(i: int, cnt: int, is_limit: bool) -> int:
+                if i == 0:
+                    return cnt
+                res = 0
+                up = num >> (i - 1) & 1 if is_limit else 1
+                for d in range(up + 1):
+                    res += f(i - 1, cnt + (d == 1 and i % x == 0), is_limit and d == up)
+                return res
+
+            return f(num.bit_length(), 0, True)
+
+        # <= k 转换成 >= k+1 的数再减一
+        # 原理见 https://www.bilibili.com/video/BV1AP41137w7/
+        return bisect.bisect_left(range((k + 1) << x), k + 1, key=count) - 1
+        return bisect.bisect_right(range((k + 1) << x), k, key=count) - 1
+
+    # https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/solutions/2603673/er-fen-da-an-shu-wei-dpwei-yun-suan-pyth-tkir/
+    # https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/solutions/2603671/xiao-yang-xiao-en-er-fen-shu-xue-er-jin-c7iwg/
+
+
+# 3008 - Find Beautiful Indices in the Given Array II - HARD
+class KMP:
+    def __init__(self):
+        return
+
+    @staticmethod
+    def prefix_function(s: str) -> List[int]:
+        """calculate the longest common true prefix and true suffix for s [:i] and s [:i]"""
+        pi = [0] * len(s)
+        for i in range(1, len(s)):
+            j = pi[i - 1]
+            while j > 0 and s[i] != s[j]:
+                j = pi[j - 1]
+            if s[i] == s[j]:
+                j += 1
+            pi[i] = j  # pi[i]<=i
+        # pi[0] = 0
+        return pi
+
+    def find(self, s1: str, s2: str):
+        """find the index position of s2 in s1"""
+        n, m = len(s1), len(s2)
+        pi = self.prefix_function(s2 + "#" + s1)
+        ans = []
+        for i in range(m + 1, m + n + 1):
+            if pi[i] == m:
+                ans.append(i - m - m)
+        return ans
+
+
+class Solution:
+    def beautifulIndices(self, s: str, a: str, b: str, k: int) -> List[int]:
+        lst1 = KMP().find(s, a)
+        lst2 = KMP().find(s, b)
+        ans = []
+        for i in lst1:
+            j = bisect.bisect_left(lst2, i)
+            for x in [j - 1, j, j + 1]:
+                if 0 <= x < len(lst2) and abs(lst2[x] - i) <= k:
+                    ans.append(i)
+                    break
+        return ans
+
+
+def prep(p):
+    pi = [0] * len(p)
+    j = 0
+    for i in range(1, len(p)):
+        while j != 0 and p[j] != p[i]:
+            j = pi[j - 1]
+        if p[j] == p[i]:
+            j += 1
+        pi[i] = j
+    return pi
+
+
+class Solution:
+    def beautifulIndices(self, s: str, a: str, b: str, k: int) -> List[int]:
+        pa = prep(a + "#" + s)
+        pb = prep(b + "#" + s)
+        ia = [i - len(a) * 2 for i in range(len(pa)) if pa[i] == len(a)]
+        ib = [i - len(b) * 2 for i in range(len(pb)) if pb[i] == len(b)]
+        ans = []
+        for i in ia:
+            p = bisect.bisect(ib, i)
+            for p1 in range(p - 1, p + 2):
+                if 0 <= p1 < len(ib) and abs(ib[p1] - i) <= k:
+                    ans.append(i)
+                    break
+        return ans
+
+
+class Solution:
+    def beautifulIndices(self, s: str, a: str, b: str, k: int) -> List[int]:
+        # KMP
+        def partial(s):
+            g, pi = 0, [0] * len(s)
+            for i in range(1, len(s)):
+                while g and (s[g] != s[i]):
+                    g = pi[g - 1]
+                pi[i] = g = g + (s[g] == s[i])
+
+            return pi
+
+        def match(s, pat):
+            pi = partial(pat)
+
+            g, idx = 0, []
+            for i in range(len(s)):
+                while g and pat[g] != s[i]:
+                    g = pi[g - 1]
+                g += pat[g] == s[i]
+                if g == len(pi):
+                    idx.append(i + 1 - g)
+                    g = pi[g - 1]
+
+            return idx
+
+        i1 = match(s, a)
+        i2 = match(s, b)
+        # i1.sort()
+        # i2.sort()
+
+        ans = []
+        for i in i1:
+            l = bisect.bisect_left(i2, i)
+            r = bisect.bisect_right(i2, i) - 1
+            if (
+                0 <= l < len(i2)
+                and abs(i - i2[l]) <= k
+                or 0 <= r < len(i2)
+                and abs(i - i2[r]) <= k
+            ):
+                ans.append(i)
+        return ans
+
+
+class Solution:
+    def beautifulIndices(self, s: str, a: str, b: str, k: int) -> List[int]:
+        pos_a = self.kmp(s, a)
+        pos_b = self.kmp(s, b)
+
+        ans = []
+        for i in pos_a:
+            bi = bisect.bisect_left(pos_b, i)
+            if (
+                bi < len(pos_b)
+                and pos_b[bi] - i <= k
+                or bi > 0
+                and i - pos_b[bi - 1] <= k
+            ):
+                ans.append(i)
+        return ans
+
+        ans = []
+        j, m = 0, len(pos_b)
+        for i in pos_a:
+            while j < m and pos_b[j] < i - k:
+                j += 1
+            if j < m and pos_b[j] <= i + k:
+                ans.append(i)
+        return ans
+
+    def kmp(self, text: str, pattern: str) -> List[int]:
+        m = len(pattern)
+        pi = [0] * m
+        c = 0
+        for i in range(1, m):
+            v = pattern[i]
+            while c and pattern[c] != v:
+                c = pi[c - 1]
+            if pattern[c] == v:
+                c += 1
+            pi[i] = c
+
+        res = []
+        c = 0
+        for i, v in enumerate(text):
+            v = text[i]
+            while c and pattern[c] != v:
+                c = pi[c - 1]
+            if pattern[c] == v:
+                c += 1
+            if c == len(pattern):
+                res.append(i - m + 1)
+                c = pi[c - 1]
+        return res
