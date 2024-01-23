@@ -1632,6 +1632,7 @@ class Solution:
 
 # lc 295 进阶
 class DualHeap:
+    # 对顶堆
     def __init__(self, k: int) -> None:
         self.l = []
         self.r = []

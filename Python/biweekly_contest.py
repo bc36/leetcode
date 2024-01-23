@@ -594,3 +594,9 @@ T4: 442 pass
 # https://leetcode.cn/contest/biweekly-contest-112/
 # 665 / https://leetcode.cn/contest/biweekly-contest-112/problems/count-k-subsequences-of-a-string-with-maximum-beauty/
 # 组合数学, 乘法原理, 贪心
+
+
+# 647 / https://leetcode.cn/contest/biweekly-contest-122/problems/minimize-length-of-array-using-operations/
+# 脑筋急转弯, 分类讨论
+# 154 / https://leetcode.cn/contest/biweekly-contest-122/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
+# 滑动窗口, 对顶堆

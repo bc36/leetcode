@@ -371,3 +371,198 @@ class Solution:
                 res.append(i - m + 1)
                 c = pi[c - 1]
         return res
+
+
+# 3010 - Divide an Array Into Subarrays With Minimum Cost I - EASY
+class Solution:
+    # O(n) / O(1)
+    def minimumCost(self, nums: List[int]) -> int:
+        return nums[0] + sum(heapq.nsmallest(2, nums[1:]))
+
+
+# 3011 - Find if Array Can Be Sorted - MEDIUM
+class Solution:
+    # O(nlogn) / O(n)
+    def canSortArray(self, nums: List[int]) -> bool:
+        arr = nums[::]
+        i = 0
+        while i < len(nums):
+            j = i
+            b = nums[i].bit_count()
+            while j < len(nums) and b == nums[j].bit_count():
+                j += 1
+            arr[i:j] = sorted(nums[i:j])
+            i = j
+        return arr == sorted(nums)
+
+    # O(nlogn) / O(1)
+    def canSortArray(self, nums: List[int]) -> bool:
+        n = len(nums)
+        i = 0
+        while i < n:
+            j = i
+            ones = nums[i].bit_count()
+            i += 1
+            while i < n and ones == nums[i].bit_count():
+                i += 1
+            nums[j:i] = sorted(nums[j:i])
+        return all(x <= y for x, y in itertools.pairwise(nums))
+
+
+# 3012 - Minimize Length of Array Using Operations - MEDIUM
+class Solution:
+    # 1. 小数 % 大数 = 小数, 相当于直接删除大的数, 所以要找数组内最小值, 将其他的数都消去
+    # 2. 重点: 如果 x % 最小值 m = y != 0, 则此时 y 一定小于 当前最小值 m, 并且 y 会成为数组内新的最小值, 且唯一
+    # O(n) / O(1)
+    def minimumArrayLength(self, nums: List[int]) -> int:
+        m = min(nums)
+        return 1 if any(x % m for x in nums) else (sum(x == m for x in nums) + 1) // 2
+        return 1 if any(x % m for x in nums) else nums.count(m) - nums.count(m) // 2
+        return (
+            sum(x == m for x in nums) + 1 >> 2 if all(x % m == 0 for x in nums) else 1
+        )
+
+
+# 3013 - Divide an Array Into Subarrays With Minimum Cost II - HARD
+class Solution:
+    # 由于 nums[0] 必然是第一个子数组的代价, 只需考虑剩下的 k - 1 个数.
+    # 题意可以转化为: 在长度为dist + 1的滑动窗口中, 维护最小的 k - 1 个元素的累加和.
+    # 所有滑动窗口中累加和的最小值 + nums[0] 即为答案
+    # 维护两个个有序结构, 一个维护 k − 1 个最小的, 一个维护剩余子数组
+    # O(nlogn) / O(n)
+    def minimumCost(self, nums: List[int], k: int, dist: int) -> int:
+        init = sorted(nums[1 : dist + 2])
+        s1 = sortedcontainers.SortedList(init[: k - 1])
+        s2 = sortedcontainers.SortedList(init[k - 1 :])
+        ans = cur = sum(init[: k - 1])
+        for i in range(1, len(nums) - dist - 1):
+            if nums[i] in s1:
+                cur -= nums[i]
+                s1.remove(nums[i])
+            else:
+                s2.remove(nums[i])
+
+            if len(s1) == 0 or s1[-1] >= nums[i + dist + 1]:
+                s1.add(nums[i + dist + 1])
+                cur += nums[i + dist + 1]
+            else:
+                s2.add(nums[i + dist + 1])
+
+            if len(s1) > k - 1:
+                cur -= s1[-1]
+                s2.add(s1.pop())
+            elif len(s1) < k - 1:
+                cur += s2[0]
+                s1.add(s2.pop(0))
+
+            ans = min(ans, cur)
+        return ans + nums[0]
+
+    # 由于第一个子数组的开头一定是 nums[0], 因此把数组分成 k 个子数组
+    # 等价于 从 nums[1] 到 nums[n - 1] 里选出 (k - 1) 个数作为子数组的开头
+    # 枚举最后一个子数组的开头 nums[i], 则需要从 nums[i - delta] 到 nums[i - 1] 中再选出 (k - 2) 个数作为其它子数组的开头
+    # 这显然是一个长度为 delta 的滑动窗口. 为了最小化答案, 应该选择最小的 (k - 2) 个数
+    def minimumCost(self, nums: List[int], k: int, dist: int) -> int:
+        self.cur = 0  # s1 中所有数的和
+        s1 = sortedcontainers.SortedList()  # s1 保存前 k - 2 小值
+        s2 = sortedcontainers.SortedList()  # s2 保存其它值
+
+        def adjust() -> None:
+            while len(s1) < k - 2 and len(s2) > 0:
+                self.cur += s2[0]
+                s1.add(s2.pop(0))
+            while len(s1) > k - 2:
+                self.cur -= s1[-1]
+                s2.add(s1.pop())
+
+        def add(x: int) -> None:
+            if len(s2) > 0 and x >= s2[0]:
+                s2.add(x)
+            else:
+                self.cur += x
+                s1.add(x)
+            adjust()
+
+        def delete(x: int) -> None:
+            if x in s1:
+                self.cur -= x
+                s1.remove(x)
+            else:
+                s2.remove(x)
+            adjust()
+
+        for i in range(1, k - 1):
+            add(nums[i])
+
+        ans = self.cur + nums[k - 1]
+        for i in range(k, len(nums)):
+            t = i - dist - 1
+            if t > 0:
+                delete(nums[t])
+            add(nums[i - 1])
+            ans = min(ans, self.cur + nums[i])
+        return ans + nums[0]
+
+    def minimumCost(self, nums: List[int], k: int, dist: int) -> int:
+        k -= 1
+        self.sum = sum(nums[: dist + 2])
+        L = sortedcontainers.SortedList(nums[1 : dist + 2])
+        R = sortedcontainers.SortedList()
+
+        def L2R() -> None:
+            x = L.pop()
+            self.sum -= x
+            R.add(x)
+
+        def R2L() -> None:
+            x = R.pop(0)
+            self.sum += x
+            L.add(x)
+
+        while len(L) > k:
+            L2R()
+
+        ans = self.sum
+        for i in range(dist + 2, len(nums)):
+            # 移除 out
+            out = nums[i - dist - 1]
+            if out in L:
+                self.sum -= out
+                L.remove(out)
+            else:
+                R.remove(out)
+            # 添加 in
+            in_val = nums[i]
+            if in_val < L[-1]:
+                self.sum += in_val
+                L.add(in_val)
+            else:
+                R.add(in_val)
+            # 维护大小
+            if len(L) == k - 1:
+                R2L()
+            elif len(L) == k + 1:
+                L2R()
+            ans = min(ans, self.sum)
+        return ans
+
+
+# 3014 - Minimum Number of Pushes to Type Word I - EASY
+class Solution:
+    # 题意同 lc 3016, 但限制和数据范围不同
+    def minimumPushes(self, word: str) -> int:
+        x, m = divmod(len(word), 8)
+        return (x * 4 + m) * (x + 1)
+
+    def minimumPushes(self, word: str) -> int:
+        l = len(word)
+        ans = 0
+        t = 1
+        while l > 0:
+            if l >= 8:
+                ans += 8 * t
+            else:
+                ans += l * t
+            l -= 8
+            t += 1
+        return ans
