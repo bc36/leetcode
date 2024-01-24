@@ -1326,3 +1326,8 @@ T4: 874 pass
 # 二分 + (数位dp / 数学公式 / 逐位构造)
 # 710 / https://leetcode.cn/contest/weekly-contest-380/problems/maximize-the-number-of-partitions-after-operations/
 # kmp
+
+
+# https://leetcode.cn/contest/weekly-contest-381/
+# 127 / https://leetcode.cn/contest/weekly-contest-381/problems/count-the-number-of-houses-at-a-certain-distance-ii/
+# 差分数组 + 分类讨论

@@ -566,3 +566,121 @@ class Solution:
             l -= 8
             t += 1
         return ans
+
+
+# 3015 - Count the Number of Houses at a Certain Distance I - MEDIUM
+# 题意同 lc 3017, 但数据范围不同
+# 2 <= n <= 100
+# 1 <= x, y <= n
+
+
+# lc 3017 数据范围不
+# 2 <= n <= 10**5
+# 1 <= x, y <= n
+class Solution:
+    # O(n ^ 2) / O(n)
+    def countOfPairs(self, n: int, x: int, y: int) -> List[int]:
+        x -= 1
+        y -= 1
+        ans = [0] * n
+        for i in range(n):
+            for j in range(i):
+                ans[
+                    min(
+                        abs(i - j),
+                        abs(i - x) + 1 + abs(j - y),
+                        abs(i - y) + 1 + abs(j - x),
+                    )
+                    - 1
+                ] += 1
+        return [x * 2 for x in ans]
+
+
+# 3016 - Minimum Number of Pushes to Type Word II - MEDIUM
+class Solution:
+    def minimumPushes(self, word: str) -> int:
+        cnt = collections.Counter(word)
+        arr = sorted((v for v in cnt.values()), reverse=True)
+        return sum(v * (i // 8 + 1) for i, v in enumerate(arr))
+
+    def minimumPushes(self, word: str) -> int:
+        cnt = collections.Counter(word)
+        h = [1] * 8
+        ans = 0
+        for x in sorted(cnt.values(), reverse=True):
+            v = heapq.heappop(h)
+            ans += x * v
+            v += 1
+            heapq.heappush(h, v)
+        return ans
+
+
+# 3017 - Count the Number of Houses at a Certain Distance II - HARD
+class Solution:
+    # 寻找某一个 分界点, 在 分界点 右侧都需要经过 新加的边, 才会式路径更短
+    def countOfPairs(self, n: int, x: int, y: int) -> List[int]:
+        # 调整 x, y 的大小关系
+        if x > y:
+            x, y = y, x
+        ans = [0] * (n + 1)
+        x -= 1
+        y -= 1
+        for i in range(n):
+            # 不需要中介的情况
+            if abs(i - x) + 1 > abs(i - y):
+                ans[1] += 1
+                ans[n - i] -= 1
+            # 需要中介的情况
+            else:
+                # 找到分界点
+                d = abs(i - x) + 1
+                sep = i + d + (y - i - d) // 2
+                # 分界点左侧是直接走, 距离从 1 到 sep - i
+                ans[1] += 1
+                ans[sep - i + 1] -= 1
+                # 分界点及其右侧与 y 左侧, 通过中介, 距离从 d + 1 到 d + y - (sep + 1)
+                ans[d + 1] += 1
+                ans[d + y - sep] -= 1
+                # y 及其右侧, 距离从 d 到 d + (n - 1) - y
+                ans[d] += 1
+                ans[d + n - y] -= 1
+        ans = list(itertools.accumulate(ans))
+        return [x * 2 for x in ans[1:]]
+
+    def countOfPairs(self, n: int, x: int, y: int) -> List[int]:
+        if x > y:
+            x, y = y, x
+        x -= 1
+        y -= 1
+        ans = [0] * (n + 1)
+        l = y - x + 1
+
+        def add(frm: int, to: int) -> None:
+            if frm > to:
+                return
+            ans[frm] += 1
+            ans[to + 1] -= 1
+
+        for i in range(n):
+            if i < x:
+                add(1, i)
+                add(1, x - i)
+                add(x - i + 1, x - i + (l // 2))
+                add(x - i + 1, x - i + ((l - 1) // 2))
+                toy = min(x - i + 1, y - i)
+                add(toy + 1, toy + n - 1 - y)
+            if i >= x and i <= y:
+                tox = min(i - x, y - i + 1)
+                toy = min(y - i, i - x + 1)
+                add(tox + 1, tox + x)
+                add(toy + 1, toy + n - 1 - y)
+                add(1, (l // 2))
+                add(1, ((l - 1) // 2))
+            if i > y:
+                tox = min(i - x, i - y + 1)
+                add(tox + 1, tox + x)
+                add(i - y + 1, i - y + (l // 2))
+                add(i - y + 1, i - y + ((l - 1) // 2))
+                add(1, i - y)
+                add(1, n - 1 - i)
+        return list(itertools.accumulate(ans))[1:]
