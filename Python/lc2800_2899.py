@@ -1536,6 +1536,105 @@ class Solution:
         return ans
 
 
+# 2861 - Maximum Number of Alloys - MEDIUM
+class Solution:
+    def maxNumberOfAlloys(
+        self,
+        n: int,
+        k: int,
+        budget: int,
+        composition: List[List[int]],
+        stock: List[int],
+        cost: List[int],
+    ) -> int:
+        ans = 0
+        for comp in composition:
+            l, r = 0, 10**9
+            while l < r:
+                m = l + r + 1 >> 1
+                total = 0
+                for com, s, c in zip(comp, stock, cost):
+                    if s >= m * com:
+                        continue
+                    total += (m * com - s) * c
+                if total <= budget:
+                    l = m
+                else:
+                    r = m - 1
+            ans = max(ans, l)
+        return ans
+
+    def maxNumberOfAlloys(
+        self,
+        n: int,
+        k: int,
+        budget: int,
+        composition: List[List[int]],
+        stock: List[int],
+        cost: List[int],
+    ) -> int:
+        ans = 0
+        for comp in composition:
+            l, r = 0, 10**9
+            while l + 1 < r:
+                m = l + r >> 1
+                total = sum(
+                    c * max(0, m * com - s) for com, s, c in zip(comp, stock, cost)
+                )
+                if total <= budget:
+                    l = m
+                else:
+                    r = m
+            ans = max(ans, l)
+        return ans
+
+    def maxNumberOfAlloys(
+        self,
+        n: int,
+        k: int,
+        budget: int,
+        composition: List[List[int]],
+        stock: List[int],
+        cost: List[int],
+    ) -> int:
+        ans = 0
+        for comp in composition:
+            check = (
+                lambda m: sum(
+                    c * max(0, m * num - s) for num, s, c in zip(comp, stock, cost)
+                )
+                > budget
+            )
+            ans = max(ans, bisect.bisect_left(range(10**9), True, key=check) - 1)
+        return ans
+
+        # The most unreadable version
+        return max(
+            bisect.bisect_left(
+                range(10**9),
+                True,
+                key=lambda m: sum(
+                    c * max(0, m * num - s) for num, s, c in zip(comp, stock, cost)
+                )
+                > budget,
+            )
+            - 1
+            for comp in composition
+        )
+
+        return max(
+            bisect.bisect_left(
+                range(10**9),
+                budget + 1,
+                key=lambda m: sum(
+                    c * max(0, m * num - s) for num, s, c in zip(comp, stock, cost)
+                ),
+            )
+            - 1
+            for comp in composition
+        )
+
+
 # 2864 - Maximum Odd Binary Number - EASY
 class Solution:
     def maximumOddBinaryNumber(self, s: str) -> str:
