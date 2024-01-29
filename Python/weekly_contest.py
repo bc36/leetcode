@@ -1331,3 +1331,8 @@ T4: 874 pass
 # https://leetcode.cn/contest/weekly-contest-381/
 # 127 / https://leetcode.cn/contest/weekly-contest-381/problems/count-the-number-of-houses-at-a-certain-distance-ii/
 # 差分数组 + 分类讨论
+
+
+# https://leetcode.cn/contest/weekly-contest-382/
+# 54 / https://leetcode.cn/contest/weekly-contest-382/problems/minimize-or-of-remaining-elements-using-operations/
+# 位运算, 贪心, 按位或 OR + 取最小值 -> 从高到低考虑

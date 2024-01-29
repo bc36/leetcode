@@ -684,3 +684,85 @@ class Solution:
                 add(1, i - y)
                 add(1, n - 1 - i)
         return list(itertools.accumulate(ans))[1:]
+
+
+# 3019 - Number of Changing Keys - EASY
+class Solution:
+    def countKeyChanges(self, s: str) -> int:
+        return sum(x != y for x, y in itertools.pairwise(s.lower()))
+
+
+# 3020 - Find the Maximum Number of Elements in Subset - MEDIUM
+class Solution:
+    def maximumLength(self, nums: List[int]) -> int:
+        ans = 1
+        cnt = collections.Counter(nums)
+        for x in set(nums):
+            if x == 1:
+                ans = max(ans, cnt[1] - (cnt[1] % 2 == 0))
+                continue
+            cur = 0
+            while cnt[x] >= 2:
+                x *= x
+                cur += 2
+            ans = max(ans, cur + (1 if cnt[x] >= 1 else -1))
+        return ans
+
+    def maximumLength(self, nums: List[int]) -> int:
+        cnt = collections.Counter(nums)
+        ans = cnt[1] - (cnt[1] % 2 ^ 1)
+        del cnt[1]
+        for x in cnt:
+            res = 0
+            while cnt[x] > 1:
+                res += 2
+                x *= x
+            ans = max(ans, res + (1 if x in cnt else -1))  # 保证 res 是奇数
+        return ans
+
+
+# 3021 - Alice and Bob Playing Flower Game - MEDIUM
+class Solution:
+    # 两数和为奇数
+    # n 中的奇数 * m 中的偶数 + n 中的偶数 * m 中的奇数
+    def flowerGame(self, n: int, m: int) -> int:
+        return n * m // 2
+
+
+# 3022 - Minimize OR of Remaining Elements Using Operations - HARD
+class Solution:
+    # 思考如何在计算新的 位 的时候, 如何携带高位的信息
+    # 注意这两种解法的区别
+
+    # O(nlogU) / O(1), U = max(nums)
+    def minOrAfterOperations(self, nums: List[int], k: int) -> int:
+        ans = 0  # 所有为 0 的位构成的数字为去掉的数字, 我们要最大化这个去掉的数字
+        for i in range(29, -1, -1):
+            cur = ans | (1 << i)
+            val = -1  # -1 在 python 里满足任何数和它进行与运算都是它本身
+            cnt = len(nums)  # 最终找到了 cnt 个 与和 为 0 的子数组. 需要进行的操作数为 n - cnt
+            for x in nums:
+                val &= x & cur
+                if val == 0:
+                    cnt -= 1
+                    val = -1
+            if cnt <= k:
+                ans = cur
+        return (1 << 30) - 1 - ans
+
+    def minOrAfterOperations(self, nums: List[int], k: int) -> int:
+        ans = mask = 0
+        for b in range(max(nums).bit_length() - 1, -1, -1):
+            mask |= 1 << b
+            cnt = 0  # 操作次数
+            and_res = -1  # -1 的二进制全为 1
+            for x in nums:
+                and_res &= x & mask
+                if and_res:
+                    cnt += 1  # 合并 x
+                else:
+                    and_res = -1  # 准备合并下一段
+            if cnt > k:
+                ans |= 1 << b  # 答案的这个比特位必须是 1
+                mask ^= 1 << b  # 后面不考虑这个比特位
+        return ans
