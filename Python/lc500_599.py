@@ -169,6 +169,102 @@ class Solution:
         return ans[0]
 
 
+# 514 - Freedom Trail - HARD
+class Solution:
+    # TLE
+    def findRotateSteps(self, ring: str, key: str) -> int:
+        n, m = len(ring), len(key)
+        near = [[[] for _ in range(26)] for _ in range(26)]
+        for i, x in enumerate(ring):
+            ox = ord(x) - 97
+            for j, y in enumerate(ring):
+                if x == y:
+                    continue
+                oy = ord(y) - 97
+                near[ox][oy].append(j)
+
+        h = [(0, 0, 0)]
+        while h:
+            step, j, i = heapq.heappop(h)
+            if j == m:
+                return step
+            if ring[i] == key[j]:
+                heapq.heappush(h, (step + 1, j + 1, i))
+            else:
+                for k in near[ord(ring[i]) - 97][ord(key[j]) - 97]:
+                    d = abs(i - k)
+                    heapq.heappush(h, (step + 1 + min(d, n - d), j + 1, k))
+        return -1
+
+    # O(n * n * m) / O(nm)
+    def findRotateSteps(self, ring: str, key: str) -> int:
+        n, m = len(ring), len(key)
+        pos = collections.defaultdict(list)
+        for i, x in enumerate(ring):
+            pos[x].append(i)
+        # 定义 f[i][j] 表示从前往后拼写出 key 的第 i 个字符
+        # 同时 ring 的第 j 个字符与 12:00 方向对齐的最少步数(下标均从 0 开始)
+        f = [[10001] * n for _ in range(m)]
+        for i in pos[key[0]]:
+            f[0][i] = min(i, n - i) + 1
+        for i in range(1, m):
+            for j in pos[key[i]]:
+                for k in pos[key[i - 1]]:
+                    d = abs(j - k)
+                    f[i][j] = min(f[i][j], f[i - 1][k] + 1 + min(d, n - d))
+        return min(f[-1])
+
+    def findRotateSteps(self, ring: str, key: str) -> int:
+        n, m = len(ring), len(key)
+        n, m = len(ring), len(key)
+        n, m = len(ring), len(key)
+        pos = collections.defaultdict(list)
+        for i, x in enumerate(ring):
+            pos[x].append(i)
+
+        @functools.cache
+        def f(i: int, j: int) -> int:
+            """有 pos 加速"""
+            if j == m:
+                return 0
+            res = 10001
+            for k in pos[key[j]]:
+                d = abs(k - i)
+                res = min(res, f(k, j + 1) + 1 + min(d, n - d))
+            return res
+
+        @functools.cache
+        def f2(i: int, j: int) -> int:
+            """没有 pos 加速"""
+            if j == m:
+                return 0
+            res = 10001
+            for k in range(n):
+                if ring[k] == key[j]:
+                    d = abs(i - k)
+                    res = min(res, f(k, j + 1) + 1 + min(d, n - d))
+            return res
+
+        return f(0, 0)
+
+    # 牛比
+    def findRotateSteps(self, ring: str, key: str) -> int:
+        return min(
+            functools.reduce(
+                lambda dp, k: {
+                    i: min(
+                        d + 1 + min(abs(i - j), len(ring) - abs(i - j))
+                        for j, d in dp.items()
+                    )
+                    for i, r in enumerate(ring)
+                    if r == k
+                },
+                key,
+                {0: 0},
+            ).values()
+        )
+
+
 # 515 - Find Largest Value in Each Tree Row - MEDIUM
 class Solution:
     def largestValues(self, root: Optional[TreeNode]) -> List[int]:

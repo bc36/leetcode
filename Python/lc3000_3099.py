@@ -750,6 +750,7 @@ class Solution:
                 ans = cur
         return (1 << 30) - 1 - ans
 
+    # O(nlogU) / O(1), U = max(nums)
     def minOrAfterOperations(self, nums: List[int], k: int) -> int:
         ans = mask = 0
         for b in range(max(nums).bit_length() - 1, -1, -1):
@@ -766,3 +767,21 @@ class Solution:
                 ans |= 1 << b  # 答案的这个比特位必须是 1
                 mask ^= 1 << b  # 后面不考虑这个比特位
         return ans
+
+    def minOrAfterOperations(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        mask = (1 << 30) - 1
+
+        def check(m: int) -> bool:
+            x = mask
+            cnt = 0
+            for v in nums:
+                x &= v
+                if x & m == x:  # 经过与操作, 这一段可以合并
+                    cnt += 1
+                    if cnt >= n - k:
+                        return True
+                    x = mask
+            return False
+
+        return bisect.bisect_left(range(mask), True, key=check)

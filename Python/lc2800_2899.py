@@ -164,6 +164,20 @@ class Solution:
         return dummy
 
 
+# 2808 - Minimum Seconds to Equalize a Circular Array - MEDIUM
+class Solution:
+    def minimumSeconds(self, nums: List[int]) -> int:
+        pos = collections.defaultdict(list)
+        for i, x in enumerate(nums):
+            pos[x].append(i)
+        ans = n = len(nums)
+        for v in pos.values():
+            v.append(v[0] + n)
+            mx = max(j - i for i, j in pairwise(v))
+            ans = min(ans, mx // 2)
+        return ans
+
+
 # 2815 - Max Pair Sum in an Array - EASY
 class Solution:
     def maxSum(self, nums: List[int]) -> int:
