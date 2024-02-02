@@ -1242,6 +1242,20 @@ class Solution:
 # 1685 - Sum of Absolute Differences in a Sorted Array - MEDIUM
 
 
+# 1686 - Stone Game VI - MEDIUM
+class Solution:
+    def stoneGameVI(self, aliceValues: List[int], bobValues: List[int]) -> int:
+        arr = sorted(zip(aliceValues, bobValues), key=lambda x: -x[0] - x[1])
+        score = sum(a if i % 2 == 0 else -b for i, (a, b) in enumerate(arr))
+        return 0 if score == 0 else 1 if score > 0 else -1
+        return (score > 0) - (score < 0)
+
+    def stoneGameVI(self, aliceValues: List[int], bobValues: List[int]) -> int:
+        arr = sorted([(a + b) for a, b in zip(aliceValues, bobValues)], reverse=True)
+        score = sum(arr[::2]) - sum(bobValues)
+        return 0 if score == 0 else 1 if score > 0 else -1
+
+
 # 1688 - Count of Matches in Tournament - EASY
 class Solution:
     def numberOfMatches(self, n: int) -> int:

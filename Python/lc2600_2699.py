@@ -1539,6 +1539,18 @@ class Solution:
 
     # O(n) / O(n)
     def distinctDifferenceArray(self, nums: List[int]) -> List[int]:
+        ans = [0] * len(nums)
+        suf = collections.Counter(nums)
+        pre = collections.defaultdict(int)
+        for i, x in enumerate(nums):
+            pre[x] += 1
+            suf[x] -= 1
+            if suf[x] == 0:
+                del suf[x]
+            ans[i] = len(pre) - len(suf)
+        return ans
+
+    def distinctDifferenceArray(self, nums: List[int]) -> List[int]:
         cnt = collections.Counter(nums)
         suf = len(cnt)
         s = set()

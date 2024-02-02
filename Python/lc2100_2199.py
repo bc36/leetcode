@@ -1019,6 +1019,14 @@ class Solution:
         return sum(beans) - ans
 
 
+# 2171. Removing Minimum Number of Magic Beans - MEDIUM
+class Solution:
+    def minimumRemoval(self, beans: List[int]) -> int:
+        # return sum(beans) - max((len(beans) - i) * v for i, v in enumerate(sorted(beans)))
+        beans.sort()
+        return sum(beans) - max((len(beans) - i) * v for i, v in enumerate(beans))
+
+
 # 2180 - Count Integers With Even Digit Sum - EASY
 class Solution:
     def countEven(self, num: int) -> int:
