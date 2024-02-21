@@ -213,18 +213,65 @@ class Solution:
         return root
 
     def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
-        dic = {val: idx for idx, val in enumerate(inorder)}
+        d = {v: i for i, v in enumerate(inorder)}
 
         def helper(p: int, ileft: int, iright: int) -> TreeNode:
             if ileft > iright:
                 return None
             root = TreeNode(preorder[p])
-            idx = dic[preorder[p]]
+            idx = d[preorder[p]]
             root.left = helper(p + 1, ileft, idx - 1)
             root.right = helper(p + idx - ileft + 1, idx + 1, iright)
             return root
 
         return helper(0, 0, len(inorder) - 1)
+
+
+# 106 - Construct Binary Tree from Inorder and Postorder Traversal - MEDIUM
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        if not inorder:
+            return None
+        root = TreeNode(postorder[-1])
+        idx = inorder.index(postorder[-1])  # 无重复元素, 可以直接查找
+        root.left = self.buildTree(inorder[:idx], postorder[:idx])
+        root.right = self.buildTree(inorder[idx + 1 :], postorder[idx:-1])
+        return root
+
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        d = {v: i for i, v in enumerate(inorder)}
+
+        def build(p: int, ileft: int, iright: int) -> TreeNode:
+            if ileft > iright:
+                return None
+            root = TreeNode(postorder[p])
+            idx = d[postorder[p]]
+            root.left = build(p - (iright - idx) - 1, ileft, idx - 1)
+            root.right = build(p - 1, idx + 1, iright)
+            return root
+
+        return build(len(inorder) - 1, 0, len(inorder) - 1)
+
+
+# 107 - Binary Tree Level Order Traversal II - MEDIUM
+class Solution:
+    def levelOrderBottom(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+        ans = []
+        q = [root]
+        while q:
+            new = []
+            lv = []
+            for x in q:
+                lv.append(x.val)
+                if x.left:
+                    new.append(x.left)
+                if x.right:
+                    new.append(x.right)
+            q = new
+            ans.append(lv)
+        return ans[::-1]
 
 
 # 108 - Convert Sorted Array to Binary Search Tree - EASY

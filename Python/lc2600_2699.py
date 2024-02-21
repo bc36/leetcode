@@ -994,6 +994,24 @@ class Solution:
         return root
 
     def replaceValueInTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        q = [(root, 0, 0)]
+        s = 0
+        while q:
+            new = []
+            ss = 0
+            for x, lv, rv in q:
+                x.val = s - lv - rv
+                if x.left:
+                    new.append((x.left, x.left.val, x.right.val if x.right else 0))
+                    ss += x.left.val
+                if x.right:
+                    new.append((x.right, x.left.val if x.left else 0, x.right.val))
+                    ss += x.right.val
+            q = new
+            s = ss
+        return root
+
+    def replaceValueInTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         d = collections.defaultdict(int)
 
         def dfs(root: TreeNode, lv: int) -> None:

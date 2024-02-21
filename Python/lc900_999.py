@@ -1959,6 +1959,62 @@ class Solution:
         return ans
 
 
+# 993 - Cousins in Binary Tree - EASY
+class Solution:
+    # O(n) / O(n)
+    def isCousins(self, root: Optional[TreeNode], x: int, y: int) -> bool:
+        q = [(root, None)]
+        while q:
+            new = []
+            m = n = None
+            for a, fa in q:
+                if a.val == x:
+                    m = (a, fa)
+                elif a.val == y:
+                    n = (a, fa)
+                if a.left:
+                    new.append((a.left, a))
+                if a.right:
+                    new.append((a.right, a))
+            if m and n:
+                return m[1] != n[1]
+            elif (m and not n) or (n and not m):
+                return False
+            q = new
+        return False
+
+    def isCousins(self, root: Optional[TreeNode], x: int, y: int) -> bool:
+        info = {}
+
+        def dfs(root: TreeNode, fa: TreeNode, d: int) -> None:
+            if root:
+                info[root.val] = (fa, d)
+                dfs(root.left, root, d + 1)
+                dfs(root.right, root, d + 1)
+            return
+
+        dfs(root, None, 0)
+        return info[x][0] != info[y][0] and info[x][1] == info[y][1]
+
+    # O(n) / O(1)
+    def isCousins(self, root: Optional[TreeNode], x: int, y: int) -> bool:
+        def dfs(
+            root: TreeNode, fa: TreeNode, depth: int, t: int
+        ) -> Tuple[TreeNode, int, bool]:
+            if not root:
+                return None, None, False
+            if root.val == t:
+                return fa, depth, True
+            res = dfs(root.left, root, depth + 1, t)
+            if res[2]:
+                return res
+            return dfs(root.right, root, depth + 1, t)
+
+        xx = dfs(root, None, 0, x)
+        yy = dfs(root, None, 0, y)
+        return xx[0] != yy[0] and xx[1] == yy[1]
+
+
 # 994 - Rotting Oranges - MEDIUM
 class Solution:
     def orangesRotting(self, grid: List[List[int]]) -> int:
