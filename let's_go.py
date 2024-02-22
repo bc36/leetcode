@@ -6,9 +6,10 @@ from typing import Callable, Dict, List, Tuple
 根据输入题目网址, 获取题目信息, 生成代码模版, 测试模版及测试数据
 
 如何使用:
-> python3 let's_go.py https://leetcode.com/problems/add-two-numbers/
+> python3 let\'s_go.py https://leetcode.com/problems/add-two-numbers/
+> python3 let\'s_go.py https://leetcode.com/problems/add-two-integers/description/
 或者
-> python3 let's_go.py
+> python3 let\'s_go.py
 > 后续再传入 URL
 
 
@@ -17,6 +18,10 @@ https://leetcode.com/problems/add-two-numbers/ 树, 节点
 https://leetcode.com/problems/lru-cache/ 设计题
 https://leetcode.com/problems/course-schedule/ 图
 https://leetcode.com/problems/count-the-number-of-powerful-integers/
+
+
+Other related things:
+curl 'https://leetcode.com/contest/api/info/weekly-contest-379/' | jq
 """
 
 
@@ -51,8 +56,11 @@ def get_url() -> str:
     if len(sys.argv) == 2:
         ret = sys.argv[1]
     else:
-        ret = input("Pls enter a .com URL like: 'https://leetcode.com/problems/two-sum/': ")
+        ret = input(
+            "Pls enter a .com URL like: 'https://leetcode.com/problems/two-sum/': "
+        )
 
+    ret = ret.replace("/leetcode.cn/", "/leetcode.com/")
     ret = ret.replace("/description", "")  # /description 也可以获取内容, 似乎不影响结果
     ret = ret.strip()  # Removeleading and trailing whitespace
     if ret[-1] != "/":
@@ -170,7 +178,7 @@ def create_problem_file(
 
     with open(problem_file_path, "w") as file:
         # TODO: 增加所属周赛 URL
-        extra_import = '\nimport . "github.com/bc36/leetcode/Go/testutils"\n'
+        extra_import = '\n//lint:ignore ST1001 ¯\_(ツ)_/¯\nimport . "github.com/bc36/leetcode/Go/testutils"\n'
         comment_ending = code.index("*/") + 2 if "*/" in code else 0
         leading_new_line = "\n" if comment_ending == 0 else ""
 
@@ -280,4 +288,6 @@ if __name__ == "__main__":
     create_problem_file(dir_path, input_url, title_slug, difficulty, code_snippet)
     create_test_file(dir_path, title_slug, func_name, is_func_problem)
     create_data_file(dir_path, title_slug, content)
-    logging.info("The problem file, test file and test cases file are created. Let's go. :)")
+    logging.info(
+        "The problem file, test file and test cases file are created. Let's go. :)"
+    )
