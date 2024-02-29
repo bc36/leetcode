@@ -52,7 +52,9 @@ def eratosthenes(n: int) -> List[int]:
     for i in range(2, n + 1):
         if is_prime[i]:
             primes.append(i)
-            for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+            for j in range(
+                i * i, n + 1, i
+            ):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
                 is_prime[j] = False
     return primes
 
@@ -67,7 +69,9 @@ class Solution:
         for x in nums:
             if x <= p:
                 return False
-            p = x - primes[bisect.bisect_left(primes, x - p) - 1]  # 减去小于 x - p 的最大质数
+            p = (
+                x - primes[bisect.bisect_left(primes, x - p) - 1]
+            )  # 减去小于 x - p 的最大质数
             # p = x - primes[bisect.bisect_right(primes, x - p - 1) - 1]
         return True
 
@@ -1685,6 +1689,13 @@ class Solution:
         for i in range(n // 2, 0, -1):  # 从最后一个非叶节点开始算
             ans += abs(cost[i * 2 - 1] - cost[i * 2])
             cost[i - 1] += max(cost[i * 2 - 1], cost[i * 2])  # 累加路径和
+        return ans
+
+    def minIncrements(self, n: int, cost: List[int]) -> int:
+        ans = 0
+        for i in range(n - 1, 0, -2):
+            ans += abs(cost[i] - cost[i - 1])
+            cost[(i - 1) // 2] += max(cost[i], cost[i - 1])
         return ans
 
     # O(n) / O(n)
