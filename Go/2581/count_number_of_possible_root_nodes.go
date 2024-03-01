@@ -43,6 +43,5 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 		}
 	}
 	reroot(0, -1, cnt0)
-
 	return
 }

@@ -2429,29 +2429,6 @@ class Solution:
 
 # 2369 - Check if There is a Valid Partition For The Array - MEDIUM
 class Solution:
-    # dp
-    def validPartition(self, nums: List[int]) -> bool:
-        @functools.lru_cache(None)
-        def dfs(i: int) -> bool:
-            if i == 2:
-                return (
-                    nums[0] == nums[1] == nums[2]
-                    or nums[0] + 2 == nums[1] + 1 == nums[2]
-                )
-            if i == 1:
-                return nums[0] == nums[1]
-            if i <= 0:
-                return False
-            if nums[i - 1] == nums[i] and dfs(i - 2):
-                return True
-            if nums[i - 2] == nums[i - 1] == nums[i] and dfs(i - 3):
-                return True
-            if nums[i - 2] + 2 == nums[i - 1] + 1 == nums[i] and dfs(i - 3):
-                return True
-            return False
-
-        return dfs(len(nums) - 1)
-
     def validPartition(self, nums: List[int]) -> bool:
         n = len(nums)
 
@@ -2472,6 +2449,43 @@ class Solution:
             return False
 
         return dfs(0)
+
+    def validPartition(self, nums: List[int]) -> bool:
+        @functools.cache
+        def dfs(i: int) -> bool:
+            if i == -1:
+                return True
+            if i >= 1 and nums[i - 1] == nums[i] and dfs(i - 2):
+                return True
+            if (
+                i >= 2
+                and (
+                    nums[i - 2] == nums[i - 1] == nums[i]
+                    or nums[i - 2] + 2 == nums[i - 1] + 1 == nums[i]
+                )
+                and dfs(i - 3)
+            ):
+                return True
+            return False
+
+        return dfs(len(nums) - 1)
+
+    def validPartition(self, nums: List[int]) -> bool:
+        @functools.cache
+        def dfs(i: int) -> bool:
+            if i == -1:
+                return True
+            res = False
+            if i >= 1 and nums[i - 1] == nums[i]:
+                res |= dfs(i - 2)
+            if i >= 2 and (
+                nums[i - 2] == nums[i - 1] == nums[i]
+                or nums[i - 2] + 2 == nums[i - 1] + 1 == nums[i]
+            ):
+                res |= dfs(i - 3)
+            return res
+
+        return dfs(len(nums) - 1)
 
     def validPartition(self, nums: List[int]) -> bool:
         n = len(nums)
@@ -2723,7 +2737,9 @@ class Solution:
             ans = 0
             if not isNum:  # 可以跳过当前数位
                 ans = f(i + 1, mask, False, False)
-            low = 0 if isNum else 1  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
+            low = (
+                0 if isNum else 1
+            )  # 如果前面没有填数字, 必须从 1 开始, 因为不能有前导零
             # 如果前面填的数字都和 n 的一样, 那么这一位至多填 s[i], 否则就超过 n 了
             up = int(s[i]) if isLimit else 9
             for d in range(low, up + 1):  # 枚举要填入的数字 d
