@@ -1,3 +1,6 @@
+#!/usr/local/bin/python3
+# -*- coding: utf-8 -*-
+
 import html, logging, json, os, re, subprocess, sys
 from typing import Callable, Dict, List, Tuple
 

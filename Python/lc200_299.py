@@ -844,37 +844,7 @@ class Solution:
 # 225 - Implement Stack using Queues - EASY
 class MyStack:
     def __init__(self):
-        self.d1 = collections.deque()
-        self.d2 = collections.deque()
-
-    def push(self, x: int) -> None:
-        if self.d1:
-            self.d1.append(x)
-        else:
-            self.d2.append(x)
-        return
-
-    def pop(self) -> int:
-        if self.d1:
-            while len(self.d1) > 1:
-                self.d2.append(self.d1.popleft())
-            return self.d1.popleft()
-        else:
-            while len(self.d2) > 1:
-                self.d1.append(self.d2.popleft())
-            return self.d2.popleft()
-
-    def top(self) -> int:
-        if self.d1:
-            return self.d1[-1]
-        return self.d2[-1]
-
-    def empty(self) -> bool:
-        return len(self.d1) == len(self.d2) == 0
-
-
-class MyStack:
-    def __init__(self):
+        '''队列是先入先出 FIFO'''
         self.d1 = collections.deque()
         self.d2 = collections.deque()
 
@@ -901,8 +871,9 @@ class MyStack:
 
     def push(self, x: int) -> None:
         self.dq.append(x)
-        for _ in range(len(self.dq) - 1):
-            self.dq.append(self.dq.popleft())
+        self.dq.rotate()
+        # for _ in range(len(self.dq) - 1):
+        #     self.dq.append(self.dq.popleft())
         return
 
     def pop(self) -> int:
