@@ -2375,11 +2375,35 @@ class Solution:
         while dq:
             ans += len(dq)
             for _ in range(len(dq)):
-                n = dq.popleft()
-                for x in g[n]:
-                    if not vis[x] and x not in r:
-                        dq.append(x)
-                        vis[x] = True
+                x = dq.popleft()
+                for y in g[x]:
+                    if not vis[y] and y not in r:
+                        dq.append(y)
+                        vis[y] = True
+        return ans
+
+    def reachableNodes(
+        self, n: int, edges: List[List[int]], restricted: List[int]
+    ) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        s = set(restricted)
+        ans = 0
+        vis = set()
+        # vis = {0}
+        q = [0]
+        while q:
+            new = []
+            for x in q:
+                ans += 1
+                vis.add(x)
+                for y in g[x]:
+                    if y not in vis and y not in s:
+                        # vis.add(y)
+                        new.append(y)
+            q = new
         return ans
 
     def reachableNodes(
