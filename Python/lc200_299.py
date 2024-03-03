@@ -202,7 +202,9 @@ n = 5 * 10**6
 p = [True] * (n + 1)
 for i in range(2, n):
     if p[i]:
-        for j in range(i * i, n, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+        for j in range(
+            i * i, n, i
+        ):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
             p[j] = False
 
 
@@ -844,7 +846,7 @@ class Solution:
 # 225 - Implement Stack using Queues - EASY
 class MyStack:
     def __init__(self):
-        '''队列是先入先出 FIFO'''
+        """队列 self.d1, self.d2 是先入先出 FIFO"""
         self.d1 = collections.deque()
         self.d2 = collections.deque()
 
@@ -1128,26 +1130,28 @@ class Solution:
 # 232 - Implement Queue using Stacks - EASY
 class MyQueue:
     def __init__(self):
-        self.stack1 = []
-        self.stack2 = []
+        """一定要保证 self.out 为空的时候，才能把元素从 self.inn 里拿到 self.out 中
+        类似 彩虹圈 / Slinky 的样子"""
+        self.inn = []
+        self.out = []
 
     def push(self, x: int) -> None:
-        self.stack1.append(x)
+        self.inn.append(x)
 
     def pop(self) -> int:
-        if not self.stack2:
-            while self.stack1:
-                self.stack2.append(self.stack1.pop())
-        return self.stack2.pop()
+        if not self.out:
+            while self.inn:
+                self.out.append(self.inn.pop())
+        return self.out.pop()
 
     def peek(self) -> int:
-        if not self.stack2:
-            while self.stack1:
-                self.stack2.append(self.stack1.pop())
-        return self.stack2[-1]
+        if not self.out:
+            while self.inn:
+                self.out.append(self.inn.pop())
+        return self.out[-1]
 
     def empty(self) -> bool:
-        return not self.stack1 and not self.stack2
+        return not self.inn and not self.out
 
 
 # 233 - Number of Digit One - HARD
@@ -1576,20 +1580,14 @@ class Solution:
 
     # much faster, 40ms, it does not compute time spent before entering objective function
     ugly = sorted(
-        2**a * 3**b * 5**c
-        for a in range(32)
-        for b in range(20)
-        for c in range(14)
+        2**a * 3**b * 5**c for a in range(32) for b in range(20) for c in range(14)
     )
 
     def nthUglyNumber(self, n):
         return self.ugly[n - 1]
         # quite slow, 4000ms
         ugly = sorted(
-            2**a * 3**b * 5**c
-            for a in range(32)
-            for b in range(20)
-            for c in range(14)
+            2**a * 3**b * 5**c for a in range(32) for b in range(20) for c in range(14)
         )
         return ugly
 
