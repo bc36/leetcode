@@ -80,7 +80,10 @@ class Solution:
         for i, row in enumerate(grid):
             for j, v in enumerate(row):
                 if v == 0:
-                    x, y = i + stampHeight, j + stampWidth  # 注意这是矩形右下角横纵坐标都 +1 后的位置
+                    x, y = (
+                        i + stampHeight,
+                        j + stampWidth,
+                    )  # 注意这是矩形右下角横纵坐标都 +1 后的位置
                     if (
                         x <= m
                         and y <= n
@@ -596,7 +599,13 @@ T4: 442 pass
 # 组合数学, 乘法原理, 贪心
 
 
+# https://leetcode.cn/contest/biweekly-contest-122/
 # 647 / https://leetcode.cn/contest/biweekly-contest-122/problems/minimize-length-of-array-using-operations/
 # 脑筋急转弯, 分类讨论
 # 154 / https://leetcode.cn/contest/biweekly-contest-122/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
 # 滑动窗口, 对顶堆
+
+
+# https://leetcode.cn/contest/biweekly-contest-125/
+# 256 / https://leetcode.cn/contest/biweekly-contest-125/problems/find-the-maximum-sum-of-node-values/
+# dp / 脑筋急转弯

@@ -740,7 +740,9 @@ class Solution:
         for i in range(29, -1, -1):
             cur = ans | (1 << i)
             val = -1  # -1 在 python 里满足任何数和它进行与运算都是它本身
-            cnt = len(nums)  # 最终找到了 cnt 个 与和 为 0 的子数组. 需要进行的操作数为 n - cnt
+            cnt = len(
+                nums
+            )  # 最终找到了 cnt 个 与和 为 0 的子数组. 需要进行的操作数为 n - cnt
             for x in nums:
                 val &= x & cur
                 if val == 0:
@@ -785,3 +787,101 @@ class Solution:
             return False
 
         return bisect.bisect_left(range(mask), True, key=check)
+
+
+# 3065. Minimum Operations to Exceed Threshold Value I - EASY
+class Solution:
+    def minOperations(self, nums: List[int], k: int) -> int:
+        return sum(v < k for v in nums)
+
+
+# 3066. Minimum Operations to Exceed Threshold Value II - MEDIUM
+class Solution:
+    def minOperations(self, nums: List[int], k: int) -> int:
+        nums.sort()
+        ans = 0
+        while nums and nums[0] < k:
+            x = heapq.heappop(nums)
+            y = heapq.heappop(nums)
+            heapq.heappush(nums, x * 2 + y)
+            ans += 1
+        return ans
+
+    def minOperations(self, h: List[int], k: int) -> int:
+        ans = 0
+        heapq.heapify(h)
+        while h[0] < k:
+            x = heapq.heappop(h)
+            heapq.heapreplace(h, x * 2 + h[0])
+            ans += 1
+        return ans
+
+
+# 3067. Count Pairs of Connectable Servers in a Weighted Tree Network - MEDIUM
+class Solution:
+    def countPairsOfConnectableServers(
+        self, edges: List[List[int]], signalSpeed: int
+    ) -> List[int]:
+        n = len(edges)
+        g = [[] for _ in range(n + 1)]
+        for x, y, w in edges:
+            g[x].append((y, w))
+            g[y].append((x, w))
+
+        def dfs(x: int, fa: int, d: int):
+            nonlocal cnt
+            if d % signalSpeed == 0:
+                cnt += 1
+            for y, w in g[x]:
+                if y != fa:
+                    dfs(y, x, d + w)
+            return
+
+        ans = [0] * (n + 1)
+        for x in range(n + 1):
+            cur = 0
+            for y, w in g[x]:
+                cnt = 0
+                dfs(y, x, w)
+                ans[x] += cnt * cur
+                cur += cnt
+        return ans
+
+
+# 3068. Find the Maximum Sum of Node Values - HARD
+class Solution:
+    # 1. 由于一个数异或两次(偶数次) k 后保持不变, 所以对于一条从 x 到 y 的简单路径, 我们把路径上的所有边操作后, 路径上除了 x 和 y 的其它节点都恰好操作两次, 
+    #    所以只有 nums[x] 和 nums[y] 都异或了 k, 其余元素不变, 所以题目中的操作可以作用在任意两个数上. 所以不需要建树, edges 是多余的
+    # 2. 无论操作多少次, 总是有偶数个元素异或了 k, 其余元素不变
+    def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
+        dp0, dp1 = 0, -math.inf
+        for v in nums:
+            dp0, dp1 = max(dp0 + v, dp1 + (v ^ k)), max(dp0 + (v ^ k), dp1 + v)
+        return dp0
+
+    def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
+        return functools.reduce(
+            lambda x, y: (max(x[0] + y, x[1] + (y ^ k)), max(x[1] + y, x[0] + (y ^ k))),
+            nums,
+            (0, -math.inf),
+        )[0]
+
+    def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
+        ans = sum(nums)
+        arr = sorted(((t ^ k) - t for t in nums), reverse=True)
+        for i in range(0, len(arr) - 1, 2):
+            t = arr[i] + arr[i + 1]
+            if t > 0:
+                ans += t
+            else:
+                break
+        return ans
+
+    def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
+        ans = sum(nums)
+        arr = sorted((i ^ k) - i for i in nums)
+        while len(arr) >= 2 and arr[-1] + arr[-2] >= 0:
+            ans += arr[-1] + arr[-2]
+            arr.pop()
+            arr.pop()
+        return ans

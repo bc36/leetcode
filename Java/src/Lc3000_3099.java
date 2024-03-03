@@ -6,6 +6,7 @@ import java.util.function.*;
 
 import javax.lang.model.util.Elements;
 
+@SuppressWarnings("unchecked")
 public class Lc3000_3099 {
     // 3014. Minimum Number of Pushes to Type Word I - EASY
     class Solution3014a {
@@ -147,6 +148,96 @@ public class Lc3000_3099 {
                 }
             }
             return (1 << 30) - 1 ^ mask;
+        }
+    }
+
+    // 3065. Minimum Operations to Exceed Threshold Value I - EASY
+    class Solution3065a {
+        public int minOperations(int[] nums, int k) {
+            int ans = 0;
+            for (int num : nums) {
+                if (num < k)
+                    ans++;
+            }
+            return ans;
+        }
+    }
+
+    // 3066. Minimum Operations to Exceed Threshold Value II - MEDIUM
+    class Solution3066a {
+        public int minOperations(int[] nums, int k) {
+            PriorityQueue<Long> heap = new PriorityQueue<>();
+            for (int num : nums) {
+                heap.add(num + 0L);
+            }
+            int ans = 0;
+            while (heap.peek() < k) {
+                ans++;
+                long a = heap.poll(), b = heap.poll();
+                heap.add(a * 2 + b);
+            }
+            return ans;
+        }
+    }
+
+    // 3067. Count Pairs of Connectable Servers in a Weighted Tree Network - MEDIUM
+    class Solution3067a {
+        List<int[]>[] list;
+        int signalSpeed;
+
+        public int[] countPairsOfConnectableServers(int[][] edges, int signalSpeed) {
+            int n = edges.length + 1;
+            this.signalSpeed = signalSpeed;
+            this.list = new ArrayList[n];
+            Arrays.setAll(list, x -> new ArrayList<>());
+            for (int[] edge : edges) {
+                int a = edge[0], b = edge[1], w = edge[2];
+                list[a].add(new int[] { b, w });
+                list[b].add(new int[] { a, w });
+            }
+            int[] ans = new int[n];
+            for (int x = 0; x < n; x++) {
+                int cur = 0;
+                for (int[] l : list[x]) {
+                    int y = l[0], w = l[1];
+                    int cnt = dfs(y, x, w);
+                    ans[x] += cur * cnt;
+                    cur += cnt;
+                }
+            }
+            return ans;
+        }
+
+        private int dfs(int x, int fa, int weight) {
+            int res = 0;
+            if (weight % signalSpeed == 0)
+                res++;
+            for (int[] l : list[x]) {
+                int y = l[0], w = l[1];
+                if (y != fa)
+                    res += dfs(y, x, weight + w);
+            }
+            return res;
+        }
+    }
+
+    // 3068. Find the Maximum Sum of Node Values - HARD
+    class Solution3068a {
+        public long maximumValueSum(int[] nums, int k, int[][] edges) {
+            long ans = 0;
+            PriorityQueue<Integer> heap = new PriorityQueue<>((a, b) -> b - a);
+            for (int num : nums) {
+                ans += num;
+                heap.add((num ^ k) - num);
+            }
+            while (heap.size() > 1) {
+                int a = heap.poll(), b = heap.poll();
+                if (a + b > 0)
+                    ans += a + b;
+                else
+                    break;
+            }
+            return ans;
         }
     }
 }
