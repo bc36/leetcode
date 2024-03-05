@@ -274,6 +274,59 @@ class Solution:
 
         return dfs(source)
 
+# 1976 - Number of Ways to Arrive at Destination - MEDIUM
+class Solution:
+    # O(m * logm) / O(m), m = len(roads), 适用于稀疏图. 稠密图时为 n^2 * logn
+    def countPaths(self, n: int, roads: List[List[int]]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y, w in roads:
+            g[x].append((y, w))
+            g[y].append((x, w))
+        dis = [0] + [math.inf] * (n - 1)
+        dp = [1] + [0] * (n - 1)
+        q = [(0, 0)]
+        while q:
+            d, x = heapq.heappop(q)
+            if d > dis[x]:
+                continue
+            for y, w in g[x]:
+                if d + w < dis[y]:
+                    dis[y] = d + w
+                    dp[y] = dp[x]
+                    heapq.heappush(q, (d + w, y))
+                elif d + w == dis[y]:
+                    dp[y] = (dp[x] + dp[y]) % 1000000007
+        return dp[n - 1]
+
+    # O(n^2) / O(n^2), 适用于稠密图
+    def countPaths(self, n: int, roads: List[List[int]]) -> int:
+        g = [[math.inf for _ in range(n)] for _ in range(n)]  # 邻接矩阵
+        for x, y, d in roads:
+            g[x][y] = d
+            g[y][x] = d
+
+        dis = [math.inf] * n
+        dis[0] = 0
+        dp = [0] * n
+        dp[0] = 1
+        done = [False] * n
+        while True:
+            x = -1
+            for i, ok in enumerate(done):
+                if not ok and (x < 0 or dis[i] < dis[x]):
+                    x = i
+            if x == n - 1:
+                return dp[-1]
+            done[x] = True  # 最短路长度已确定（无法变得更小）
+            dx = dis[x]
+            for y, d in enumerate(g[x]): 
+                new = dx + d
+                if new < dis[y]:
+                    dis[y] = new
+                    dp[y] = dp[x]
+                elif new == dis[y]:
+                    dp[y] = (dp[y] + dp[x]) % 1000000007
+
 
 # 1979 - Find Greatest Common Divisor of Array - EASY
 class Solution:
