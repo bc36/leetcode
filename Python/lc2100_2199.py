@@ -578,6 +578,12 @@ class Solution:
         return True
 
 
+# 2129 - Capitalize the Title - EASY
+class Solution:
+    def capitalizeTitle(self, title: str) -> str:
+        return " ".join(i.title() if len(i) > 2 else i.lower() for i in title.split())
+
+
 # 2134 - Minimum Swaps to Group All 1's Together II - MEDIUM
 class Solution:
     # maximum 1

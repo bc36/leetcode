@@ -9,6 +9,13 @@ class ListNode:
         self.next = next
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 # 1200 - Minimum Absolute Difference - EASY
 class Solution:
     def minimumAbsDifference(self, arr: List[int]) -> List[List[int]]:
@@ -723,7 +730,9 @@ class Solution:
         for i, (_, s, p) in enumerate(arr):
             # 保存的都是 tuple, 为了保证比 (arr[i][1], ..., ...) 大, 用 math.inf
             # 寻找满足 engTime[j] <= startTime[i] 的 最大的 j -> f[i] = f[j] + profit[i]
-            j = bisect.bisect_right(arr, (s, math.inf), hi=i)  # hi=i 表示二分上界为 i (默认为 n)
+            j = bisect.bisect_right(
+                arr, (s, math.inf), hi=i
+            )  # hi=i 表示二分上界为 i (默认为 n)
             # 为什么是 j 不是 j + 1: 上面算的是 > st, -1 后得到 <= st, 但由于还要 +1, 抵消了
             f[i + 1] = max(f[i], f[j] + p)
         return f[-1]
@@ -1139,6 +1148,43 @@ class Solution:
         return [arr[i : i + len(grid[0])] for i in range(0, len(arr), len(grid[0]))]
 
 
+# 1261 - Find Elements in a Contaminated Binary Tree - MEDIUM
+class FindElements:
+    # O(n) / O(n)
+    def __init__(self, root: Optional[TreeNode]):
+        self.s = set()
+
+        def dfs(root: TreeNode, rv: int) -> None:
+            if root is None:
+                return
+            root.val = rv
+            self.s.add(rv)
+            dfs(root.left, 2 * rv + 1)
+            dfs(root.right, 2 * rv + 2)
+            return
+
+        dfs(root, 0)
+
+    def find(self, target: int) -> bool:
+        return target in self.s
+
+
+class FindElements:
+    # O(1) / O(1)
+    def __init__(self, root: Optional[TreeNode]):
+        self.root = root
+
+    def find(self, target: int) -> bool:
+        target += 1
+        cur = self.root  # 从根节点出发
+        for i in range(target.bit_length() - 2, -1, -1):  # 从次高位开始枚举
+            bit = (target >> i) & 1  # target 第 i 位的比特值
+            cur = cur.right if bit else cur.left
+            if cur is None:  # 走到空节点, 说明 target 不在二叉树中
+                return False
+        return True  # 没有走到空节点, 说明 target 在二叉树中
+
+
 # 1262 - Greatest Sum Divisible by Three - MEDIUM
 class Solution:
     # a, b, c 加了nums[i] 之后余几不确定, 但是没关系 f[addedVal[i] % 3] 就是它要去的地方
@@ -1202,7 +1248,9 @@ class Solution:
         x, y = box
         # 初始位置在箱子的 (0)上 / (1)下 / (2)左 / (3)右 边
         for i, p in enumerate(((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1))):
-            if isValid(p) and isConnect(p, start, box):  # 能否到达推箱子所需要的初始位置
+            if isValid(p) and isConnect(
+                p, start, box
+            ):  # 能否到达推箱子所需要的初始位置
                 q.append((box, i))
         step = 0
         vis = set(q)

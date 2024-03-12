@@ -1315,7 +1315,9 @@ class Solution:
             g[y].append(x)
         ans = 0
 
-        def dfs(x: int, fa: int) -> Tuple[int, int]:  # 返回带叶子的最大路径和, 不带叶子的最大路径和
+        def dfs(
+            x: int, fa: int
+        ) -> Tuple[int, int]:  # 返回带叶子的最大路径和, 不带叶子的最大路径和
             nonlocal ans
             mx_s1 = p = price[x]
             mx_s2 = 0
@@ -2630,6 +2632,17 @@ class Solution:
         return "".join(s)
 
 
+# 2575 - Find the Divisibility Array of a String - MEDIUM
+class Solution:
+    def divisibilityArray(self, word: str, m: int) -> List[int]:
+        ans = []
+        x = 0
+        for d in map(int, word):
+            x = (x * 10 + d) % m
+            ans.append(0 if x else 1)
+        return ans
+
+
 # 2582 - Pass the Pillow - EASY
 class Solution:
     # O(time) / O(1)
@@ -2791,7 +2804,9 @@ class Solution:
     # 2500ms
     def findValidSplit(self, nums: List[int]) -> int:
         left = {}  # left[p] 表示质数 p 首次出现的下标
-        right = [0] * len(nums)  # right[i] 表示左端点为 i 的区间的右端点的最大值, 类似跳跃游戏
+        right = [0] * len(
+            nums
+        )  # right[i] 表示左端点为 i 的区间的右端点的最大值, 类似跳跃游戏
 
         def f(p: int, i: int) -> None:
             if p in left:
