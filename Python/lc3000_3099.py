@@ -807,12 +807,12 @@ class Solution:
             ans += 1
         return ans
 
-    def minOperations(self, h: List[int], k: int) -> int:
+    def minOperations(self, nums: List[int], k: int) -> int:
         ans = 0
-        heapq.heapify(h)
-        while h[0] < k:
-            x = heapq.heappop(h)
-            heapq.heapreplace(h, x * 2 + h[0])
+        heapq.heapify(nums)
+        while nums[0] < k:
+            x = heapq.heappop(nums)
+            heapq.heapreplace(nums, x * 2 + nums[0])
             ans += 1
         return ans
 
@@ -847,17 +847,46 @@ class Solution:
                 cur += cnt
         return ans
 
+    def countPairsOfConnectableServers(
+        self, edges: List[List[int]], signalSpeed: int
+    ) -> List[int]:
+        n = len(edges)
+        g = [[] for _ in range(n + 1)]
+        for x, y, w in edges:
+            g[x].append((y, w))
+            g[y].append((x, w))
+
+        def dfs(x: int, fa: int, s: int) -> int:
+            cnt = 0 if s % signalSpeed else 1
+            for y, w in g[x]:
+                if y != fa:
+                    cnt += dfs(y, x, s + w)
+            return cnt
+
+        ans = [0] * (n + 1)
+        for i, gi in enumerate(g):
+            s = 0
+            for y, w in gi:
+                cnt = dfs(y, i, w)
+                ans[i] += cnt * s
+                s += cnt
+        return ans
+
 
 # 3068. Find the Maximum Sum of Node Values - HARD
 class Solution:
-    # 1. 由于一个数异或两次(偶数次) k 后保持不变, 所以对于一条从 x 到 y 的简单路径, 我们把路径上的所有边操作后, 路径上除了 x 和 y 的其它节点都恰好操作两次, 
+    # 1. 由于一个数异或两次(偶数次) k 后保持不变, 所以对于一条从 x 到 y 的简单路径, 我们把路径上的所有边操作后, 路径上除了 x 和 y 的其它节点都恰好操作两次,
     #    所以只有 nums[x] 和 nums[y] 都异或了 k, 其余元素不变, 所以题目中的操作可以作用在任意两个数上. 所以不需要建树, edges 是多余的
     # 2. 无论操作多少次, 总是有偶数个元素异或了 k, 其余元素不变
+
+    # 状态机 DP
+    # 定义 f[i][0] 表示选择 nums 的前 i 数中的偶数个元素异或 k 得到的最大元素和
+    # 定义 f[i][1] 表示选择 nums 的前 i 数中的奇数个元素异或 k 得到的最大元素和
     def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
-        dp0, dp1 = 0, -math.inf
-        for v in nums:
-            dp0, dp1 = max(dp0 + v, dp1 + (v ^ k)), max(dp0 + (v ^ k), dp1 + v)
-        return dp0
+        f0, f1 = 0, -math.inf
+        for x in nums:
+            f0, f1 = max(f0 + x, f1 + (x ^ k)), max(f1 + x, f0 + (x ^ k))
+        return f0
 
     def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
         return functools.reduce(
@@ -885,3 +914,160 @@ class Solution:
             arr.pop()
             arr.pop()
         return ans
+
+
+# 3069 - Distribute Elements Into Two Arrays I - EASY
+class Solution:
+    def resultArray(self, nums: List[int]) -> List[int]:
+        a = [nums[0]]
+        b = [nums[1]]
+        for i in range(2, len(nums)):
+            if a[-1] > b[-1]:
+                a.append(nums[i])
+            else:
+                b.append(nums[i])
+        return a + b
+
+
+# 3070 - Count Submatrices with Top-Left Element and Sum Less Than k - MEDIUM
+class Solution:
+    def countSubmatrices(self, grid: List[List[int]], k: int) -> int:
+        m, n = len(grid), len(grid[0])
+        f = [[0] * (n + 1) for _ in range(m + 1)]
+        ans = 0
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                f[i + 1][j + 1] = f[i + 1][j] + f[i][j + 1] - f[i][j] + v
+                ans += f[i + 1][j + 1] <= k
+        return ans
+        return sum(f[i + 1][j + 1] <= k for i in range(m) for j in range(n))
+
+
+# 3071 - Minimum Operations to Write the Letter Y on a Grid - MEDIUM
+class Solution:
+    def minimumOperationsToWriteY(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        y = [0] * 3
+        o = [0] * 3  # other
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                if (i < n // 2 and (i == j or i + j == n - 1)) or (
+                    i >= n // 2 and j == n // 2
+                ):
+                    y[v] += 1
+                else:
+                    o[v] += 1
+        return min(n * n - y[i] - o[j] for i in range(3) for j in range(3) if i != j)
+
+
+# 3072 - Distribute Elements Into Two Arrays II - HARD
+class Solution:
+    def resultArray(self, nums: List[int]) -> List[int]:
+        l1 = [nums[0]]
+        s1 = sortedcontainers.SortedList([nums[0]])
+        l2 = [nums[1]]
+        s2 = sortedcontainers.SortedList([nums[1]])
+        for x in nums[2:]:
+            p = s1.bisect_right(x)
+            q = s2.bisect_right(x)
+            if len(l1) - p > len(l2) - q:
+                l1.append(x)
+                s1.add(x)
+            elif len(l1) - p < len(l2) - q:
+                l2.append(x)
+                s2.add(x)
+            elif len(l1) <= len(l2):
+                l1.append(x)
+                s1.add(x)
+            else:
+                l2.append(x)
+                s2.add(x)
+        return l1 + l2
+
+
+class Fenwick:
+    __slots__ = "tree"
+
+    def __init__(self, n: int):
+        self.tree = [0] * n
+
+    # 把下标为 i 的元素增加 1
+    def add(self, i: int) -> None:
+        while i < len(self.tree):
+            self.tree[i] += 1
+            i += i & -i
+
+    # 返回下标在 [1, i] 的元素之和
+    def pre(self, i: int) -> int:
+        res = 0
+        while i > 0:
+            res += self.tree[i]
+            i &= i - 1
+        return res
+
+
+class Solution:
+    def resultArray(self, nums: List[int]) -> List[int]:
+        sorted_nums = sorted(set(nums))  # 将元素值用下表映射, 否则值域太大了
+        m = len(sorted_nums)
+        a = [nums[0]]
+        b = [nums[1]]
+        t1 = Fenwick(m + 1)
+        t2 = Fenwick(m + 1)
+        t1.add(bisect.bisect_left(sorted_nums, nums[0]) + 1)
+        t2.add(bisect.bisect_left(sorted_nums, nums[1]) + 1)
+        for x in nums[2:]:
+            v = bisect.bisect_left(sorted_nums, x) + 1
+            gc1 = len(a) - t1.pre(v)  # greaterCount(a, v)
+            gc2 = len(b) - t2.pre(v)  # greaterCount(b, v)
+            if gc1 > gc2 or gc1 == gc2 and len(a) <= len(b):
+                a.append(x)
+                t1.add(v)
+            else:
+                b.append(x)
+                t2.add(v)
+        return a + b
+
+
+class Fenwick:
+    __slots__ = "tree"
+
+    def __init__(self, n: int):
+        self.tree = [0] * n
+
+    # 把下标为 i 的元素增加 v
+    def add(self, i: int, v: int) -> None:
+        while i < len(self.tree):
+            self.tree[i] += v
+            i += i & -i
+
+    # 返回下标在 [1, i] 的元素之和
+    def pre(self, i: int) -> int:
+        res = 0
+        while i > 0:
+            res += self.tree[i]
+            i &= i - 1
+        return res
+
+
+class Solution:
+    # 一棵树状数组, 把元素 v 添加到 t2 的操作，可以改成把元素 v 在 t1 中的出现次数减一
+    # 用一棵树状数组维护 a 和 b 元素出现次数的差值
+    def resultArray(self, nums: List[int]) -> List[int]:
+        sorted_nums = sorted(set(nums))
+        m = len(sorted_nums)
+        a = [nums[0]]
+        b = [nums[1]]
+        t = Fenwick(m + 1)
+        t.add(m - bisect.bisect_left(sorted_nums, nums[0]), 1)
+        t.add(m - bisect.bisect_left(sorted_nums, nums[1]), -1)
+        for x in nums[2:]:
+            v = m - bisect.bisect_left(sorted_nums, x)
+            d = t.pre(v - 1)  # 转换成 < v 的元素个数之差
+            if d > 0 or d == 0 and len(a) <= len(b):
+                a.append(x)
+                t.add(v, 1)
+            else:
+                b.append(x)
+                t.add(v, -1)
+        return a + b

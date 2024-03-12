@@ -240,4 +240,120 @@ public class Lc3000_3099 {
             return ans;
         }
     }
+
+    // 3069. Distribute Elements Into Two Arrays I - EASY
+    class Solution3069a {
+        public int[] resultArray(int[] nums) {
+            ArrayList<Integer> arr1 = new ArrayList<>(), arr2 = new ArrayList<>();
+            arr1.add(nums[0]);
+            arr2.add(nums[1]);
+            for (int i = 2; i < nums.length; i++) {
+                if (arr1.get(arr1.size() - 1) > arr2.get(arr2.size() - 1)) {
+                    arr1.add(nums[i]);
+                } else {
+                    arr2.add(nums[i]);
+                }
+            }
+            for (int i = 0; i < arr1.size(); i++) {
+                nums[i] = arr1.get(i);
+            }
+            for (int i = 0; i < arr2.size(); i++) {
+                nums[i + arr1.size()] = arr2.get(i);
+            }
+            return nums;
+        }
+    }
+
+    // 3070. Count Submatrices with Top-Left Element and Sum Less Than k - MEDIUM
+    class Solution3070a {
+        public int countSubmatrices(int[][] grid, int k) {
+            int count = 0, sum[] = new int[grid[0].length];
+            for (int i = 0; i < grid.length; i++) {
+                int curr = 0;
+                for (int j = 0; j < grid[0].length; j++) {
+                    count += (curr += sum[j] += grid[i][j]) > k ? 0 : 1;
+                }
+            }
+            return count;
+        }
+    }
+
+    // 3071. Minimum Operations to Write the Letter Y on a Grid - MEDIUM
+    class Solution3071a {
+        public int minimumOperationsToWriteY(int[][] grid) {
+            int other[] = new int[3], ys[] = new int[3], min = Integer.MAX_VALUE, n = grid.length;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    other[grid[i][j]]++;
+                }
+            }
+            for (int i = 0; i < n / 2; i++) {
+                other[grid[i][i]]--;
+                other[grid[i][n - i - 1]]--;
+                ys[grid[i][i]]++;
+                ys[grid[i][n - i - 1]]++;
+            }
+            for (int i = n / 2; i < n; i++) {
+                other[grid[i][n / 2]]--;
+                ys[grid[i][n / 2]]++;
+            }
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    min = Math.min(min, i == j ? Integer.MAX_VALUE : n * n - other[i] - ys[j]);
+                }
+            }
+            return min;
+        }
+    }
+
+    // 3072. Distribute Elements Into Two Arrays II - HARD
+    class Solution3072a {
+        public int[] resultArray(int[] nums) {
+            int[] clone = nums.clone(), tree1 = new int[100005], tree2 = new int[100005];
+            Arrays.sort(clone);
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int i = 0; i < nums.length; i++) {
+                map.put(clone[i], i + 1);
+            }
+            ArrayList<Integer> arr1 = new ArrayList<>(), arr2 = new ArrayList<>();
+            arr1.add(nums[0]);
+            arr2.add(nums[1]);
+            update(map.get(nums[0]), tree1);
+            update(map.get(nums[1]), tree2);
+            for (int i = 2; i < nums.length; i++) {
+                if (arr1.size() - get(map.get(nums[i]), tree1) > arr2.size() - get(map.get(nums[i]), tree2)
+                        || arr1.size() - get(map.get(nums[i]), tree1) == arr2.size() - get(map.get(nums[i]), tree2)
+                                && arr1.size() <= arr2.size()) {
+                    arr1.add(nums[i]);
+                    update(map.get(nums[i]), tree1);
+                } else {
+                    arr2.add(nums[i]);
+                    update(map.get(nums[i]), tree2);
+                }
+            }
+            for (int i = 0; i < arr1.size(); i++) {
+                nums[i] = arr1.get(i);
+            }
+            for (int i = 0; i < arr2.size(); i++) {
+                nums[i + arr1.size()] = arr2.get(i);
+            }
+            return nums;
+        }
+
+        private int get(int i, int[] tree) {
+            int num = 0;
+            while (i > 0) {
+                num += tree[i];
+                i -= i & (-i);
+            }
+            return num;
+        }
+
+        private void update(int i, int[] tree) {
+            while (i < tree.length) {
+                tree[i]++;
+                i += i & (-i);
+            }
+        }
+    }
 }

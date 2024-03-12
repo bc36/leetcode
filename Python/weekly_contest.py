@@ -1336,3 +1336,10 @@ T4: 874 pass
 # https://leetcode.cn/contest/weekly-contest-382/
 # 54 / https://leetcode.cn/contest/weekly-contest-382/problems/minimize-or-of-remaining-elements-using-operations/
 # 位运算, 贪心, 按位或 OR + 取最小值 -> 从高到低考虑
+
+
+"""
+AK, 2024-03-02
+https://leetcode.cn/contest/weekly-contest-387/
+T4: 867 pass
+"""
