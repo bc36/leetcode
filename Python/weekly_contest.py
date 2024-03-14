@@ -1343,3 +1343,8 @@ AK, 2024-03-02
 https://leetcode.cn/contest/weekly-contest-387/
 T4: 867 pass
 """
+
+
+# https://leetcode.cn/contest/weekly-contest-388/
+# 182 / https://leetcode.cn/contest/weekly-contest-388/problems/maximum-strength-of-k-disjoint-subarrays/
+# dp

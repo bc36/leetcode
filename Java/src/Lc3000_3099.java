@@ -356,4 +356,86 @@ public class Lc3000_3099 {
             }
         }
     }
+
+    // 3074. Apple Redistribution into Boxes - MEDIUM
+    class Solution3074a {
+        public int minimumBoxes(int[] apple, int[] capacity) {
+            int sum = 0;
+            for (int i : apple) {
+                sum += i;
+            }
+            Arrays.sort(capacity);
+            for (int i = capacity.length - 1;; i--) {
+                if ((sum -= capacity[i]) <= 0) {
+                    return capacity.length - i;
+                }
+            }
+        }
+    }
+
+    // 3075. Maximize Happiness of Selected Children - MEDIUM
+    class Solution3075a {
+        public long maximumHappinessSum(int[] happiness, int k) {
+            Arrays.sort(happiness);
+            long sum = 0;
+            for (int i = 0; i < k; i++) {
+                sum += Math.max(0, happiness[happiness.length - i - 1] - i);
+            }
+            return sum;
+        }
+    }
+
+    // 3076. Shortest Uncommon Substring in an Array - MEDIUM
+    class Solution3076a {
+        public String[] shortestSubstrings(String[] arr) {
+            int n = arr.length;
+            HashMap<String, HashSet<Integer>> hm = new HashMap<>();
+            for (int i = 0; i < n; ++i) {
+                for (int j = 0; j < arr[i].length(); ++j) {
+                    for (int k = j + 1; k <= arr[i].length(); ++k) {
+                        String s = arr[i].substring(j, k);
+                        if (!hm.containsKey(s))
+                            hm.put(s, new HashSet<>());
+                        hm.get(s).add(i);
+                    }
+                }
+            }
+            String[] ans = new String[n];
+            for (int i = 0; i < n; ++i) {
+                ans[i] = "ZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                for (int j = 0; j < arr[i].length(); ++j) {
+                    for (int k = j + 1; k <= arr[i].length(); ++k) {
+                        String s = arr[i].substring(j, k);
+                        if (hm.get(s).size() == 1) {
+                            if (s.length() < ans[i].length())
+                                ans[i] = s;
+                            if (s.length() == ans[i].length() && s.compareTo(ans[i]) < 0)
+                                ans[i] = s;
+                        }
+                    }
+                }
+                if (ans[i].equals("ZZZZZZZZZZZZZZZZZZZZZZZZZ"))
+                    ans[i] = "";
+            }
+            return ans;
+        }
+    }
+
+    // 3077. Maximum Strength of K Disjoint Subarrays - HARD
+    class Solution3077a {
+        public long maximumStrength(int[] nums, int k) {
+            long[][] dp = new long[k + 1][2];
+            for (int i = 0; i <= k; i++) {
+                dp[i][0] = dp[i][1] = Long.MIN_VALUE;
+            }
+            dp[0][0] = 0;
+            for (int i = nums.length - 1; i >= 0; i--) {
+                for (int j = Math.min(nums.length - i, k); j > 0; j--) {
+                    dp[j][1] = (long) nums[i] * (j % 2 > 0 ? 1 : -1) * j + Math.max(dp[j - 1][0], dp[j][1]);
+                    dp[j][0] = Math.max(dp[j][0], dp[j][1]);
+                }
+            }
+            return dp[k][0];
+        }
+    }
 }

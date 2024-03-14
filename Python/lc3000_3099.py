@@ -1071,3 +1071,79 @@ class Solution:
                 b.append(x)
                 t.add(v, -1)
         return a + b
+
+
+# 3074 - Apple Redistribution into Boxes - MEDIUM
+class Solution:
+    def minimumBoxes(self, apple: List[int], capacity: List[int]) -> int:
+        s = sum(apple)
+        for i, c in enumerate(sorted(capacity, reverse=True)):
+            s -= c
+            if s <= 0:
+                return i + 1
+
+
+# 3075 - Maximize Happiness of Selected Children - MEDIUM
+class Solution:
+    def maximumHappinessSum(self, happiness: List[int], k: int) -> int:
+        return sum(
+            h - i for i, h in enumerate(sorted(happiness, reverse=True)[:k]) if i < h
+        )
+
+
+# 3076 - Shortest Uncommon Substring in an Array - MEDIUM
+class Solution:
+    def shortestSubstrings(self, arr: List[str]) -> List[str]:
+        cnt = collections.Counter()
+        for w in arr:
+            for i in range(len(w)):
+                for j in range(i, len(w)):
+                    cnt[w[i : j + 1]] += 1
+        ans = [""] * len(arr)
+        for k, w in enumerate(arr):
+            for i in range(len(w)):
+                for j in range(i, len(w)):
+                    cnt[w[i : j + 1]] -= 1
+            z = "z" * 20
+            for l in range(1, len(w) + 1):
+                for i in range(0, len(w) - l + 1):
+                    u = w[i : i + l]
+                    if (len(u) < len(z) or len(u) == len(z) and u < z) and cnt[u] == 0:
+                        z = u
+            for i in range(len(w)):
+                for j in range(i, len(w)):
+                    cnt[w[i : j + 1]] += 1
+            if z != "z" * 20:
+                ans[k] = z
+        return ans
+
+
+# 3077 - Maximum Strength of K Disjoint Subarrays - HARD
+class Solution:
+    def maximumStrength(self, nums: List[int], k: int) -> int:
+        dp0 = [-math.inf] * (k + 1)
+        dp1 = [-math.inf] * (k + 1)
+        dp0[0] = dp1[0] = 0
+        for v in nums:
+            # dp0 表示最后一个元素在第 i 个数组中的状态
+            # 两种转移过来: 前一个位置是否截断
+            # dp1 表示该位置第 i 个数组已经截断的情况下的最大价值
+            for i in range(k, 0, -1):
+                dp0[i] = max(dp0[i], dp1[i - 1])
+                dp0[i] += (1 if i % 2 else -1) * v * (k - i + 1)
+                dp1[i] = max(dp1[i], dp0[i])
+        return dp1[-1]
+
+    # 定义 f[i][j] 表示从 nums[0] 到 nums[j-1]] 中选出 i 个不相交非空连续子数组的最大能量值
+    def maximumStrength(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        s = list(itertools.accumulate(nums, initial=0))
+        f = [[0] * (n + 1) for _ in range(k + 1)]
+        for i in range(1, k + 1):
+            f[i][i - 1] = mx = -math.inf
+            w = (k - i + 1) * (1 if i % 2 else -1)
+            # j 不能太小也不能太大, 要给前面留 i-1 个数, 后面留 k-i 个数
+            for j in range(i, n - k + i + 1):
+                mx = max(mx, f[i - 1][j - 1] - s[j - 1] * w)
+                f[i][j] = max(f[i][j - 1], s[j] * w + mx)
+        return f[k][n]
