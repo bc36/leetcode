@@ -441,7 +441,9 @@ class Solution:
         for x, y, qid in queries:
             while idx > -1 and arr[idx][0] >= x:  # 是不是可以加入这个区间
                 ax, ay = arr[idx]
-                while st and st[-1][1] <= ax + ay:  # 要么是一个空的栈 要么就是 无用的数据
+                while (
+                    st and st[-1][1] <= ax + ay
+                ):  # 要么是一个空的栈 要么就是 无用的数据
                     st.pop()
                 if not st or ay > st[-1][0]:
                     st.append((ay, ax + ay))
@@ -538,7 +540,9 @@ class Solution:
                 return 0
             if i < 0:
                 return math.inf
-            return min(dfs(i - 1, j + time[i]) + cost[i], dfs(i - 1, j - 1))  # 付费 / 不付费
+            return min(
+                dfs(i - 1, j + time[i]) + cost[i], dfs(i - 1, j - 1)
+            )  # 付费 / 不付费
 
         return dfs(len(cost) - 1, 0)
 
@@ -827,7 +831,9 @@ def eratosthenes(n: int) -> List[int]:
     for i in range(2, n + 1):
         if isPrime[i]:
             primes.append(i)
-            for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+            for j in range(
+                i * i, n + 1, i
+            ):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
                 isPrime[j] = False
     return primes
 
@@ -930,7 +936,9 @@ class Solution:
     # O(n) / O(n), 左边可以有 x, 右边没有 x, 且整个子数组都不包含 x - 1 的子数组的个数
     def sumImbalanceNumbers(self, nums: List[int]) -> int:
         n = len(nums)
-        right = [0] * n  # right[i] 表示 x = nums[i] 右侧最近的 x 或 x - 1 的位置的最小值
+        right = [
+            0
+        ] * n  # right[i] 表示 x = nums[i] 右侧最近的 x 或 x - 1 的位置的最小值
         idx = [n] * (n + 1)
         for i in range(n - 1, -1, -1):
             x = nums[i]
@@ -1199,6 +1207,19 @@ class Solution:
     def splitWordsBySeparator(self, words: List[str], separator: str) -> List[str]:
         return [x for w in words for x in w.split(separator) if x]
         return [s for s in separator.join(words).split(separator) if s]
+
+
+# 2789 - Largest Element in an Array after Merge Operations - MEDIUM
+class Solution:
+    def maxArrayValue(self, nums: List[int]) -> int:
+        ans = t = 0
+        for v in nums[::-1]:
+            if t < v:
+                t = v
+            else:
+                t += v
+            ans = max(ans, t)
+        return ans
 
 
 # 2798 - Number of Employees Who Met the Target - EASY
