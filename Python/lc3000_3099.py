@@ -1051,7 +1051,7 @@ class Fenwick:
 
 
 class Solution:
-    # 一棵树状数组, 把元素 v 添加到 t2 的操作，可以改成把元素 v 在 t1 中的出现次数减一
+    # 一棵树状数组, 把元素 v 添加到 t2 的操作, 可以改成把元素 v 在 t1 中的出现次数减一
     # 用一棵树状数组维护 a 和 b 元素出现次数的差值
     def resultArray(self, nums: List[int]) -> List[int]:
         sorted_nums = sorted(set(nums))
@@ -1147,3 +1147,98 @@ class Solution:
                 mx = max(mx, f[i - 1][j - 1] - s[j - 1] * w)
                 f[i][j] = max(f[i][j - 1], s[j] * w + mx)
         return f[k][n]
+
+
+# 3079 - Find the Sum of Encrypted Integers - EASY
+class Solution:
+    def sumOfEncryptedInt(self, nums: List[int]) -> int:
+        return sum(map(lambda v: int(max(str(v)) * len(str(v))), nums))
+
+
+# 3080 - Mark Elements on Array by Performing Queries - MEDIUM
+class Solution:
+    def unmarkedSumArray(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        s = sum(nums)
+        marked = [False] * len(nums)
+        arr = sorted((v, i) for i, v in enumerate(nums))
+        ans = []
+        p = 0
+        for idx, k in queries:
+            if not marked[idx]:
+                marked[idx] = True
+                s -= nums[idx]
+            while p < len(nums) and k:
+                if not marked[arr[p][1]]:
+                    marked[arr[p][1]] = True
+                    s -= arr[p][0]
+                    k -= 1
+                p += 1
+            ans.append(s)
+        return ans
+
+
+# 3081 - Replace Question Marks in String to Minimize Its Value - MEDIUM
+class Solution:
+    def minimizeStringValue(self, s: str) -> str:
+        cnt = collections.Counter(s)
+        h = sorted((cnt[c], c) for c in string.ascii_lowercase)
+        s = list(s)
+        rev = []
+        for c in s:
+            if c == "?":
+                rev.append(h[0][1])
+                heapq.heapreplace(h, (h[0][0] + 1, h[0][1]))
+        rev.sort(reverse=True)  # to ensure get the lexicographically smallest one
+        return "".join(c if c != "?" else rev.pop() for c in s)
+
+
+# 3082 - Find the Sum of the Power of All Subsequences - HARD
+class Solution:
+    def sumOfPower(self, nums: List[int], k: int) -> int:
+        mod = 1000000007
+        n = len(nums)
+        dp = [[0] * (k + 1) for _ in range(n + 1)]
+        dp[0][0] = 1
+        for v in nums:
+            for l in range(n - 1, -1, -1):
+                for val in range(v, k + 1):
+                    dp[l + 1][val] = (dp[l + 1][val] + dp[l][val - v]) % mod
+        ans = 0
+        for l in range(1, n + 1):
+            # ans += dp[l][k] * 2 ** (n - l)
+            ans += dp[l][k] * pow(2, n - l, mod)
+            ans %= mod
+        return ans
+
+    def sumOfPower(self, nums: List[int], k: int) -> int:
+        mod = 10**9 + 7
+        dp = collections.Counter()
+        dp[(0, 0)] = 1  # 第一个状态是当前和, 第二个状态是当前长度
+        for v in nums:
+            ndp = collections.Counter()
+            for x, length in dp:
+                ndp[(x, length)] += dp[(x, length)]
+                ndp[(x, length)] %= mod
+                if x + v <= k:
+                    ndp[(x + v, length + 1)] += dp[(x, length)]
+                    ndp[(x + v, length + 1)] %= mod
+            dp = ndp
+        n = len(nums)
+        ans = 0
+        # 最后枚举当前长度
+        for l in range(1, n + 1):
+            ans += dp[(k, l)] * pow(2, n - l, mod) % mod
+        return ans % mod
+
+    def sumOfPower(self, nums: List[int], k: int) -> int:
+        @functools.cache
+        def dfs(i: int, cur: int, length: int) -> int:
+            if cur == 0:
+                return 2 ** (len(nums) - length)
+            if i < 0:
+                return 0
+            if nums[i] > cur:
+                return dfs(i - 1, cur, length)
+            return dfs(i - 1, cur, length) + dfs(i - 1, cur - nums[i], length + 1)
+
+        return dfs(len(nums) - 1, k, 0) % (10**9 + 7)

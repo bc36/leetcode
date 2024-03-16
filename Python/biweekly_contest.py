@@ -609,3 +609,8 @@ T4: 442 pass
 # https://leetcode.cn/contest/biweekly-contest-125/
 # 256 / https://leetcode.cn/contest/biweekly-contest-125/problems/find-the-maximum-sum-of-node-values/
 # dp / 脑筋急转弯
+
+
+# https://leetcode.cn/contest/biweekly-contest-126/
+# 325 / https://leetcode.cn/contest/biweekly-contest-126/problems/find-the-sum-of-the-power-of-all-subsequences/
+# dp
