@@ -1348,3 +1348,10 @@ T4: 867 pass
 # https://leetcode.cn/contest/weekly-contest-388/
 # 182 / https://leetcode.cn/contest/weekly-contest-388/problems/maximum-strength-of-k-disjoint-subarrays/
 # dp
+
+
+# https://leetcode.cn/contest/weekly-contest-389/
+# 1621 / https://leetcode.cn/contest/weekly-contest-389/problems/minimum-deletions-to-make-string-k-special/
+# 贪心 + 枚举
+# 161 / https://leetcode.cn/contest/weekly-contest-389/problems/minimum-moves-to-pick-k-ones/
+# 讨论, 货仓选址(中位数贪心)

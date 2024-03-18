@@ -1242,3 +1242,90 @@ class Solution:
             return dfs(i - 1, cur, length) + dfs(i - 1, cur - nums[i], length + 1)
 
         return dfs(len(nums) - 1, k, 0) % (10**9 + 7)
+
+
+# 3083 - Existence of a Substring in a String and Its Reverse - EASY
+class Solution:
+    def isSubstringPresent(self, s: str) -> bool:
+        rev = s[::-1]
+        for i in range(len(s) - 1):
+            if s[i : i + 2] in rev:
+                return True
+        return False
+
+    def isSubstringPresent(self, s: str) -> bool:
+        return any(y + x in s for x, y in itertools.pairwise(s))
+
+    def isSubstringPresent(self, s: str) -> bool:
+        vis = set()
+        for x, y in itertools.pairwise(s):
+            vis.add((x, y))
+            if (y, x) in vis:
+                return True
+        return False
+
+
+# 3084 - Count Substrings Starting and Ending with Given Character - MEDIUM
+class Solution:
+    def countSubstrings(self, s: str, c: str) -> int:
+        cnt = s.count(c)
+        return cnt * (cnt + 1) // 2
+
+    def countSubstrings(self, s: str, c: str) -> int:
+        return math.comb(s.count(c) + 1, 2)
+
+
+# 3085 - Minimum Deletions to Make String K-Special - MEDIUM
+class Solution:
+    # O(n + 26^2) / O(26)
+    def minimumDeletions(self, word: str, k: int) -> int:
+        vals = collections.Counter(word).values()
+        ans = math.inf
+        for x in vals:
+            cur = 0
+            for y in vals:
+                if y < x:
+                    cur += y
+                elif y > x + k:
+                    cur += y - x - k
+            ans = min(ans, cur)
+        return ans
+
+    def minimumDeletions(self, word: str, k: int) -> int:
+        vals = sorted(collections.Counter(word).values())
+        save = max(sum(min(x, v + k) for x in vals[i:]) for i, v in enumerate(vals))
+        return len(word) - save
+
+
+# 3086 - Minimum Moves to Pick K Ones - HARD
+class Solution:
+    def minimumMoves(self, nums: List[int], k: int, max_changes: int) -> int:
+        pos = []
+        c = 0  # nums 中连续的 1 长度
+        for i, x in enumerate(nums):
+            if x == 1:
+                pos.append(i) 
+                c = max(c, 1)
+                if i > 0 and nums[i - 1] == 1:
+                    if i > 1 and nums[i - 2] == 1:
+                        c = 3  # 有 3 个连续的 1
+                    else:
+                        c = max(c, 2)  # 有 2 个连续的 1
+
+        c = min(c, k)
+        if max_changes >= k - c:
+            # 其余 k - c 个 1 可以全部用两次操作得到
+            return max(c - 1, 0) + (k - c) * 2
+
+        pre_sum = list(itertools.accumulate(pos, initial=0))
+        ans = math.inf
+        # 除了 max_changes 个数可以用两次操作得到, 其余的 1 只能一步步移动到 pos[i]
+        size = k - max_changes
+        for right in range(size,  len(pos) + 1):
+            # s1 + s2 是 j 在 [left, right) 中的所有 pos[j] 到 pos[(left + right) / 2] 的距离之和
+            left = right - size
+            mid = left + right >> 1
+            s1 = pos[mid] * (mid - left) - (pre_sum[mid] - pre_sum[left])
+            s2 = pre_sum[right] - pre_sum[mid] - pos[mid] * (right - mid)
+            ans = min(ans, s1 + s2)
+        return ans + max_changes * 2
