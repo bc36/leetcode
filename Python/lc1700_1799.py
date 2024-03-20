@@ -1159,6 +1159,65 @@ class Solution:
         return sum(p / t for _, p, t in h) / len(classes)
 
 
+# 1793 - Maximum Score of a Good Subarray - HARD
+class Solution:
+    def maximumScore(self, nums: List[int], k: int) -> int:
+        i = j = k
+        ans = h = nums[k]
+        while i >= 0 or j < len(nums):
+            if i == -1:
+                h = min(h, nums[j])
+                j += 1
+            elif j == len(nums):
+                h = min(h, nums[i])
+                i -= 1
+            elif nums[i] > nums[j]:
+                h = min(h, nums[i])
+                i -= 1
+            else:
+                h = min(h, nums[j])
+                j += 1
+            ans = max(ans, h * (j - i - 1))
+        return ans
+
+    def maximumScore(self, nums: List[int], k: int) -> int:
+        i = j = k
+        ans = h = nums[k]
+        for _ in range(len(nums) - 1):
+            if j == len(nums) - 1 or i and nums[i - 1] > nums[j + 1]:
+                i -= 1
+                h = min(h, nums[i])
+            else:
+                j += 1
+                h = min(h, nums[j])
+            ans = max(ans, h * (j - i + 1))
+        return ans
+
+    def maximumScore(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        left = [-1] * n
+        st = []
+        for i in range(n):
+            while st and nums[i] <= nums[st[-1]]:
+                st.pop()
+            if st:
+                left[i] = st[-1]
+            st.append(i)
+        right = [n] * n
+        st = []
+        for i in range(n - 1, -1, -1):
+            while st and nums[i] <= nums[st[-1]]:
+                st.pop()
+            if st:
+                right[i] = st[-1]
+            st.append(i)
+        ans = 0
+        for h, l, r in zip(nums, left, right):
+            if l < k < r:  # 相比 84 题多了这一行
+                ans = max(ans, h * (r - l - 1))
+        return ans
+
+
 # 1796 - Second Largest Digit in a String - EASY
 class Solution:
     def secondHighest(self, s: str) -> int:

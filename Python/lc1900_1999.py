@@ -230,6 +230,13 @@ class Solution:
         return sum(piles) + sum(dq)
 
 
+# 1969 - Minimum Non-Zero Product of the Array Elements - MEDIUM
+class Solution:
+    def minNonZeroProduct(self, p: int) -> int:
+        k = (1 << p) - 1
+        return k * pow(k - 1, k >> 1, 1000000007) % 1000000007
+
+
 # 1971 - Find if Path Exists in Graph - EASY
 class Solution:
     def validPath(
@@ -273,6 +280,7 @@ class Solution:
             return False
 
         return dfs(source)
+
 
 # 1976 - Number of Ways to Arrive at Destination - MEDIUM
 class Solution:
@@ -319,7 +327,7 @@ class Solution:
                 return dp[-1]
             done[x] = True  # 最短路长度已确定（无法变得更小）
             dx = dis[x]
-            for y, d in enumerate(g[x]): 
+            for y, d in enumerate(g[x]):
                 new = dx + d
                 if new < dis[y]:
                     dis[y] = new

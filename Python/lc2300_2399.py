@@ -531,34 +531,50 @@ class Solution:
 class Solution:
     # O(m * n * (m + n)) / O(m * n)
     def sellingWood(self, m: int, n: int, prices: List[List[int]]) -> int:
-        d = collections.defaultdict(dict)
-        for h, w, p in prices:
-            d[h][w] = p
-
         @functools.lru_cache(None)
-        def fn(h: int, w: int) -> int:
-            p = d[h].get(w, 0)
+        def dfs(h: int, w: int) -> int:
+            p = g[h].get(w, 0)
             for i in range(1, h // 2 + 1):
-                p = max(p, fn(i, w) + fn(h - i, w))
+                p = max(p, dfs(i, w) + dfs(h - i, w))
             for i in range(1, w // 2 + 1):
-                p = max(p, fn(h, i) + fn(h, w - i))
+                p = max(p, dfs(h, i) + dfs(h, w - i))
             return p
 
-        return fn(m, n)
+        g = collections.defaultdict(dict)
+        for h, w, p in prices:
+            g[h][w] = p
+        return dfs(m, n)
 
     # f[i][j], the maximum amount that can be earned by cutting a block of size (i, j)
     def sellingWood(self, m: int, n: int, prices: List[List[int]]) -> int:
-        p = [[0] * (n + 1) for _ in range(m + 1)]
-        for h, w, pr in prices:
-            p[h][w] = pr
+        g = [[0] * (n + 1) for _ in range(m + 1)]
+        for h, w, p in prices:
+            g[h][w] = p
         f = [[0] * (n + 1) for _ in range(m + 1)]
         for i in range(1, m + 1):
             for j in range(1, n + 1):
-                f[i][j] = p[i][j]
+                f[i][j] = g[i][j]
                 for k in range(1, i // 2 + 1):
                     f[i][j] = max(f[i][j], f[i - k][j] + f[k][j])
                 for k in range(1, j // 2 + 1):
                     f[i][j] = max(f[i][j], f[i][j - k] + f[i][k])
+        return f[m][n]
+
+    def sellingWood(self, m: int, n: int, prices: List[List[int]]) -> int:
+        f = [[0] * (n + 1) for _ in range(m + 1)]
+        for h, w, p in prices:
+            f[h][w] = p
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                f[i][j] = max(
+                    f[i][j],
+                    max(
+                        (f[i][k] + f[i][j - k] for k in range(1, j // 2 + 1)), default=0
+                    ),  # 垂直切割
+                    max(
+                        (f[k][j] + f[i - k][j] for k in range(1, i // 2 + 1)), default=0
+                    ),  # 水平切割
+                )
         return f[m][n]
 
 

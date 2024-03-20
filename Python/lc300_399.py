@@ -451,28 +451,50 @@ class Solution:
     # O(n) / O(n)
     # Topological Sorting, find the middle nodes in the longest path of a graph
     def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
-        if not edges:
+        if n == 1:
             return [0]
         g = collections.defaultdict(list)
-        for a, b in edges:
-            g[a].append(b)
-            g[b].append(a)
-        leaves = []
-        degree = []
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        q = []
+        deg = [0] * n
         for i in range(n):
             if len(g[i]) == 1:
-                leaves.append(i)
-            degree.append(len(g[i]))
+                q.append(i)
+            deg[i] = len(g[i])
         while n > 2:
             new = []
-            for l in leaves:
-                for node in g[l]:
-                    degree[node] -= 1
-                    if degree[node] == 1:
-                        new.append(node)
-            n -= len(leaves)
-            leaves = new
-        return leaves
+            for x in q:
+                for y in g[x]:
+                    deg[y] -= 1
+                    if deg[y] == 1:
+                        new.append(y)
+            n -= len(q)
+            q = new
+        return q
+
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+        if n == 1:
+            return [0]
+        g = [[] for _ in range(n)]
+        deg = [0] * n
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+            deg[x] += 1
+            deg[y] += 1
+        q = [i for i, d in enumerate(deg) if d == 1]
+        while n > 2:
+            n -= len(q)
+            tmp = q
+            q = []
+            for x in tmp:
+                for y in g[x]:
+                    deg[y] -= 1
+                    if deg[y] == 1:
+                        q.append(y)
+        return q
 
 
 # 312 - Burst Balloons - HARD

@@ -2643,6 +2643,65 @@ class Solution:
         return ans
 
 
+# 2581 - Count Number of Possible Root Nodes - HARD
+class Solution:
+    # O(n + m) / O(n + m), m = len(guesses)
+    def rootCount(
+        self, edges: List[List[int]], guesses: List[List[int]], k: int
+    ) -> int:
+        g = [[] for _ in range(len(edges) + 1)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        s = {(x, y) for x, y in guesses}
+
+        ans = cnt0 = 0
+
+        def dfs(x: int, fa: int) -> None:
+            nonlocal cnt0
+            for y in g[x]:
+                if y != fa:
+                    cnt0 += (x, y) in s  # 以 0 为根时, 猜对了
+                    dfs(y, x)
+
+        dfs(0, -1)
+
+        def reroot(x: int, fa: int, cnt: int) -> None:
+            nonlocal ans
+            ans += cnt >= k  # 此时 cnt 就是以 x 为根时的猜对次数
+            for y in g[x]:
+                if y != fa:
+                    reroot(y, x, cnt - ((x, y) in s) + ((y, x) in s))
+
+        reroot(0, -1, cnt0)
+        return ans
+
+    def rootCount(
+        self, edges: List[List[int]], guesses: List[List[int]], k: int
+    ) -> int:
+        g = [[] for _ in range(len(edges) + 1)]
+        for u, v in edges:
+            g[u].append(v)
+            g[v].append(u)
+        s = set(map(tuple, guesses))
+        cnt0 = 0
+        dq = collections.deque([(0, -1)])
+        while dq:
+            x, p = dq.popleft()
+            for y in g[x]:
+                if y != p:
+                    dq.append((y, x))
+                    cnt0 += (x, y) in s
+        ans = 0
+        dq = collections.deque([(0, -1, cnt0)])
+        while dq:
+            x, p, t = dq.popleft()
+            ans += t >= k
+            dq.extend((y, x, t - ((x, y) in s) + ((y, x) in s)) for y in g[x] if y != p)
+        return ans
+
+
 # 2582 - Pass the Pillow - EASY
 class Solution:
     # O(time) / O(1)

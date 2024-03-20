@@ -864,6 +864,43 @@ class Solution:
         return "".join(ans)
 
 
+# 834 - Sum of Distances in Tree - HARD
+class Solution:
+    # 从 "以 0 为根" 换到 "以 2 为根", 唯一改变的是 0 和 2 的父子关系
+    # 在子树 2 的每个点到点 2 的距离都更近了, 不在子树 2 的每个点到点 2 的距离更远了
+    # 由此可见, 一对节点的距离的"变化量"应该是很小的, 可以基于 ans[0] 算出 ans[2] 了
+    # 计算每个子树大小(后序遍历), 记为 size[i], 则不在子树 i 的节点有 n - size[i] 个
+    # ans[2] = ans[0] + (n - size[2]) - size[2] = ans[0] + n - 2 * size[2]
+    # 这种算法叫做换根 DP
+    # O(n) / O(n)
+    def sumOfDistancesInTree(self, n: int, edges: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        ans = [0] * n
+        size = [1] * n  # 每颗子树的大小
+
+        def dfs(x: int, fa: int, depth: int) -> None:
+            ans[0] += depth  # depth 为 0 到 x 的距离
+            for y in g[x]:
+                if y != fa:
+                    dfs(y, x, depth + 1)
+                    size[x] += size[y]
+            return
+
+        dfs(0, -1, 0)
+
+        def reroot(x: int, fa: int) -> None:
+            for y in g[x]:
+                if y != fa:
+                    ans[y] = ans[x] + n - 2 * size[y]
+                    reroot(y, x)
+
+        reroot(0, -1)
+        return ans
+
+
 # 838 - Push Dominoes - MEDIUM
 class Solution:
     def pushDominoes(self, dominoes: str) -> str:
@@ -1096,7 +1133,7 @@ class Solution:
                 while i < n and s[i] == s2[i]:
                     i += 1
                 for j in range(i + 1, n):
-                    if s[j] == s2[i] != s2[j]:  # 剪枝，只在 s[j] != s2[j] 时去交换
+                    if s[j] == s2[i] != s2[j]:  # 剪枝, 只在 s[j] != s2[j] 时去交换
                         t = list(s)
                         t[i], t[j] = t[j], t[i]
                         t = "".join(t)
