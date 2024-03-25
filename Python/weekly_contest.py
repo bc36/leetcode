@@ -1355,3 +1355,10 @@ T4: 867 pass
 # 贪心 + 枚举
 # 161 / https://leetcode.cn/contest/weekly-contest-389/problems/minimum-moves-to-pick-k-ones/
 # 讨论, 货仓选址(中位数贪心)
+
+
+"""
+AK, 2024-03-23
+https://leetcode.cn/contest/weekly-contest-390/
+T4: 676 pass
+"""

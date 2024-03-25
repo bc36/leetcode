@@ -1304,7 +1304,7 @@ class Solution:
         c = 0  # nums 中连续的 1 长度
         for i, x in enumerate(nums):
             if x == 1:
-                pos.append(i) 
+                pos.append(i)
                 c = max(c, 1)
                 if i > 0 and nums[i - 1] == 1:
                     if i > 1 and nums[i - 2] == 1:
@@ -1321,7 +1321,7 @@ class Solution:
         ans = math.inf
         # 除了 max_changes 个数可以用两次操作得到, 其余的 1 只能一步步移动到 pos[i]
         size = k - max_changes
-        for right in range(size,  len(pos) + 1):
+        for right in range(size, len(pos) + 1):
             # s1 + s2 是 j 在 [left, right) 中的所有 pos[j] 到 pos[(left + right) / 2] 的距离之和
             left = right - size
             mid = left + right >> 1
@@ -1329,3 +1329,223 @@ class Solution:
             s2 = pre_sum[right] - pre_sum[mid] - pos[mid] * (right - mid)
             ans = min(ans, s1 + s2)
         return ans + max_changes * 2
+
+
+class Solution:
+    def maximumLengthSubstring(self, s: str) -> int:
+        ans = j = 0
+        cnt = collections.Counter()
+        for i, c in enumerate(s):
+            cnt[c] += 1
+            while cnt[c] > 2:
+                cnt[s[j]] -= 1
+                j += 1
+            ans = max(ans, i - j + 1)
+        return ans
+
+
+class Solution:
+    def minOperations(self, k: int) -> int:
+        return min(i - 1 + (k - 1) // i for i in range(1, k + 1))
+        return min(i + (k - 1) // (i + 1) for i in range(k + 1))
+
+    def minOperations(self, k: int) -> int:
+        v = math.isqrt(k)
+        return v + (k - 1) // v - 1  # 对勾函数
+
+    def minOperations(self, k: int) -> int:
+        return math.ceil(2 * math.sqrt(k) - 2)  # 求导
+
+
+class Solution:
+    # O(nlogn) / O(n)
+    def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
+        sl = sortedcontainers.SortedList()
+        cnt = collections.defaultdict(int)
+        ans = []
+        for x, f in zip(nums, freq):
+            if cnt[x] in sl:
+                sl.discard(cnt[x])  # remove 也可, 多个 cnt[x] 只会移除一个
+            cnt[x] += f
+            # if cnt[x]:
+            #     sl.add(cnt[x])
+            # ans.append(sl[-1] if sl else 0)
+            sl.add(cnt[x])
+            ans.append(sl[-1])
+        return ans
+
+    def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
+        cnt = collections.Counter()
+        ans = []
+        h = []
+        for x, f in zip(nums, freq):
+            cnt[x] += f
+            heapq.heappush(h, (-cnt[x], x))
+            while -h[0][0] != cnt[h[0][1]]:  # 堆顶保存的数据已经发生变化
+                heapq.heappop(h)
+            ans.append(-h[0][0])
+        return ans
+
+
+class Node:
+    __slots__ = "son", "mi", "i"
+
+    def __init__(self):
+        self.son = [None] * 26
+        self.mi = math.inf  # minimum length
+
+
+class Solution:
+    def stringIndices(
+        self, wordsContainer: List[str], wordsQuery: List[str]
+    ) -> List[int]:
+        oa = ord("a")
+        root = Node()
+        for i, s in enumerate(wordsContainer):
+            l = len(s)
+            cur = root
+            if l < cur.mi:
+                cur.mi, cur.i = l, i
+            for c in map(ord, reversed(s)):
+                c -= oa
+                if cur.son[c] is None:
+                    cur.son[c] = Node()
+                cur = cur.son[c]
+                if l < cur.mi:
+                    cur.mi, cur.i = l, i
+        ans = []
+        for s in wordsQuery:
+            cur = root
+            for c in map(ord, reversed(s)):
+                c -= oa
+                if cur.son[c] is None:
+                    break
+                cur = cur.son[c]
+            ans.append(cur.i)
+        return ans
+
+    def stringIndices(
+        self, wordsContainer: List[str], wordsQuery: List[str]
+    ) -> List[int]:
+        trie = {}
+        mi = math.inf
+        tmp = -1
+        for i, w in enumerate(wordsContainer):
+            l = len(w)
+            if l < mi:
+                mi, tmp = l, i
+            root = trie
+            for c in w[::-1]:
+                if c not in root:
+                    root[c] = {}
+                root = root[c]
+                if "#" not in root:
+                    root["#"] = (i, l)
+                elif l < root["#"][1]:
+                    root["#"] = (i, l)
+        ans = []
+        for w in wordsQuery:
+            root = trie
+            x = tmp
+            for c in w[::-1]:
+                if c not in root:
+                    # ans.append(x)
+                    break
+                else:
+                    root = root[c]
+                    x = root["#"][0]
+            # else:
+            ans.append(x)
+        return ans
+
+    def stringIndices(
+        self, wordsContainer: List[str], wordsQuery: List[str]
+    ) -> List[int]:
+        idx = sorted(range(len(wordsContainer)), key=lambda i: len(wordsContainer[i]))
+        nex = [{}]
+        f = [idx[0]]
+        for i in idx:
+            cur = 0
+            for c in wordsContainer[i][::-1]:
+                if c in nex[cur]:
+                    cur = nex[cur][c]
+                else:
+                    l = len(nex)
+                    nex[cur][c] = l
+                    nex.append({})
+                    f.append(i)
+                    cur = l
+        ans = []
+        for s in wordsQuery:
+            cur = 0
+            for c in s[::-1]:
+                if c in nex[cur]:
+                    cur = nex[cur][c]
+                else:
+                    break
+            ans.append(f[cur])
+        return ans
+
+    def stringIndices(
+        self, wordsContainer: List[str], wordsQuery: List[str]
+    ) -> List[int]:
+        trie = [None] * 27
+        ls = [len(w) for w in wordsContainer]
+        for i, w in enumerate(wordsContainer):
+            r = trie
+            if r[26] is None or ls[r[26]] > ls[i]:
+                r[26] = i
+            for c in w[::-1]:
+                c = ord(c) - ord("a")
+                if r[c] is None:
+                    r[c] = [None] * 27
+                r = r[c]
+                if r[26] is None or ls[r[26]] > ls[i]:
+                    r[26] = i
+        ans = []
+        for w in wordsQuery:
+            r = trie
+            for c in w[::-1]:
+                c = ord(c) - ord("a")
+                if r[c] is None:
+                    break
+                r = r[c]
+            ans.append(r[26])
+        return ans
+
+
+class Trie:
+    def __init__(self):
+        self.sons = {}
+        self.val = 10**9
+
+    def insert(self, word: str, value: int) -> None:
+        tmp = self
+        for char in word:
+            if value < tmp.val:
+                tmp.val = value
+            if char not in tmp.sons:
+                tmp.sons[char] = Trie()
+            tmp = tmp.sons[char]
+        if value < tmp.val:
+            tmp.val = value
+
+    def search(self, word: str) -> bool:
+        tmp = self
+        for char in word:
+            if char in tmp.sons:
+                tmp = tmp.sons[char]
+            else:
+                break
+        return tmp.val
+
+
+class Solution:
+    # 这里将 (长度, 下标) 对用一个整数表示, 由于长度不超过 5000, 索引不超过 10^4, 因此不会发生碰撞, 也不会超过 10^9
+    def stringIndices(
+        self, wordsContainer: List[str], wordsQuery: List[str]
+    ) -> List[int]:
+        t = Trie()
+        for i, w in enumerate(wordsContainer):
+            t.insert(w[::-1], len(w) * 100000 + i)
+        return [t.search(w[::-1]) % 100000 for w in wordsQuery]
