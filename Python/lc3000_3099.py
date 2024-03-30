@@ -1331,6 +1331,7 @@ class Solution:
         return ans + max_changes * 2
 
 
+# 3090 - Maximum Length Substring With Two Occurrences - EASY
 class Solution:
     def maximumLengthSubstring(self, s: str) -> int:
         ans = j = 0
@@ -1344,6 +1345,7 @@ class Solution:
         return ans
 
 
+# 3091 - Apply Operations to Make Sum of Array Greater Than or Equal to k - MEDIUM
 class Solution:
     def minOperations(self, k: int) -> int:
         return min(i - 1 + (k - 1) // i for i in range(1, k + 1))
@@ -1357,6 +1359,7 @@ class Solution:
         return math.ceil(2 * math.sqrt(k) - 2)  # 求导
 
 
+# 3092 - Most Frequent IDs - MEDIUM
 class Solution:
     # O(nlogn) / O(n)
     def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
@@ -1387,6 +1390,7 @@ class Solution:
         return ans
 
 
+# 3093 - Longest Common Suffix Queries - HARD
 class Node:
     __slots__ = "son", "mi", "i"
 

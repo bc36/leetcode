@@ -2643,6 +2643,22 @@ class Solution:
         return ans
 
 
+# 2580 - Count Ways to Group Overlapping Ranges - MEDIUM
+class Solution:
+    def countWays(self, ranges: List[List[int]]) -> int:
+        ranges.sort(key=lambda p: p[0])
+        t = 0
+        # ans = 1
+        mx = -1
+        for l, r in ranges:
+            if l > mx:
+                t += 1
+                # ans = ans * 2 % 1000000007
+            mx = max(mx, r)
+        return pow(2, t, 1000000007)
+        return ans % 1000000007
+
+
 # 2581 - Count Number of Possible Root Nodes - HARD
 class Solution:
     # O(n + m) / O(n + m), m = len(guesses)

@@ -2055,7 +2055,7 @@ class FreqStack:
     # O(1) / O(n)
     def __init__(self):
         self.cnt = collections.defaultdict(int)
-        self.st = []  # 把出现次数不同的元素, 压入不同的栈中
+        self.st = []  # 把出现次数不同的元素, 压入不同的栈中, 可以被哈希表替代, 如下
 
     def push(self, val: int) -> None:
         if self.cnt[val] == len(self.st):
@@ -2085,6 +2085,7 @@ class FreqStack:
         f = self.cnt[val]
         self.st[f].append(val)
         self.mx = max(self.mx, f)
+        return
 
     def pop(self) -> int:
         v = self.st[self.mx].pop()

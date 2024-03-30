@@ -663,17 +663,44 @@ class Solution:
 # 322 - Coin Change - MEDIUM
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
-        dp = [0] + [float("inf")] * amount
+        f = [math.inf] * (amount + 1)
+        f[0] = 0
         for i in range(1, amount + 1):
-            dp[i] = min(dp[i - c] if i - c >= 0 else float("inf") for c in coins) + 1
-        return dp[-1] if dp[-1] != float("inf") else -1
+            f[i] = 1 + min(f[i - c] if i >= c else math.inf for c in coins)
+        return f[amount] if f[amount] < math.inf else -1
 
-    def coinChange(self, coins, amount):
-        dp = [0] + [float("inf")] * amount
-        for coin in coins:
-            for i in range(coin, amount + 1):
-                dp[i] = min(dp[i], dp[i - coin] + 1)
-        return dp[-1] if dp[-1] != float("inf") else -1
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        f = [math.inf] * (amount + 1)
+        f[0] = 0
+        for c in coins:
+            for i in range(c, amount + 1):
+                f[i] = min(f[i], f[i - c] + 1)
+        return f[-1] if f[-1] < math.inf else -1
+
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(cur: int) -> int:
+            if cur == 0:
+                return 0
+            res = math.inf
+            for c in coins:
+                if cur >= c:
+                    res = min(res, dfs(cur - c) + 1)
+            return res
+
+        ans = dfs(amount)
+        return ans if ans < math.inf else -1
+
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        @functools.lru_cache(None)
+        def dfs(cur: int) -> int:
+            if cur == 0:
+                return 0
+            if cur < 0:
+                return math.inf
+            return 1 + min(dfs(cur - c) for c in coins)
+
+        return dfs(amount) if dfs(amount) != math.inf else -1
 
     def coinChange(self, coins: List[int], amount: int) -> int:
         ans = 0
@@ -681,40 +708,32 @@ class Solution:
         vis = set()
         while dq:
             for _ in range(len(dq)):
-                val = dq.popleft()
-                if val == 0:
+                v = dq.popleft()
+                if v == 0:
                     return ans
-                for coin in coins:
-                    if val >= coin and val - coin not in vis:
-                        vis.add(val - coin)
-                        dq.append(val - coin)
+                for c in coins:
+                    if v >= c and v - c not in vis:
+                        vis.add(v - c)
+                        dq.append(v - c)
             ans += 1
         return -1
 
     def coinChange(self, coins: List[int], amount: int) -> int:
-        @functools.lru_cache(None)
-        def dp(amount: int) -> int:
-            if amount == 0:
-                return 0
-            ans = math.inf
-            for coin in coins:
-                if amount >= coin:
-                    ans = min(ans, dp(amount - coin) + 1)
-            return ans
-
-        ans = dp(amount)
-        return ans if ans != math.inf else -1
-
-    def coinChange(self, coins: List[int], amount: int) -> int:
-        @functools.lru_cache(None)
-        def dp(amount: int) -> int:
-            if amount == 0:
-                return 0
-            if amount < 0:
-                return float("inf")
-            return min(dp(amount - coin) + 1 for coin in coins)
-
-        return dp(amount) if dp(amount) != float("inf") else -1
+        ans = 0
+        q = [0]
+        vis = {0}
+        while q:
+            new = []
+            for x in q:
+                if x == amount:
+                    return ans
+                for c in coins:
+                    if x + c <= amount and x + c not in vis:
+                        vis.add(x + c)
+                        new.append(x + c)
+            q = new
+            ans += 1
+        return -1
 
 
 # 324 - Wiggle Sort II - MEDIUM
@@ -866,6 +885,20 @@ class Solution:
                         if ind[x][y] == 0:
                             dq.append((x, y))
         return ans
+
+
+# 331 - Verify Preorder Serialization of a Binary Tree - MEDIUM
+class Solution:
+    def isValidSerialization(self, preorder: str) -> bool:
+        preorder = preorder.split(",")
+        diff = 1  # diff = out - in
+        for x in preorder:
+            diff -= 1
+            if diff < 0:
+                return False
+            if x != "#":
+                diff += 2
+        return diff == 0
 
 
 # 334 - Increasing Triplet Subsequence - MEDIUM

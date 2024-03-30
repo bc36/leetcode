@@ -786,126 +786,71 @@ class Solution:
     # 由条件二可以想到优先队列」来维护所有的 ii, 堆顶为移动次数最少的位置
     # 由条件一可得若堆顶的 ii 不满足要求, 就可以将它永久从优先队列中移除,
     # 因为之后共享同一列 j 的位置 i 只会更大, 更不可能走到
-    # O(n * m * log(nm)) / O(nm)
+    # O(m * n * log(mn)) / O(mn)
     def minimumVisitedCells(self, grid: List[List[int]]) -> int:
-        n = len(grid)
-        m = len(grid[0])
-        f = [[-1] * m for _ in range(n)]  # distance
-        f[0][0] = 1
-        row = [[] for _ in range(n)]
-        col = [[] for _ in range(m)]
+        m, n = len(grid), len(grid[0])
+        dist = [[-1] * n for _ in range(m)]
+        dist[0][0] = 1
+        row = [[] for _ in range(m)]
+        col = [[] for _ in range(n)]
 
         def update(x: int, y: int) -> int:
             return y if x == -1 or x > y else x
 
-        for i in range(n):
-            for j in range(m):
+        for i in range(m):
+            for j in range(n):
                 while row[i] and row[i][0][1] + grid[i][row[i][0][1]] < j:
                     heapq.heappop(row[i])
                 if row[i]:
-                    f[i][j] = update(f[i][j], f[i][row[i][0][1]] + 1)
-
+                    dist[i][j] = update(dist[i][j], dist[i][row[i][0][1]] + 1)
                 while col[j] and col[j][0][1] + grid[col[j][0][1]][j] < i:
                     heapq.heappop(col[j])
                 if col[j]:
-                    f[i][j] = update(f[i][j], f[col[j][0][1]][j] + 1)
-
-                if f[i][j] != -1:
-                    heapq.heappush(row[i], (f[i][j], j))
-                    heapq.heappush(col[j], (f[i][j], i))
-
-        return f[n - 1][m - 1]
-
-    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
-        n, m = len(grid), len(grid[0])
-        a = [[] for _ in range(m)]
-
-        f = [[-1] * m for _ in range(n)]
-        f[0][0] = 1
-        for i in range(n):
-            q = []
-            for j in range(m):
-                while len(a[j]) > 0 and a[j][0][1] < i:
-                    heapq.heappop(a[j])
-                if len(a[j]) > 0:
-                    f[i][j] = a[j][0][0] + 1
-                while len(q) > 0 and q[0][1] < j:
-                    heapq.heappop(q)
-                if len(q) > 0 and (f[i][j] == -1 or f[i][j] > q[0][0] + 1):
-                    f[i][j] = q[0][0] + 1
-                if f[i][j] != -1:
-                    heapq.heappush(q, (f[i][j], j + grid[i][j]))
-                    heapq.heappush(a[j], (f[i][j], i + grid[i][j]))
-        return f[-1][-1]
+                    dist[i][j] = update(dist[i][j], dist[col[j][0][1]][j] + 1)
+                if dist[i][j] != -1:
+                    heapq.heappush(row[i], (dist[i][j], j))
+                    heapq.heappush(col[j], (dist[i][j], i))
+        return dist[m - 1][n - 1]
 
     def minimumVisitedCells(self, grid: List[List[int]]) -> int:
         m, n = len(grid), len(grid[0])
+        a = [[] for _ in range(n)]
         f = [[-1] * n for _ in range(m)]
         f[0][0] = 1
-        rows = [sortedcontainers.SortedList(range(0, n)) for _ in range(m)]
-        cols = [sortedcontainers.SortedList(range(0, m)) for _ in range(n)]
-        q = [[0, 0]]
-        index = 0
-        while index < len(q):
-            x, y = q[index]
-            index += 1
-            sl = rows[x]
-            while True:
-                pos = sl.bisect_left(y + 1)
-                if pos == len(sl):
-                    break
-                ny = sl[pos]
-                if ny > y + grid[x][y]:
-                    break
-                f[x][ny] = f[x][y] + 1
-                q.append([x, ny])
-                del sl[pos]
-                cols[ny].remove(x)
-            sl = cols[y]
-            while True:
-                pos = sl.bisect_left(x + 1)
-                if pos == len(sl):
-                    break
-                nx = sl[pos]
-                if nx > x + grid[x][y]:
-                    break
-                f[nx][y] = f[x][y] + 1
-                q.append([nx, y])
-                del sl[pos]
-                rows[nx].remove(y)
+        for i, row in enumerate(grid):
+            q = []
+            for j, v in enumerate(row):
+                while len(a[j]) and a[j][0][1] < i:  # 从上到下, 跳不到
+                    heapq.heappop(a[j])
+                if len(a[j]):
+                    f[i][j] = a[j][0][0] + 1
+                while len(q) and q[0][1] < j:  # 从左到右, 跳不到
+                    heapq.heappop(q)
+                if len(q) and (f[i][j] == -1 or f[i][j] > q[0][0] + 1):
+                    f[i][j] = q[0][0] + 1
+                if f[i][j] != -1:
+                    heapq.heappush(q, (f[i][j], j + v))
+                    heapq.heappush(a[j], (f[i][j], i + v))
         return f[-1][-1]
 
     def minimumVisitedCells(self, grid: List[List[int]]) -> int:
-        m = len(grid)
-        n = len(grid[0])
-        q = collections.deque([(0, 0)])
-        row = [sortedcontainers.SortedList(range(n)) for _ in range(m)]
-        col = [sortedcontainers.SortedList(range(m)) for _ in range(n)]
-        visit = [[False] * n for _ in range(m)]
-        visit[0][0] = True
-        cnt = 1
-        while q:
-            for _ in range(len(q)):
-                x, y = q.popleft()
-                if x == m - 1 and y == n - 1:
-                    return cnt
-                index1 = row[x].bisect_right(y + grid[x][y])
-                index2 = row[x].bisect_left(y)
-                for _ in range(index1 - index2):
-                    t = row[x].pop(index2)
-                    if visit[x][t] == False:
-                        visit[x][t] = True
-                        q.append((x, t))
-
-                index3 = col[y].bisect_right(x + grid[x][y])
-                index4 = col[y].bisect_left(x)
-                for _ in range(index3 - index4):
-                    t = col[y].pop(index4)
-                    if visit[t][y] == False:
-                        visit[t][y] = True
-                        q.append((t, y))
-            cnt += 1
-        return -1
+        col_heaps = [[] for _ in grid[0]]  # 每一列的最小堆
+        for i, row in enumerate(grid):
+            rh = []  # 第 i 行的最小堆
+            for j, (v, ch) in enumerate(zip(row, col_heaps)):
+                while rh and rh[0][1] < j:  # 无法到达第 j 列
+                    heapq.heappop(rh)  # 弹出无用数据
+                while ch and ch[0][1] < i:  # 无法到达第 i 行
+                    heapq.heappop(ch)  # 弹出无用数据
+                f = math.inf if i or j else 1  # 起点算 1 个格子
+                if rh:
+                    f = rh[0][0] + 1  # 从左边跳过来
+                if ch:
+                    f = min(f, ch[0][0] + 1)  # 从上边跳过来
+                if v and f < math.inf:
+                    heapq.heappush(rh, (f, v + j))  # 经过的格子数, 向右最远能到达的列号
+                    heapq.heappush(ch, (f, v + i))  # 经过的格子数, 向下最远能到达的行号
+        return f if f < math.inf else -1  # 此时的 f 是在 (m - 1, n - 1) 处算出来的
 
 
 # 2639 - Find the Width of Columns of a Grid - EASY
@@ -1603,25 +1548,47 @@ class Solution:
 # 2671 - Frequency Tracker - MEDIUM
 class FrequencyTracker:
     def __init__(self):
+        self.cnt = collections.defaultdict(int)
         self.freq = collections.defaultdict(int)
-        self.d = collections.defaultdict(int)
 
     def add(self, number: int) -> None:
-        if number in self.d:
-            self.freq[self.d[number]] -= 1
-        self.d[number] += 1
-        self.freq[self.d[number]] += 1
+        if number in self.cnt:
+            self.freq[self.cnt[number]] -= 1
+        self.cnt[number] += 1
+        self.freq[self.cnt[number]] += 1
         return
 
     def deleteOne(self, number: int) -> None:
-        if self.d[number] > 0:  # not "if number in self.d" !!!
-            self.freq[self.d[number]] -= 1
-            self.d[number] -= 1
-            self.freq[self.d[number]] += 1
+        if self.cnt[number] > 0:  # "if number in self.cnt" is wrong !!!
+            self.freq[self.cnt[number]] -= 1
+            self.cnt[number] -= 1
+            self.freq[self.cnt[number]] += 1
         return
 
     def hasFrequency(self, frequency: int) -> bool:
         return self.freq[frequency] > 0
+
+
+class FrequencyTracker:
+    def __init__(self):
+        self.cnt = collections.defaultdict(int)
+        self.ds = collections.defaultdict(set)
+
+    def add(self, number: int) -> None:
+        self.ds[self.cnt[number]].discard(number)
+        self.cnt[number] += 1
+        self.ds[self.cnt[number]].add(number)
+        return
+
+    def deleteOne(self, number: int) -> None:
+        if self.cnt[number]:
+            self.ds[self.cnt[number]].remove(number)
+            self.cnt[number] -= 1
+            self.ds[self.cnt[number]].add(number)
+        return
+
+    def hasFrequency(self, frequency: int) -> bool:
+        return len(self.ds[frequency]) > 0
 
 
 # 2672 - Number of Adjacent Elements With the Same Color - MEDIUM

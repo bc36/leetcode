@@ -331,11 +331,26 @@ class Solution:
 # 518 - Coin Change 2 - MEDIUM
 class Solution:
     def change(self, amount: int, coins: List[int]) -> int:
-        dp = [1] + [0] * amount
-        for coin in coins:
-            for i in range(coin, amount + 1):
-                dp[i] += dp[i - coin]
-        return dp[-1]
+        f = [1] + [0] * amount
+        for c in coins:
+            for i in range(c, amount + 1):
+                f[i] += f[i - c]
+        return f[-1]
+
+    def change(self, amount: int, coins: List[int]) -> int:
+        @functools.cache
+        def dfs(i: int, cur: int) -> int:
+            if cur == 0:
+                return 1
+            if i == 0:
+                return int(cur % coins[0] == 0)
+            res = 0
+            while cur >= 0:
+                res += dfs(i - 1, cur)
+                cur -= coins[i]
+            return res
+
+        return dfs(len(coins) - 1, amount)
 
 
 # 519 - Random Flip Matrix - MEDIUM
@@ -759,12 +774,16 @@ class Solution:
         r = len(nums) - 1
         while l <= r:
             mid = (l + r) // 2
-            if mid % 2 == 0 and mid + 1 < len(nums):  # mid是偶数(nums[mid]前面有偶数个元素)
+            if mid % 2 == 0 and mid + 1 < len(
+                nums
+            ):  # mid是偶数(nums[mid]前面有偶数个元素)
                 if nums[mid] == nums[mid + 1]:  # mid前面没有单一元素
                     l = mid + 1
                 else:  # mid前面有单一元素
                     r = mid - 1
-            elif mid % 2 != 0 and mid + 1 < len(nums):  # mid是奇数(nums[mid]前面有奇数个元素)
+            elif mid % 2 != 0 and mid + 1 < len(
+                nums
+            ):  # mid是奇数(nums[mid]前面有奇数个元素)
                 if nums[mid] == nums[mid + 1]:  # mid前面有单一元素
                     r = mid - 1
                 else:  # mid前面没有单一元素
