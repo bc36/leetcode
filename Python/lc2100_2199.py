@@ -1208,20 +1208,20 @@ class Solution:
 # 2192 - All Ancestors of a Node in a Directed Acyclic Graph - MEDIUM
 class Solution:
     def getAncestors(self, n: int, edges: List[List[int]]) -> List[List[int]]:
-        g = collections.defaultdict(list)
-        for o, i in edges:
-            g[i].append(o)
+        g = [[] for _ in range(n)]
+        for f, t in edges:
+            g[t].append(f)
         ans = []
         for i in range(n):
-            seen = set()
+            vis = set()
             dq = collections.deque([i])
             while dq:
-                n = dq.popleft()
-                for nxt in g[n]:
-                    if nxt not in seen:
-                        dq.append(nxt)
-                        seen.add(nxt)
-            ans.append(sorted(seen))
+                x = dq.popleft()
+                for y in g[x]:
+                    if y not in vis:
+                        dq.append(y)
+                        vis.add(y)
+            ans.append(sorted(vis))
         return ans
 
 

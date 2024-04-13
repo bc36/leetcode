@@ -1,5 +1,5 @@
 import bisect, collections, functools, heapq, itertools, math, operator, random, string
-from typing import Deque, List, Optional, Tuple
+from typing import Deque, Generator, List, Optional, Tuple
 import sortedcontainers
 
 
@@ -30,7 +30,7 @@ class Solution:
         row = len(grid)
         col = len(grid[0])
 
-        def move(x: int, y: int) -> tuple(int, int):
+        def move(x: int, y: int) -> Generator[Tuple[int, int]]:
             for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 if 0 <= x + i < row and 0 <= y + j < col:
                     yield x + i, y + j
@@ -734,6 +734,18 @@ class Solution:
             heapq.heappop(heap)
         return heapq.heappop(heap)
 
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        l = min(nums)
+        r = max(nums)
+        while l < r:
+            m = l + r >> 1
+            cnt = sum(x > m for x in nums)
+            if cnt >= k:
+                l = m + 1
+            else:
+                r = m
+        return l
+
 
 # 217 - Contains Duplicate - EASY
 class Solution:
@@ -1130,7 +1142,7 @@ class Solution:
 # 232 - Implement Queue using Stacks - EASY
 class MyQueue:
     def __init__(self):
-        """一定要保证 self.out 为空的时候，才能把元素从 self.inn 里拿到 self.out 中
+        """一定要保证 self.out 为空的时候, 才能把元素从 self.inn 里拿到 self.out 中
         类似 彩虹圈 / Slinky 的样子"""
         self.inn = []
         self.out = []
@@ -1345,28 +1357,46 @@ class Solution:
 class Solution:
     # O(nlogn) / O(n), operation of heap -> logn
     def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
-        pq = [(-nums[i], i) for i in range(k)]
-        heapq.heapify(pq)
-        ans = [-pq[0][0]]
+        hp = [(-nums[i], i) for i in range(k)]
+        heapq.heapify(hp)
+        ans = [-hp[0][0]]
         for i in range(k, len(nums)):
-            heapq.heappush(pq, (-nums[i], i))
+            heapq.heappush(hp, (-nums[i], i))
             # the smallest element will be removed only if it is not the in the window
-            # it is not needed to maintain the size of 'pq' equal to 'k'
-            while pq[0][1] <= i - k:
-                heapq.heappop(pq)
-            ans.append(-pq[0][0])
+            # it is not needed to maintain the size of 'hp' equal to 'k'
+            while hp[0][1] <= i - k:
+                heapq.heappop(hp)
+            ans.append(-hp[0][0])
         return ans
 
     def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
-        pq = []
+        hp = []
         for i in range(k - 1):
-            heapq.heappush(pq, (-nums[i], i))
+            heapq.heappush(hp, (-nums[i], i))
         ans = []
         for i in range(k - 1, len(nums)):
-            while pq and pq[0][1] < i - k + 1:
-                heapq.heappop(pq)
-            heapq.heappush(pq, (-nums[i], i))
-            ans.append(-pq[0][0])
+            while hp and hp[0][1] < i - k + 1:
+                heapq.heappop(hp)
+            heapq.heappush(hp, (-nums[i], i))
+            ans.append(-hp[0][0])
+        return ans
+
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        window = sortedcontainers.SortedList(nums[: k - 1])
+        ans = []
+        for i in range(k - 1, len(nums)):
+            window.add(nums[i])
+            ans.append(window[-1])
+            window.discard(nums[i - k + 1])
+        return ans
+
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        window = sortedcontainers.SortedList(nums[:k])
+        ans = [window[-1]]
+        for i in range(len(nums) - k):
+            window.remove(nums[i])
+            window.add(nums[i + k])
+            ans.append(window[-1])
         return ans
 
     # O(n) / O(n)
@@ -1401,6 +1431,20 @@ class Solution:
             if dq and dq[0][1] < i - k + 1:
                 dq.popleft()
             ans.append(dq[0][0])
+        return ans
+
+    # 单调队列 1. 入(元素进入队尾, 同时维护队列单调性) 2. 出(元素离开队首) 3. 记录/维护答案(根据队首)
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        ans = []
+        dq = collections.deque()
+        for i, x in enumerate(nums):
+            while dq and nums[dq[-1]] <= x:
+                dq.pop()
+            dq.append(i)
+            if i - dq[0] >= k:
+                dq.popleft()
+            if i >= k - 1:
+                ans.append(nums[dq[0]])
         return ans
 
 

@@ -48,7 +48,6 @@ class TreeNode:
 
 
 # 1 - Two Sum - EASY
-# [3, 3] 6: nums.index(3) will return 0, not 1
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         dic = {}
@@ -105,20 +104,6 @@ class Solution:
 # 3 - Longest Substring Without Repeating Characters - MEDIUM
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        ans = 0
-        sub = ""
-        for c in s:
-            if c not in sub:
-                sub += c
-                if len(sub) > ans:
-                    ans += 1
-            else:
-                i = sub.find(c)
-                sub = sub[i + 1 :] + c
-        return ans
-
-    # sliding window + hashmap
-    def lengthOfLongestSubstring(self, s: str) -> int:
         ans = slow = fast = 0
         d = {}
         while fast < len(s):
@@ -129,7 +114,6 @@ class Solution:
             ans = max(ans, fast - slow)
         return ans
 
-    # set
     def lengthOfLongestSubstring(self, s: str) -> int:
         ans = slow = fast = 0
         vis = set()
@@ -143,10 +127,8 @@ class Solution:
             ans = max(ans, len(vis))
         return ans
 
-    # ord(), chr() / byte -> position
-    def lengthOfLongestSubstring(self, s: str) -> int:
         ans = slow = fast = 0
-        vis = [0 for _ in range(256)]
+        vis = [0] * 128
         while fast < len(s):
             if vis[ord(s[fast])] == 0:
                 vis[ord(s[fast])] += 1
@@ -168,6 +150,17 @@ class Solution:
                     vis.remove(s[l])
                     l += 1
             vis.add(c)
+        return ans
+
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        ans = left = 0
+        vis = set()
+        for right in range(len(s)):
+            while s[right] in vis:
+                vis.discard(s[left])
+                left += 1
+            vis.add(s[right])
+            ans = max(ans, right - left + 1)
         return ans
 
 
@@ -226,7 +219,6 @@ class Solution:
                     mx = j - i + 1
                     l = i
                     r = j
-
         return s[l : r + 1]
 
 
@@ -1025,20 +1017,20 @@ class Solution:
 
 # 34 - Find First and Last Position of Element in Sorted Array - MEDIUM
 class Solution:
-    def searchRange(self, nums: List[int], t: int) -> List[int]:
-        def search(n: int) -> int:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        def search(tar: int) -> int:
             lo = 0
             hi = len(nums)
             while lo < hi:
                 mid = (lo + hi) // 2
-                if nums[mid] >= n:
+                if nums[mid] >= tar:
                     hi = mid
                 else:
                     lo = mid + 1
             return lo
 
-        l = search(t)
-        return [l, search(t + 1) - 1] if t in nums[l : l + 1] else [-1, -1]
+        l = search(target)
+        return [l, search(target + 1) - 1] if target in nums[l : l + 1] else [-1, -1]
 
     def searchRange(self, nums: List[int], target: int) -> List[int]:
         l = bisect.bisect_left(nums, target)
@@ -1552,11 +1544,10 @@ class Solution:
 # 54 - Spiral Matrix - MEDIUM
 class Solution:
     def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        m, n = len(matrix), len(matrix[0])
+        ans = []
         dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]]
         r = c = d = 0
-        m = len(matrix)
-        n = len(matrix[0])
-        ans = []
         for _ in range(m * n):
             ans.append(matrix[r][c])
             matrix[r][c] = 101
@@ -1569,11 +1560,10 @@ class Solution:
         return ans
 
     def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        m, n = len(matrix), len(matrix[0])
         ans = []
         i = j = di = 0
         dj = 1
-        m = len(matrix)
-        n = len(matrix[0])
         for _ in range(m * n):
             ans.append(matrix[i][j])
             matrix[i][j] = 101
@@ -1638,7 +1628,7 @@ class Solution:
         while i < len(intervals):
             right = intervals[i][1]
             j = i + 1
-            while j < len(intervals) and right >= intervals[j][0]:
+            while j < len(intervals) and intervals[j][0] <= right:
                 right = max(intervals[j][1], right)
                 j += 1
             ans.append([intervals[i][0], right])
@@ -1646,16 +1636,16 @@ class Solution:
         return ans
 
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        ans = []
         intervals.sort()
-        cur = intervals[0]
-        for arr in intervals:
-            if arr[0] <= cur[1]:
-                cur[1] = max(arr[1], cur[1])
+        ans = []
+        l, r = intervals[0]
+        for x, y in intervals[1:]:
+            if x <= r:
+                r = max(r, y)
             else:
-                ans.append(cur)
-                cur = arr
-        ans.append(cur)
+                ans.append((l, r))
+                l, r = x, y
+        ans.append((l, r))
         return ans
 
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
@@ -1704,7 +1694,6 @@ class Solution:
                 e = max(e, i[1])
         return left + [(s, e)] + right
 
-    # O(n)
     def insert(
         self, intervals: List[List[int]], newInterval: List[int]
     ) -> List[List[int]]:

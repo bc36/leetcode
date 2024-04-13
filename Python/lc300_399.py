@@ -30,12 +30,12 @@ class Solution:
     # O(nlogn) / O(n)
     def lengthOfLIS(self, nums: List[int]) -> int:
         tail = []
-        for num in nums:
-            idx = bisect.bisect_left(tail, num)
+        for x in nums:
+            idx = bisect.bisect_left(tail, x)
             if idx == len(tail):
-                tail.append(num)
+                tail.append(x)
             else:
-                tail[idx] = num
+                tail[idx] = x
         # keep the 'tail' ordered
         # replace smaller element
         # 'tail' may not be the exact LIS, but has the same length
@@ -45,18 +45,18 @@ class Solution:
 
     def lengthOfLIS(self, nums: List[int]) -> int:
         tail = []
-        for n in nums:
+        for x in nums:
             l, r = 0, len(tail)
             while l < r:
-                mid = l + r >> 1
-                if tail[mid] < n:
-                    l = mid + 1
+                m = l + r >> 1
+                if tail[m] < x:
+                    l = m + 1
                 else:
-                    r = mid
+                    r = m
             if l == len(tail):
-                tail.append(n)
+                tail.append(x)
             else:
-                tail[l] = n
+                tail[l] = x
         return len(tail)
 
 

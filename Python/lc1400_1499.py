@@ -669,6 +669,18 @@ class Solution:
         return -1
 
 
+# 1456 - Maximum Number of Vowels in a Substring of Given Length - MEDIUM
+class Solution:
+    def maxVowels(self, s: str, k: int) -> int:
+        vowel = {"a", "e", "i", "o", "u"}
+        ans = cur = sum(c in vowel for c in s[: k - 1])
+        for i in range(k - 1, len(s)):
+            cur += s[i] in vowel
+            ans = max(ans, cur)
+            cur -= s[i - k + 1] in vowel
+        return ans
+
+
 # 1457 - Pseudo-Palindromic Paths in a Binary Tree - MEDIUM
 class Solution:
     # O(9n) / O(9n)

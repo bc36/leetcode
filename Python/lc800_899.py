@@ -2050,6 +2050,43 @@ class Solution:
         return [w for w in words if match(w, pattern) and match(pattern, w)]
 
 
+# 894 - All Possible Full Binary Trees - MEDIUM
+class Solution:
+    # 子问题：构造一棵满二叉树
+    def allPossibleFBT(self, n: int) -> List[Optional[TreeNode]]:
+        if n % 2 == 0:
+            return []
+        if n == 1:
+            return [TreeNode(0)]
+        res = []
+        left_node = 1
+        right_node = n - 2
+        while right_node > 0:
+            left_trees = self.allPossibleFBT(left_node)
+            right_trees = self.allPossibleFBT(right_node)
+            for i in range(len(left_trees)):
+                for j in range(len(right_trees)):
+                    root = TreeNode(0, left_trees[i], right_trees[j])
+                    res.append(root)
+            left_node += 2
+            right_node -= 2
+        return res
+
+    def allPossibleFBT(self, n: int) -> List[Optional[TreeNode]]:
+        if n % 2 == 0:
+            return []
+        if n == 1:
+            return [TreeNode()]
+        res = []
+        for lnum in range(1, n, 2):
+            ls = self.allPossibleFBT(lnum)
+            rs = self.allPossibleFBT(n - 1 - lnum)
+            for lt in ls:
+                for rt in rs:
+                    res.append(TreeNode(0, lt, rt))
+        return res
+
+
 # 895 - Maximum Frequency Stack - HARD
 class FreqStack:
     # O(1) / O(n)

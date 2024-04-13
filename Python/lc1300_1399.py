@@ -383,6 +383,18 @@ class Solution:
         return step
 
 
+# 1343 - Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold - MEDIUM
+class Solution:
+    def numOfSubarrays(self, arr: List[int], k: int, threshold: int) -> int:
+        ans = 0
+        cur = sum(arr[: k - 1])
+        for i in range(k - 1, len(arr)):
+            cur += arr[i]
+            ans += cur >= k * threshold
+            cur -= arr[i - k + 1]
+        return ans
+
+
 # 1345 - Jump Game IV - HARD
 class Solution:
     # O(n) / O(n)
@@ -686,6 +698,32 @@ class Solution:
                         dq.append((y, p / cnt))
             t -= 1
         return 0
+
+
+# 1379 - Find a Corresponding Node of a Binary Tree in a Clone of That Tree - EASY
+class Solution:
+    def getTargetCopy(
+        self, original: TreeNode, cloned: TreeNode, target: TreeNode
+    ) -> TreeNode:
+        def dfs(root: TreeNode, val: int) -> TreeNode:
+            if not root or root.val == val:
+                return root
+            if root.left and root.left.val == val:
+                return root.left
+            if root.right and root.right.val == val:
+                return root.right
+            return dfs(root.left, val) or dfs(root.right, val)
+
+        return dfs(cloned, target.val)
+
+    def getTargetCopy(
+        self, original: TreeNode, cloned: TreeNode, target: TreeNode
+    ) -> TreeNode:
+        if original is None or original is target:
+            return cloned
+        return self.getTargetCopy(
+            original.left, cloned.left, target
+        ) or self.getTargetCopy(original.right, cloned.right, target)
 
 
 # 1380 - Lucky Numbers in a Matrix - EASY

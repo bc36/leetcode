@@ -18,7 +18,7 @@ def eratosthenes(n: int) -> List[int]:
     for i in range(2, n + 1):
         if isPrime[i]:
             primes.append(i)
-            for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i 小的 i 的倍数已经被枚举过了
+            for j in range(i * i, n + 1, i):  # 注意是 *, 不是 +, 比 i * i 小的 i 的倍数已经被枚举过了
                 isPrime[j] = False
     return primes
 
