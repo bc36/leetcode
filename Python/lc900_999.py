@@ -2039,6 +2039,23 @@ class Solution:
             ans += 1
         return ans if fresh == 0 else -1
 
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        q = [(i, j) for i, row in enumerate(grid) for j, v in enumerate(row) if v == 2]
+        ans = 0
+        while q:
+            new = []
+            for x, y in q:
+                for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
+                    if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] == 1:
+                        grid[nx][ny] = 2
+                        new.append((nx, ny))
+            q = new
+            if not q:
+                break
+            ans += 1
+        return -1 if any(v == 1 for row in grid for v in row) else ans
+
 
 # 997 - Find the Town Judge - EASY
 class Solution:
