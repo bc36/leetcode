@@ -165,6 +165,21 @@ class Solution:
         return ans
 
 
+# 1535 - Find the Winner of an Array Game - MEDIUM
+class Solution:
+    def getWinner(self, arr: List[int], k: int) -> int:
+        mx = arr[0]
+        win = -1  # 对于 arr[0] 来说，需要连续 k+1 个回合都是最大值
+        for x in arr:
+            if x > mx:
+                mx = x
+                win = 0
+            win += 1
+            if win == k:
+                break
+        return mx
+
+
 # 1545 - Find Kth Bit in Nth Binary String - MEDIUM
 class Solution:
     def findKthBit(self, n: int, k: int) -> str:
@@ -192,6 +207,7 @@ class Solution:
         if k < m:
             return self.findKthBit(n - 1, k)
         return "0" if self.findKthBit(n - 1, m * 2 - k) == "1" else "1"
+
 
 # 1557 - Minimum Number of Vertices to Reach All Nodes - MEDIUM
 class Solution:
