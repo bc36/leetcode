@@ -190,28 +190,11 @@ class Solution:
 # 2028 - Find Missing Observations - MEDIUM
 class Solution:
     def missingRolls(self, rolls: List[int], mean: int, n: int) -> List[int]:
-        m = len(rolls)
-        t = (m + n) * mean - sum(rolls)
-        if t > n * 6 or t < n:
+        diff = mean * (len(rolls) + n) - sum(rolls)
+        if diff > 6 * n or diff < n:
             return []
-        a = [0] * n
-        while t:
-            if t > n:
-                for i in range(n):
-                    a[i] += 1
-                t -= n
-            else:
-                for i in range(t):
-                    a[i] += 1
-                t -= t
-        return a
-
-    def missingRolls(self, rolls: List[int], mean: int, n: int) -> List[int]:
-        x = mean * (n + len(rolls)) - sum(rolls)
-        if not n <= x <= n * 6:
-            return []
-        d, mod = divmod(x, n)
-        return [d + 1] * mod + [d] * (n - mod)
+        d, m = divmod(diff, n)
+        return [d] * (n - m) + [d + 1] * m
 
 
 # 2029 - Stone Game IX - MEDIUM
