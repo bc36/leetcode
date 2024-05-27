@@ -158,6 +158,32 @@ class Solution:
                 break
         return "".join(str(v) for v in num)
 
+# 1953 - Maximum Number of Weeks for Which You Can Work - MEDIUM
+class Solution:
+    def numberOfWeeks(self, milestones: List[int]) -> int:
+        s = sum(milestones)
+        mx = max(milestones)
+        rest = s - mx
+        return rest * 2 + 1 if mx > rest + 1 else s
+
+    def numberOfWeeks(self, milestones: List[int]) -> int:
+        ans = 0
+        arr = sorted(-x for x in milestones)
+        while len(arr) > 3:
+            first = -heapq.heappop(arr)
+            second = -heapq.heappop(arr)
+            ans += 2 * second
+            if first != second:
+                heapq.heappush(arr, second - first)
+        # still all negetive
+        if len(arr) == 1:
+            return ans + 1
+        if len(arr) == 2:
+            return ans - 2 * max(arr) if arr[0] == arr[1] else ans - sum(arr)
+        if arr[0] < arr[1] + arr[2]:
+            return ans - 2 * (arr[1] + arr[2]) + 1
+        return ans - sum(arr)
+
 
 # 1954 - Minimum Garden Perimeter to Collect Enough Apples - MEDIUM
 class Solution:

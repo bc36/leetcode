@@ -51,6 +51,67 @@ class Solution:
         return ans
 
 
+# 2007 - Find Original Array From Doubled Array - MEDIUM
+class Solution:
+    # 乘比除好, 因为 // 会有奇偶问题, 并且乘法同时涵盖了 0 = 2 * 0 的特殊情况
+    # O(nlogn) / O(n)
+    def findOriginalArray(self, changed: List[int]) -> List[int]:
+        changed.sort()
+        cnt = collections.Counter(changed)
+        ans = []
+        for x in changed:
+            if cnt[x] == 0:
+                continue
+            cnt[x] -= 1
+            if cnt[x << 1] <= 0:
+                return []
+            cnt[x << 1] -= 1
+            ans.append(x)
+        return ans
+
+    def findOriginalArray(self, changed: List[int]) -> List[int]:
+        changed.sort()
+        ans = []
+        dq = collections.deque()
+        for x in changed:
+            if dq:
+                if dq[0] < x:  # cannot match
+                    return []
+                if dq[0] == x:  # can find a doubled number
+                    dq.popleft()
+                    continue
+            ans.append(x)
+            dq.append(x * 2)  # label
+        return [] if dq else ans
+
+    # O(n) / O(n)
+    def findOriginalArray(self, changed: List[int]) -> List[int]:
+        cnt = collections.Counter(changed)
+        cnt0 = cnt.pop(0, 0)  # 单独处理 0
+        if cnt0 % 2:
+            return []
+        ans = [0] * (cnt0 // 2)
+        for x in cnt:
+            # 如果 x/2 在 cnt 中，则跳过
+            if x % 2 == 0 and x // 2 in cnt:
+                continue
+            # 把 x, 2x, 4x, 8x, ... 全部配对
+            while x in cnt:
+                # 每次循环，把 t 个 x 和 t 个 2x 配对
+                t = cnt[x]
+                # 无法配对，至少要有 t 个 2x
+                if t > cnt[x * 2]:
+                    return []
+                ans.extend([x] * t)
+                if t < cnt[x * 2]:
+                    # 还剩下一些 2x
+                    cnt[x * 2] -= t
+                    x *= 2
+                else:  # t == cnt[x * 2]
+                    x *= 4
+        return ans
+
+
 # 2008 - Maximum Earnings From Taxi - MEDIUM
 class Solution:
     # O(n + m) / O(n + m)
