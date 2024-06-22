@@ -444,9 +444,7 @@ class Solution:
 # 521 - Longest Uncommon Subsequence I - EASY
 class Solution:
     def findLUSlength(self, a: str, b: str) -> int:
-        if a == b:
-            return -1
-        return max(len(a), len(b))
+        return -1 if a == b else max(len(a), len(b))
 
 
 # 522 - Longest Uncommon Subsequence II - MEDIUM

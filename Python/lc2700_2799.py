@@ -685,6 +685,12 @@ class Solution:
             cnt[x] += 1
         return ans
 
+    def countBeautifulPairs(self, nums: List[int]) -> int:
+        return sum(
+            math.gcd(int(str(x)[0]), y % 10) == 1
+            for x, y in itertools.combinations(nums, 2)
+        )
+
 
 # 2749 - Minimum Operations to Make the Integer Zero - MEDIUM
 class Solution:
