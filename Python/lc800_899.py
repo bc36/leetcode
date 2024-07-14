@@ -284,18 +284,27 @@ class Solution:
 # 807 - Max Increase to Keep City Skyline - MEDIUM
 class Solution:
     def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
-        row_maxes = [max(row) for row in grid]
-        col_maxes = [max(col) for col in zip(*grid)]
+        r_maxes = [max(r) for r in grid]
+        c_maxes = [max(c) for c in zip(*grid)]
+        ans = 0
+        for i, row in enumerate(grid):
+            for j, v in enumerate(row):
+                ans += min(r_maxes[i], c_maxes[j]) - v
+        return ans
+
+    def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
+        r_maxes = [max(row) for row in grid]
+        c_maxes = [max(col) for col in zip(*grid)]
 
         return sum(
-            min(row_maxes[r], col_maxes[c]) - val
+            min(r_maxes[r], c_maxes[c]) - val
             for r, row in enumerate(grid)
             for c, val in enumerate(row)
         )
 
     def maxIncreaseKeepingSkyline(self, grid: List[List[int]]) -> int:
-        rows, cols = list(map(max, grid)), list(map(max, zip(*grid)))
-        return sum(min(i, j) for i in rows for j in cols) - sum(map(sum, grid))
+        r_maxes, c_maxes = list(map(max, grid)), list(map(max, zip(*grid)))
+        return sum(min(r, c) for r in r_maxes for c in c_maxes) - sum(map(sum, grid))
 
 
 # 809 - Expressive Words - MEDIUM
