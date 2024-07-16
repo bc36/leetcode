@@ -87,3 +87,10 @@ class Solution:
                 s += s  # 无法得到 s, 需要添加一个 s
                 ans += 1
         return ans
+
+
+# 2956 - Find Common Elements Between Two Arrays - EASY
+class Solution:
+    def findIntersectionValues(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        s1, s2 = set(nums1), set(nums2)
+        return [sum(x in s2 for x in nums1), sum(y in s1 for y in nums2)]
