@@ -48,6 +48,80 @@ class Solution:
         return [i for i in range(t, n - t) if l[i] >= t and r[i] >= t]
 
 
+# 2101 - Detonate the Maximum Bombs - MEDIUM
+class Solution:
+    # O(n^3) / O(n^2), 图中至多有 O(n^2)条边, 每次 DFS 的时间复杂度为 O(n^2)
+    def maximumDetonation(self, bombs: List[List[int]]) -> int:
+        n = len(bombs)
+        g = [[] for _ in range(n)]
+        for i, (x, y, r) in enumerate(bombs):
+            for j, (x2, y2, _) in enumerate(bombs):
+                dx = x - x2
+                dy = y - y2
+                if dx * dx + dy * dy <= r * r:
+                    g[i].append(j)  # i 可以引爆 j
+
+        def dfs(x: int) -> int:
+            vis[x] = True
+            cnt = 1
+            for y in g[x]:
+                if not vis[y]:
+                    cnt += dfs(y)
+            return cnt
+
+        ans = 0
+        for i in range(n):
+            vis = [False] * n
+            ans = max(ans, dfs(i))
+        return ans
+
+    # O(n^3 / w) / O(n^2 / w), w = 32 or 64
+    def maximumDetonation(self, bombs: List[List[int]]) -> int:
+        n = len(bombs)
+        f = [0] * n
+        for i, (x, y, r) in enumerate(bombs):
+            for j, (x2, y2, _) in enumerate(bombs):
+                dx = x - x2
+                dy = y - y2
+                if dx * dx + dy * dy <= r * r:
+                    f[i] |= 1 << j  # i 可以到达 j
+
+        for k in range(n):
+            for i in range(n):
+                if f[i] >> k & 1:  # i 可以到达 k
+                    f[i] |= f[k]  # i 也可以到 k 可以到达的点
+
+        return max(s.bit_count() for s in f)  # 集合大小的最大值
+
+    # O(n^2) / O(n^2)
+    def maximumDetonation(self, bombs: List[List[int]]) -> int:
+        n = len(bombs)
+        g = [[] for _ in range(n)]
+        for i in range(n - 1):
+            x1, y1, r1 = bombs[i]
+            for j in range(i + 1, n):
+                x2, y2, r2 = bombs[j]
+                dx, dy = x1 - x2, y1 - y2
+                dist = dx * dx + dy * dy
+                if dist <= r1 * r1:
+                    g[i].append(j)
+                if dist <= r2 * r2:
+                    g[j].append(i)
+        ans = 0
+        for k in range(n):
+            vis = {k}
+            q = [k]
+            for x in q:
+                for y in g[x]:
+                    if y not in vis:
+                        vis.add(y)
+                        q.append(y)
+            if len(vis) == n:
+                return n
+            ans = max(ans, len(vis))
+        return ans
+
+
 # 2103 - Rings and Rods - EASY
 class Solution:
     def countPoints(self, rings: str) -> int:
