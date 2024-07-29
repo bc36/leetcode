@@ -490,11 +490,15 @@ class Solution:
         s = set(words)
         for w in words:
             if len(w) > len(ans) or len(w) == len(ans) and w < ans:
+                # f = True
                 for i in range(1, len(w) + 1):
                     if w[:i] not in s:
+                        # f = False
                         break
                 else:  # for-else statement
                     ans = w
+                # if f:
+                #     ans = w
         return ans
 
     def longestWord(self, words: List[str]) -> str:
@@ -1203,7 +1207,8 @@ class Solution:
         for _ in range(n):
             x = -1
             for y, v in enumerate(vis):
-                if not v and (x == -1 or d[y] < d[x]):  # 每次选择一个已知到源节点距离最短的未访问节点
+                # 每次选择一个已知到源节点距离最短的未访问节点
+                if not v and (x == -1 or d[y] < d[x]):
                     x = y
             vis[x] = True
             for y, w in enumerate(g[x]):
@@ -2060,7 +2065,8 @@ class Solution:
         arr = [nums[0]]
         for i in range(1, len(nums)):
             glo += len(arr) - bisect.bisect_right(arr, nums[i])
-            bisect.insort_right(arr, nums[i])  # insort, 搜索 O(logn), 插入 O(n), 1e5 还是能过的
+            # insort, 搜索 O(logn), 插入 O(n), 1e5 还是能过的
+            bisect.insort_right(arr, nums[i])
         return loc == glo
 
     # 局部倒置一定是全局倒置

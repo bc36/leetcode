@@ -1198,18 +1198,18 @@ class Solution:
 
 # 682 - Baseball Game - EASY
 class Solution:
-    def calPoints(self, ops: List[str]) -> int:
-        s = []
-        for ch in ops:
-            if ch == "D":
-                s.append(2 * s[-1])
-            elif ch == "C":
-                s.pop()
-            elif ch == "+":
-                s.append(s[-1] + s[-2])
+    def calPoints(self, operations: List[str]) -> int:
+        arr = []
+        for o in operations:
+            if o == "D":
+                arr.append(2 * arr[-1])
+            elif o == "C":
+                arr.pop()
+            elif o == "+":
+                arr.append(arr[-1] + arr[-2])
             else:
-                s.append(int(ch))
-        return sum(s)
+                arr.append(int(o))
+        return sum(arr)
 
 
 # 686 - Repeated String Match - MEDIUM

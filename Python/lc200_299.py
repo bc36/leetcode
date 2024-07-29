@@ -242,7 +242,7 @@ class Solution:
 
 # 206 - Reverse Linked List - EASY
 class Solution:
-    # iterative
+    # Iterative
     def reverseList(self, head: ListNode) -> ListNode:
         pre = None
         while head:
@@ -250,26 +250,42 @@ class Solution:
             head.next = pre
             pre = head
             head = tmp
+
             # one line:
             # head.next, head, pre = pre, head.next, head
             # head.next, pre, head = pre, head, head.next
         return pre
 
-    # recursive
+    # Recursive
+    # reverse the pointer from last to first
     def reverseList(self, head: ListNode) -> ListNode:
         if not head or not head.next:
             return head
-        new = self.reverseList(head.next)
+        last = self.reverseList(head.next)
         head.next.next = head
         head.next = None
-        return new
+        return last
 
+    # reverse the pointer from first to last
     def reverseList(self, head: ListNode, pre=None) -> ListNode:
         if not head:
             return pre
-        x = head.next
+        nxt = head.next
         head.next = pre
-        return self.reverseList(x, head)
+        return self.reverseList(nxt, head)
+
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        def helper(head: ListNode) -> Tuple[ListNode, ListNode]:
+            if head.next is None:
+                return head, head
+            nxt, last = helper(head.next)
+            head.next = None
+            nxt.next = head
+            return head, last
+
+        if head is None:
+            return
+        return helper(head)[1]
 
 
 # 207 - Course Schedule I - MEDIUM

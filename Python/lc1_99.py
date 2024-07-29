@@ -394,23 +394,27 @@ class Solution:
         nums.sort()
         ans = []
         for i in range(len(nums) - 2):
-            if nums[i] > 0:
+            v = nums[i]
+            if i > 0 and nums[i - 1] == v:  # same nums[i]
+                continue
+            if v + nums[i + 1] + nums[i + 2] > 0:  # too big, better than v > 0
                 break
-            if i > 0 and nums[i - 1] == nums[i]:
+            if v + nums[-2] + nums[-1] < 0:  # too small
                 continue
             j = i + 1
             k = len(nums) - 1
             while j < k:
-                if nums[i] + nums[j] + nums[k] > 0:
+                s = v + nums[j] + nums[k]
+                if s > 0:
                     k -= 1
-                elif nums[i] + nums[j] + nums[k] < 0:
+                elif s < 0:
                     j += 1
                 else:
-                    ans.append([nums[i], nums[j], nums[k]])
+                    ans.append([v, nums[j], nums[k]])
                     j += 1
-                    k -= 1
                     while j < k and nums[j - 1] == nums[j]:
                         j += 1
+                    k -= 1
                     while j < k and nums[k] == nums[k + 1]:
                         k -= 1
         return ans
@@ -1516,29 +1520,34 @@ class Solution:
 
 # 53 - Maximum Subarray - EASY
 class Solution:
+    # O(n) / O(n)
     def maxSubArray(self, nums: List[int]) -> int:
-        dp = [nums[0]] + [0] * (len(nums) - 1)
+        f = [nums[0]] + [0] * (len(nums) - 1)
         for i in range(1, len(nums)):
-            dp[i] = max(dp[i - 1] + nums[i], nums[i])
-        return max(dp)
+            f[i] = max(f[i - 1], 0) + nums[i]
+        return max(f)
 
+    # O(n) / O(1)
     def maxSubArray(self, nums: List[int]) -> int:
-        pre, ans = 0, nums[0]
-        for i in range(len(nums)):
-            pre = max(pre + nums[i], nums[i])
-            if pre > ans:
-                ans = pre
+        ans = nums[0]
+        cur = 0
+        for v in nums:
+            cur = max(cur, 0) + v
+
+            # ans = max(cur, ans)
+            if cur > ans:
+                ans = cur
         return ans
 
+    # O(n) / O(1)
     def maxSubArray(self, nums: List[int]) -> int:
-        f = [0] * len(nums)
-        f[0] = nums[0]
-        for i in range(1, len(nums)):
-            if f[i - 1] > 0:
-                f[i] = f[i - 1] + nums[i]
-            else:
-                f[i] = nums[i]
-        return max(f)
+        ans = nums[0]
+        min_pre_sum = pre_sum = 0
+        for x in nums:
+            pre_sum += x
+            ans = max(ans, pre_sum - min_pre_sum)  # 减去前缀和的最小值
+            min_pre_sum = min(min_pre_sum, pre_sum)  # 维护前缀和的最小值
+        return ans
 
 
 # 54 - Spiral Matrix - MEDIUM
