@@ -1215,18 +1215,18 @@ class Solution:
 
 # 572 - Subtree of Another Tree - EASY
 class Solution:
-    def isSubtree(self, root: TreeNode, sub: TreeNode) -> bool:
-        if not sub and not root:
+    def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
+        if not root and not subRoot:
             return True
-        if not sub or not root:
+        if not root or not subRoot:
             return False
         return (
-            self.isSameTree(sub, root)
-            or self.isSubtree(root.left, sub)
-            or self.isSubtree(root.right, sub)
+            self.isSameTree(root, subRoot)
+            or self.isSubtree(root.left, subRoot)
+            or self.isSubtree(root.right, subRoot)
         )
 
-    def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
+    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
         if not q and not p:
             return True
         if not q or not p:
