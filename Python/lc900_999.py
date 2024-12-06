@@ -2078,3 +2078,21 @@ class Solution:
             return TreeNode(val, root)
         root.right = self.insertIntoMaxTree(root.right, val)
         return root
+
+
+# 999 - Available Captures for Rook - EASY
+class Solution:
+    def numRookCaptures(self, board: List[List[str]]) -> int:
+        for i, row in enumerate(board):
+            for j, c in enumerate(row):
+                if c == 'R':
+                    x, y = i, j
+        ans = 0
+        for dx, dy in (0, 1), (0, -1), (1, 0), (-1, 0):
+            a = x + dx
+            b = y + dy
+            while 0 <= a < 8 and 0 <= b < 8 and board[a][b] == '.':
+                a += dx
+                b += dy
+            ans += 0 <= a < 8 and 0 <= b < 8 and board[a][b] == 'p'
+        return ans
