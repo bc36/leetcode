@@ -58,6 +58,25 @@ class Solution:
         )
 
 
+# 2931 - Maximum Spending After Buying Items - HARD
+class Solution:
+    def maxSpending(self, values: List[List[int]]) -> int:
+        h = [(v[-1], i) for i, v in enumerate(values)]
+        heapq.heapify(h)
+        ans = 0
+        for d in range(1, len(values) * len(values[0]) + 1):
+            v, i = heapq.heappop(h)
+            ans += v * d
+            values[i].pop()
+            if values[i]:
+                heapq.heappush(h, (values[i][-1], i))
+        return ans
+
+    def maxSpending(self, values: List[List[int]]) -> int:
+        arr = sorted(x for row in values for x in row)
+        return sum(x * i for i, x in enumerate(arr, 1))
+
+
 # 2951 - Find the Peaks - EASY
 class Solution:
     def findPeaks(self, mountain: List[int]) -> List[int]:
