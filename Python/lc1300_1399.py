@@ -370,6 +370,26 @@ class Solution:
         return dfs(n - 1, d)
 
 
+# 1338 - Reduce Array Size to The Half - MEDIUM
+class Solution:
+    def minSetSize(self, arr: List[int]) -> int:
+        cnt = collections.Counter(arr)
+        ans = 0
+        summ = 0
+        for v in sorted(cnt.values(), reverse=True):
+            summ += v
+            ans += 1
+            if summ >= len(arr) // 2:
+                break
+        return ans
+
+    def minSetSize(self, arr: List[int]) -> int:
+        vals = sorted(collections.Counter(arr).values(), reverse=True)
+        for i, summ in enumerate(itertools.accumulate(vals)):
+            if summ >= len(arr) // 2:
+                return i + 1
+
+
 # 1342 - Number of Steps to Reduce a Number to Zero - EASY
 class Solution:
     def numberOfSteps(self, num: int) -> int:
