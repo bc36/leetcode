@@ -127,7 +127,9 @@ class Solution:
                         root = root.ch[b]
                     if root is None:
                         return res
-                res += root.summ  # 计算小于等于 lmt 和 小于 lmt 的区别, 上面已经避免了 root 为 None 的情况
+                res += (
+                    root.summ
+                )  # 计算小于等于 lmt 和 小于 lmt 的区别, 上面已经避免了 root 为 None 的情况
                 return res
 
         def f(lmt: int) -> int:
@@ -598,6 +600,33 @@ class Solution:
         for i in range(1, len(arr), 2):
             arr[i] = chr(ord(arr[i - 1]) + int(arr[i]))
         return "".join(arr)
+
+
+# 1847 - Closest Room - HARD
+class Solution:
+    def closestRoom(
+        self, rooms: List[List[int]], queries: List[List[int]]
+    ) -> List[int]:
+        """关键是当有多个询问, 先处理 size 大的询问
+        这样当处理 size 小的询问时, 已经加入有序集合的房间的 size, 都是满足 >= minSize 的房间了"""
+        rooms.sort(key=lambda x: x[1])
+        ans = [-1] * len(queries)
+        ids = sortedcontainers.SortedList()
+        j = len(rooms) - 1
+        # 按照 minSize 从大到小排序 i
+        for i in sorted(range(len(queries)), key=lambda i: -queries[i][1]):
+            pid, ms = queries[i]
+            while j >= 0 and rooms[j][1] >= ms:
+                ids.add(rooms[j][0])
+                j -= 1
+            diff = math.inf
+            idx = ids.bisect_left(pid)
+            if idx:
+                diff = pid - ids[idx - 1]
+                ans[i] = ids[idx - 1]
+            if idx < len(ids) and ids[idx] - pid < diff:
+                ans[i] = ids[idx]
+        return ans
 
 
 # 1851 - Minimum Interval to Include Each Query - HARD
