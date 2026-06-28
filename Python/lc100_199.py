@@ -14,6 +14,39 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
+        a = "jfdk"
+        b = a[:1] + "ch" + a[2 + 1 :]
+        for x in string.ascii_lowercase:
+            b = a[:1] + x + a[2 + 1 :]
+
+
+# 100 - Same Tree - EASY
+class Solution:
+    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
+        dq = collections.deque()
+        dq.append((p, q))
+        while dq:
+            x, y = dq.popleft()
+            if not x and not y:
+                continue
+            if not x and y:
+                return False
+            if x and not y:
+                return False
+            if x.val != y.val:
+                return False
+            dq.append((x.left, y.left))
+            dq.append((x.right, y.right))
+        return True
+
+    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
+        if p is None or q is None:
+            return p is q  # 必须都是 None
+        return (
+            p.val == q.val
+            and self.isSameTree(p.left, q.left)
+            and self.isSameTree(p.right, q.right)
+        )
 
 
 # 101 - Symmetric Tree - EASY
@@ -76,6 +109,24 @@ class Solution:
                     dq.append(node.right)
                 level.append(node.val)
             ans.append(level)
+        return ans
+
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        ans = []
+        nodes = []
+        if root:
+            nodes.append(root)
+        while nodes:
+            vals = []
+            nxt = []
+            for x in nodes:
+                vals.append(x.val)
+                if x.left:
+                    nxt.append(x.left)
+                if x.right:
+                    nxt.append(x.right)
+            ans.append(vals)
+            nodes = nxt
         return ans
 
     # dfs: depth-first search
@@ -558,6 +609,63 @@ class Solution:
         return s == s[::-1]
 
 
+# 126. Word Ladder II - HARD
+class Solution:
+    def findLadders(
+        self, beginWord: str, endWord: str, wordList: List[str]
+    ) -> List[List[str]]:
+        # bfs 建图
+        ws = set(wordList)
+        if endWord not in ws:
+            return []
+
+        depth = 0
+        q = [beginWord]
+        parents = collections.defaultdict(list)
+        vis = {beginWord}  # don't use vis = set(beginWord)
+        level = {beginWord: depth}
+        found = False
+        while q:
+            nxt = []
+            depth += 1
+            for word in q:
+                for i in range(len(word)):
+                    for ch in string.ascii_lowercase:
+                        new_word = word[:i] + ch + word[i + 1 :]
+                        if new_word not in ws:
+                            continue
+                        parents[new_word].append(word)
+                        if new_word in vis:
+                            continue
+                        if new_word == endWord:
+                            found = True
+                        level[new_word] = depth
+                        nxt.append(new_word)
+                        vis.add(new_word)
+            q = nxt
+
+        if not found:
+            return []
+
+        ans = []
+
+        def dfs(path: List[int], word: str):
+            if word == beginWord:
+                tmp = path + [beginWord]
+                ans.append(tmp[::-1])
+                return
+            path.append(word)
+            if word in parents:
+                for p in parents[word]:
+                    if level[word] == level[p] + 1:
+                        dfs(path, p)
+            path.pop()
+            return
+
+        dfs([], endWord)
+        return ans
+
+
 # 127 - Word Ladder - HARD
 class Solution:
     def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
@@ -584,13 +692,38 @@ class Solution:
     def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
         if endWord not in wordList:
             return 0
+        step = 1
+        ws = set(wordList)
+        q = [beginWord]
+        while q:
+            if not ws:
+                break
+            nxt = []
+            for word in q:
+                for i in range(len(word)):
+                    for c in string.ascii_lowercase:
+                        if c == word[i]:
+                            continue
+                        new_word = word[:i] + c + word[i + 1 :]
+                        if new_word == endWord:
+                            return step + 1
+                        if new_word in ws:
+                            ws.remove(new_word)
+                            nxt.append(new_word)
+            q = nxt
+            step += 1
+        return 0
+
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        if endWord not in wordList:
+            return 0
         mapper = collections.defaultdict(list)
         for word in wordList:
             for i in range(len(word)):
                 key = word[:i] + "*" + word[i + 1 :]
                 mapper[key].append(word)
         dq = collections.deque([(beginWord, 1)])
-        seen = set(beginWord)
+        seen = set()
         while dq:
             cur, step = dq.popleft()
             for i in range(len(cur)):

@@ -415,6 +415,14 @@ class Solution:
         return ans
 
 
+# 1344 - Angle Between Hands of a Clock - MEDIUM
+class Solution:
+    def angleClock(self, hour: int, minutes: int) -> float:
+        m = minutes / 60 * 360
+        h = hour / 12 * 360 + minutes / 60 * 30
+        return min(abs(h - m), 360 - abs(h - m))
+
+
 # 1345 - Jump Game IV - HARD
 class Solution:
     # O(n) / O(n)

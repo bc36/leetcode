@@ -1158,6 +1158,13 @@ class Solution:
             heapq.heappush(h, (p / t - (p + 1) / (t + 1), p, t))
         return sum(p / t for _, p, t in h) / len(classes)
 
+    def maxAverageRatio(self, classes: List[List[int]], extraStudents: int) -> float:
+        arr = sorted((p / t - (p + 1) / (t + 1), p, t) for p, t in classes)
+        for _ in range(extraStudents):
+            _, p, t = heapq.heappop(arr)
+            heapq.heappush(arr, ((p + 1) / (t + 1) - (p + 2) / (t + 2), p + 1, t + 1))
+        return sum(p / t for _, p, t in arr) / len(arr)
+
 
 # 1793 - Maximum Score of a Good Subarray - HARD
 class Solution:

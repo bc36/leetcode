@@ -588,6 +588,20 @@ class Solution:
         return x
 
 
+# 1840 - Maximum Building Height - HARD
+class Solution:
+    def maxBuilding(self, n: int, r: List[List[int]]) -> int:
+        r += [[1, 0], [n, math.inf]]
+        r.sort()
+        m = len(r)
+        h = [0] * m  # h[i] 表示编号为 id[i] 的建筑的最大高度
+        for i in range(1, m):
+            h[i] = min(h[i - 1] + r[i][0] - r[i - 1][0], r[i][1])
+        for i in range(m - 2, -1, -1):
+            h[i] = min(h[i], h[i + 1] + r[i + 1][0] - r[i][0])
+        return max(r[i + 1][0] - r[i][0] + h[i] + h[i + 1] for i in range(m - 1)) // 2
+
+
 # 1844 - Replace All Digits with Characters - EASY
 class Solution:
     def replaceDigits(self, s: str) -> str:

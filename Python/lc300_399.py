@@ -94,6 +94,47 @@ class Solution:
         dfs(0, 0, 0, l, r, "")
         return ans
 
+    def removeInvalidParentheses(self, s: str) -> List[str]:
+        dell = delr = 0
+        for c in s:
+            if c == "(":
+                dell += 1
+            elif c == ")":
+                if dell == 0:
+                    delr += 1
+                else:
+                    dell -= 1
+        ans = set()
+
+        def dfs(arr: List[str], i: int, dell: int, delr: int, lcnt: int, rcnt: int):
+            # arr 为每次搜索之后的字符串
+            # i 表示搜索到源字符串的第几个位置
+            # dell 和 delr 是还需要删除的左右括号数目, 初始值在第一个问题中已经求出来了 
+            # lcnt 和 rcnt 代表目前为止我们保留的左右括号数量
+            if i == len(s):
+                if dell == 0 and delr == 0:
+                    ans.add("".join(arr))
+                return
+
+            if s[i] == "(" and dell > 0:  # 可以删左括号
+                dfs(arr, i + 1, dell - 1, delr, lcnt, rcnt)
+            if s[i] == ")" and delr > 0:  # 可以删右括号
+                dfs(arr, i + 1, dell, delr - 1, lcnt, rcnt)
+            arr.append(s[i])
+            if s[i] != "(" and s[i] != ")":
+                dfs(arr, i + 1, dell, delr, lcnt, rcnt)
+            elif s[i] == "(":
+                dfs(arr, i + 1, dell, delr, lcnt + 1, rcnt)
+            elif lcnt > rcnt:
+                # 只有 rcnt < lcnt 我们才有必要继续递归
+                # 避免出现 ")(" 这样的情况
+                dfs(arr, i + 1, dell, delr, lcnt, rcnt + 1)
+            arr.pop()
+            return
+
+        dfs([], 0, dell, delr, 0, 0)
+        return list(ans)
+
 
 # 303 - Range Sum Query - Immutable - EASY
 # Your NumArray object will be instantiated and called as such:
